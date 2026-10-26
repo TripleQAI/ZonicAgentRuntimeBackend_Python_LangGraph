@@ -63,11 +63,6 @@ class ProcedureIn(_SchemaQualified):
     args: list[Any] | None = None
 
 
-class FunctionIn(_SchemaQualified):
-    args: dict[str, Any] | list[Any] | None = None
-    scalar: bool = False
-
-
 BatchMode = Literal["parallel", "sequential", "transactional"]
 
 
@@ -112,6 +107,3 @@ class BatchResult(BaseModel):
     ok_count: int = 0
     error_count: int = 0
     results: list[BatchItemResult] = Field(default_factory=list)
-
-    def by_id(self) -> dict[str, BatchItemResult]:
-        return {r.id: r for r in self.results}

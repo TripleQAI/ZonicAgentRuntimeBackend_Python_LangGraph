@@ -17,7 +17,6 @@ uv run lint-imports
 uv run python -m scripts.gen --check      # generated/ is current
 uv run python -m scripts.catalog_check    # every catalog case has a test
 uv run pytest -m sql                      # opt-in: SQL scripts on a local PostgreSQL in Docker
-uv run pytest -m spike                    # opt-in: Phase 0 LangGraph verification spikes
 ```
 
 ## Rules (plan Section 6.5, design Section 16.4)

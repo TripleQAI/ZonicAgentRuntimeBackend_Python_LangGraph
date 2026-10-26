@@ -68,7 +68,7 @@ Not changed here, because the files are vendored. To be fixed there and re-synce
 | Error catalog | 63 codes | 64: `RUN_LEASE_LOST` | `stale_attempt` (fencing) needs its own code |
 | Object counts | `agent_runtime`: 8 tables, 9 views | 9 tables (with `schema_migrations`), 9 views, 14 procedures | As vendored |
 | `settings.models.executorThreads` | 32 | 160 | SP-5: the model executor must match concurrent streams |
-| Spike lint | Full ruff rule set | `spikes/**` ignores async-style and minor rules (`ruff.toml`) | Measurement code, deleted after M0 |
+| Spike lint | Full ruff rule set | `spikes/**` ignored async-style and minor rules while the spikes existed | Measurement code; removed after M0 together with its `ruff.toml` entry |
 | PostgreSQL version | 17 in CI | Neon runs 18.6 | The scripts pass on both; CI keeps 17 as the floor |
 
 ### Product database (2026-10-26)
@@ -117,10 +117,22 @@ The live suite `tests/live/test_gateway_live.py` (`uv run pytest -m live`) drive
 
 - **Builder data:** the builder application still writes workflows to its own database (Neon project `agent-build-run`). The runtime only sees workflows saved in `agent-build-langgraph`, so either the builder is pointed at this database or its workflows are copied here.
 - **D-2:** deployed and verified in account `001634074733` (above). The changes in `ZonicPostgresqlServer_FastAPI` are uncommitted.
-- **Builder gateway URL:** `Strands-visual-builder/.env.docker` still names the deleted gateway; set `PG_GATEWAY_BASE_URL` to the new URL and restart the builder.
 - **Gateway batch authorization:** per-item datasource checks are needed before any caller gets `batch` (above).
 
 ### Running the opt-in suites locally
 
 - SQL: put `ZONIC_SQL_TEST_DSN=...` in the git-ignored `.env`, then `uv run pytest -m sql`. psql runs in the `postgres:17` Docker image and receives the DSN through its environment.
-- Spikes: `uv run pytest spikes -m spike -s` prints each spike's measurements.
+- Live: `uv run pytest -m live` runs against the deployed gateway named in `.env` (`ZONIC_GATEWAY_BASE_URL`, `ZONIC_GATEWAY_API_KEY`; see `.env.example`).
+- Spikes: removed after M0; see decision record 0001 for how to restore them from git history.
+
+## Cleanup before Phase 1 (2026-10-26)
+
+| Removed | Why |
+|---|---|
+| `spikes/` (code) | The plan deletes the spikes after M0. Their reports moved to `docs/decisions/0001-spike-reports/`, and the code stays in git history at `bcd2fde`. The `spike` pytest marker and the `spikes` entries in `ruff.toml`, `.gitignore`, `.dockerignore` and `CLAUDE.md` went with it. |
+| `config/resources.py: load_resource` | Duplicated `load_with_overlay`, which every resource load uses |
+| `models/gateway/wire.py: FunctionIn` | The runtime reads views and calls procedures only; it never calls gateway functions |
+| `models/gateway/wire.py: BatchResult.by_id` | Never used; batches stay unused until the gateway checks batch items per datasource |
+| `models/gateway_meta.py: has_procedure_meta` | Never used; `procedure_meta` covers it |
+
+Also: `.import_linter_cache/` was added to `.gitignore`, and the `sql` marker text now says what the SQL tests need (psql and `ZONIC_SQL_TEST_DSN`). Kept on purpose: `get_environment`, `secret_from_environment`, `fail_startup` and `GatewayRepository.read_one` (entry points for the Phase 1 and 2 tasks); `deploy/pgfoundation.agentruntime.yaml` (running the gateway locally without AWS); `docs/requests/D-2-gateway-registration.md` (record of the completed request).

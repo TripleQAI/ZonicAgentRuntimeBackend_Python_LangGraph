@@ -29,10 +29,6 @@ def validate_resource[M: BaseModel](data: Any, model: type[M], *, source: str) -
         raise StartupError("RESOURCE_INVALID", file=source, problems=problems) from exc
 
 
-def load_resource[M: BaseModel](path: Path, model: type[M]) -> M:
-    return validate_resource(read_json(path), model, source=str(path))
-
-
 def deep_merge(base: Any, overlay: Any) -> Any:
     """Objects merge key by key; any other overlay value replaces the base value."""
     if isinstance(base, dict) and isinstance(overlay, dict):

@@ -76,12 +76,11 @@ testpaths = ["tests"]
 pythonpath = ["src", "."]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
-addopts = "-m 'not sql and not live and not load and not spike'"
+addopts = "-m 'not sql and not live and not load'"
 markers = [
-    "sql: needs the gateway and the runtime_test branch (nightly, opt-in)",
+    "sql: SQL scripts on PostgreSQL through psql (ZONIC_SQL_TEST_DSN in .env; opt-in)",
     "live: needs real models, MCP server or gateway (opt-in)",
     "load: performance runs (before release)",
-    "spike: Phase 0 verification spikes against the installed LangGraph (run explicitly)",
 ]
 filterwarnings = [
     "error",

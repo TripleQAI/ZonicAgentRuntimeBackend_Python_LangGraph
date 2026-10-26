@@ -65,7 +65,3 @@ def procedure_meta(model: type[BaseModel]) -> ProcedureMeta:
     if not isinstance(meta, ProcedureMeta):
         raise TypeError(f"{model.__name__} has no @gateway_procedure metadata")
     return meta
-
-
-def has_procedure_meta(model: type[BaseModel]) -> bool:
-    return isinstance(getattr(model, _PROCEDURE_ATTR, None), ProcedureMeta)

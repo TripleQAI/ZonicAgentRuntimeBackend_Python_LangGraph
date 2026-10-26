@@ -3,7 +3,7 @@
 - **Status:** proposed for the M0 review
 - **Date:** 2026-10-25
 - **Decides:** D-4 (exact pins) and D-5 (fallbacks), plan task P0-10
-- **Evidence:** `spikes/test_sp*.py` (63 checks, all pass: `uv run pytest spikes -m spike -s`) and one report per spike in `spikes/reports/`. Both are deleted after M0; this record stays.
+- **Evidence:** one report per spike in [`0001-spike-reports/`](0001-spike-reports/). The spike code (63 checks, all passing on 2026-10-25) was removed after M0, as the plan says. It stays in git history: `git show bcd2fde:spikes/<file>` (the paths are those named in each report). Restore it with `git checkout bcd2fde -- spikes` to re-run after a LangGraph or LangChain minor upgrade.
 
 ## Context
 
@@ -25,7 +25,7 @@ The installed versions pass every spike. `pyproject.toml` already pins each to o
 | fastmcp (test) | 4.1.3 (mcp 2.3.0) | `~=4.1.3` |
 | langgraph-checkpoint-conformance (test) | 0.0.2 | `~=0.0.2` |
 
-Two APIs the design uses are marked experimental or beta and emit `LangChainBetaWarning`: `astream_events(version="v3")` and `langchain.mcp`. Both stay behind their ports (`engine/streaming/`, the MCP port). A minor upgrade of LangGraph or LangChain re-runs these spikes first.
+Two APIs the design uses are marked experimental or beta and emit `LangChainBetaWarning`: `astream_events(version="v3")` and `langchain.mcp`. Both stay behind their ports (`engine/streaming/`, the MCP port). A minor upgrade of LangGraph or LangChain re-runs these spikes first (restored from git history, above).
 
 ## D-5: outcome per spike
 

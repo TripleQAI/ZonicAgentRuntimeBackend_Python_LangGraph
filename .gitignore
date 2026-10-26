@@ -4,6 +4,7 @@ __pycache__/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+.import_linter_cache/
 .coverage
 coverage.xml
 htmlcov/
@@ -14,4 +15,3 @@ htmlcov/
 *.egg-info/
 dist/
 build/
-spikes/out/
