@@ -1,0 +1,48 @@
+# pgfoundation datasource registration for the Zonic Agent Runtime (plan P0-08, DR-8).
+#
+# This file lives HERE, not in ZonicPostgresqlServer_FastAPI. That project is
+# consumed as a service and is never modified (decision D-2). Point it at this file with:
+#
+#   PGF_CONFIG=<abs path>/deploy/pgfoundation.agentruntime.yaml
+#
+# DSNs are resolved by the gateway's own ${env:...} interpolation, so no
+# credential is stored in this repository. The names must equal
+# settings.gateway.datasources in resources/settings.json.
+
+datasources:
+  - name: agentruntime
+    dsn: ${env:AGENTRUNTIME_DSN}
+    role: standalone
+    pool: { min_size: 2, max_size: 10, acquire_timeout_seconds: 5 }
+    statement_timeout_ms: 10000
+    read_only: false
+    # No search_path: the runtime sends the schema (`agent_runtime`, or
+    # `agent_builder` for workflow reads) on every call.
+
+  - name: agentobservability
+    dsn: ${env:AGENTOBSERVABILITY_DSN}
+    role: standalone
+    pool: { min_size: 1, max_size: 4, acquire_timeout_seconds: 5 }
+    statement_timeout_ms: 30000
+    read_only: false
+
+api:
+  # Explicit, not merely defaulted: the runtime never sends SQL text.
+  enable_raw_sql: false
+  default_row_format: dict
+  max_response_rows: 10000            # settings.gateway.maxViewRows
+  request_timeout_ms: 15000           # settings.gateway.timeoutMilliseconds
+
+resilience:
+  retry: { max_attempts: 3, base_backoff_ms: 20, max_backoff_ms: 1000, jitter: true }
+  circuit_breaker: { enabled: true, failure_threshold: 5, reset_timeout_seconds: 30 }
+
+# Off for local development, matching the gateway default. Shared deployments
+# turn it on and register the caller subject `zonic-agent-runtime` (decision D-2).
+auth:
+  enabled: false
+
+observability:
+  provider: none
+  metrics: { enabled: false }
+  tracing: { enabled: false }

@@ -1,0 +1,14 @@
+{
+  "defaultExecuteServer": "zonic",
+  "servers": {
+    "zonic": {
+      "url": "env:mcp_base_url",
+      "path": "/mcp/",
+      "transport": "streamable_http",
+      "enabled": true,
+      "maxInFlight": 32,
+      "timeoutSeconds": 60,
+      "executeTool": "execute"
+    }
+  }
+}

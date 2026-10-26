@@ -1,0 +1,176 @@
+{
+  "$defs": {
+    "ModelEntry": {
+      "additionalProperties": false,
+      "properties": {
+        "apiVersion": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Apiversion"
+        },
+        "deployment": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Deployment"
+        },
+        "enabled": {
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "endpointEnv": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Endpointenv"
+        },
+        "modelId": {
+          "title": "Modelid",
+          "type": "string"
+        },
+        "parameters": {
+          "$ref": "#/$defs/ModelParameterBounds"
+        },
+        "provider": {
+          "enum": [
+            "bedrock_converse",
+            "azure_openai",
+            "anthropic",
+            "openai"
+          ],
+          "title": "Provider",
+          "type": "string"
+        },
+        "quota": {
+          "$ref": "#/$defs/ModelQuota"
+        },
+        "region": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Region"
+        },
+        "supportsNativeStructuredOutput": {
+          "title": "Supportsnativestructuredoutput",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "provider",
+        "modelId",
+        "enabled",
+        "supportsNativeStructuredOutput",
+        "parameters",
+        "quota"
+      ],
+      "title": "ModelEntry",
+      "type": "object"
+    },
+    "ModelParameterBounds": {
+      "additionalProperties": false,
+      "properties": {
+        "maxTemperature": {
+          "minimum": 0,
+          "title": "Maxtemperature",
+          "type": "number"
+        },
+        "maxTokens": {
+          "exclusiveMinimum": 0,
+          "title": "Maxtokens",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "maxTemperature",
+        "maxTokens"
+      ],
+      "title": "ModelParameterBounds",
+      "type": "object"
+    },
+    "ModelQuota": {
+      "additionalProperties": false,
+      "properties": {
+        "maxInFlight": {
+          "exclusiveMinimum": 0,
+          "title": "Maxinflight",
+          "type": "integer"
+        },
+        "maxQueueWaitMilliseconds": {
+          "exclusiveMinimum": 0,
+          "title": "Maxqueuewaitmilliseconds",
+          "type": "integer"
+        },
+        "requestsPerMinute": {
+          "exclusiveMinimum": 0,
+          "title": "Requestsperminute",
+          "type": "integer"
+        },
+        "tokensPerMinute": {
+          "exclusiveMinimum": 0,
+          "title": "Tokensperminute",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "maxInFlight",
+        "requestsPerMinute",
+        "tokensPerMinute",
+        "maxQueueWaitMilliseconds"
+      ],
+      "title": "ModelQuota",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "aliases": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Aliases",
+      "type": "object"
+    },
+    "defaultModel": {
+      "title": "Defaultmodel",
+      "type": "string"
+    },
+    "models": {
+      "additionalProperties": {
+        "$ref": "#/$defs/ModelEntry"
+      },
+      "title": "Models",
+      "type": "object"
+    }
+  },
+  "required": [
+    "defaultModel",
+    "models"
+  ],
+  "title": "ModelCatalog",
+  "type": "object"
+}

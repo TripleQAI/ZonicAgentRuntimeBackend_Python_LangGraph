@@ -1,0 +1,1330 @@
+{
+  "$defs": {
+    "ApiSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "corsOrigins": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Corsorigins",
+          "type": "array"
+        },
+        "docsEnabled": {
+          "title": "Docsenabled",
+          "type": "boolean"
+        },
+        "internalPort": {
+          "exclusiveMaximum": 65536,
+          "exclusiveMinimum": 0,
+          "title": "Internalport",
+          "type": "integer"
+        },
+        "maxBodyBytes": {
+          "exclusiveMinimum": 0,
+          "title": "Maxbodybytes",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "docsEnabled",
+        "corsOrigins",
+        "maxBodyBytes",
+        "internalPort"
+      ],
+      "title": "ApiSettings",
+      "type": "object"
+    },
+    "AsyncRunSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "callbackRetryAttempts": {
+          "minimum": 0,
+          "title": "Callbackretryattempts",
+          "type": "integer"
+        },
+        "claimBatch": {
+          "exclusiveMinimum": 0,
+          "title": "Claimbatch",
+          "type": "integer"
+        },
+        "claimIntervalMilliseconds": {
+          "exclusiveMinimum": 0,
+          "title": "Claimintervalmilliseconds",
+          "type": "integer"
+        },
+        "idleClaimIntervalMilliseconds": {
+          "exclusiveMinimum": 0,
+          "title": "Idleclaimintervalmilliseconds",
+          "type": "integer"
+        },
+        "leaseSeconds": {
+          "exclusiveMinimum": 0,
+          "title": "Leaseseconds",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "claimIntervalMilliseconds",
+        "idleClaimIntervalMilliseconds",
+        "leaseSeconds",
+        "claimBatch",
+        "callbackRetryAttempts"
+      ],
+      "title": "AsyncRunSettings",
+      "type": "object"
+    },
+    "AuthClaims": {
+      "additionalProperties": false,
+      "properties": {
+        "email": {
+          "title": "Email",
+          "type": "string"
+        },
+        "groups": {
+          "title": "Groups",
+          "type": "string"
+        },
+        "subject": {
+          "title": "Subject",
+          "type": "string"
+        },
+        "tenant": {
+          "title": "Tenant",
+          "type": "string"
+        }
+      },
+      "required": [
+        "subject",
+        "tenant",
+        "groups",
+        "email"
+      ],
+      "title": "AuthClaims",
+      "type": "object"
+    },
+    "AuthSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "claims": {
+          "$ref": "#/$defs/AuthClaims"
+        },
+        "clockSkewSeconds": {
+          "minimum": 0,
+          "title": "Clockskewseconds",
+          "type": "integer"
+        },
+        "jwksCacheSeconds": {
+          "exclusiveMinimum": 0,
+          "title": "Jwkscacheseconds",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "claims",
+        "jwksCacheSeconds",
+        "clockSkewSeconds"
+      ],
+      "title": "AuthSettings",
+      "type": "object"
+    },
+    "CacheSizes": {
+      "additionalProperties": false,
+      "properties": {
+        "blueprints": {
+          "exclusiveMinimum": 0,
+          "title": "Blueprints",
+          "type": "integer"
+        },
+        "documents": {
+          "exclusiveMinimum": 0,
+          "title": "Documents",
+          "type": "integer"
+        },
+        "graphs": {
+          "exclusiveMinimum": 0,
+          "title": "Graphs",
+          "type": "integer"
+        },
+        "validators": {
+          "exclusiveMinimum": 0,
+          "title": "Validators",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "blueprints",
+        "graphs",
+        "documents",
+        "validators"
+      ],
+      "title": "CacheSizes",
+      "type": "object"
+    },
+    "CatalogSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "cacheSeconds": {
+          "minimum": 0,
+          "title": "Cacheseconds",
+          "type": "number"
+        },
+        "includeUnpublished": {
+          "title": "Includeunpublished",
+          "type": "boolean"
+        },
+        "runtimeChannels": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Runtimechannels",
+          "type": "array"
+        }
+      },
+      "required": [
+        "runtimeChannels",
+        "includeUnpublished",
+        "cacheSeconds"
+      ],
+      "title": "CatalogSettings",
+      "type": "object"
+    },
+    "CompatSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "ruleExpression": {
+          "enum": [
+            "unsupported",
+            "parse_simple"
+          ],
+          "title": "Ruleexpression",
+          "type": "string"
+        }
+      },
+      "required": [
+        "ruleExpression"
+      ],
+      "title": "CompatSettings",
+      "type": "object"
+    },
+    "ContentSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "inlineRowLimit": {
+          "exclusiveMinimum": 0,
+          "title": "Inlinerowlimit",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "inlineRowLimit"
+      ],
+      "title": "ContentSettings",
+      "type": "object"
+    },
+    "CpuSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "offloadBytes": {
+          "exclusiveMinimum": 0,
+          "title": "Offloadbytes",
+          "type": "integer"
+        },
+        "workers": {
+          "exclusiveMinimum": 0,
+          "title": "Workers",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "offloadBytes",
+        "workers"
+      ],
+      "title": "CpuSettings",
+      "type": "object"
+    },
+    "DatasetSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "cacheTtlSeconds": {
+          "exclusiveMinimum": 0,
+          "title": "Cachettlseconds",
+          "type": "integer"
+        },
+        "chunkBytes": {
+          "exclusiveMinimum": 0,
+          "title": "Chunkbytes",
+          "type": "integer"
+        },
+        "store": {
+          "enum": [
+            "cache",
+            "database"
+          ],
+          "title": "Store",
+          "type": "string"
+        }
+      },
+      "required": [
+        "store",
+        "cacheTtlSeconds",
+        "chunkBytes"
+      ],
+      "title": "DatasetSettings",
+      "type": "object"
+    },
+    "EncryptionSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "title": "Enabled",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "enabled"
+      ],
+      "title": "EncryptionSettings",
+      "type": "object"
+    },
+    "EngineLimitCaps": {
+      "additionalProperties": false,
+      "description": "The most a document may raise its own limits to.",
+      "properties": {
+        "maxSteps": {
+          "exclusiveMinimum": 0,
+          "title": "Maxsteps",
+          "type": "integer"
+        },
+        "maxVisitsPerNode": {
+          "exclusiveMinimum": 0,
+          "title": "Maxvisitspernode",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "maxVisitsPerNode",
+        "maxSteps"
+      ],
+      "title": "EngineLimitCaps",
+      "type": "object"
+    },
+    "EngineSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "childSupersteps": {
+          "exclusiveMinimum": 0,
+          "title": "Childsupersteps",
+          "type": "integer"
+        },
+        "maxConcurrencyPerGraph": {
+          "exclusiveMinimum": 0,
+          "title": "Maxconcurrencypergraph",
+          "type": "integer"
+        },
+        "maxConcurrencyPerRun": {
+          "exclusiveMinimum": 0,
+          "title": "Maxconcurrencyperrun",
+          "type": "integer"
+        },
+        "maxLimits": {
+          "$ref": "#/$defs/EngineLimitCaps"
+        },
+        "maxSteps": {
+          "exclusiveMinimum": 0,
+          "title": "Maxsteps",
+          "type": "integer"
+        },
+        "maxVisitsPerNode": {
+          "exclusiveMinimum": 0,
+          "title": "Maxvisitspernode",
+          "type": "integer"
+        },
+        "nodeTimeoutSeconds": {
+          "exclusiveMinimum": 0,
+          "title": "Nodetimeoutseconds",
+          "type": "number"
+        },
+        "runTimeoutSeconds": {
+          "exclusiveMinimum": 0,
+          "title": "Runtimeoutseconds",
+          "type": "number"
+        },
+        "supersteps": {
+          "exclusiveMinimum": 0,
+          "title": "Supersteps",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "maxVisitsPerNode",
+        "maxSteps",
+        "supersteps",
+        "childSupersteps",
+        "maxLimits",
+        "maxConcurrencyPerGraph",
+        "maxConcurrencyPerRun",
+        "nodeTimeoutSeconds",
+        "runTimeoutSeconds"
+      ],
+      "title": "EngineSettings",
+      "type": "object"
+    },
+    "ExportSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "intervalMilliseconds": {
+          "exclusiveMinimum": 0,
+          "title": "Intervalmilliseconds",
+          "type": "integer"
+        },
+        "maxBytesPerCall": {
+          "exclusiveMinimum": 0,
+          "title": "Maxbytespercall",
+          "type": "integer"
+        },
+        "maxObservationsPerCall": {
+          "exclusiveMinimum": 0,
+          "title": "Maxobservationspercall",
+          "type": "integer"
+        },
+        "maxQueueSize": {
+          "exclusiveMinimum": 0,
+          "title": "Maxqueuesize",
+          "type": "integer"
+        },
+        "retryAttempts": {
+          "minimum": 0,
+          "title": "Retryattempts",
+          "type": "integer"
+        },
+        "retryBackoffMilliseconds": {
+          "exclusiveMinimum": 0,
+          "title": "Retrybackoffmilliseconds",
+          "type": "integer"
+        },
+        "shutdownFlushTimeoutMilliseconds": {
+          "exclusiveMinimum": 0,
+          "title": "Shutdownflushtimeoutmilliseconds",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "maxQueueSize",
+        "intervalMilliseconds",
+        "maxObservationsPerCall",
+        "maxBytesPerCall",
+        "shutdownFlushTimeoutMilliseconds",
+        "retryAttempts",
+        "retryBackoffMilliseconds"
+      ],
+      "title": "ExportSettings",
+      "type": "object"
+    },
+    "FeatureFlags": {
+      "additionalProperties": false,
+      "properties": {
+        "scriptNode": {
+          "title": "Scriptnode",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "scriptNode"
+      ],
+      "title": "FeatureFlags",
+      "type": "object"
+    },
+    "GatewayDatasources": {
+      "additionalProperties": false,
+      "properties": {
+        "observability": {
+          "title": "Observability",
+          "type": "string"
+        },
+        "runtime": {
+          "title": "Runtime",
+          "type": "string"
+        }
+      },
+      "required": [
+        "runtime",
+        "observability"
+      ],
+      "title": "GatewayDatasources",
+      "type": "object"
+    },
+    "GatewaySchemas": {
+      "additionalProperties": false,
+      "properties": {
+        "builder": {
+          "title": "Builder",
+          "type": "string"
+        },
+        "observability": {
+          "title": "Observability",
+          "type": "string"
+        },
+        "runtime": {
+          "title": "Runtime",
+          "type": "string"
+        }
+      },
+      "required": [
+        "runtime",
+        "builder",
+        "observability"
+      ],
+      "title": "GatewaySchemas",
+      "type": "object"
+    },
+    "GatewaySettings": {
+      "additionalProperties": false,
+      "properties": {
+        "connectTimeoutMilliseconds": {
+          "exclusiveMinimum": 0,
+          "title": "Connecttimeoutmilliseconds",
+          "type": "integer"
+        },
+        "datasources": {
+          "$ref": "#/$defs/GatewayDatasources"
+        },
+        "maxInFlight": {
+          "exclusiveMinimum": 0,
+          "title": "Maxinflight",
+          "type": "integer"
+        },
+        "maxViewRows": {
+          "exclusiveMinimum": 0,
+          "title": "Maxviewrows",
+          "type": "integer"
+        },
+        "readRetries": {
+          "minimum": 0,
+          "title": "Readretries",
+          "type": "integer"
+        },
+        "retryBackoffMilliseconds": {
+          "exclusiveMinimum": 0,
+          "title": "Retrybackoffmilliseconds",
+          "type": "integer"
+        },
+        "schemas": {
+          "$ref": "#/$defs/GatewaySchemas"
+        },
+        "timeoutMilliseconds": {
+          "exclusiveMinimum": 0,
+          "title": "Timeoutmilliseconds",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "datasources",
+        "schemas",
+        "maxInFlight",
+        "timeoutMilliseconds",
+        "connectTimeoutMilliseconds",
+        "readRetries",
+        "retryBackoffMilliseconds",
+        "maxViewRows"
+      ],
+      "title": "GatewaySettings",
+      "type": "object"
+    },
+    "HistorySettings": {
+      "additionalProperties": false,
+      "properties": {
+        "maxInlineToolResultBytes": {
+          "exclusiveMinimum": 0,
+          "title": "Maxinlinetoolresultbytes",
+          "type": "integer"
+        },
+        "maxMessages": {
+          "exclusiveMinimum": 0,
+          "title": "Maxmessages",
+          "type": "integer"
+        },
+        "maxTokens": {
+          "exclusiveMinimum": 0,
+          "title": "Maxtokens",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "maxMessages",
+        "maxTokens",
+        "maxInlineToolResultBytes"
+      ],
+      "title": "HistorySettings",
+      "type": "object"
+    },
+    "HookSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "asyncQueueSize": {
+          "exclusiveMinimum": 0,
+          "title": "Asyncqueuesize",
+          "type": "integer"
+        },
+        "documentAllowedTypes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Documentallowedtypes",
+          "type": "array"
+        },
+        "maxRetriesPerNode": {
+          "minimum": 0,
+          "title": "Maxretriespernode",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "documentAllowedTypes",
+        "maxRetriesPerNode",
+        "asyncQueueSize"
+      ],
+      "title": "HookSettings",
+      "type": "object"
+    },
+    "InputSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "maxChars": {
+          "exclusiveMinimum": 0,
+          "title": "Maxchars",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "maxChars"
+      ],
+      "title": "InputSettings",
+      "type": "object"
+    },
+    "InstanceLossPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "async": {
+          "enum": [
+            "fail",
+            "restart_turn"
+          ],
+          "title": "Async",
+          "type": "string"
+        },
+        "stream": {
+          "enum": [
+            "fail",
+            "restart_turn"
+          ],
+          "title": "Stream",
+          "type": "string"
+        },
+        "sync": {
+          "enum": [
+            "fail",
+            "restart_turn"
+          ],
+          "title": "Sync",
+          "type": "string"
+        }
+      },
+      "required": [
+        "stream",
+        "sync",
+        "async"
+      ],
+      "title": "InstanceLossPolicy",
+      "type": "object"
+    },
+    "InterruptSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "defaultExpiryHours": {
+          "exclusiveMinimum": 0,
+          "title": "Defaultexpiryhours",
+          "type": "number"
+        },
+        "onExpiry": {
+          "enum": [
+            "cancel",
+            "reject"
+          ],
+          "title": "Onexpiry",
+          "type": "string"
+        }
+      },
+      "required": [
+        "onExpiry",
+        "defaultExpiryHours"
+      ],
+      "title": "InterruptSettings",
+      "type": "object"
+    },
+    "IoSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "inlineBytes": {
+          "exclusiveMinimum": 0,
+          "title": "Inlinebytes",
+          "type": "integer"
+        },
+        "inlineRows": {
+          "minimum": 0,
+          "title": "Inlinerows",
+          "type": "integer"
+        },
+        "maxResolvedBytes": {
+          "exclusiveMinimum": 0,
+          "title": "Maxresolvedbytes",
+          "type": "integer"
+        },
+        "outputValidation": {
+          "enum": [
+            "strict",
+            "warn"
+          ],
+          "title": "Outputvalidation",
+          "type": "string"
+        },
+        "templatePathUnknown": {
+          "enum": [
+            "warning",
+            "error"
+          ],
+          "title": "Templatepathunknown",
+          "type": "string"
+        }
+      },
+      "required": [
+        "inlineRows",
+        "inlineBytes",
+        "maxResolvedBytes",
+        "outputValidation",
+        "templatePathUnknown"
+      ],
+      "title": "IoSettings",
+      "type": "object"
+    },
+    "ModelRuntimeSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "executorThreads": {
+          "exclusiveMinimum": 0,
+          "title": "Executorthreads",
+          "type": "integer"
+        },
+        "maxRetries": {
+          "minimum": 0,
+          "title": "Maxretries",
+          "type": "integer"
+        },
+        "requestTimeoutSeconds": {
+          "exclusiveMinimum": 0,
+          "title": "Requesttimeoutseconds",
+          "type": "number"
+        }
+      },
+      "required": [
+        "executorThreads",
+        "maxRetries",
+        "requestTimeoutSeconds"
+      ],
+      "title": "ModelRuntimeSettings",
+      "type": "object"
+    },
+    "ObservabilitySettings": {
+      "additionalProperties": false,
+      "properties": {
+        "alwaysTraceErrors": {
+          "title": "Alwaystraceerrors",
+          "type": "boolean"
+        },
+        "enabled": {
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "environment": {
+          "title": "Environment",
+          "type": "string"
+        },
+        "export": {
+          "$ref": "#/$defs/ExportSettings"
+        },
+        "exporters": {
+          "items": {
+            "enum": [
+              "gateway",
+              "langfuse"
+            ],
+            "type": "string"
+          },
+          "title": "Exporters",
+          "type": "array"
+        },
+        "partitionMonthsAhead": {
+          "minimum": 0,
+          "title": "Partitionmonthsahead",
+          "type": "integer"
+        },
+        "retentionDays": {
+          "exclusiveMinimum": 0,
+          "title": "Retentiondays",
+          "type": "integer"
+        },
+        "sampleRate": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Samplerate",
+          "type": "number"
+        },
+        "traceRoles": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Traceroles",
+          "type": "array"
+        }
+      },
+      "required": [
+        "enabled",
+        "environment",
+        "sampleRate",
+        "alwaysTraceErrors",
+        "exporters",
+        "traceRoles",
+        "retentionDays",
+        "partitionMonthsAhead",
+        "export"
+      ],
+      "title": "ObservabilitySettings",
+      "type": "object"
+    },
+    "PersistenceSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "flow": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Flow",
+          "type": "array"
+        }
+      },
+      "required": [
+        "flow"
+      ],
+      "title": "PersistenceSettings",
+      "type": "object"
+    },
+    "PressureSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "maxEventLoopLagMilliseconds": {
+          "exclusiveMinimum": 0,
+          "title": "Maxeventlooplagmilliseconds",
+          "type": "number"
+        },
+        "maxRssMegabytes": {
+          "exclusiveMinimum": 0,
+          "title": "Maxrssmegabytes",
+          "type": "number"
+        },
+        "sampleIntervalMilliseconds": {
+          "exclusiveMinimum": 0,
+          "title": "Sampleintervalmilliseconds",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "maxEventLoopLagMilliseconds",
+        "maxRssMegabytes",
+        "sampleIntervalMilliseconds"
+      ],
+      "title": "PressureSettings",
+      "type": "object"
+    },
+    "RateLimitSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "perTenantPerMinute": {
+          "exclusiveMinimum": 0,
+          "title": "Pertenantperminute",
+          "type": "integer"
+        },
+        "perUserPerMinute": {
+          "exclusiveMinimum": 0,
+          "title": "Peruserperminute",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "perUserPerMinute",
+        "perTenantPerMinute"
+      ],
+      "title": "RateLimitSettings",
+      "type": "object"
+    },
+    "ResultSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "fallback": {
+          "items": {
+            "enum": [
+              "last_agent_text",
+              "last_llm_text"
+            ],
+            "type": "string"
+          },
+          "title": "Fallback",
+          "type": "array"
+        }
+      },
+      "required": [
+        "fallback"
+      ],
+      "title": "ResultSettings",
+      "type": "object"
+    },
+    "RetentionSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "datasetsDays": {
+          "exclusiveMinimum": 0,
+          "title": "Datasetsdays",
+          "type": "integer"
+        },
+        "sessionsDays": {
+          "exclusiveMinimum": 0,
+          "title": "Sessionsdays",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "datasetsDays",
+        "sessionsDays"
+      ],
+      "title": "RetentionSettings",
+      "type": "object"
+    },
+    "RunsSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "cancelOnDisconnect": {
+          "title": "Cancelondisconnect",
+          "type": "boolean"
+        },
+        "idempotencyTtlSeconds": {
+          "exclusiveMinimum": 0,
+          "title": "Idempotencyttlseconds",
+          "type": "integer"
+        },
+        "maxActivePerSession": {
+          "exclusiveMinimum": 0,
+          "title": "Maxactivepersession",
+          "type": "integer"
+        },
+        "maxActivePerTenant": {
+          "exclusiveMinimum": 0,
+          "title": "Maxactivepertenant",
+          "type": "integer"
+        },
+        "maxActivePerUser": {
+          "exclusiveMinimum": 0,
+          "title": "Maxactiveperuser",
+          "type": "integer"
+        },
+        "maxConcurrentRuns": {
+          "exclusiveMinimum": 0,
+          "title": "Maxconcurrentruns",
+          "type": "integer"
+        },
+        "onInstanceLoss": {
+          "$ref": "#/$defs/InstanceLossPolicy"
+        },
+        "syncWaitSeconds": {
+          "exclusiveMinimum": 0,
+          "title": "Syncwaitseconds",
+          "type": "number"
+        }
+      },
+      "required": [
+        "maxConcurrentRuns",
+        "maxActivePerSession",
+        "maxActivePerUser",
+        "maxActivePerTenant",
+        "syncWaitSeconds",
+        "cancelOnDisconnect",
+        "idempotencyTtlSeconds",
+        "onInstanceLoss"
+      ],
+      "title": "RunsSettings",
+      "type": "object"
+    },
+    "ShutdownSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "drainSeconds": {
+          "minimum": 0,
+          "title": "Drainseconds",
+          "type": "number"
+        }
+      },
+      "required": [
+        "drainSeconds"
+      ],
+      "title": "ShutdownSettings",
+      "type": "object"
+    },
+    "SseSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "coalesceBytes": {
+          "exclusiveMinimum": 0,
+          "title": "Coalescebytes",
+          "type": "integer"
+        },
+        "coalesceMilliseconds": {
+          "minimum": 0,
+          "title": "Coalescemilliseconds",
+          "type": "integer"
+        },
+        "heartbeatSeconds": {
+          "exclusiveMinimum": 0,
+          "title": "Heartbeatseconds",
+          "type": "number"
+        },
+        "maxEventBytes": {
+          "exclusiveMinimum": 0,
+          "title": "Maxeventbytes",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "heartbeatSeconds",
+        "coalesceMilliseconds",
+        "coalesceBytes",
+        "maxEventBytes"
+      ],
+      "title": "SseSettings",
+      "type": "object"
+    },
+    "StateSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "asyncCheckpoints": {
+          "title": "Asynccheckpoints",
+          "type": "boolean"
+        },
+        "checkpointIntervalSeconds": {
+          "exclusiveMinimum": 0,
+          "title": "Checkpointintervalseconds",
+          "type": "number"
+        },
+        "checkpointsKeptPerNamespace": {
+          "minimum": 1,
+          "title": "Checkpointskeptpernamespace",
+          "type": "integer"
+        },
+        "encryption": {
+          "$ref": "#/$defs/EncryptionSettings"
+        },
+        "maxBytesPerCall": {
+          "exclusiveMinimum": 0,
+          "title": "Maxbytespercall",
+          "type": "integer"
+        },
+        "saveDeadlineMilliseconds": {
+          "exclusiveMinimum": 0,
+          "title": "Savedeadlinemilliseconds",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "saveDeadlineMilliseconds",
+        "maxBytesPerCall",
+        "asyncCheckpoints",
+        "checkpointIntervalSeconds",
+        "checkpointsKeptPerNamespace",
+        "encryption"
+      ],
+      "title": "StateSettings",
+      "type": "object"
+    },
+    "StreamSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "replayBufferEvents": {
+          "exclusiveMinimum": 0,
+          "title": "Replaybufferevents",
+          "type": "integer"
+        },
+        "replayRetentionSeconds": {
+          "exclusiveMinimum": 0,
+          "title": "Replayretentionseconds",
+          "type": "number"
+        },
+        "subscriberQueueEvents": {
+          "exclusiveMinimum": 0,
+          "title": "Subscriberqueueevents",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "replayBufferEvents",
+        "replayRetentionSeconds",
+        "subscriberQueueEvents"
+      ],
+      "title": "StreamSettings",
+      "type": "object"
+    },
+    "SubflowSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "inheritFlow": {
+          "enum": [
+            "none",
+            "declared",
+            "all"
+          ],
+          "title": "Inheritflow",
+          "type": "string"
+        },
+        "maxDepth": {
+          "exclusiveMinimum": 0,
+          "title": "Maxdepth",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "maxDepth",
+        "inheritFlow"
+      ],
+      "title": "SubflowSettings",
+      "type": "object"
+    },
+    "SwarmSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "contextMode": {
+          "enum": [
+            "shared",
+            "handoff"
+          ],
+          "title": "Contextmode",
+          "type": "string"
+        }
+      },
+      "required": [
+        "contextMode"
+      ],
+      "title": "SwarmSettings",
+      "type": "object"
+    },
+    "TemplateSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "missing": {
+          "enum": [
+            "warn",
+            "error"
+          ],
+          "title": "Missing",
+          "type": "string"
+        },
+        "writableSystemKeys": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Writablesystemkeys",
+          "type": "array"
+        }
+      },
+      "required": [
+        "missing",
+        "writableSystemKeys"
+      ],
+      "title": "TemplateSettings",
+      "type": "object"
+    },
+    "ToolSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "builtinAllowList": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Builtinallowlist",
+          "type": "array"
+        },
+        "maxConcurrentPerTurn": {
+          "exclusiveMinimum": 0,
+          "title": "Maxconcurrentperturn",
+          "type": "integer"
+        },
+        "requireApproval": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Requireapproval",
+          "type": "array"
+        }
+      },
+      "required": [
+        "maxConcurrentPerTurn",
+        "requireApproval",
+        "builtinAllowList"
+      ],
+      "title": "ToolSettings",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "api": {
+      "$ref": "#/$defs/ApiSettings"
+    },
+    "asyncRuns": {
+      "$ref": "#/$defs/AsyncRunSettings"
+    },
+    "auth": {
+      "$ref": "#/$defs/AuthSettings"
+    },
+    "caches": {
+      "$ref": "#/$defs/CacheSizes"
+    },
+    "catalog": {
+      "$ref": "#/$defs/CatalogSettings"
+    },
+    "compat": {
+      "$ref": "#/$defs/CompatSettings"
+    },
+    "content": {
+      "$ref": "#/$defs/ContentSettings"
+    },
+    "cpu": {
+      "$ref": "#/$defs/CpuSettings"
+    },
+    "datasets": {
+      "$ref": "#/$defs/DatasetSettings"
+    },
+    "documentVersions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Documentversions",
+      "type": "array"
+    },
+    "engine": {
+      "$ref": "#/$defs/EngineSettings"
+    },
+    "features": {
+      "$ref": "#/$defs/FeatureFlags"
+    },
+    "gateway": {
+      "$ref": "#/$defs/GatewaySettings"
+    },
+    "history": {
+      "$ref": "#/$defs/HistorySettings"
+    },
+    "hooks": {
+      "$ref": "#/$defs/HookSettings"
+    },
+    "input": {
+      "$ref": "#/$defs/InputSettings"
+    },
+    "interrupts": {
+      "$ref": "#/$defs/InterruptSettings"
+    },
+    "io": {
+      "$ref": "#/$defs/IoSettings"
+    },
+    "models": {
+      "$ref": "#/$defs/ModelRuntimeSettings"
+    },
+    "observability": {
+      "$ref": "#/$defs/ObservabilitySettings"
+    },
+    "persistence": {
+      "$ref": "#/$defs/PersistenceSettings"
+    },
+    "pressure": {
+      "$ref": "#/$defs/PressureSettings"
+    },
+    "rateLimit": {
+      "$ref": "#/$defs/RateLimitSettings"
+    },
+    "result": {
+      "$ref": "#/$defs/ResultSettings"
+    },
+    "retention": {
+      "$ref": "#/$defs/RetentionSettings"
+    },
+    "runs": {
+      "$ref": "#/$defs/RunsSettings"
+    },
+    "shutdown": {
+      "$ref": "#/$defs/ShutdownSettings"
+    },
+    "sse": {
+      "$ref": "#/$defs/SseSettings"
+    },
+    "state": {
+      "$ref": "#/$defs/StateSettings"
+    },
+    "stream": {
+      "$ref": "#/$defs/StreamSettings"
+    },
+    "subflow": {
+      "$ref": "#/$defs/SubflowSettings"
+    },
+    "swarm": {
+      "$ref": "#/$defs/SwarmSettings"
+    },
+    "templates": {
+      "$ref": "#/$defs/TemplateSettings"
+    },
+    "tools": {
+      "$ref": "#/$defs/ToolSettings"
+    }
+  },
+  "required": [
+    "documentVersions",
+    "engine",
+    "subflow",
+    "runs",
+    "state",
+    "history",
+    "persistence",
+    "datasets",
+    "io",
+    "templates",
+    "compat",
+    "interrupts",
+    "swarm",
+    "tools",
+    "hooks",
+    "sse",
+    "stream",
+    "shutdown",
+    "asyncRuns",
+    "pressure",
+    "gateway",
+    "cpu",
+    "models",
+    "result",
+    "observability",
+    "auth",
+    "rateLimit",
+    "api",
+    "catalog",
+    "caches",
+    "features",
+    "input",
+    "content",
+    "retention"
+  ],
+  "title": "RuntimeSettings",
+  "type": "object"
+}

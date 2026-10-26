@@ -1,0 +1,44 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "initial": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Initial",
+      "type": "object"
+    },
+    "states": {
+      "items": {
+        "type": "string"
+      },
+      "title": "States",
+      "type": "array"
+    },
+    "terminal": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Terminal",
+      "type": "array"
+    },
+    "transitions": {
+      "additionalProperties": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "title": "Transitions",
+      "type": "object"
+    }
+  },
+  "required": [
+    "states",
+    "initial",
+    "terminal",
+    "transitions"
+  ],
+  "title": "RunStateMachine",
+  "type": "object"
+}

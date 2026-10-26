@@ -1,0 +1,74 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "0 3 * * *"   # nightly: SQL tests and opt-in live sanity
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gates:
+    name: Gates (plan Section 18)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.13"
+          enable-cache: true
+      - run: uv sync --frozen
+      - name: Lint and format
+        run: uv run ruff check . && uv run ruff format --check .
+      - name: Types
+        run: uv run mypy
+      - name: Layer rules
+        run: uv run lint-imports
+      - name: Generated files are current
+        run: uv run python -m scripts.gen --check
+      - name: Vendored SQL is intact
+        run: uv run python -m scripts.sync_sql --check
+      - name: Catalog coverage
+        run: uv run python -m scripts.catalog_check
+      - name: Tests with coverage
+        run: uv run pytest --cov --cov-report=xml
+
+  sql:
+    name: SQL scripts on PostgreSQL
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(join(github.event.pull_request.labels.*.name, ','), 'db')
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.13"
+      - run: uv sync --frozen
+      - name: SQL tests
+        env:
+          ZONIC_SQL_TEST_PSQL: "psql postgresql://postgres:postgres@localhost:5432/postgres"
+        run: uv run pytest -m sql
+
+  live:
+    name: Live sanity (opt-in)
+    if: github.event_name == 'schedule' && vars.LIVE_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.13"
+      - run: uv sync --frozen
+      - run: uv run pytest -m live

@@ -1,0 +1,121 @@
+{
+  "$defs": {
+    "DialectMatch": {
+      "additionalProperties": false,
+      "properties": {
+        "equals": {
+          "default": null,
+          "title": "Equals"
+        },
+        "exists": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Exists"
+        },
+        "in": {
+          "anyOf": [
+            {
+              "items": {},
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "In"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path"
+      ],
+      "title": "DialectMatch",
+      "type": "object"
+    },
+    "DialectRule": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "match": {
+          "$ref": "#/$defs/DialectMatch"
+        },
+        "note": {
+          "title": "Note",
+          "type": "string"
+        },
+        "remove": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Remove",
+          "type": "array"
+        },
+        "rename": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Rename",
+          "type": "object"
+        },
+        "set": {
+          "additionalProperties": true,
+          "title": "Set",
+          "type": "object"
+        },
+        "transform": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Transform"
+        }
+      },
+      "required": [
+        "id",
+        "match",
+        "note"
+      ],
+      "title": "DialectRule",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "rules": {
+      "items": {
+        "$ref": "#/$defs/DialectRule"
+      },
+      "title": "Rules",
+      "type": "array"
+    },
+    "schemaVersion": {
+      "title": "Schemaversion",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "rules"
+  ],
+  "title": "DialectRules",
+  "type": "object"
+}

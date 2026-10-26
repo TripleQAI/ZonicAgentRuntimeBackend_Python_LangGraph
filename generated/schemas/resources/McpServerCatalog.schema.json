@@ -1,0 +1,90 @@
+{
+  "$defs": {
+    "McpServer": {
+      "additionalProperties": false,
+      "properties": {
+        "authSecretRef": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Authsecretref"
+        },
+        "enabled": {
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "executeTool": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Executetool"
+        },
+        "maxInFlight": {
+          "exclusiveMinimum": 0,
+          "title": "Maxinflight",
+          "type": "integer"
+        },
+        "path": {
+          "default": "",
+          "title": "Path",
+          "type": "string"
+        },
+        "timeoutSeconds": {
+          "exclusiveMinimum": 0,
+          "title": "Timeoutseconds",
+          "type": "number"
+        },
+        "transport": {
+          "const": "streamable_http",
+          "title": "Transport",
+          "type": "string"
+        },
+        "url": {
+          "title": "Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "url",
+        "transport",
+        "enabled",
+        "maxInFlight",
+        "timeoutSeconds"
+      ],
+      "title": "McpServer",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "defaultExecuteServer": {
+      "title": "Defaultexecuteserver",
+      "type": "string"
+    },
+    "servers": {
+      "additionalProperties": {
+        "$ref": "#/$defs/McpServer"
+      },
+      "title": "Servers",
+      "type": "object"
+    }
+  },
+  "required": [
+    "servers",
+    "defaultExecuteServer"
+  ],
+  "title": "McpServerCatalog",
+  "type": "object"
+}

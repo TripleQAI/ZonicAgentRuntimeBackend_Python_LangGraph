@@ -1,0 +1,218 @@
+{
+  "$defs": {
+    "HookBinding": {
+      "additionalProperties": false,
+      "properties": {
+        "canRoute": {
+          "title": "Canroute",
+          "type": "boolean"
+        },
+        "config": {
+          "additionalProperties": true,
+          "title": "Config",
+          "type": "object"
+        },
+        "enabled": {
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "failurePolicy": {
+          "enum": [
+            "fail_node",
+            "fail_run",
+            "ignore"
+          ],
+          "title": "Failurepolicy",
+          "type": "string"
+        },
+        "hook": {
+          "title": "Hook",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "match": {
+          "$ref": "#/$defs/HookMatch"
+        },
+        "mode": {
+          "enum": [
+            "blocking",
+            "async"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "on": {
+          "items": {
+            "enum": [
+              "beforeRun",
+              "afterRun",
+              "onRunError",
+              "beforeNode",
+              "afterNode",
+              "onNodeError",
+              "beforeModelCall",
+              "afterModelCall",
+              "beforeToolCall",
+              "afterToolCall",
+              "beforeMemberCall",
+              "onHandoff",
+              "onInterrupt",
+              "onResume"
+            ],
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "On",
+          "type": "array"
+        },
+        "order": {
+          "title": "Order",
+          "type": "integer"
+        },
+        "overridable": {
+          "title": "Overridable",
+          "type": "boolean"
+        },
+        "timeoutMs": {
+          "exclusiveMinimum": 0,
+          "title": "Timeoutms",
+          "type": "integer"
+        },
+        "when": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/HookWhen"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "id",
+        "hook",
+        "on",
+        "order",
+        "mode",
+        "timeoutMs",
+        "failurePolicy",
+        "canRoute",
+        "overridable",
+        "enabled"
+      ],
+      "title": "HookBinding",
+      "type": "object"
+    },
+    "HookCondition": {
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "title": "Field",
+          "type": "string"
+        },
+        "op": {
+          "title": "Op",
+          "type": "string"
+        },
+        "value": {
+          "default": null,
+          "title": "Value"
+        }
+      },
+      "required": [
+        "field",
+        "op"
+      ],
+      "title": "HookCondition",
+      "type": "object"
+    },
+    "HookMatch": {
+      "additionalProperties": false,
+      "properties": {
+        "nodeKinds": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Nodekinds",
+          "type": "array"
+        },
+        "nodeNames": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Nodenames",
+          "type": "array"
+        },
+        "nodeTypes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Nodetypes",
+          "type": "array"
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Tags",
+          "type": "array"
+        },
+        "workflowIds": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Workflowids",
+          "type": "array"
+        }
+      },
+      "title": "HookMatch",
+      "type": "object"
+    },
+    "HookWhen": {
+      "additionalProperties": false,
+      "properties": {
+        "conditionLogic": {
+          "enum": [
+            "AND",
+            "OR"
+          ],
+          "title": "Conditionlogic",
+          "type": "string"
+        },
+        "conditions": {
+          "items": {
+            "$ref": "#/$defs/HookCondition"
+          },
+          "title": "Conditions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "conditionLogic",
+        "conditions"
+      ],
+      "title": "HookWhen",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "bindings": {
+      "items": {
+        "$ref": "#/$defs/HookBinding"
+      },
+      "title": "Bindings",
+      "type": "array"
+    }
+  },
+  "required": [
+    "bindings"
+  ],
+  "title": "HookBindings",
+  "type": "object"
+}

@@ -1,0 +1,42 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "aliases": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Aliases",
+      "type": "object"
+    },
+    "bareNames": {
+      "enum": [
+        "flow",
+        "error"
+      ],
+      "title": "Barenames",
+      "type": "string"
+    },
+    "namespaces": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Namespaces",
+      "type": "array"
+    },
+    "special": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Special",
+      "type": "object"
+    }
+  },
+  "required": [
+    "namespaces",
+    "aliases",
+    "special",
+    "bareNames"
+  ],
+  "title": "TemplateNamespaces",
+  "type": "object"
+}

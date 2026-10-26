@@ -1,0 +1,15 @@
+{
+  "observability": {
+    "environment": "dev"
+  },
+  "api": {
+    "docsEnabled": true,
+    "corsOrigins": [
+      "http://localhost:3000",
+      "http://localhost:8100"
+    ]
+  },
+  "catalog": {
+    "includeUnpublished": true
+  }
+}

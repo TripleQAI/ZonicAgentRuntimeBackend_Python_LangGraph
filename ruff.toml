@@ -1,0 +1,36 @@
+line-length = 110
+target-version = "py313"
+src = ["src", "tests", "scripts"]
+
+[lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF", "T20", "ASYNC", "TID", "BLE"]
+ignore = [
+    "B008",   # FastAPI Depends() in defaults is the documented idiom
+    "RUF012", # Pydantic ClassVar annotations are explicit where needed
+]
+
+[lint.flake8-tidy-imports]
+ban-relative-imports = "parents"
+
+# Design Section 16.4: no database driver, no SQL client, no blocking HTTP client,
+# no logging library. tests/principles/ repeats these as AST checks with messages.
+[lint.flake8-tidy-imports.banned-api]
+"psycopg".msg = "No database driver in the runtime: use the gateway port (rule 5)"
+"psycopg2".msg = "No database driver in the runtime: use the gateway port (rule 5)"
+"asyncpg".msg = "No database driver in the runtime: use the gateway port (rule 5)"
+"pyodbc".msg = "No database driver in the runtime: use the gateway port (rule 5)"
+"sqlalchemy".msg = "No database driver in the runtime: use the gateway port (rule 5)"
+"langgraph.checkpoint.postgres".msg = "Checkpoints go through TurnSaver and the gateway (rule 5)"
+"requests".msg = "Blocking HTTP client: use the shared httpx.AsyncClient pools (rule 13)"
+"logging".msg = "No ad hoc logs (rule 8): only observability/logging_policy.py configures logging"
+"loguru".msg = "No logging library (rule 8)"
+"structlog".msg = "No logging library (rule 8)"
+
+[lint.per-file-ignores]
+"src/zonic_runtime/observability/logging_policy.py" = ["TID251"]
+"tests/**" = ["T20", "E501", "BLE001"]
+"spikes/**" = ["T20", "E501", "BLE001", "TID251"]
+"scripts/**" = ["T20"]
+
+[format]
+quote-style = "double"

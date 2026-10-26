@@ -1,0 +1,9 @@
+{
+  "schemes": ["https"],
+  "hosts": [],
+  "ports": [443],
+  "blockPrivateRanges": true,
+  "followRedirects": false,
+  "maxResponseBytes": 20971520,
+  "timeoutSeconds": 30
+}

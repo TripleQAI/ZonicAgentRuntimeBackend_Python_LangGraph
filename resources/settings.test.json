@@ -1,0 +1,6 @@
+{
+  "observability": { "environment": "test" },
+  "api": { "docsEnabled": true },
+  "shutdown": { "drainSeconds": 1 },
+  "stream": { "replayRetentionSeconds": 5 }
+}

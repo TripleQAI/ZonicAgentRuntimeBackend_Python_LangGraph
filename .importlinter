@@ -1,0 +1,54 @@
+[importlinter]
+root_package = zonic_runtime
+include_external_packages = True
+
+# Design Section 4.3: dependency direction is inward. Siblings joined with ":"
+# may import each other; "|" siblings must be independent.
+[importlinter:contract:layers]
+name = Layer direction (design 4.3)
+type = layers
+layers =
+    zonic_runtime.api
+    zonic_runtime.application
+    zonic_runtime.run
+    zonic_runtime.engine : zonic_runtime.workflow : zonic_runtime.hooks
+    zonic_runtime.integrations
+    zonic_runtime.io
+    zonic_runtime.ports
+    zonic_runtime.observability | zonic_runtime.runtime
+    zonic_runtime.config
+    zonic_runtime.models
+
+# Node kinds, the template, workflow and hooks depend on ports, never on adapters.
+[importlinter:contract:no-adapters-in-core]
+name = Core depends on ports, not adapters
+type = forbidden
+source_modules =
+    zonic_runtime.engine
+    zonic_runtime.workflow
+    zonic_runtime.hooks
+    zonic_runtime.io
+    zonic_runtime.models
+forbidden_modules =
+    zonic_runtime.integrations
+
+# Rule 12: no scheduling code outside LangGraph; kinds may not use the blueprint's graph analysis.
+[importlinter:contract:kinds-no-blueprint-analysis]
+name = Node kinds do not import blueprint analysis (rule 12)
+type = forbidden
+source_modules =
+    zonic_runtime.engine.kinds
+forbidden_modules =
+    zonic_runtime.workflow.blueprint
+
+# Rule 5: no database driver anywhere.
+[importlinter:contract:no-db-drivers]
+name = No database drivers (rule 5)
+type = forbidden
+source_modules =
+    zonic_runtime
+forbidden_modules =
+    psycopg
+    asyncpg
+    sqlalchemy
+    pyodbc

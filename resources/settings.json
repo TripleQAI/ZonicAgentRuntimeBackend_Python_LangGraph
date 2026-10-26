@@ -1,0 +1,235 @@
+{
+  "documentVersions": [
+    "1",
+    "2"
+  ],
+  "engine": {
+    "maxVisitsPerNode": 10,
+    "maxSteps": 200,
+    "supersteps": 400,
+    "childSupersteps": 400,
+    "maxLimits": {
+      "maxVisitsPerNode": 50,
+      "maxSteps": 1000
+    },
+    "maxConcurrencyPerGraph": 8,
+    "maxConcurrencyPerRun": 8,
+    "nodeTimeoutSeconds": 120,
+    "runTimeoutSeconds": 600
+  },
+  "subflow": {
+    "maxDepth": 5,
+    "inheritFlow": "declared"
+  },
+  "runs": {
+    "maxConcurrentRuns": 150,
+    "maxActivePerSession": 1,
+    "maxActivePerUser": 5,
+    "maxActivePerTenant": 50,
+    "syncWaitSeconds": 30,
+    "cancelOnDisconnect": false,
+    "idempotencyTtlSeconds": 86400,
+    "onInstanceLoss": {
+      "stream": "fail",
+      "sync": "fail",
+      "async": "restart_turn"
+    }
+  },
+  "state": {
+    "saveDeadlineMilliseconds": 30000,
+    "maxBytesPerCall": 1048576,
+    "asyncCheckpoints": false,
+    "checkpointIntervalSeconds": 60,
+    "checkpointsKeptPerNamespace": 2,
+    "encryption": {
+      "enabled": false
+    }
+  },
+  "history": {
+    "maxMessages": 50,
+    "maxTokens": 12000,
+    "maxInlineToolResultBytes": 8192
+  },
+  "persistence": {
+    "flow": []
+  },
+  "datasets": {
+    "store": "cache",
+    "cacheTtlSeconds": 2592000,
+    "chunkBytes": 1048576
+  },
+  "io": {
+    "inlineRows": 50,
+    "inlineBytes": 65536,
+    "maxResolvedBytes": 1048576,
+    "outputValidation": "strict",
+    "templatePathUnknown": "warning"
+  },
+  "templates": {
+    "missing": "warn",
+    "writableSystemKeys": [
+      "userQuery",
+      "attachments"
+    ]
+  },
+  "compat": {
+    "ruleExpression": "unsupported"
+  },
+  "interrupts": {
+    "onExpiry": "cancel",
+    "defaultExpiryHours": 72
+  },
+  "swarm": {
+    "contextMode": "shared"
+  },
+  "tools": {
+    "maxConcurrentPerTurn": 4,
+    "requireApproval": [],
+    "builtinAllowList": [
+      "calculator",
+      "current_time"
+    ]
+  },
+  "hooks": {
+    "documentAllowedTypes": [
+      "setVariables",
+      "transform",
+      "validate",
+      "mask",
+      "retry",
+      "fallback",
+      "annotate"
+    ],
+    "maxRetriesPerNode": 3,
+    "asyncQueueSize": 1000
+  },
+  "sse": {
+    "heartbeatSeconds": 15,
+    "coalesceMilliseconds": 16,
+    "coalesceBytes": 1024,
+    "maxEventBytes": 65536
+  },
+  "stream": {
+    "replayBufferEvents": 5000,
+    "replayRetentionSeconds": 300,
+    "subscriberQueueEvents": 1000
+  },
+  "shutdown": {
+    "drainSeconds": 30
+  },
+  "asyncRuns": {
+    "claimIntervalMilliseconds": 1000,
+    "idleClaimIntervalMilliseconds": 10000,
+    "leaseSeconds": 30,
+    "claimBatch": 10,
+    "callbackRetryAttempts": 5
+  },
+  "pressure": {
+    "maxEventLoopLagMilliseconds": 200,
+    "maxRssMegabytes": 1536,
+    "sampleIntervalMilliseconds": 500
+  },
+  "gateway": {
+    "datasources": {
+      "runtime": "agentruntime",
+      "observability": "agentobservability"
+    },
+    "schemas": {
+      "runtime": "agent_runtime",
+      "builder": "agent_builder",
+      "observability": "agent_observability"
+    },
+    "maxInFlight": 32,
+    "timeoutMilliseconds": 15000,
+    "connectTimeoutMilliseconds": 2000,
+    "readRetries": 2,
+    "retryBackoffMilliseconds": 50,
+    "maxViewRows": 10000
+  },
+  "cpu": {
+    "offloadBytes": 262144,
+    "workers": 2
+  },
+  "models": {
+    "executorThreads": 32,
+    "maxRetries": 2,
+    "requestTimeoutSeconds": 120
+  },
+  "result": {
+    "fallback": [
+      "last_agent_text",
+      "last_llm_text"
+    ]
+  },
+  "observability": {
+    "enabled": true,
+    "environment": "dev",
+    "sampleRate": 1.0,
+    "alwaysTraceErrors": true,
+    "exporters": [
+      "gateway"
+    ],
+    "traceRoles": [
+      "runtime-support",
+      "runtime-admin"
+    ],
+    "retentionDays": 90,
+    "partitionMonthsAhead": 2,
+    "export": {
+      "maxQueueSize": 20000,
+      "intervalMilliseconds": 2000,
+      "maxObservationsPerCall": 500,
+      "maxBytesPerCall": 1048576,
+      "shutdownFlushTimeoutMilliseconds": 10000,
+      "retryAttempts": 5,
+      "retryBackoffMilliseconds": 200
+    }
+  },
+  "auth": {
+    "claims": {
+      "subject": "sub",
+      "tenant": "custom:tenant",
+      "groups": "cognito:groups",
+      "email": "email"
+    },
+    "jwksCacheSeconds": 3600,
+    "clockSkewSeconds": 60
+  },
+  "rateLimit": {
+    "perUserPerMinute": 120,
+    "perTenantPerMinute": 2000
+  },
+  "api": {
+    "docsEnabled": false,
+    "corsOrigins": [],
+    "maxBodyBytes": 1048576,
+    "internalPort": 9000
+  },
+  "catalog": {
+    "runtimeChannels": [
+      "api",
+      "qi-ui"
+    ],
+    "includeUnpublished": false,
+    "cacheSeconds": 30
+  },
+  "caches": {
+    "blueprints": 256,
+    "graphs": 128,
+    "documents": 512,
+    "validators": 1024
+  },
+  "features": {
+    "scriptNode": false
+  },
+  "input": {
+    "maxChars": 20000
+  },
+  "content": {
+    "inlineRowLimit": 200
+  },
+  "retention": {
+    "datasetsDays": 30,
+    "sessionsDays": 365
+  }
+}

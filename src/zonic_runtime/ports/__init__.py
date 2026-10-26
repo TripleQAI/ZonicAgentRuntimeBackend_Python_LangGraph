@@ -1,0 +1,1 @@
+"""Protocols for every integration."""

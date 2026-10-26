@@ -1,0 +1,582 @@
+{
+  "$defs": {
+    "NodeIoSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "inputs": {
+          "items": {
+            "$ref": "#/$defs/PortSpec"
+          },
+          "title": "Inputs",
+          "type": "array"
+        },
+        "output": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OutputSpec"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "title": "NodeIoSpec",
+      "type": "object"
+    },
+    "NodeTypeDefaults": {
+      "additionalProperties": false,
+      "properties": {
+        "defaultHandle": {
+          "title": "Defaulthandle",
+          "type": "string"
+        },
+        "errorPolicy": {
+          "enum": [
+            "fail_run",
+            "continue",
+            "route"
+          ],
+          "title": "Errorpolicy",
+          "type": "string"
+        },
+        "idleTimeoutSeconds": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Idletimeoutseconds"
+        },
+        "joinPolicy": {
+          "enum": [
+            "auto",
+            "any",
+            "barrier"
+          ],
+          "title": "Joinpolicy",
+          "type": "string"
+        },
+        "observation": {
+          "$ref": "#/$defs/ObservationSpec"
+        },
+        "retry": {
+          "$ref": "#/$defs/RetrySpec"
+        },
+        "timeoutSeconds": {
+          "exclusiveMinimum": 0,
+          "title": "Timeoutseconds",
+          "type": "number"
+        }
+      },
+      "required": [
+        "timeoutSeconds",
+        "errorPolicy",
+        "joinPolicy",
+        "defaultHandle",
+        "retry",
+        "observation"
+      ],
+      "title": "NodeTypeDefaults",
+      "type": "object"
+    },
+    "NodeTypeEntry": {
+      "additionalProperties": false,
+      "properties": {
+        "defaultHandle": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Defaulthandle"
+        },
+        "enabledBy": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Enabledby"
+        },
+        "errorPolicy": {
+          "anyOf": [
+            {
+              "enum": [
+                "fail_run",
+                "continue",
+                "route"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Errorpolicy"
+        },
+        "handles": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Handles",
+          "type": "object"
+        },
+        "idleTimeoutSeconds": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Idletimeoutseconds"
+        },
+        "io": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/NodeIoSpec"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "joinPolicy": {
+          "anyOf": [
+            {
+              "enum": [
+                "auto",
+                "any",
+                "barrier"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Joinpolicy"
+        },
+        "kind": {
+          "title": "Kind",
+          "type": "string"
+        },
+        "observation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ObservationSpec"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "optionalHandles": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Optionalhandles",
+          "type": "array"
+        },
+        "options": {
+          "additionalProperties": true,
+          "title": "Options",
+          "type": "object"
+        },
+        "retry": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RetrySpec"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "streamTokens": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Streamtokens"
+        },
+        "terminal": {
+          "default": false,
+          "title": "Terminal",
+          "type": "boolean"
+        },
+        "timeoutSeconds": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Timeoutseconds"
+        },
+        "timeoutSecondsFrom": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Timeoutsecondsfrom"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "NodeTypeEntry",
+      "type": "object"
+    },
+    "ObservationSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "captureInput": {
+          "enum": [
+            "full",
+            "summary",
+            "none"
+          ],
+          "title": "Captureinput",
+          "type": "string"
+        },
+        "captureOutput": {
+          "enum": [
+            "full",
+            "summary",
+            "none"
+          ],
+          "title": "Captureoutput",
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "span",
+            "generation",
+            "event",
+            "agent",
+            "tool",
+            "chain",
+            "retriever",
+            "evaluator",
+            "embedding",
+            "guardrail"
+          ],
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "captureInput",
+        "captureOutput"
+      ],
+      "title": "ObservationSpec",
+      "type": "object"
+    },
+    "OutputSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "aliases": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Aliases",
+          "type": "object"
+        },
+        "map": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Map",
+          "type": "object"
+        },
+        "nodeSchemaExtends": {
+          "default": true,
+          "title": "Nodeschemaextends",
+          "type": "boolean"
+        },
+        "schema": {
+          "$ref": "#/$defs/SchemaRef"
+        },
+        "writeTo": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Writeto"
+        }
+      },
+      "required": [
+        "schema"
+      ],
+      "title": "OutputSpec",
+      "type": "object"
+    },
+    "PortBinding": {
+      "additionalProperties": false,
+      "description": "Sources of a port's value; the first that yields a value wins (I-03).",
+      "properties": {
+        "configPath": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Configpath"
+        },
+        "statePath": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Statepath"
+        },
+        "template": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Template"
+        }
+      },
+      "title": "PortBinding",
+      "type": "object"
+    },
+    "PortSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "binding": {
+          "$ref": "#/$defs/PortBinding"
+        },
+        "default": {
+          "default": null,
+          "title": "Default"
+        },
+        "name": {
+          "pattern": "^[A-Za-z][A-Za-z0-9_]*$",
+          "title": "Name",
+          "type": "string"
+        },
+        "required": {
+          "default": true,
+          "title": "Required",
+          "type": "boolean"
+        },
+        "schema": {
+          "$ref": "#/$defs/SchemaRef"
+        }
+      },
+      "required": [
+        "name",
+        "schema",
+        "binding"
+      ],
+      "title": "PortSpec",
+      "type": "object"
+    },
+    "RetrySpec": {
+      "additionalProperties": false,
+      "description": "Becomes a LangGraph ``RetryPolicy``; ``on`` lists retryable error-catalog codes.",
+      "properties": {
+        "backoffFactor": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Backofffactor"
+        },
+        "initialIntervalSeconds": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Initialintervalseconds"
+        },
+        "jitter": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Jitter"
+        },
+        "maxAttempts": {
+          "minimum": 1,
+          "title": "Maxattempts",
+          "type": "integer"
+        },
+        "maxIntervalSeconds": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Maxintervalseconds"
+        },
+        "methods": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Methods",
+          "type": "array"
+        },
+        "on": {
+          "items": {
+            "type": "string"
+          },
+          "title": "On",
+          "type": "array"
+        }
+      },
+      "required": [
+        "maxAttempts"
+      ],
+      "title": "RetrySpec",
+      "type": "object"
+    },
+    "SchemaRef": {
+      "additionalProperties": false,
+      "description": "A payload schema by registry ID (``zonic.text@1``) or an inline JSON Schema.",
+      "properties": {
+        "inline": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Inline"
+        },
+        "ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ref"
+        }
+      },
+      "title": "SchemaRef",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "defaults": {
+      "$ref": "#/$defs/NodeTypeDefaults"
+    },
+    "nodeTypes": {
+      "additionalProperties": {
+        "$ref": "#/$defs/NodeTypeEntry"
+      },
+      "title": "Nodetypes",
+      "type": "object"
+    },
+    "onUnknownType": {
+      "enum": [
+        "fail_plan",
+        "ignore"
+      ],
+      "title": "Onunknowntype",
+      "type": "string"
+    },
+    "schemaVersion": {
+      "title": "Schemaversion",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "defaults",
+    "onUnknownType",
+    "nodeTypes"
+  ],
+  "title": "NodeRuntimeManifest",
+  "type": "object"
+}

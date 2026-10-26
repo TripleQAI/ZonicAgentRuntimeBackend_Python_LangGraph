@@ -1,0 +1,5 @@
+{
+  "observability": { "environment": "prod" },
+  "state": { "encryption": { "enabled": true } },
+  "api": { "docsEnabled": false }
+}

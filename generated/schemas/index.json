@@ -1,0 +1,15 @@
+{
+  "resources": [
+    "DialectRules",
+    "EgressPolicy",
+    "ErrorCatalog",
+    "HookBindings",
+    "McpServerCatalog",
+    "ModelCatalog",
+    "NodeRuntimeManifest",
+    "ObservabilityConfig",
+    "RunStateMachine",
+    "RuntimeSettings",
+    "TemplateNamespaces"
+  ]
+}

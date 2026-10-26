@@ -1,0 +1,115 @@
+{
+  "$defs": {
+    "CaptureRule": {
+      "additionalProperties": false,
+      "properties": {
+        "input": {
+          "enum": [
+            "full",
+            "summary",
+            "none"
+          ],
+          "title": "Input",
+          "type": "string"
+        },
+        "output": {
+          "enum": [
+            "full",
+            "summary",
+            "none"
+          ],
+          "title": "Output",
+          "type": "string"
+        }
+      },
+      "required": [
+        "input",
+        "output"
+      ],
+      "title": "CaptureRule",
+      "type": "object"
+    },
+    "MaskRules": {
+      "additionalProperties": false,
+      "properties": {
+        "keys": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Keys",
+          "type": "array"
+        },
+        "patterns": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Patterns",
+          "type": "object"
+        },
+        "replacement": {
+          "title": "Replacement",
+          "type": "string"
+        }
+      },
+      "required": [
+        "keys",
+        "patterns",
+        "replacement"
+      ],
+      "title": "MaskRules",
+      "type": "object"
+    },
+    "ObservationLimits": {
+      "additionalProperties": false,
+      "properties": {
+        "maxFieldBytes": {
+          "exclusiveMinimum": 0,
+          "title": "Maxfieldbytes",
+          "type": "integer"
+        },
+        "maxObservationBytes": {
+          "exclusiveMinimum": 0,
+          "title": "Maxobservationbytes",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "maxFieldBytes",
+        "maxObservationBytes"
+      ],
+      "title": "ObservationLimits",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "captureByNodeType": {
+      "additionalProperties": {
+        "$ref": "#/$defs/CaptureRule"
+      },
+      "title": "Capturebynodetype",
+      "type": "object"
+    },
+    "genaiAttributeMap": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Genaiattributemap",
+      "type": "object"
+    },
+    "limits": {
+      "$ref": "#/$defs/ObservationLimits"
+    },
+    "mask": {
+      "$ref": "#/$defs/MaskRules"
+    }
+  },
+  "required": [
+    "captureByNodeType",
+    "mask",
+    "limits",
+    "genaiAttributeMap"
+  ],
+  "title": "ObservabilityConfig",
+  "type": "object"
+}

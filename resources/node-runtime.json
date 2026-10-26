@@ -1,0 +1,110 @@
+{
+  "schemaVersion": "1.0",
+  "defaults": {
+    "timeoutSeconds": 120,
+    "errorPolicy": "fail_run",
+    "joinPolicy": "auto",
+    "defaultHandle": "default",
+    "retry": { "maxAttempts": 1 },
+    "observation": { "type": "span", "captureInput": "summary", "captureOutput": "summary" }
+  },
+  "onUnknownType": "fail_plan",
+  "nodeTypes": {
+    "start": {
+      "kind": "entry",
+      "observation": { "type": "span", "captureInput": "summary", "captureOutput": "summary" }
+    },
+    "llm": {
+      "kind": "llm",
+      "streamTokens": true,
+      "optionalHandles": ["error"],
+      "retry": { "maxAttempts": 3, "initialIntervalSeconds": 0.5, "backoffFactor": 2.0, "maxIntervalSeconds": 8, "jitter": true, "on": ["MODEL_UNAVAILABLE", "MODEL_BUSY", "TIMEOUT"] },
+      "observation": { "type": "generation", "captureInput": "full", "captureOutput": "full" }
+    },
+    "agent": {
+      "kind": "agent",
+      "streamTokens": true,
+      "timeoutSeconds": 300,
+      "optionalHandles": ["error"],
+      "observation": { "type": "agent", "captureInput": "full", "captureOutput": "full" }
+    },
+    "swarm": {
+      "kind": "multi_agent",
+      "options": { "pattern": "swarm" },
+      "timeoutSecondsFrom": "config.executionTimeoutSeconds",
+      "optionalHandles": ["error"],
+      "observation": { "type": "agent", "captureInput": "full", "captureOutput": "full" }
+    },
+    "rule": {
+      "kind": "router",
+      "options": { "semantics": "branches" },
+      "observation": { "type": "span", "captureInput": "summary", "captureOutput": "full" }
+    },
+    "guardrail": {
+      "kind": "guardrail",
+      "handles": { "pass": "pass", "fail": "fail" },
+      "observation": { "type": "guardrail", "captureInput": "summary", "captureOutput": "full" }
+    },
+    "approval": {
+      "kind": "interrupt",
+      "options": { "form": "approval" },
+      "handles": { "yes": "approved", "no": "rejected" },
+      "observation": { "type": "span", "captureInput": "summary", "captureOutput": "none" }
+    },
+    "human_input": {
+      "kind": "interrupt",
+      "options": { "form": "input" },
+      "observation": { "type": "span", "captureInput": "summary", "captureOutput": "none" }
+    },
+    "workflow": {
+      "kind": "subflow",
+      "timeoutSeconds": 600,
+      "optionalHandles": ["error"],
+      "observation": { "type": "chain", "captureInput": "summary", "captureOutput": "summary" }
+    },
+    "variable": {
+      "kind": "variable",
+      "observation": { "type": "span", "captureInput": "summary", "captureOutput": "summary" }
+    },
+    "db_query": {
+      "kind": "mcp_execute",
+      "options": { "toolType": "database" },
+      "optionalHandles": ["error"],
+      "retry": { "maxAttempts": 2, "initialIntervalSeconds": 0.5, "on": ["TOOL_UNAVAILABLE", "TIMEOUT"] },
+      "observation": { "type": "tool", "captureInput": "summary", "captureOutput": "summary" }
+    },
+    "http_request": {
+      "kind": "http",
+      "optionalHandles": ["error"],
+      "retry": { "maxAttempts": 2, "initialIntervalSeconds": 0.5, "on": ["TIMEOUT", "UPSTREAM_5XX"], "methods": ["GET", "HEAD"] },
+      "observation": { "type": "tool", "captureInput": "summary", "captureOutput": "summary" }
+    },
+    "tool": {
+      "kind": "tool",
+      "handles": { "pass": "pass", "fail": "fail" },
+      "optionalHandles": ["pass", "fail", "error"],
+      "observation": { "type": "tool", "captureInput": "summary", "captureOutput": "summary" }
+    },
+    "external_agent": {
+      "kind": "external_agent",
+      "optionalHandles": ["error"],
+      "observation": { "type": "agent", "captureInput": "summary", "captureOutput": "full" }
+    },
+    "script": {
+      "kind": "sandbox",
+      "enabledBy": "scriptNode",
+      "optionalHandles": ["error"],
+      "observation": { "type": "tool", "captureInput": "summary", "captureOutput": "summary" }
+    },
+    "view": {
+      "kind": "view",
+      "observation": { "type": "span", "captureInput": "summary", "captureOutput": "summary" }
+    },
+    "output": {
+      "kind": "output",
+      "terminal": true,
+      "observation": { "type": "span", "captureInput": "summary", "captureOutput": "full" }
+    },
+    "note": { "kind": "ignore" }
+  }
+}

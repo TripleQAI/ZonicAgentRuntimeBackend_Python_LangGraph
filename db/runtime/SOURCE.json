@@ -1,0 +1,10 @@
+{
+  "source": "ZonicAgentRuntimeServer_Nodejs/db/runtime",
+  "commit": "5c758334259dbffcc5123d616a359f80cf62a3e0",
+  "files": {
+    "001_schema.sql": "e05f960508159e6b360f6d10ba6a3faf1e0dbb53b8c6c3df259e1021103b3f0c",
+    "002_functions_triggers.sql": "667c4b45a1df6afbd7437e9ef6f034462a8dc02a5bedc158a6b9d7d5aea788bf",
+    "003_indexes.sql": "d7c2e1441ae80daa6a32116495c534720a49316faeb3907e46cc0cd0b9848298",
+    "005_procedures.sql": "e3b7b729d5a28600395a7439c8a5842f66b31c07d5eb48ab6683e43075c3b934"
+  }
+}

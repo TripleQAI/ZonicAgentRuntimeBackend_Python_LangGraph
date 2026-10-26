@@ -1,0 +1,39 @@
+{
+  "captureByNodeType": {
+    "start": { "input": "summary", "output": "summary" },
+    "llm": { "input": "full", "output": "full" },
+    "agent": { "input": "full", "output": "full" },
+    "swarm": { "input": "full", "output": "full" },
+    "rule": { "input": "summary", "output": "full" },
+    "guardrail": { "input": "summary", "output": "full" },
+    "approval": { "input": "summary", "output": "none" },
+    "human_input": { "input": "summary", "output": "none" },
+    "workflow": { "input": "summary", "output": "summary" },
+    "variable": { "input": "summary", "output": "summary" },
+    "db_query": { "input": "summary", "output": "summary" },
+    "http_request": { "input": "summary", "output": "summary" },
+    "tool": { "input": "summary", "output": "summary" },
+    "external_agent": { "input": "summary", "output": "full" },
+    "script": { "input": "summary", "output": "summary" },
+    "view": { "input": "summary", "output": "summary" },
+    "output": { "input": "summary", "output": "full" }
+  },
+  "mask": {
+    "keys": ["password", "passwd", "secret", "token", "apikey", "api_key", "authorization", "cookie", "credential", "privatekey"],
+    "patterns": {
+      "email": "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}",
+      "card_number": "\\b(?:\\d[ -]?){13,19}\\b",
+      "bearer": "(?i)bearer\\s+[A-Za-z0-9._~+/=-]+"
+    },
+    "replacement": "***"
+  },
+  "limits": { "maxFieldBytes": 16384, "maxObservationBytes": 65536 },
+  "genaiAttributeMap": {
+    "gen_ai.request.model": "model",
+    "gen_ai.response.model": "model",
+    "gen_ai.usage.input_tokens": "usage_details.input",
+    "gen_ai.usage.output_tokens": "usage_details.output",
+    "gen_ai.request.temperature": "model_parameters.temperature",
+    "gen_ai.request.max_tokens": "model_parameters.max_tokens"
+  }
+}

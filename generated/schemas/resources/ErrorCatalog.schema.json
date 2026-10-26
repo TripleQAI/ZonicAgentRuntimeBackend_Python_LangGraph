@@ -1,0 +1,45 @@
+{
+  "$defs": {
+    "ErrorEntry": {
+      "additionalProperties": false,
+      "properties": {
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "retryable": {
+          "title": "Retryable",
+          "type": "boolean"
+        },
+        "status": {
+          "exclusiveMaximum": 600,
+          "minimum": 100,
+          "title": "Status",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "status",
+        "retryable",
+        "message"
+      ],
+      "title": "ErrorEntry",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "errors": {
+      "additionalProperties": {
+        "$ref": "#/$defs/ErrorEntry"
+      },
+      "title": "Errors",
+      "type": "object"
+    }
+  },
+  "required": [
+    "errors"
+  ],
+  "title": "ErrorCatalog",
+  "type": "object"
+}

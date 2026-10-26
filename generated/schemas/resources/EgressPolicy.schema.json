@@ -1,0 +1,55 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "blockPrivateRanges": {
+      "title": "Blockprivateranges",
+      "type": "boolean"
+    },
+    "followRedirects": {
+      "title": "Followredirects",
+      "type": "boolean"
+    },
+    "hosts": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Hosts",
+      "type": "array"
+    },
+    "maxResponseBytes": {
+      "exclusiveMinimum": 0,
+      "title": "Maxresponsebytes",
+      "type": "integer"
+    },
+    "ports": {
+      "items": {
+        "type": "integer"
+      },
+      "title": "Ports",
+      "type": "array"
+    },
+    "schemes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Schemes",
+      "type": "array"
+    },
+    "timeoutSeconds": {
+      "exclusiveMinimum": 0,
+      "title": "Timeoutseconds",
+      "type": "number"
+    }
+  },
+  "required": [
+    "schemes",
+    "hosts",
+    "ports",
+    "blockPrivateRanges",
+    "followRedirects",
+    "maxResponseBytes",
+    "timeoutSeconds"
+  ],
+  "title": "EgressPolicy",
+  "type": "object"
+}

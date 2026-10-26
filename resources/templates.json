@@ -1,0 +1,11 @@
+{
+  "namespaces": ["system", "flow", "nodes", "history", "messages", "thread", "input", "run"],
+  "aliases": { "node": "nodes", "variable": "flow" },
+  "special": {
+    "nodeOutput": "current_node_output",
+    "runtime.workflowMetaData": "run_metadata",
+    "approval.response": "interrupt_answer",
+    "human.response": "interrupt_answer"
+  },
+  "bareNames": "flow"
+}

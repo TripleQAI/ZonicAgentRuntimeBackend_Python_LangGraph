@@ -1,0 +1,12 @@
+{
+  "source": "ZonicAgentBuilderServer_FastAPI/db",
+  "commit": "2a14e4acc7db37c18baf0794644f81f47079788e",
+  "files": {
+    "001_extensions.sql": "de61d3f088cc04ac3b271610914ed8f685c861e321a6bda7c54d5a1301a04a56",
+    "002_schema.sql": "0546b86544e52f6c2dd4015bfb6732f0f9daf66c8db4fa85d40574a1247b0581",
+    "003_functions_triggers.sql": "55c9db2565640b2d5dede7edd50c9b07e4def1a6cfaee98cadc02e3681b4d8a3",
+    "004_indexes.sql": "95ef0ee8dbf4caae75a98c901ba95b05349945b85f03dac8705d2851b435e3a7",
+    "005_adapt_existing_schema.sql": "68a8c0d18e4b2174ba495d11d1ebb32e4fd9d5070467ddfdac4fbdaed3510a02",
+    "009_api_views.sql": "3c34f522a5a228e732e99ec2b44d0579424871649de97cde7e20d0968f1aa8f7"
+  }
+}

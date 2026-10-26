@@ -1,0 +1,3 @@
+{
+  "hosts": ["data.cityofnewyork.us", "www.fema.gov", "archive-api.open-meteo.com", "httpbin.org"]
+}

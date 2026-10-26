@@ -1,0 +1,10 @@
+{
+  "states": ["queued", "running", "waiting_input", "succeeded", "failed", "cancelled", "timed_out"],
+  "initial": { "stream": "running", "sync": "running", "async": "queued" },
+  "terminal": ["succeeded", "failed", "cancelled", "timed_out"],
+  "transitions": {
+    "queued": ["running", "cancelled", "failed"],
+    "running": ["waiting_input", "succeeded", "failed", "cancelled", "timed_out", "queued"],
+    "waiting_input": ["running", "cancelled", "failed", "timed_out"]
+  }
+}
