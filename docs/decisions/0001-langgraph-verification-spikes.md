@@ -1,6 +1,6 @@
 # 0001: LangGraph verification spikes SP-1 to SP-10
 
-- **Status:** proposed for the M0 review
+- **Status:** accepted at the M0 review (2026-10-26)
 - **Date:** 2026-10-25
 - **Decides:** D-4 (exact pins) and D-5 (fallbacks), plan task P0-10
 - **Evidence:** one report per spike in [`0001-spike-reports/`](0001-spike-reports/). The spike code (63 checks, all passing on 2026-10-25) was removed after M0, as the plan says. It stays in git history: `git show bcd2fde:spikes/<file>` (the paths are those named in each report). Restore it with `git checkout bcd2fde -- spikes` to re-run after a LangGraph or LangChain minor upgrade.

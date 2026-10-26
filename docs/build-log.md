@@ -2,7 +2,7 @@
 
 Progress against `docs/zonic-agent-runtime-langgraph-implementation-plan.md`, with the sanity checks run after each task and every deviation from the plan.
 
-## Phase 0: complete, at checkpoint M0
+## Phase 0: complete; M0 approved 2026-10-26
 
 | Task | Status | Sanity check |
 |---|---|---|
@@ -136,3 +136,15 @@ The live suite `tests/live/test_gateway_live.py` (`uv run pytest -m live`) drive
 | `models/gateway_meta.py: has_procedure_meta` | Never used; `procedure_meta` covers it |
 
 Also: `.import_linter_cache/` was added to `.gitignore`, and the `sql` marker text now says what the SQL tests need (psql and `ZONIC_SQL_TEST_DSN`). Kept on purpose: `get_environment`, `secret_from_environment`, `fail_startup` and `GatewayRepository.read_one` (entry points for the Phase 1 and 2 tasks); `deploy/pgfoundation.agentruntime.yaml` (running the gateway locally without AWS); `docs/requests/D-2-gateway-registration.md` (record of the completed request).
+
+## Workflows in the product database (2026-10-26)
+
+The user approved M0 and decided that workflows live in `agent-build-langgraph`'s `agent_builder."agentBuilder_agentworkflow"`, with the builder saving there.
+
+1. **Schema:** the builder that writes the data is `Strands-visual-builder`, so its full `agent_builder` install (`backend/db/run_all.sql`: the FastAPI builder's `001`–`005` plus `006` ownership, its own `009`/`010`, `012` builder records, `013` agent delete) was dry-run in a rolled-back transaction, then applied on top of the existing schema.
+2. **Data:** the 9 workflows in `neondb_dev` not owned by `live-test-%` were copied with their 9 chips, 11 relationships and 6 snapshots, in one transaction, with explicit column lists. The 80 `live-test` workflows and all deployment, AgentCore-gateway and settings rows (all test data or empty) were not copied. Source and target fingerprints of the 9 rows (ids, owners, documents, channels) are identical. `neondb_dev` was only read.
+3. **Gateway:** a new datasource `agentbuilder` (`PGF_AGENTBUILDER_DSN`, defaulting to the runtime database) for caller `zonic-agent-builder`, which keeps `neondb` and `neondb_dev`; redeployed to account `001634074733`. `deploy.sh` also got a fix: a missing optional variable no longer ends the script silently under `pipefail`.
+4. **Builder:** `PG_GATEWAY_DATASOURCE=agentbuilder` in `.env.docker` and `.env.docker.example`, and `cdk/cdk.json` dev; containers recreated. `/health/ready` reports `agentbuilder` ready.
+5. **Runtime:** the SQL tests' builder fixture is now the Strands builder's 10 scripts (`scripts/sync_sql.py`, set `builder`). Every suite passes: offline, SQL (85), live (21 + 1 skipped). `v_agent_catalog` lists the 6 root workflows; none has a publish channel yet.
+
+Open: the 9 workflows are owned by `54488448-…`, the builder's earlier user pool, not the Docker builder's user. They are in the database but not listed in the builder until re-owned.

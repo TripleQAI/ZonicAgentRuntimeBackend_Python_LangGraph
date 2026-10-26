@@ -1,12 +1,16 @@
 {
-  "source": "ZonicAgentBuilderServer_FastAPI/db",
-  "commit": "2a14e4acc7db37c18baf0794644f81f47079788e",
+  "source": "Strands-visual-builder/backend/db",
+  "commit": "9aad111636b442a1fda3aff004cd6013ed0e9bf2",
   "files": {
     "001_extensions.sql": "de61d3f088cc04ac3b271610914ed8f685c861e321a6bda7c54d5a1301a04a56",
     "002_schema.sql": "0546b86544e52f6c2dd4015bfb6732f0f9daf66c8db4fa85d40574a1247b0581",
     "003_functions_triggers.sql": "55c9db2565640b2d5dede7edd50c9b07e4def1a6cfaee98cadc02e3681b4d8a3",
     "004_indexes.sql": "95ef0ee8dbf4caae75a98c901ba95b05349945b85f03dac8705d2851b435e3a7",
     "005_adapt_existing_schema.sql": "68a8c0d18e4b2174ba495d11d1ebb32e4fd9d5070467ddfdac4fbdaed3510a02",
-    "009_api_views.sql": "3c34f522a5a228e732e99ec2b44d0579424871649de97cde7e20d0968f1aa8f7"
+    "006_ownership.sql": "be9bc779303f5bbb6cee2afd4caba1775a1d74146035be55b09f20ac7472047a",
+    "009_api_views.sql": "e0318d347a843bb929ce412f126a5cd949bf59ffa7c670445d74eacaa0f1e8cc",
+    "010_api_procedures.sql": "edf22aebc1a03bd904eabc20f5e566c3d220db335810805743df37cb84ed78ad",
+    "012_builder_records.sql": "b9a7ead04e85bb6f487809b9bbc5bc623baf36a8daa77214ac091c4a7f30bc3c",
+    "013_agent_delete.sql": "dd222bc915052f7b0e2edecba52905d662424ec0e7b39b4d83f36932a7a1fd02"
   }
 }

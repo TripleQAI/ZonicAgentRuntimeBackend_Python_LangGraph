@@ -9,7 +9,8 @@ Three sets:
 * ``observability``: ``agent_observability`` 001 to 005 from
   ``ZonicAgentRuntimeServer_Nodejs/db/observability`` into ``db/observability/``;
   ``006_grants.sql``, ``run_all.sql`` and ``999_drop_all.sql`` stay this project's own.
-* ``builder``: the ``agent_builder`` DDL from ``ZonicAgentBuilderServer_FastAPI/db`` into
+* ``builder``: the ``agent_builder`` DDL from ``Strands-visual-builder/backend/db`` (the builder
+  that writes the product database) into
   ``tests/fixtures/builder_db/``; the SQL tests install it first, inside the
   rolled-back transaction.
 
@@ -75,18 +76,22 @@ SETS = (
     ),
     VendoredSet(
         name="builder",
-        repo="ZonicAgentBuilderServer_FastAPI",
-        source="db",
+        repo="Strands-visual-builder",
+        source="backend/db",
         target=ROOT / "tests" / "fixtures" / "builder_db",
-        # The builder's install order up to its read surface; 010 (procedures) and
-        # 011 (grants) are not needed to read workflows.
+        # The builder that writes the product database, in its run_all.sql order
+        # (011 grants needs a role name and is not installed).
         files=(
             "001_extensions.sql",
             "002_schema.sql",
             "003_functions_triggers.sql",
             "004_indexes.sql",
             "005_adapt_existing_schema.sql",
+            "006_ownership.sql",
             "009_api_views.sql",
+            "010_api_procedures.sql",
+            "012_builder_records.sql",
+            "013_agent_delete.sql",
         ),
     ),
 )

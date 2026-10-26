@@ -8,6 +8,10 @@
 -- `v_agent_summary` in schema `agent_builder` and never has to know it is
 -- backed by "agentBuilder_agentworkflow".
 --
+-- Per-user views end with owner_sub (parent_owner_sub for relationships), added
+-- by 006_ownership.sql; the repositories filter every read by it. The column
+-- comes last because CREATE OR REPLACE VIEW can only append columns.
+--
 -- Idempotent: CREATE OR REPLACE throughout.
 
 SET search_path TO agent_builder, public;
@@ -27,7 +31,8 @@ SELECT
     CASE WHEN jsonb_typeof(a.nodes) = 'array' THEN jsonb_array_length(a.nodes) ELSE 0 END
         AS node_count,
     CASE WHEN jsonb_typeof(a.edges) = 'array' THEN jsonb_array_length(a.edges) ELSE 0 END
-        AS edge_count
+        AS edge_count,
+    a.owner_sub
 FROM agent_builder."agentBuilder_agentworkflow" a;
 
 -- --------------------------------------------------------------------------
@@ -66,7 +71,8 @@ SELECT
                'semanticDomain',        COALESCE(a.semantic_domain, ''),
                'semanticKeywords',      COALESCE(a.semantic_keywords, ''),
                'semanticUseCases',      COALESCE(a.semantic_use_cases, '')
-           ) AS detail_json
+           ) AS detail_json,
+    a.owner_sub
 FROM agent_builder."agentBuilder_agentworkflow" a;
 
 -- --------------------------------------------------------------------------
@@ -90,12 +96,15 @@ SELECT
                'skills',          COALESCE(a.skills, '[]'::jsonb),
                'publishChannels', COALESCE(a.publish_channels, '[]'::jsonb),
                'security',        COALESCE(a.security, '{}'::jsonb)
-           ) AS export_json
+           ) AS export_json,
+    a.owner_sub
 FROM agent_builder."agentBuilder_agentworkflow" a;
 
 -- --------------------------------------------------------------------------
 -- v_agent_relationship_detail — the relationship map in ONE read.
 -- The Django implementation issues one extra query per child.
+-- A child's details show only when it has the parent's owner, so a link made
+-- before 006_ownership cannot reveal another user's workflow.
 -- --------------------------------------------------------------------------
 CREATE OR REPLACE VIEW agent_builder.v_agent_relationship_detail AS
 SELECT
@@ -116,9 +125,13 @@ SELECT
          ELSE 0 END     AS child_node_count,
     CASE WHEN c.id IS NULL THEN 0
          WHEN jsonb_typeof(c.edges) = 'array' THEN jsonb_array_length(c.edges)
-         ELSE 0 END     AS child_edge_count
+         ELSE 0 END     AS child_edge_count,
+    p.owner_sub         AS parent_owner_sub
 FROM agent_builder."agentBuilder_agentrelationship" r
-LEFT JOIN agent_builder."agentBuilder_agentworkflow" c ON c.id = r.child_agent_id;
+JOIN agent_builder."agentBuilder_agentworkflow" p ON p.id = r.parent_agent_id
+LEFT JOIN agent_builder."agentBuilder_agentworkflow" c
+       ON c.id = r.child_agent_id
+      AND c.owner_sub IS NOT DISTINCT FROM p.owner_sub;
 
 -- --------------------------------------------------------------------------
 -- v_package_agent — package membership, used by export-debug and the
@@ -130,7 +143,8 @@ SELECT
     a.agentic_workflow_id,
     a.name,
     a.display_name,
-    a.is_root
+    a.is_root,
+    a.owner_sub
 FROM agent_builder."agentBuilder_agentworkflow" a
 WHERE a.parent_package_id IS NOT NULL;
 
