@@ -1,0 +1,130 @@
+{
+  "bpc": "",
+  "name": "new-workflow",
+  "edges": [],
+  "nodes": [
+    {
+      "id": "swarm_1792640525486_m3emx",
+      "name": "Swarm_1",
+      "type": "swarm",
+      "style": {},
+      "width": 200,
+      "config": {
+        "members": [],
+        "entryPoint": "",
+        "maxHandoffs": 20,
+        "taskMapping": "{{system.userQuery}}",
+        "maxIterations": 20,
+        "outputStructure": [],
+        "variableUpdates": [],
+        "nodeTimeoutSeconds": 300,
+        "executionTimeoutSeconds": 900,
+        "repetitiveHandoffDetectionWindow": 0,
+        "repetitiveHandoffMinUniqueAgents": 0
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 540.3353996101356,
+        "y": 253.03850864674152
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 540.3353996101356,
+        "y": 253.03850864674152
+      }
+    },
+    {
+      "id": "llm_1792640543586_x9ct4",
+      "name": "LLM_1",
+      "type": "llm",
+      "style": {},
+      "width": 200,
+      "config": {
+        "model": "us.anthropic.claude-3-7-sonnet-20250219-v1:0",
+        "tools": [],
+        "messages": [],
+        "maxTokens": 1024,
+        "temperature": 0.7,
+        "outputSchema": [],
+        "stateUpdates": [],
+        "errorHandling": false,
+        "responseFormat": "text",
+        "variableUpdates": []
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 205.2457677547231,
+        "y": 81.78824454438605
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 205.2457677547231,
+        "y": 81.78824454438605
+      }
+    },
+    {
+      "id": "agent_1792640548211_xkai6",
+      "name": "Agent_1",
+      "type": "agent",
+      "style": {},
+      "width": 200,
+      "config": {
+        "model": "us.anthropic.claude-3-7-sonnet-20250219-v1:0",
+        "tools": [],
+        "strategy": "react",
+        "outputSchema": [],
+        "stateUpdates": [],
+        "systemPrompt": "",
+        "handoffTarget": [],
+        "maxIterations": 10,
+        "includeThoughts": false,
+        "variableUpdates": []
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 569.429951128042,
+        "y": 77.82972081206735
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 569.429951128042,
+        "y": 77.82972081206735
+      }
+    }
+  ],
+  "editAs": "",
+  "skills": [],
+  "security": {},
+  "interface": {},
+  "variables": {},
+  "isDisabled": false,
+  "description": "",
+  "displayName": "New Workflow",
+  "systemParams": [],
+  "schemaVersion": "2.0",
+  "invocationType": "",
+  "semanticDomain": "",
+  "includeThoughts": false,
+  "publishChannels": [],
+  "semanticKeywords": "",
+  "semanticUseCases": "",
+  "agenticWorkflowId": "9d55ca98-e74e-41ce-8570-3fc2540c61de",
+  "enableForAutoInvoke": false,
+  "semanticSearchEnabled": false,
+  "isAvailableForMigration": false
+}

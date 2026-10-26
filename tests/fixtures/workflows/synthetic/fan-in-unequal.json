@@ -1,0 +1,233 @@
+{
+  "schemaVersion": "2.0",
+  "agenticWorkflowId": "synthetic-fan-in-unequal",
+  "name": "fan-in-unequal",
+  "displayName": "Fan In Unequal",
+  "description": "Parallel fan-in of unequal lengths: one branch of one node and one of three join at an LLM node.",
+  "variables": {},
+  "systemParams": [],
+  "publishChannels": [],
+  "nodes": [
+    {
+      "id": "start_1",
+      "type": "start",
+      "name": "Start_1",
+      "description": "",
+      "config": {
+        "interfaceInputs": [],
+        "variableUpdates": []
+      }
+    },
+    {
+      "id": "a_1",
+      "type": "llm",
+      "name": "A_1",
+      "description": "",
+      "config": {
+        "model": "claude-haiku-4-5",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Branch A."
+          },
+          {
+            "role": "user",
+            "content": "{{system.userQuery}}"
+          }
+        ],
+        "tools": [],
+        "responseFormat": "text",
+        "temperature": 0.2,
+        "maxTokens": 512,
+        "outputSchema": [],
+        "stateUpdates": [],
+        "variableUpdates": []
+      }
+    },
+    {
+      "id": "b_1",
+      "type": "llm",
+      "name": "B_1",
+      "description": "",
+      "config": {
+        "model": "claude-haiku-4-5",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Branch B, step 1."
+          },
+          {
+            "role": "user",
+            "content": "{{system.userQuery}}"
+          }
+        ],
+        "tools": [],
+        "responseFormat": "text",
+        "temperature": 0.2,
+        "maxTokens": 512,
+        "outputSchema": [],
+        "stateUpdates": [],
+        "variableUpdates": []
+      }
+    },
+    {
+      "id": "b_2",
+      "type": "llm",
+      "name": "B_2",
+      "description": "",
+      "config": {
+        "model": "claude-haiku-4-5",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Branch B, step 2."
+          },
+          {
+            "role": "user",
+            "content": "{{system.userQuery}}"
+          }
+        ],
+        "tools": [],
+        "responseFormat": "text",
+        "temperature": 0.2,
+        "maxTokens": 512,
+        "outputSchema": [],
+        "stateUpdates": [],
+        "variableUpdates": []
+      }
+    },
+    {
+      "id": "b_3",
+      "type": "llm",
+      "name": "B_3",
+      "description": "",
+      "config": {
+        "model": "claude-haiku-4-5",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Branch B, step 3."
+          },
+          {
+            "role": "user",
+            "content": "{{system.userQuery}}"
+          }
+        ],
+        "tools": [],
+        "responseFormat": "text",
+        "temperature": 0.2,
+        "maxTokens": 512,
+        "outputSchema": [],
+        "stateUpdates": [],
+        "variableUpdates": []
+      }
+    },
+    {
+      "id": "join_1",
+      "type": "llm",
+      "name": "Join_1",
+      "description": "",
+      "config": {
+        "model": "claude-haiku-4-5",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Combine {{nodes.A_1.output.result}} and {{nodes.B_3.output.result}}."
+          },
+          {
+            "role": "user",
+            "content": "{{system.userQuery}}"
+          }
+        ],
+        "tools": [],
+        "responseFormat": "text",
+        "temperature": 0.2,
+        "maxTokens": 512,
+        "outputSchema": [],
+        "stateUpdates": [],
+        "variableUpdates": []
+      }
+    },
+    {
+      "id": "output_1",
+      "type": "output",
+      "name": "Output_1",
+      "description": "",
+      "config": {
+        "outputMapping": [
+          {
+            "target": "answer",
+            "source": "{{nodes.Join_1.output.result}}",
+            "type": "string"
+          }
+        ],
+        "variableUpdates": []
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e_start_1_default_a_1",
+      "source": "start_1",
+      "target": "a_1",
+      "sourceHandle": "default",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    },
+    {
+      "id": "e_start_1_default_b_1",
+      "source": "start_1",
+      "target": "b_1",
+      "sourceHandle": "default",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    },
+    {
+      "id": "e_b_1_default_b_2",
+      "source": "b_1",
+      "target": "b_2",
+      "sourceHandle": "default",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    },
+    {
+      "id": "e_b_2_default_b_3",
+      "source": "b_2",
+      "target": "b_3",
+      "sourceHandle": "default",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    },
+    {
+      "id": "e_a_1_default_join_1",
+      "source": "a_1",
+      "target": "join_1",
+      "sourceHandle": "default",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    },
+    {
+      "id": "e_b_3_default_join_1",
+      "source": "b_3",
+      "target": "join_1",
+      "sourceHandle": "default",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    },
+    {
+      "id": "e_join_1_default_output_1",
+      "source": "join_1",
+      "target": "output_1",
+      "sourceHandle": "default",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    }
+  ]
+}

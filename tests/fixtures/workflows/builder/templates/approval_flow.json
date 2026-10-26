@@ -1,0 +1,94 @@
+{
+  "_comment": [
+    "Workflow template (design 5.8.1; implementation plan P4-08). See",
+    "question_answering_with_tools.json for the format."
+  ],
+  "name": "approval-flow",
+  "title": "Approval Flow",
+  "description": "A model drafts a response, a person approves or rejects it, and the workflow returns the draft or the rejection.",
+  "document": {
+    "schemaVersion": "2.0",
+    "agenticWorkflowId": "template-approval-flow",
+    "name": "approval-flow",
+    "displayName": "Approval Flow",
+    "description": "Drafts a response and waits for a person to approve it.",
+    "nodes": [
+      {
+        "id": "start_1",
+        "type": "start",
+        "name": "Start_1",
+        "description": "Receives the request.",
+        "position": { "x": 0, "y": 160 },
+        "config": { "interfaceInputs": [], "variableUpdates": [] }
+      },
+      {
+        "id": "llm_1",
+        "type": "llm",
+        "name": "LLM_1",
+        "description": "Drafts a response to the request.",
+        "position": { "x": 300, "y": 160 },
+        "config": {
+          "model": "",
+          "messages": [
+            { "role": "system", "content": "Draft a clear, polite response to the request." },
+            { "role": "user", "content": "{{system.userQuery}}" }
+          ],
+          "tools": [],
+          "responseFormat": "text",
+          "temperature": 0.3,
+          "maxTokens": 1024,
+          "errorHandling": false,
+          "stateUpdates": [],
+          "outputSchema": [],
+          "variableUpdates": []
+        }
+      },
+      {
+        "id": "approval_1",
+        "type": "approval",
+        "name": "Approval_1",
+        "description": "A person approves or rejects the draft.",
+        "position": { "x": 600, "y": 160 },
+        "config": {
+          "message": "Approve this draft?\n\n{{nodes.LLM_1.output.result}}",
+          "approvers": [],
+          "timeoutHours": 24,
+          "responseVariable": "approval.response",
+          "outputSchema": [],
+          "stateUpdates": [],
+          "variableUpdates": []
+        }
+      },
+      {
+        "id": "output_approved",
+        "type": "output",
+        "name": "Approved",
+        "description": "Returns the approved draft.",
+        "position": { "x": 900, "y": 80 },
+        "config": {
+          "outputMapping": [{ "target": "response", "source": "{{nodes.LLM_1.output.result}}", "type": "string" }],
+          "variableUpdates": []
+        }
+      },
+      {
+        "id": "output_rejected",
+        "type": "output",
+        "name": "Rejected",
+        "description": "Reports that the draft was rejected.",
+        "position": { "x": 900, "y": 260 },
+        "config": {
+          "outputMapping": [{ "target": "response", "source": "The draft was rejected.", "type": "string" }],
+          "variableUpdates": []
+        }
+      }
+    ],
+    "edges": [
+      { "id": "edge_1", "source": "start_1", "target": "llm_1", "sourceHandle": "default", "targetHandle": "default", "type": "default", "data": { "sourceType": "start", "targetType": "llm" } },
+      { "id": "edge_2", "source": "llm_1", "target": "approval_1", "sourceHandle": "default", "targetHandle": "default", "type": "default", "data": { "sourceType": "llm", "targetType": "approval" } },
+      { "id": "edge_3", "source": "approval_1", "target": "output_approved", "sourceHandle": "approved", "targetHandle": "default", "type": "default", "data": { "sourceType": "approval", "targetType": "output" } },
+      { "id": "edge_4", "source": "approval_1", "target": "output_rejected", "sourceHandle": "rejected", "targetHandle": "default", "type": "default", "data": { "sourceType": "approval", "targetType": "output" } }
+    ],
+    "variables": {},
+    "systemParams": []
+  }
+}

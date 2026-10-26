@@ -1,0 +1,187 @@
+{
+  "schemaVersion": "2.0",
+  "agenticWorkflowId": "synthetic-routing-guardrail-approval",
+  "name": "routing-guardrail-approval",
+  "displayName": "Routing Guardrail Approval",
+  "description": "Guardrail pass and fail, then an approval with approved and rejected branches.",
+  "variables": {},
+  "systemParams": [],
+  "publishChannels": [],
+  "nodes": [
+    {
+      "id": "start_1",
+      "type": "start",
+      "name": "Start_1",
+      "description": "",
+      "config": {
+        "interfaceInputs": [],
+        "variableUpdates": []
+      }
+    },
+    {
+      "id": "guardrail_1",
+      "type": "guardrail",
+      "name": "Guardrail_1",
+      "description": "",
+      "config": {
+        "inputMapping": [
+          {
+            "key": "text",
+            "value": "{{system.userQuery}}",
+            "type": "string"
+          }
+        ],
+        "policy": "Allow questions about facilities only.",
+        "action": "block",
+        "outputSchema": [],
+        "stateUpdates": [],
+        "variableUpdates": []
+      }
+    },
+    {
+      "id": "llm_1",
+      "type": "llm",
+      "name": "LLM_1",
+      "description": "",
+      "config": {
+        "model": "claude-haiku-4-5",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Draft an answer."
+          },
+          {
+            "role": "user",
+            "content": "{{system.userQuery}}"
+          }
+        ],
+        "tools": [],
+        "responseFormat": "text",
+        "temperature": 0.2,
+        "maxTokens": 512,
+        "outputSchema": [],
+        "stateUpdates": [],
+        "variableUpdates": []
+      }
+    },
+    {
+      "id": "approval_1",
+      "type": "approval",
+      "name": "Approval_1",
+      "description": "",
+      "config": {
+        "message": "Publish {{nodes.LLM_1.output.result}}?",
+        "approvers": [],
+        "timeoutHours": 24,
+        "responseVariable": "approval.response",
+        "outputSchema": [],
+        "stateUpdates": [],
+        "variableUpdates": []
+      }
+    },
+    {
+      "id": "output_approved",
+      "type": "output",
+      "name": "Approved",
+      "description": "",
+      "config": {
+        "outputMapping": [
+          {
+            "target": "answer",
+            "source": "{{nodes.LLM_1.output.result}}",
+            "type": "string"
+          }
+        ],
+        "variableUpdates": []
+      }
+    },
+    {
+      "id": "output_rejected",
+      "type": "output",
+      "name": "Rejected",
+      "description": "",
+      "config": {
+        "outputMapping": [
+          {
+            "target": "answer",
+            "source": "rejected",
+            "type": "string"
+          }
+        ],
+        "variableUpdates": []
+      }
+    },
+    {
+      "id": "output_refused",
+      "type": "output",
+      "name": "Refused",
+      "description": "",
+      "config": {
+        "outputMapping": [
+          {
+            "target": "answer",
+            "source": "refused",
+            "type": "string"
+          }
+        ],
+        "variableUpdates": []
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e_start_1_default_guardrail_1",
+      "source": "start_1",
+      "target": "guardrail_1",
+      "sourceHandle": "default",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    },
+    {
+      "id": "e_guardrail_1_pass_llm_1",
+      "source": "guardrail_1",
+      "target": "llm_1",
+      "sourceHandle": "pass",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    },
+    {
+      "id": "e_guardrail_1_fail_output_refused",
+      "source": "guardrail_1",
+      "target": "output_refused",
+      "sourceHandle": "fail",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    },
+    {
+      "id": "e_llm_1_default_approval_1",
+      "source": "llm_1",
+      "target": "approval_1",
+      "sourceHandle": "default",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    },
+    {
+      "id": "e_approval_1_approved_output_approved",
+      "source": "approval_1",
+      "target": "output_approved",
+      "sourceHandle": "approved",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    },
+    {
+      "id": "e_approval_1_rejected_output_rejected",
+      "source": "approval_1",
+      "target": "output_rejected",
+      "sourceHandle": "rejected",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    }
+  ]
+}

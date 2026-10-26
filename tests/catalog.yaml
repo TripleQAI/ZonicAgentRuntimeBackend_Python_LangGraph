@@ -67,6 +67,8 @@ cases:
     title: All 21 workflows of `Strands-visual-builder` in both dialects
     tasks:
     - P1-03
+    - P1-05
+    - P1-09
   B-02:
     title: Model strings, empty models, model objects (Azure `gpt-5.2`)
     tasks:
@@ -86,26 +88,32 @@ cases:
     title: Tool nodes with MCP server and tool IDs; `pass` and `fail`
     tasks:
     - P1-03
+    - P3-06
   B-06:
     title: Node-level `variableUpdates` with `fieldName`, template targets, `rules`
     tasks:
     - P1-03
+    - P1-08
   B-07:
     title: Writes to `thread.*`, `system.userQuery`, `system.attachments`, another `system` key
     tasks:
     - P1-03
+    - P1-08
   B-08:
     title: Rules with `r-` IDs, `enable`, `logicType`, platform operators
     tasks:
     - P1-03
+    - P1-06
   B-09:
     title: '`{{nodeOutput.*}}`, `{{nodes.<agent>.toolResults.<name>}}`'
     tasks:
     - P1-03
+    - P1-06
   B-10:
     title: Three `outputMapping` shapes; `outputKey`, `outputVariable`
     tasks:
     - P1-03
+    - P1-07
   B-11:
     title: Views with `template_config` and `htmlTemplate`
     tasks:
@@ -249,6 +257,7 @@ cases:
     title: Output node without `outputMapping`
     tasks:
     - P1-03
+    - P2-02
   D-14:
     title: Node IDs with reserved characters or names
     tasks:
@@ -350,10 +359,13 @@ cases:
     title: Load every vendored document
     tasks:
     - P1-01
+    - P1-05
   F-02:
     title: Templates
     tasks:
     - P1-01
+    - P1-03
+    - P1-04
   F-03:
     title: Invalid documents and drift
     tasks:

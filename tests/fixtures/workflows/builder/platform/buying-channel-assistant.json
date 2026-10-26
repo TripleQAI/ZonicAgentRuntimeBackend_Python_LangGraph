@@ -1,0 +1,1096 @@
+{
+  "agenticWorkflowId": "22e8152d-ec9d-4bc4-9451-ed24d382c434",
+  "bpc": "20210511",
+  "name": "buying-channel-assistant",
+  "displayName": "Buying Channel Assistant ",
+  "description": "Channel Executor Agent",
+  "isDisabled": false,
+  "isAvailableForMigration": true,
+  "editAs": "canvas",
+  "enableForAutoInvoke": false,
+  "includeThoughts": false,
+  "invocationType": "API",
+  "publishChannels": [
+    {
+      "refId": "api",
+      "code": "api",
+      "name": "API",
+      "description": "Expose the agent as a REST API for system and app integrations"
+    },
+    {
+      "refId": "qi-ui",
+      "code": "qi-ui",
+      "name": "Qi UI",
+      "description": "Make your agent available in GEP’s Qi interface"
+    }
+  ],
+  "security": {
+    "activities": [
+      {
+        "refId": "10100002",
+        "code": "10100002",
+        "name": "Home"
+      }
+    ]
+  },
+  "skills": [],
+  "variables": {
+    "flow": [
+      {
+        "refId": "suppliers",
+        "name": "suppliers",
+        "type": "string",
+        "id": "var-5j2vpxbj3",
+        "description": "sourceIdentificationNumber",
+        "default": "",
+        "required": false
+      },
+      {
+        "refId": "requestSummary",
+        "name": "requestSummary",
+        "type": "string",
+        "id": "var-49t6ze1wz",
+        "description": "requestSummary",
+        "default": "",
+        "required": false
+      },
+      {
+        "refId": "requestType",
+        "name": "requestType",
+        "type": "string",
+        "id": "var-owk0z58oa",
+        "description": "requestType",
+        "default": "",
+        "required": false
+      },
+      {
+        "refId": "intake_type",
+        "name": "intake_type",
+        "type": "string",
+        "id": "var-soirtnvap",
+        "description": "intake_type",
+        "default": "",
+        "required": false
+      },
+      {
+        "refId": "generalRequestType",
+        "name": "generalRequestType",
+        "type": "string",
+        "id": "var-gqtfmky7h",
+        "description": "generalRequestType",
+        "default": "",
+        "required": false
+      },
+      {
+        "refId": "budgetStatus",
+        "name": "budgetStatus",
+        "type": "object",
+        "id": "var-q8fi41r62",
+        "description": "{\n      \"name\": \"<Budget_Approval_Status>\",\n      \"code\": \"<code>\"\n    }",
+        "default": {},
+        "required": false
+      },
+      {
+        "refId": "needByDate",
+        "name": "needByDate",
+        "type": "string",
+        "id": "var-3o5rqq23j",
+        "description": "needByDate",
+        "default": "",
+        "required": false
+      },
+      {
+        "refId": "proposeSole",
+        "name": "proposeSole",
+        "type": "string",
+        "id": "var-w336bl36s",
+        "description": "proposeSole",
+        "default": "",
+        "required": false
+      },
+      {
+        "refId": "pvresponse",
+        "name": "pvresponse",
+        "type": "string",
+        "id": "var-aiuw9iaye",
+        "description": "pvresponse",
+        "default": "",
+        "required": false
+      },
+      {
+        "refId": "questionnaireResponse",
+        "name": "questionnaireResponse",
+        "type": "object",
+        "id": "var-ztt91m2jw",
+        "description": "questionnaireResponse object contains all questionnaire and responses",
+        "default": {},
+        "required": false
+      },
+      {
+        "refId": "supplier_data",
+        "name": "supplier_data",
+        "type": "string",
+        "id": "var-kaszz1qay",
+        "description": "details of all the supplier",
+        "default": "",
+        "required": false
+      },
+      {
+        "refId": "channel_identified",
+        "name": "channel_identified",
+        "type": "string",
+        "id": "var-2xmxb5s20",
+        "description": "identified channel data",
+        "default": "",
+        "required": false
+      },
+      {
+        "refId": "qa_master_data",
+        "name": "qa_master_data",
+        "type": "string",
+        "id": "var-h3ekzf86x",
+        "description": "qa master data contains category and BU details",
+        "default": "",
+        "required": false
+      },
+      {
+        "refId": "user_decision_points",
+        "name": "user_decision_points",
+        "type": "object",
+        "id": "var-yedbfjzei",
+        "default": {},
+        "required": false
+      },
+      {
+        "refId": "questionnaireForSummary",
+        "name": "questionnaireForSummary",
+        "type": "string",
+        "id": "var-bc5ydfhh4",
+        "default": "",
+        "required": false
+      },
+      {
+        "refId": "partialViewData",
+        "name": "partialViewData",
+        "type": "string",
+        "id": "var-94jg794z9",
+        "default": "",
+        "required": false
+      },
+      {
+        "refId": "documentCode",
+        "name": "documentCode",
+        "type": "string",
+        "id": "var-b9cv2i4hb",
+        "description": "documentCode via project request",
+        "default": "",
+        "required": false
+      },
+      {
+        "refId": "newSuppliers",
+        "name": "newSuppliers",
+        "type": "object",
+        "id": "var-p8m8cxeqw",
+        "default": {},
+        "required": false
+      },
+      {
+        "refId": "user_context",
+        "name": "user_context",
+        "type": "object",
+        "id": "var-7d8qi9rks",
+        "default": {},
+        "required": false
+      },
+      {
+        "refId": "dropdownSupplier",
+        "name": "dropdownSupplier",
+        "type": "object",
+        "id": "var-wbt9hikr1",
+        "description": "Set the dropdown selected supplier",
+        "default": {},
+        "required": false
+      }
+    ],
+    "system": []
+  },
+  "interface": {
+    "inputs": {
+      "query": {
+        "type": "string",
+        "description": "User query to process",
+        "required": true
+      }
+    },
+    "outputs": {
+      "response": {
+        "type": "string",
+        "description": "Final response to the user"
+      }
+    }
+  },
+  "nodes": [
+    {
+      "id": "start",
+      "type": "start",
+      "name": "start",
+      "description": "Starting point of the workflow",
+      "position": {
+        "x": -344.35302507453196,
+        "y": 132.27857248343128
+      },
+      "deletable": false,
+      "selected": false,
+      "dragging": false,
+      "data": {},
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "label": "start",
+        "nodeType": "start"
+      },
+      "variableUpdates": [
+        {
+          "fieldName": "flow.user_context",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.user_context}}"
+        },
+        {
+          "fieldName": "thread.buying_channel_agent_messages",
+          "operation": "append",
+          "value": "{{nodeOutput.interface.inputs.partialViewData}}",
+          "role": "user",
+          "rules": {
+            "conditions": [
+              {
+                "field": "{{nodeOutput.interface.inputs.partialViewData}}",
+                "operator": "!=",
+                "value": "\"\""
+              },
+              {
+                "field": "{{nodeOutput.interface.inputs.partialViewData}}",
+                "operator": "!=",
+                "value": "[]"
+              },
+              {
+                "field": "{{nodeOutput.interface.inputs.partialViewData}}",
+                "operator": "is not empty",
+                "value": ""
+              }
+            ],
+            "logicType": "AND"
+          }
+        },
+        {
+          "fieldName": "flow.user_decision_points",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.user_decision_points}}"
+        },
+        {
+          "fieldName": "{{flow.questionnaireForSummary}}",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.questionnaireForSummary}}"
+        },
+        {
+          "fieldName": "flow.questionnaireResponse",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.questionnaireResponse}}"
+        },
+        {
+          "fieldName": "flow.channel_identified",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.channel_identified}}"
+        },
+        {
+          "fieldName": "flow.qa_master_data",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.qa_master_data}}"
+        },
+        {
+          "fieldName": "flow.pvresponse",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.partialViewData}}"
+        },
+        {
+          "fieldName": "thread.buying_channel_agent_messages",
+          "operation": "append",
+          "value": "{{nodeOutput.interface.inputs.message}}",
+          "role": "user"
+        },
+        {
+          "fieldName": "thread.messages",
+          "operation": "append",
+          "value": "{{nodeOutput.interface.inputs.message}}",
+          "role": "user"
+        },
+        {
+          "fieldName": "system.userQuery",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.message}}"
+        },
+        {
+          "fieldName": "system.attachments",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.attachments}}"
+        },
+        {
+          "fieldName": "flow.supplier_data",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.supplier_data}}"
+        },
+        {
+          "fieldName": "{{flow.newSuppliers}}",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.newSuppliers}}"
+        },
+        {
+          "fieldName": "flow.dropdownSupplier",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.dropdownSupplier}}"
+        }
+      ],
+      "width": 250,
+      "height": 96,
+      "positionAbsolute": {
+        "x": -344.35302507453196,
+        "y": 132.27857248343128
+      }
+    },
+    {
+      "id": "output",
+      "type": "output",
+      "name": "output",
+      "description": "Final output of the workflow",
+      "position": {
+        "x": 674.5683540203981,
+        "y": 143
+      },
+      "deletable": true,
+      "selected": false,
+      "dragging": false,
+      "data": {},
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "outputMapping": {
+          "messages": {
+            "type": "string",
+            "value": "{{thread.messages}}"
+          },
+          "selectedAgentId": {
+            "type": "string",
+            "value": "{{runtime.workflowMetaData.workflowId}}"
+          },
+          "selectedAgentName": {
+            "type": "string",
+            "value": "{{runtime.workflowMetaData.agentName}}"
+          }
+        }
+      },
+      "width": 150,
+      "height": 96,
+      "positionAbsolute": {
+        "x": 674.5683540203981,
+        "y": 141.78036410133566
+      }
+    },
+    {
+      "id": "pnew0ty",
+      "type": "agent",
+      "name": "buying_channel_agent",
+      "description": "",
+      "position": {
+        "x": 190.61878131315348,
+        "y": 109.07142857142856
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "agentStrategy": "react",
+        "model": {
+          "vendor": "openai",
+          "provider": "azureopenai",
+          "code": "gpt-5.2",
+          "name": "OpenAI GPT-5.2"
+        },
+        "promptTemplate": [
+          {
+            "id": "75b8fad4-56f9-4c44-a27c-dbaff3000645",
+            "role": "system",
+            "text": "## Buying Channel Assistant \n\nYou create a **Project Request** and then render the created request.\n\n## CONTEXT VARIABLES \n\ncategory = {{flow.qa_master_data.category}}\n\nbusinessUnit = { \n\t\t\t\t  entityDetailCode = {{flow.qa_master_data.headerOrg.entityDetailCode}},\n\t\t\t\t  \n\t\t\t\t  entityName = {{flow.qa_master_data.headerOrg.entityName}},\n\n\t\t\t\t  entityCode = {{flow.qa_master_data.headerOrg.entityCode}}\n               }\n\nsuppliers = {{flow.supplier_data}}\n\nproposeSole suppliers = {{flow.newSuppliers}}\n\nquestionnaire used in summary = {{flow.questionnaireForSummary}}\n\nidentified channel = {{flow.channel_identified}}\n\nuser_context = {{flow.user_context}}\n\ndropdown_supplier = {{flow.dropdownSupplier}}\n\nuser_specific_date_format = user_context.user_date_format\n\n\n## GLOBAL RULES\n\n1. One step per turn.\n2. Tool calls only (no extra text when calling tools).\n3. Never stringify payloads. `data` must be a native JSON object.\n4. Only proceed when user selects **\"Create Request\"**.\n5. Show summary **only once** (before creation). Do not show it again after PR is created.\n6. Always ensure to pass the same currency as received in questionnaireForSummary.\n\n---\n\n## Supplier categorization rules:\n   check supplier_data and create 2 lists:\n      1. recommended_suppliers: list of all the suppliers with supplierCode available in supplier_data + list of supplier available in dropdown_supplier\n      2. manual_suppliers: list of all the suppliers without supplierCode available in supplier\n\n## STEP 1 — SHOW SUMMARY ONLY ONCE\n\nBuild one HTML string and call `render_project_summary`:\n\n```html\n<html>\n  Based on your organization’s procurement policy, this request will follow the {{ identifiedChannel}} process <br><br>\n\n  Here is the summary of your request:\n  <br><br>\n  <strong>Category:</strong> CATEGORY NAME <br>\n  <strong>Business Unit:</strong> BUSINESS_UNIT NAME (headerOrg.entityName) <br>\n  {SUPPLIER_SECTION}\n\n  Questionnaire Summary:<br>\n  {QUESTION_LINES}\n\n  <br>\n  Please confirm to proceed with the identified channel.<br>\n</html>\n```\nWhere `SUPPLIER_SECTION` is:\n  - If `recommended_suppliers` is not empty:\n  <strong>Recommended Suppliers:</strong> recommended_suppliers(Comma separated names with supplierCode in bracket) <br>\n  - If `manual_suppliers` is not empty:\n  <strong>Manual Suppliers:</strong> manual_suppliers(Comma separated names) <br>\n  - If both lists are empty, `SUPPLIER_SECTION` will be an empty string.\n  - If user selected pick for me in supplier selection, do not show supplier section in summary even if recommended_suppliers or manual_suppliers are not empty.\n\nWhere `QUESTION_LINES` is:\n  `<strong><question_title></strong> : <answer> <br>` in the exact asked order.\n\n### Question Title Extraction Rules:\n  - Extract question_title from question by removing any leading phrases like \"what is\", \"please provide\", \"select the\", \"choose the\", \"please select the\", \"please choose the\" etc. and also remove any trailing colons or question marks.\n  Example of question_title:\n  question: \"what is the Estimated cost?\" => question_title = \"Estimated cost\"\n  question: \"what is the budget approval status?\" => question_title = \"Budget approval status\"\n  question: \"Please provide the need by date\" => question_title = \"Need by date\"\n  question: \"Please select the reasons(s) for choosing a single supplier for this request (select all that apply):\" => question_title = \"Reasons for choosing a single supplier\"\n\nIf <answer> is a date, strictly:\n  - Format the date answer in the user specific format (user_specific_date_format) before showing in summary.\n  - Example: If user_specific_date_format is \"dd/MM/yyyy\" and answer is \"2024-12-31\", show \"31/12/2024\" in summary.\n\nCall render_project_summary:\n\n```json\n{\n  \"label\": \"<html>...</html>\"\n}\n```\n\n\n---\n\n## STEP 2 — CONFIRMATION\n\n* If user selects **Create Request**, continue to Step 3.\n* Otherwise, re-show Step 1.\n\n---\n\n## STEP 3 — CREATE PROJECT REQUEST\n\nCall projectRequest tool\n- While passing data to projectRequest tool always ensure to pass supplierSelectionReason as array of object.\n For example: \"supplierSelectionReason\": [{\"code\":\"<code>\",\"name\":\"<name>\"}]\n- Always ensure to pass supplierSelectionReason strictly as array of object. Never stringify supplierSelectionReason attribute. It must be <arrayofObject>.\n- Always ensure to pass Supplier Name with Contact Name, Email id in proposeSole attribute if present in QUESTION_LINES.\n---\n\n## STEP 4 — RENDER CREATED REQUEST\n\nAfter successful `projectRequest` response:\n\n* Call `render_project_request`\n\nIf projectRequest fails:\n\n* Render failure banner inside the partial view using the given HTML.\n\nSTEP 5 — SEND FOR VALIDATION\n\nTrigger condition:\n\nThe Project Request has been successfully created\n\nThe user clicks “Send for Validation” or “Submit”\n\nAction:\n\nInvoke render_send_for_validation\n\nOutput only the tool call (no text)\n\nStop.\n\nFINAL RULE (IMPORTANT)\n\nAfter Send for Validation, if the user asks any follow-up question:\n\nRespond only with:\n“Your request is already submitted. Please start a new chat for a new request.”\n\nDo not call any other tools."
+          }
+        ],
+        "tools": [
+          {
+            "_id": "279c1e7c-936b-475b-b37c-de03cb290103",
+            "name": "handoff_to_node",
+            "description": "To render the project request created to the user",
+            "type": "tool",
+            "config": {
+              "enabled": true,
+              "toolId": "tool-handoff",
+              "type": "handoff",
+              "schema": {
+                "type": "object",
+                "properties": {},
+                "required": [],
+                "additionalProperties": false
+              },
+              "settings": {
+                "nodeId": "jh7bne4"
+              },
+              "returnDirect": false
+            },
+            "alias": "render_project_request"
+          },
+          {
+            "_id": "7de4239d-0d53-4205-8ea1-e02026b6a71b",
+            "name": "handoff_to_node",
+            "description": "Hands off execution to the  projectRequest node.\n\n- Always ensure to pass Supplier Name with Contact Name, Email id in proposeSole attribute if present in Questionnaire Summary.",
+            "type": "tool",
+            "config": {
+              "enabled": true,
+              "toolId": "tool-handoff",
+              "type": "handoff",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "project_description": {
+                    "type": "string",
+                    "description": "A brief description of the project request"
+                  },
+                  "requestSummary": {
+                    "type": "string",
+                    "description": "A brief description of the project summary"
+                  }
+                },
+                "required": [
+                  "requestSummary",
+                  "project_description"
+                ],
+                "additionalProperties": false
+              },
+              "settings": {
+                "nodeId": "xbghe21"
+              },
+              "returnDirect": false,
+              "parameters": {}
+            },
+            "alias": "projectRequest"
+          },
+          {
+            "_id": "48bd291a-24db-4eb3-b307-7bdabd0906d4",
+            "name": "handoff_to_node",
+            "description": "when user clicks on send for validation",
+            "type": "tool",
+            "config": {
+              "enabled": true,
+              "toolId": "tool-handoff",
+              "type": "handoff",
+              "schema": {
+                "type": "object",
+                "properties": {},
+                "required": [],
+                "additionalProperties": false
+              },
+              "settings": {
+                "nodeId": "yy67g38"
+              },
+              "returnDirect": false
+            },
+            "alias": "render_send_for_validation"
+          },
+          {
+            "_id": "349b85c7-9cbf-47b3-bd6e-460bfd64847c",
+            "name": "handoff_to_node",
+            "description": "Renders the final project request summary. Caller must provide fully formatted HTML\nSummary format:-\nA single HTML block that follows this structure:\n\n<html>\n   Based on your organization’s procurement policy, this request will follow the <IDENTIFIED_CHANNEL> process <br><br>\n\n   Here is the summary of your request:\n   <br><br>\n   <strong>Category:</strong> CATEGORY NAME <br>\n   <strong>Business Unit:</strong> BUSINESS_UNIT NAME (from entity headerOrg.entityName) <br>\n   <SUPPLIER_SECTION>\n\n   Questionnaire Summary:<br>\n   <strong>QUESTION_TITLE</strong> ANSWER <br>\n   <br>\n   Please confirm to proceed with the identified channel.<br>\n</html>\n\nWhere `SUPPLIER_SECTION` is:\n- If `recommended_suppliers` is not empty:\n <strong>Recommended Suppliers:</strong> recommended_suppliers(Comma separated names with supplierCode in bracket)  + (Comma and dropdownSupplier (legalCompanyName with sourceIdentificationNo in bracket )  +  <br>\n- If `manual_suppliers` is not empty:\n <strong>Manual Suppliers:</strong> manual_suppliers(Comma separated names) <br>\n- If both lists are empty, `SUPPLIER_SECTION` will be an empty string.\n- If user selected pick for me in supplier selection, do not show supplier section in summary even if recommended_suppliers or manual_suppliers are not empty.\n\n## Summary Rules:\nIf <answer> is a date (e.g. Need By Date), strictly:\n  - Format the date answer in the user specific format (<user_specific_date_format>) before showing in summary.\n  - Example: If <user_specific_date_format> is \"dd/MM/yyyy\" and answer of one of the question like NeedByDate is \"2024-12-31\", show \n  \"31/12/2024\" in summary.\n\nIf <answer> is a type of amount, strictly:\n- Format/convert the amount response in the user-specific format using {{flow.user_context.user_culture_code}} before showing in summary. \n   - Example: If user_culture_code = \"en-US\"\n                   - Input: 1234567.5\n                   - Output: $1,234,567.50\n\n      - Always append the <selected currency> present in context with the amount in summary, e.g. $1,234,567.50 USD\n\n### Question Title Extraction Rules:\n- Extract question_title from question by removing any leading phrases like \"what is\", \"please provide\", \"select the\", \"choose the\", \"please select the\", \"please choose the\" etc.\n- Always remove any trailing colons or question marks coming as suffix in the question.\nExample of question_title:\n question: \"what is the Estimated cost?\" => question_title = \"Estimated cost\"\n question: \"what is the budget approval status?\" => question_title = \"Budget approval status\"\n question: \"Please provide the need by date\" => question_title = \"Need by date\"\n question: \"Please select the reasons(s) for choosing a single supplier for this request (select all that apply):\" => question_title = \"Reasons for choosing a single supplier\"\n\n\nInstruction specific to supplierSelectionReason attribute:\n- Always ensure to pass supplierSelectionReason strictly as array of object. Never stringify supplierSelectionReason attribute. It must be <arrayofObject>.",
+            "type": "tool",
+            "config": {
+              "enabled": true,
+              "toolId": "tool-handoff",
+              "type": "handoff",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "summary": {
+                    "type": "string"
+                  }
+                },
+                "required": [],
+                "additionalProperties": true
+              },
+              "settings": {
+                "nodeId": "qy2wpl8"
+              },
+              "returnDirect": false
+            },
+            "alias": "render_project_summary"
+          }
+        ],
+        "resources": [],
+        "libraries": [],
+        "maxIterations": 5,
+        "structuredOutput": {
+          "enable": false,
+          "name": "",
+          "description": "",
+          "schema": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        "includeThoughts": true
+      },
+      "data": {},
+      "variableUpdates": [
+        {
+          "fieldName": "thread.messages",
+          "operation": "append",
+          "value": "{{nodeOutput.text}}",
+          "role": "assistant"
+        }
+      ],
+      "width": 350,
+      "height": 185,
+      "selected": true,
+      "positionAbsolute": {
+        "x": 190.61878131315348,
+        "y": 109.07142857142856
+      },
+      "dragging": false
+    },
+    {
+      "id": "qy2wpl8",
+      "type": "tool",
+      "name": "render_project_request_summary",
+      "description": "",
+      "position": {
+        "x": -409.45018412555964,
+        "y": 467.64285714285734
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "enabled": true,
+        "toolId": "mcp-a4deb011-ea94-418d-9912-822447e4ce1f-labelandbuttons1012",
+        "type": "mcp",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "preText": {
+              "description": "Optional Markdown shown immediately before this view. Use to introduce what it shows/why it matters or give brief instructions. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+              "type": "string"
+            },
+            "postText": {
+              "description": "Optional Markdown shown immediately after this view. Use for next steps, brief context/interpretation, or a transition to the next section/view. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+              "type": "string"
+            },
+            "label_datamodel": {
+              "description": "Description:\n**If data is not a valid html string then convert the value to string.  **Use `label_datamodel` override to pass data to form label.\n\nNotes:\n**If data is not a valid html string then convert the value to string.  **Use `label_datamodel` override to pass data to form label.",
+              "type": "string"
+            },
+            "buttons_datamodel": {
+              "description": "Description:\n\n\nNotes:\n",
+              "type": "string"
+            }
+          },
+          "condition": "Description:\nThis partial view is responsible for rendering the label and buttons/options.\n\nNotes:\nThis partial view is responsible for rendering the label and buttons/options."
+        },
+        "settings": {
+          "serverId": "a4deb011-ea94-418d-9912-822447e4ce1f"
+        },
+        "returnDirect": false,
+        "_meta": {
+          "uiView": "{\"RefId\":null,\"ViewUniqueId\":\"e1a380cd-75d0-4534-ac80-aaa5301718ee\",\"Version\":[1,0],\"Type\":\"partialView\",\"Name\":\"label_and_buttons-1.0.12\",\"Icon\":null,\"Channel\":\"conversation\",\"Description\":\"This partial view is responsible for rendering the label and buttons/options.\",\"Instruction\":\"This partial view is responsible for rendering the label and buttons/options.\",\"AppId\":null,\"ModuleId\":null,\"EnableContextSharing\":true,\"Overrides\":{\"label_datamodel\":{\"Type\":\"data\",\"OverrideId\":\"label_datamodel\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"label_datamodel\",\"Description\":\"**If data is not a valid html string then convert the value to string.  **Use \\u0060label_datamodel\\u0060 override to pass data to form label.\",\"Instruction\":\"**If data is not a valid html string then convert the value to string.  **Use \\u0060label_datamodel\\u0060 override to pass data to form label.\",\"Value\":null,\"DataType\":\"string\",\"Source\":\"static\"},\"buttons_datamodel\":{\"Type\":\"data\",\"OverrideId\":\"buttons_datamodel\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"buttons_datamodel\",\"Description\":\"\",\"Instruction\":\"\",\"Value\":null,\"DataType\":\"array\",\"Source\":\"static\"}}}",
+          "type": "partial-view"
+        },
+        "parameters": {
+          "preText": "",
+          "postText": "",
+          "label_datamodel": "{{nodes.buying_channel_agent.toolResults.render_project_summary.summary}}",
+          "buttons_datamodel": "[{\"label\":\"Create Request\",\"value\":\"Create Request\"}]"
+        }
+      },
+      "data": {},
+      "width": 350,
+      "height": 72,
+      "selected": false,
+      "dragging": false,
+      "positionAbsolute": {
+        "x": -409.45018412555964,
+        "y": 467.64285714285734
+      },
+      "variableUpdates": [
+        {
+          "fieldName": "thread.buying_channel_agent_messages",
+          "operation": "append",
+          "value": "Project Request Summary rendered to user: {{nodes.buying_channel_agent.toolResults.render_project_summary.summary}}",
+          "role": "tool"
+        }
+      ]
+    },
+    {
+      "id": "csu70pr",
+      "type": "variable",
+      "name": "variable_1",
+      "description": "",
+      "position": {
+        "x": 674.5683540203981,
+        "y": 321.7142857142858
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {},
+      "data": {},
+      "width": 250,
+      "height": 72,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 671.7112111632553,
+        "y": 321.7142857142858
+      },
+      "dragging": false,
+      "variableUpdates": [
+        {
+          "fieldName": "thread.messages",
+          "operation": "append",
+          "value": " ",
+          "role": "assistant"
+        }
+      ]
+    },
+    {
+      "id": "xbghe21",
+      "type": "tool",
+      "name": "projectrequestv2",
+      "description": "Description:\n\n\nReturns:\n- \n\nFriendly Name: projectRequest_v2",
+      "position": {
+        "x": 599.6212444458691,
+        "y": 601.9642857142858
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "enabled": true,
+        "toolId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c-projectRequestv2-45",
+        "type": "mcp",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "event": {
+              "description": "Event to execute DAC policy in server function.",
+              "type": "string"
+            },
+            "data": {
+              "description": "Payload used to execute the function.",
+              "type": "object"
+            },
+            "additionalData": {
+              "description": "Any additional data used by the function.",
+              "type": "object"
+            }
+          },
+          "required": [
+            "data"
+          ],
+          "condition": "Description:\n\n\nReturns:\n- \n\nFriendly Name: projectRequest_v2"
+        },
+        "settings": {
+          "serverId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c"
+        },
+        "returnDirect": false,
+        "_meta": {
+          "functionId": "661f1e85-9423-4828-94ca-ed4ca1fc4f8b",
+          "type": "ssf-call",
+          "source": "current-module",
+          "moduleId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c",
+          "toolId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c",
+          "serverName": "module mcp"
+        },
+        "parameters": {
+          "event": "",
+          "data": {
+            "questionnaireResponse": "{{flow.questionnaireResponse}}",
+            "supplier_data": "{{flow.supplier_data}}",
+            "qa_master_data": "{{flow.qa_master_data}}",
+            "user_decision_points": "{{flow.user_decision_points}}",
+            "channel_identified": "{{flow.channel_identified}}",
+            "project_description": "{{nodes.buying_channel_agent.toolResults.projectRequest.project_description}}",
+            "requestSummary": "{{nodes.buying_channel_agent.toolResults.projectRequest.requestSummary}}",
+            "requestType": "{{flow.channel_identified}}",
+            "intake_type": "{{flow.channel_identified}}",
+            "dropdownSupplier": "{{flow.dropdownSupplier}}"
+          },
+          "additionalData": {}
+        }
+      },
+      "data": {},
+      "width": 335,
+      "height": 96,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 599.6212444458691,
+        "y": 601.9642857142858
+      },
+      "dragging": false,
+      "variableUpdates": [
+        {
+          "fieldName": "flow.documentCode",
+          "operation": "set",
+          "value": "{{nodeOutput.result.documentCode}}"
+        },
+        {
+          "fieldName": "thread.buying_channel_agent_messages",
+          "operation": "append",
+          "value": "Project Request Creation Successfull",
+          "role": "tool"
+        }
+      ]
+    },
+    {
+      "id": "yy67g38",
+      "type": "tool",
+      "name": "prfsentforvalidationsuccesspv0024",
+      "description": "Description:\nShow this PV on success of send for validation.\n\nNotes:\nShow this PV on success of send for validation.",
+      "position": {
+        "x": 48.68163689907715,
+        "y": 655.4826896595916
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "enabled": true,
+        "toolId": "mcp-ac51937a-532b-4186-9209-2ab379e5c66e-prfsentForValidationSuccesspv0024",
+        "type": "mcp",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "preText": {
+              "description": "Optional Markdown shown immediately before this view. Use to introduce what it shows/why it matters or give brief instructions. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+              "type": "string"
+            },
+            "postText": {
+              "description": "Optional Markdown shown immediately after this view. Use for next steps, brief context/interpretation, or a transition to the next section/view. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+              "type": "string"
+            },
+            "sendForValidationOverrides": {
+              "description": "Description:\nUse agent history and set the value to ovverride 'sendForValidationOverrides' from '${sendForValidationPV}' \n\nNotes:\nUse agent history and set the value to ovverride 'sendForValidationOverrides' from '${sendForValidationPV}' ",
+              "type": "string"
+            }
+          },
+          "condition": "Description:\nShow this PV on success of send for validation.\n\nNotes:\nShow this PV on success of send for validation."
+        },
+        "settings": {
+          "serverId": "ac51937a-532b-4186-9209-2ab379e5c66e"
+        },
+        "returnDirect": false,
+        "_meta": {
+          "uiView": "{\"RefId\":null,\"ViewUniqueId\":\"56a8778a-e705-4a1b-acf9-2eafd3029cae\",\"Version\":[0,0],\"Type\":\"partialSection\",\"Name\":\"prf_sentForValidationSuccess_pv-0.0.24\",\"Icon\":null,\"Channel\":\"conversation\",\"Description\":\"Show this PV on success of send for validation.\",\"Instruction\":\"Show this PV on success of send for validation.\",\"AppId\":null,\"ModuleId\":null,\"EnableContextSharing\":true,\"Overrides\":{\"sendForValidationOverrides\":{\"Type\":\"data\",\"OverrideId\":\"sendForValidationOverrides\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"projectrequest\",\"Description\":\"Use agent history and set the value to ovverride \\u0027sendForValidationOverrides\\u0027 from \\u0027${sendForValidationPV}\\u0027 \",\"Instruction\":\"Use agent history and set the value to ovverride \\u0027sendForValidationOverrides\\u0027 from \\u0027${sendForValidationPV}\\u0027 \",\"Value\":null,\"DataType\":\"object\",\"Source\":\"static\"}}}",
+          "type": "partial-view"
+        },
+        "parameters": {
+          "preText": "",
+          "postText": "",
+          "sendForValidationOverrides": "{{nodes.projectrequestv2.result}}"
+        }
+      },
+      "data": {},
+      "width": 350,
+      "height": 112,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 50.110208327648536,
+        "y": 655.4826896595916
+      },
+      "dragging": false,
+      "variableUpdates": [
+        {
+          "fieldName": "thread.buying_channel_agent_messages",
+          "operation": "append",
+          "value": "Project Request Sent for validation",
+          "role": "tool"
+        }
+      ]
+    },
+    {
+      "id": "jh7bne4",
+      "type": "tool",
+      "name": "prfcreaterequestformpv00164",
+      "description": "Description:\nCreate Project Request\n\nNotes:\nsave value of generated overrides 'projectRequestOverrides' to ${sendForValidationPV}",
+      "position": {
+        "x": 48.68163689907715,
+        "y": 871.8830418381357
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "enabled": true,
+        "toolId": "mcp-ac51937a-532b-4186-9209-2ab379e5c66e-prfcreateRequestFormpv00164",
+        "type": "mcp",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "preText": {
+              "description": "Optional Markdown shown immediately before this view. Use to introduce what it shows/why it matters or give brief instructions. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+              "type": "string"
+            },
+            "postText": {
+              "description": "Optional Markdown shown immediately after this view. Use for next steps, brief context/interpretation, or a transition to the next section/view. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+              "type": "string"
+            },
+            "projectRequestOverrides": {
+              "description": "Description:\nThe value of this override can be user specific like ```json {\"documentCode\":\"&lt;documentCode&gt;\"}```\n\nNotes:\nThe value of this override can be user specific like ```json {\"documentCode\":\"&lt;documentCode&gt;\"}```",
+              "type": "string"
+            }
+          },
+          "condition": "Description:\nCreate Project Request\n\nNotes:\nsave value of generated overrides 'projectRequestOverrides' to ${sendForValidationPV}"
+        },
+        "settings": {
+          "serverId": "ac51937a-532b-4186-9209-2ab379e5c66e"
+        },
+        "returnDirect": false,
+        "_meta": {
+          "uiView": "{\"RefId\":null,\"ViewUniqueId\":\"d2801162-5faa-4e94-a6ed-39b9b4e3453a\",\"Version\":[0,0],\"Type\":\"partialSection\",\"Name\":\"prf_createRequestForm_pv-0.0.164\",\"Icon\":null,\"Channel\":\"conversation\",\"Description\":\"Create Project Request\",\"Instruction\":\"save value of generated overrides \\u0027projectRequestOverrides\\u0027 to ${sendForValidationPV}\",\"AppId\":null,\"ModuleId\":null,\"EnableContextSharing\":true,\"Overrides\":{\"projectRequestOverrides\":{\"Type\":\"data\",\"OverrideId\":\"projectRequestOverrides\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"projectRequestDM\",\"Description\":\"The value of this override can be user specific like \\u0060\\u0060\\u0060json {\\u0022documentCode\\u0022:\\u0022\\u0026lt;documentCode\\u0026gt;\\u0022}\\u0060\\u0060\\u0060\",\"Instruction\":\"The value of this override can be user specific like \\u0060\\u0060\\u0060json {\\u0022documentCode\\u0022:\\u0022\\u0026lt;documentCode\\u0026gt;\\u0022}\\u0060\\u0060\\u0060\",\"Value\":null,\"DataType\":\"object\",\"Source\":\"static\"}}}",
+          "type": "partial-view"
+        },
+        "parameters": {
+          "preText": "",
+          "postText": "",
+          "projectRequestOverrides": "{\"documentCode\":\"{{flow.documentCode}}\"}"
+        }
+      },
+      "data": {},
+      "width": 350,
+      "height": 112,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 45.88493606757845,
+        "y": 871.8830418381357
+      },
+      "dragging": false,
+      "variableUpdates": [
+        {
+          "fieldName": "{{thread.buying_channel_agent_messages}}",
+          "operation": "append",
+          "value": "Project request has been rendered successfully",
+          "role": "tool"
+        }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "reactflow__edge-pnew0ty-output",
+      "source": "pnew0ty",
+      "target": "output",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "agent",
+        "targetType": "output"
+      }
+    },
+    {
+      "id": "pnew0ty-handoff-349b85c7-9cbf-47b3-bd6e-460bfd64847c",
+      "source": "pnew0ty",
+      "target": "qy2wpl8",
+      "type": "handoff",
+      "sourceHandle": "handoff",
+      "targetHandle": null,
+      "deletable": false,
+      "data": {
+        "toolId": "349b85c7-9cbf-47b3-bd6e-460bfd64847c",
+        "isHandoff": true,
+        "sourceType": "agent",
+        "targetType": "tool"
+      }
+    },
+    {
+      "id": "reactflow__edge-qy2wpl8-csu70pr",
+      "source": "qy2wpl8",
+      "target": "csu70pr",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "tool",
+        "targetType": "variable"
+      }
+    },
+    {
+      "id": "reactflow__edge-csu70pr-output",
+      "source": "csu70pr",
+      "target": "output",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "variable",
+        "targetType": "output"
+      }
+    },
+    {
+      "id": "reactflow__edge-xbghe21-pnew0ty",
+      "source": "xbghe21",
+      "target": "pnew0ty",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "tool",
+        "targetType": "agent"
+      }
+    },
+    {
+      "id": "pnew0ty-handoff-7de4239d-0d53-4205-8ea1-e02026b6a71b",
+      "source": "pnew0ty",
+      "target": "xbghe21",
+      "type": "handoff",
+      "sourceHandle": "handoff",
+      "targetHandle": null,
+      "deletable": false,
+      "data": {
+        "toolId": "7de4239d-0d53-4205-8ea1-e02026b6a71b",
+        "isHandoff": true,
+        "sourceType": "agent",
+        "targetType": "tool"
+      }
+    },
+    {
+      "id": "reactflow__edge-start-pnew0ty",
+      "source": "start",
+      "target": "pnew0ty",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "start",
+        "targetType": "agent"
+      }
+    },
+    {
+      "id": "reactflow__edge-yy67g38-csu70pr",
+      "source": "yy67g38",
+      "target": "csu70pr",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "tool",
+        "targetType": "variable"
+      }
+    },
+    {
+      "id": "pnew0ty-handoff-48bd291a-24db-4eb3-b307-7bdabd0906d4",
+      "source": "pnew0ty",
+      "target": "yy67g38",
+      "type": "handoff",
+      "sourceHandle": "handoff",
+      "targetHandle": null,
+      "deletable": false,
+      "data": {
+        "toolId": "48bd291a-24db-4eb3-b307-7bdabd0906d4",
+        "isHandoff": true,
+        "sourceType": "agent",
+        "targetType": "tool"
+      }
+    },
+    {
+      "id": "reactflow__edge-jh7bne4-pnew0ty",
+      "source": "jh7bne4",
+      "target": "pnew0ty",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "tool",
+        "targetType": "agent"
+      }
+    },
+    {
+      "id": "pnew0ty-handoff-279c1e7c-936b-475b-b37c-de03cb290103",
+      "source": "pnew0ty",
+      "target": "jh7bne4",
+      "type": "handoff",
+      "sourceHandle": "handoff",
+      "targetHandle": null,
+      "deletable": false,
+      "data": {
+        "toolId": "279c1e7c-936b-475b-b37c-de03cb290103",
+        "isHandoff": true,
+        "sourceType": "agent",
+        "targetType": "tool"
+      }
+    }
+  ],
+  "originalBpc": "20210511",
+  "originalEnvironment": "DEV",
+  "freezeRelease": false,
+  "overwriteOnNextRelease": false,
+  "fromModuleVersion": "v1781093875659812800",
+  "lastModifiedVersion": "v1781121601712159400",
+  "rebasedFromVersion": null,
+  "createdBy": "vishwas.tak@gep.com",
+  "createdOn": "2026-02-10T21:01:44.51Z",
+  "updatedBy": "Ashok.Bhobhiya@gep.com",
+  "updatedOn": "2026-03-19T07:26:53.458Z",
+  "environment": "DEV",
+  "appId": "e2c84064-171f-4f1a-a29a-19e0ac610935",
+  "moduleId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c",
+  "version": "v1781121601712159400"
+}

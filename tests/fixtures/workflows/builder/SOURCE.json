@@ -1,0 +1,140 @@
+{
+  "repos": {
+    "Strands-visual-builder": "90b5885920e7baef4cf804de1e3931a56f3af7f2",
+    "ZonicAgentRuntimeBackend_DjangoApp": "cf55ca2c263e803902f042866fc3baaa06f37718"
+  },
+  "files": {
+    "django/complex-agent.json": {
+      "source": "ZonicAgentRuntimeBackend_DjangoApp/airuntimebackendmodule/code/aiplatform/tests_all/tests/test_data/workflows/complex-agent.json",
+      "sha256": "033dbb09caa0f6ed745097832fcf46ea3cf5cf409de9c256e08b1685e28319ec"
+    },
+    "invalid/new-workflow.json": {
+      "source": "Strands-visual-builder/docs/examples-agent-wokflow/new-workflow.json",
+      "sha256": "9b5b2cdfe10d55756278073ed79ccf922cce9087998fdde2d55732febdf027ed"
+    },
+    "open-data/fsh-energy-agent.json": {
+      "source": "agent-build-langgraph: agent_builder.v_agent_export (gateway datasource agentruntime), name fsh-energy-agent",
+      "sha256": "d4b5371dabb18c123242dd8d0588ca0ea40a24c10fa1fc28feb3ca9b9b68cf16"
+    },
+    "open-data/fsh-facility-agent.json": {
+      "source": "agent-build-langgraph: agent_builder.v_agent_export (gateway datasource agentruntime), name fsh-facility-agent",
+      "sha256": "c3b310e4001a9018dfb042cff40eb0bdf6cd2ebd8e225c1666e39f39d4e2e0a5"
+    },
+    "open-data/fsh-risk-agent.json": {
+      "source": "agent-build-langgraph: agent_builder.v_agent_export (gateway datasource agentruntime), name fsh-risk-agent",
+      "sha256": "5527082950335e51d34f45d491f5d0fc6b292bb8a5da9f9302556bb92d343665"
+    },
+    "platform/buying-channel-assistant.json": {
+      "source": "Strands-visual-builder/backend/tests/workflow/fixtures/sub_agents.json#3",
+      "sha256": "f3634f0d7cee495daa0f8192bb393e69b681ea1659711e4a9a34de7f99e32f6e"
+    },
+    "platform/catalogue-assistant.json": {
+      "source": "Strands-visual-builder/backend/tests/workflow/fixtures/sub_agents.json#0",
+      "sha256": "476b050da24836cda7323427a5805059cd536ca999cfdc66492cba94cc9b1f7a"
+    },
+    "platform/fast-track-questionnaire-assistant.json": {
+      "source": "Strands-visual-builder/backend/tests/workflow/fixtures/sub_agents.json#2",
+      "sha256": "f127c0e68bf26c6a0e36b71d287f6ffe49370695d9d34a3d5c074dd7b1e7521f"
+    },
+    "platform/gifts-hospitality-onboarding-buying.json": {
+      "source": "Strands-visual-builder/backend/tests/workflow/fixtures/sub_agents.json#4",
+      "sha256": "e25655dba32f09ffd43a67f9b7579530dd995fdf8f1393c5f283ce5fb52d0e23"
+    },
+    "platform/intelligent-buying-orchestrator.json": {
+      "source": "Strands-visual-builder/backend/tests/workflow/fixtures/agent.json",
+      "sha256": "bb1c4c4b6d753216b71ff8192c15b0cc8ef02e7fd480019170a348c7e9a257bb"
+    },
+    "platform/other-payee-onboarding-assitant.json": {
+      "source": "Strands-visual-builder/backend/tests/workflow/fixtures/sub_agents.json#5",
+      "sha256": "e0b96f5f711280ec59664d158aa1bd9a59583b76402dd22c75a1e379b680d70a"
+    },
+    "platform/quick-pay-assistant.json": {
+      "source": "Strands-visual-builder/backend/tests/workflow/fixtures/sub_agents.json#6",
+      "sha256": "f6a8fbdfacde879e5ce31ef321d253d21825077b6f891fac473d50a43e029080"
+    },
+    "platform/supplier-recommendation-assistant.json": {
+      "source": "Strands-visual-builder/backend/tests/workflow/fixtures/sub_agents.json#1",
+      "sha256": "a415498d9269ab70d589c6946ef99c3c0b072f9bffc53de945941e3ad51fb26a"
+    },
+    "platform/v3-category-specific-questionnaire.json": {
+      "source": "Strands-visual-builder/backend/tests/workflow/fixtures/sub_agents.json#7",
+      "sha256": "1afb3285e3c4f9960ab4d1219afffdf6b7645104f2066b9438f3f77d6253686a"
+    },
+    "schema/workflow-document-v2.schema.json": {
+      "source": "Strands-visual-builder/backend/workflow/resources/schemas/workflow-document-v2.schema.json",
+      "sha256": "87b67c74df785c9dfb98b4ce61fa7b92a4dcf6e5d9a63b7f151a2a78baa8679a"
+    },
+    "templates/approval_flow.json": {
+      "source": "Strands-visual-builder/backend/workflow/resources/templates/approval_flow.json",
+      "sha256": "451f9767e1168415a59a8bcd0db4ce5f3e36d6a9fc19dfd6e418ff743e26523e"
+    },
+    "templates/customer_support_swarm.json": {
+      "source": "Strands-visual-builder/backend/workflow/resources/templates/customer_support_swarm.json",
+      "sha256": "eb5cb27031c469c720340d073a59b024073260e3194e160e63349db559eec6b6"
+    },
+    "templates/facility_operations_swarm.json": {
+      "source": "Strands-visual-builder/backend/workflow/resources/templates/facility_operations_swarm.json",
+      "sha256": "29aa677bd0e9185690dff793df27616655f72397e8dfb9558f1bd86431f841f1"
+    },
+    "templates/question_answering_with_tools.json": {
+      "source": "Strands-visual-builder/backend/workflow/resources/templates/question_answering_with_tools.json",
+      "sha256": "8b5d627732b13a4f0845785b09e1661998a4040e3b30e9986a4a442561b5e816"
+    },
+    "zonic-versioned/all-agents.json": {
+      "source": "Strands-visual-builder/docs/examples-agent-wokflow/all-agents.json",
+      "sha256": "3a2f26bab5777088d6910afba4fc8dd75d23c80b7b1bef9e8aafdd281b76495e"
+    },
+    "zonic-versioned/fsh-energy-agent.json": {
+      "source": "Strands-visual-builder/docs/examples-agent-wokflow/fsh-energy-agent.json",
+      "sha256": "32d2168069fb9db26538a096ecc419c9469443b89400195848da36373ed77277"
+    },
+    "zonic-versioned/fsh-facility-agent-v2.json": {
+      "source": "Strands-visual-builder/docs/examples-agent-wokflow/fsh-facility-agent-v2.json",
+      "sha256": "95095de831e18f871cfc5592406e288260176ff822f881c92d37e9d020e8a37f"
+    },
+    "zonic-versioned/fsh-facility-agent.json": {
+      "source": "Strands-visual-builder/docs/examples-agent-wokflow/fsh-facility-agent.json",
+      "sha256": "11bdbb98583d2a7ca5613a36bbd8116abae9763fc52e744236d47f936caba7dc"
+    },
+    "zonic-versioned/fsh-risk-agent.json": {
+      "source": "Strands-visual-builder/docs/examples-agent-wokflow/fsh-risk-agent.json",
+      "sha256": "719f7307a800b746b4b0acd185011ee54120446f9657287ea945caf1a703270b"
+    },
+    "zonic-versioned/test-agent-workflow.json": {
+      "source": "Strands-visual-builder/docs/examples-agent-wokflow/test-agent-workflow.json",
+      "sha256": "a3545a027eecb8ab7bbadfe1a604b1cacf2079e5adc756c2ebb67cd3cfcb3051"
+    },
+    "zonic-versioned/test-relationship.json": {
+      "source": "Strands-visual-builder/docs/examples-agent-wokflow/test-relationship.json",
+      "sha256": "44bf78036b617783a4f6480955eac807ca89122fd973738350bb9fa69b59205d"
+    },
+    "zonic/all-agents.json": {
+      "source": "Strands-visual-builder/backend/tests/workflow/fixtures/zonic/all-agents.json",
+      "sha256": "7438503b1ce7105e55540c4f5f8cd7d514f870f3c7f04639ac74837668c0a65f"
+    },
+    "zonic/fsh-energy-agent.json": {
+      "source": "Strands-visual-builder/backend/tests/workflow/fixtures/zonic/fsh-energy-agent.json",
+      "sha256": "51f7baccdff8cee542d74fe621fda4be54bee7f8f2832734ec71b46c8d6cbb53"
+    },
+    "zonic/fsh-facility-agent-v2.json": {
+      "source": "Strands-visual-builder/backend/tests/workflow/fixtures/zonic/fsh-facility-agent-v2.json",
+      "sha256": "fd5c40c9daed70f43ac161b76bb563f7c5861ccb1c8b40136b2a51630fe75d04"
+    },
+    "zonic/fsh-facility-agent.json": {
+      "source": "Strands-visual-builder/backend/tests/workflow/fixtures/zonic/fsh-facility-agent.json",
+      "sha256": "04d1b06740aed4efe0279aab3e24e1958438115880b5ccaa58741b6179c574b3"
+    },
+    "zonic/fsh-risk-agent.json": {
+      "source": "Strands-visual-builder/backend/tests/workflow/fixtures/zonic/fsh-risk-agent.json",
+      "sha256": "8353dd71cb1f1ce7025fc84f82093ce5995a33f364d816459bd889855100f016"
+    },
+    "zonic/test-agent-workflow.json": {
+      "source": "Strands-visual-builder/backend/tests/workflow/fixtures/zonic/test-agent-workflow.json",
+      "sha256": "977cfda8b0f38dd50191df83a7c0259998625dc2a4fd8b0918b94a17e29ee676"
+    },
+    "zonic/test-relationship.json": {
+      "source": "Strands-visual-builder/backend/tests/workflow/fixtures/zonic/test-relationship.json",
+      "sha256": "c63d6e095b6ec443ddb57cbab8978674444a44c2cc3d295f5a79bcdc83eb462c"
+    }
+  }
+}

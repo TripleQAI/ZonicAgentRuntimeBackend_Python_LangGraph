@@ -1,0 +1,148 @@
+{
+  "schemaVersion": "2.0",
+  "agenticWorkflowId": "synthetic-rule-expression",
+  "name": "rule-expression",
+  "displayName": "Rule Expression",
+  "description": "Rule branches with free-text expressions and empty conditions, as the Next.js builder writes them (design 5.2).",
+  "variables": {
+    "score": {
+      "type": "number",
+      "default": 0
+    },
+    "name": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "systemParams": [],
+  "publishChannels": [],
+  "nodes": [
+    {
+      "id": "start_1",
+      "type": "start",
+      "name": "Start_1",
+      "description": "",
+      "config": {
+        "interfaceInputs": [],
+        "variableUpdates": []
+      }
+    },
+    {
+      "id": "rule_1",
+      "type": "rule",
+      "name": "Rule_1",
+      "description": "",
+      "config": {
+        "rules": [
+          {
+            "label": "High",
+            "ruleId": "r_high",
+            "expression": "{{flow.score}} >= 8",
+            "conditions": [],
+            "conditionLogic": "AND"
+          },
+          {
+            "label": "Named",
+            "ruleId": "r_named",
+            "expression": "{{flow.name}} == 'alpha'",
+            "conditions": [],
+            "conditionLogic": "AND"
+          },
+          {
+            "label": "Else",
+            "ruleId": "r_else",
+            "isDefault": true,
+            "conditions": [],
+            "conditionLogic": "AND"
+          }
+        ]
+      }
+    },
+    {
+      "id": "output_high",
+      "type": "output",
+      "name": "High",
+      "description": "",
+      "config": {
+        "outputMapping": [
+          {
+            "target": "answer",
+            "source": "high",
+            "type": "string"
+          }
+        ],
+        "variableUpdates": []
+      }
+    },
+    {
+      "id": "output_named",
+      "type": "output",
+      "name": "Named",
+      "description": "",
+      "config": {
+        "outputMapping": [
+          {
+            "target": "answer",
+            "source": "named",
+            "type": "string"
+          }
+        ],
+        "variableUpdates": []
+      }
+    },
+    {
+      "id": "output_other",
+      "type": "output",
+      "name": "Other",
+      "description": "",
+      "config": {
+        "outputMapping": [
+          {
+            "target": "answer",
+            "source": "other",
+            "type": "string"
+          }
+        ],
+        "variableUpdates": []
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e_start_1_default_rule_1",
+      "source": "start_1",
+      "target": "rule_1",
+      "sourceHandle": "default",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    },
+    {
+      "id": "e_rule_1_r_high_output_high",
+      "source": "rule_1",
+      "target": "output_high",
+      "sourceHandle": "r_high",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    },
+    {
+      "id": "e_rule_1_r_named_output_named",
+      "source": "rule_1",
+      "target": "output_named",
+      "sourceHandle": "r_named",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    },
+    {
+      "id": "e_rule_1_r_else_output_other",
+      "source": "rule_1",
+      "target": "output_other",
+      "sourceHandle": "r_else",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    }
+  ]
+}

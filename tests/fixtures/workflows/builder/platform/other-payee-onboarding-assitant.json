@@ -1,0 +1,1658 @@
+{
+  "agenticWorkflowId": "fabcb880-dfd7-4519-bca9-d437a55a9036",
+  "bpc": "20210511",
+  "name": "other-payee-onboarding-assitant",
+  "displayName": "Other Payee Onboarding Assitant",
+  "description": "Latest v5",
+  "isDisabled": false,
+  "isAvailableForMigration": true,
+  "editAs": "canvas",
+  "enableForAutoInvoke": false,
+  "includeThoughts": false,
+  "invocationType": "API",
+  "publishChannels": [
+    {
+      "refId": "api",
+      "code": "api",
+      "name": "API",
+      "description": "Expose the agent as a REST API for system and app integrations"
+    },
+    {
+      "refId": "qi-ui",
+      "code": "qi-ui",
+      "name": "Qi UI",
+      "description": "Make your agent available in GEP’s Qi interface"
+    }
+  ],
+  "security": {
+    "activities": [
+      {
+        "refId": "10100002",
+        "code": "10100002",
+        "name": "Home"
+      }
+    ]
+  },
+  "skills": [],
+  "variables": {
+    "flow": [
+      {
+        "refId": "partialViewData",
+        "name": "partialViewData",
+        "type": "string",
+        "id": "var-5slccrocc",
+        "description": "This variable consists of data provided by the user through a view or captured from user interactions within the view.",
+        "default": "",
+        "required": false
+      },
+      {
+        "refId": "questionnaireForSummary",
+        "name": "questionnaireForSummary",
+        "type": "string",
+        "id": "var-5ovnc9kym",
+        "default": "",
+        "required": false
+      },
+      {
+        "refId": "supplier_data",
+        "name": "supplier_data",
+        "type": "object",
+        "id": "var-crqoox207",
+        "default": {},
+        "required": false
+      },
+      {
+        "refId": "current_state",
+        "name": "current_state",
+        "type": "string",
+        "id": "var-m2bmmvnyc",
+        "default": "",
+        "required": false
+      },
+      {
+        "refId": "global_questionnaireResponse",
+        "name": "global_questionnaireResponse",
+        "type": "string",
+        "id": "var-uf7dxxbtd",
+        "default": "",
+        "required": false
+      },
+      {
+        "refId": "user_context",
+        "name": "user_context",
+        "type": "object",
+        "id": "var-0og1wbm51",
+        "default": {},
+        "required": false
+      },
+      {
+        "refId": "qa_master_data",
+        "name": "qa_master_data",
+        "type": "object",
+        "id": "var-llu261re6",
+        "default": {},
+        "required": false
+      },
+      {
+        "refId": "user_decision_points",
+        "name": "user_decision_points",
+        "type": "object",
+        "id": "var-bjpnljeem",
+        "default": {},
+        "required": false
+      },
+      {
+        "refId": "channel_identified",
+        "name": "channel_identified",
+        "type": "string",
+        "id": "var-vip556r64",
+        "default": "",
+        "required": false
+      },
+      {
+        "refId": "questionnaireResponse",
+        "name": "questionnaireResponse",
+        "type": "object",
+        "id": "var-sj87pickl",
+        "default": {},
+        "required": false
+      }
+    ],
+    "system": []
+  },
+  "interface": {
+    "inputs": {
+      "query": {
+        "type": "string",
+        "description": "User query to process",
+        "required": true
+      }
+    },
+    "outputs": {
+      "response": {
+        "type": "string",
+        "description": "Final response to the user"
+      }
+    }
+  },
+  "nodes": [
+    {
+      "id": "start",
+      "type": "start",
+      "name": "start",
+      "description": "Starting point of the workflow",
+      "position": {
+        "x": 143.91401506696428,
+        "y": 101.5
+      },
+      "deletable": false,
+      "selected": false,
+      "dragging": false,
+      "data": {},
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "label": "start",
+        "nodeType": "start"
+      },
+      "variableUpdates": [
+        {
+          "fieldName": "flow.questionnaireForSummary",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.questionnaireForSummary}}"
+        },
+        {
+          "fieldName": "flow.qa_master_data",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.qa_master_data}}"
+        },
+        {
+          "fieldName": "flow.channel_identified",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.channel_identified}}"
+        },
+        {
+          "fieldName": "flow.global_questionnaireResponse",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.questionnaireResponse}}"
+        },
+        {
+          "fieldName": "flow.current_state",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.current_state}}"
+        },
+        {
+          "fieldName": "flow.user_decision_points",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.decision_points}}"
+        },
+        {
+          "fieldName": "flow.user_context",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.user_context}}"
+        },
+        {
+          "fieldName": "flow.partialViewData",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.partialViewData}}"
+        },
+        {
+          "fieldName": "thread.messages",
+          "operation": "append",
+          "value": "{{nodeOutput.interface.inputs.partialViewData}}",
+          "role": "user",
+          "rules": {
+            "conditions": [
+              {
+                "field": "{{nodeOutput.interface.inputs.partialViewData}}",
+                "operator": "is not empty",
+                "value": ""
+              }
+            ],
+            "logicType": "AND"
+          }
+        },
+        {
+          "fieldName": "thread.messages",
+          "operation": "append",
+          "value": "{{nodeOutput.interface.inputs.message}}",
+          "role": "user",
+          "rules": {
+            "conditions": [
+              {
+                "field": "{{nodeOutput.interface.inputs.message}}",
+                "operator": "is not empty",
+                "value": ""
+              }
+            ],
+            "logicType": "AND"
+          }
+        },
+        {
+          "fieldName": "system.userQuery",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.message}}",
+          "rules": {
+            "conditions": [
+              {
+                "field": "{{nodeOutput.interface.inputs.message}}",
+                "operator": "is not empty",
+                "value": ""
+              }
+            ],
+            "logicType": "AND"
+          }
+        },
+        {
+          "fieldName": "system.attachments",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.attachments}}"
+        }
+      ],
+      "width": 250,
+      "height": 96,
+      "positionAbsolute": {
+        "x": 143.91401506696428,
+        "y": 103.14285714285714
+      }
+    },
+    {
+      "id": "output",
+      "type": "output",
+      "name": "output",
+      "description": "Final output of the workflow",
+      "position": {
+        "x": 1097.7034782061473,
+        "y": 101.5
+      },
+      "deletable": true,
+      "selected": false,
+      "dragging": false,
+      "data": {},
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "outputMapping": {
+          "messages": {
+            "type": "string",
+            "value": "{{thread.messages}}"
+          },
+          "selectedAgentId": {
+            "type": "string",
+            "value": "{{runtime.workflowMetaData.workflowId}}"
+          },
+          "selectedAgentName": {
+            "type": "string",
+            "value": "{{runtime.workflowMetaData.agentName}}"
+          }
+        }
+      },
+      "width": 150,
+      "height": 96,
+      "positionAbsolute": {
+        "x": 1097.7034782061473,
+        "y": 102.93135577262368
+      }
+    },
+    {
+      "id": "zo1ua4d",
+      "type": "agent",
+      "name": "agent_0",
+      "description": "",
+      "position": {
+        "x": 560.0805392020088,
+        "y": 56
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "agentStrategy": "react",
+        "model": {
+          "vendor": "openai",
+          "provider": "azureopenai",
+          "code": "gpt-5.2",
+          "name": "OpenAI GPT-5.2"
+        },
+        "promptTemplate": [
+          {
+            "id": "a5c4eb57-4aa0-44ec-aa5b-e40de3e956b9",
+            "role": "system",
+            "text": "# Onboard Payees Buying Agent \n\n## Agent Identity\n\nYou are an **Onboard Payees Buying Agent** built by GEP. You are a friendly, knowledgeable procurement expert who guides users through the Onboard Payees onboarding process step-by-step.\n\n**🚨 CRITICAL INITIALIZATION RULE:**\n- The workflow is sequential and non-negotiable: Step 1 → Step 2 → Step 3 → Step 4\n\n---\n\n## Core Principles\n\n### 1. **Sequential Execution Only - MANDATORY START**\n- **ALWAYS begin with Step 1**, regardless of user's initial query\n- Follow workflow steps in exact order: **Step 1 → Step 2 → Step 3 (3a → 3b → 3c) → Step 4**\n- **NEVER skip steps or execute out of order**\n- **NEVER loop back** unless user explicitly updates data after summary is shown\n- Even if user provides complete information upfront, you MUST still execute Step 1 and Step 2 before proceeding\n\n### 2. **One-Time Tool Invocations**\n- **Get_Internal_File_Ids**: Invoke ONCE in Step 3a (only if attachments exist)\n- **StoringQuestionnaireResponse**: Invoke ONCE in Step 3b (invoke again only if user changes values AFTER summary)\n\n### 3. **Data Access Pattern**\n- **Stored Data**: Use `{{flow.questionnaireResponse}}\n` or `questionnaireResponseData` to access stored questionnaire data\n- **No Retrieval Tool**: Never invoke retrieval tools - data is already accessible via flow variables\n\n### 4. **UI Tool Enforcement**\n- **Always invoke** `label_and_buttons` tool when specified in workflow steps\n- Never skip, alter, or replace with free-text alternatives\n- Use exact labels and buttons provided in instructions\n\n### 5. **Clean Tool Responses**\n- Tool calls must contain ONLY the tool payload between `$VIEW-START$` and `$VIEW-END$`\n- No user-facing messages outside tool payload\n- All user communication handled by the tool itself\n\n---\n\n## Critical Data Handling Rules\n\n### Supplier Data Parsing (NON-NEGOTIABLE)\n\nThe supplier data from form submission may arrive in multiple formats and MUST be parsed to a plain object before storage.\n\n**Possible Input Formats:**\n```javascript\n// Format 1: Array with stringified JSON\n[\"{\\\"sections\\\":{...}}\"]\n\n// Format 2: Simple stringified JSON  \n\"{\\\"sections\\\":{...}}\"\n\n// Format 3: Already parsed object\n{\"sections\":{...}}\n```\n\n**Mandatory Parsing Steps:**\n\n```javascript\n// Step 1: If array, extract first element\nif (Array.isArray(supplier)) {\n  supplier = supplier[0];\n}\n\n// Step 2: Parse if string\nwhile (typeof supplier === 'string') {\n  supplier = JSON.parse(supplier);\n}\n\n// Step 3: Validate final result\n// ✅ Must be: {\"sections\": {\"basicDetails\": {...}, ...}}\n// ❌ NOT: \"[{...}]\" or \"{...}\" (as string)\n```\n\n**Storage Requirements:**\n- ✅ **Must be**: Plain JavaScript object\n- ❌ **NOT**: String, array, or partially parsed\n- ✅ **Preserve**: ALL nested fields and structure\n- ⚠️ **Schema Validator**: StoringQuestionnaireResponse will REJECT if not a plain object\n\n---\n\n## Workflow: Step-by-Step Process\n\n**🚨 MANDATORY WORKFLOW INITIALIZATION:**\n- **Every conversation MUST start at Step 1**\n- Do NOT skip to later steps even if user provides detailed information\n- Do NOT jump directly to Step 2, 3, or 4 based on user query\n- Execute steps sequentially: 1 → 2 → 3 → 4\n\n**Examples:**\n- ❌ User: \"Create a payee request for Acme Corp\" → DO NOT jump to Step 3\n- ✅ User: \"Create a payee request for Acme Corp\" → START at Step 1, then proceed to Step 2, etc.\n- ❌ User: \"I need to onboard a supplier\" → DO NOT skip to Step 2\n- ✅ User: \"I need to onboard a supplier\" → START at Step 1, then proceed sequentially\n\n---\n\n### **Step 1: Get User Context** (ALWAYS FIRST STEP)\n\n**Action:**\n```javascript\nuser_context = {{flow.user_context}}\n\n```\n\n**Extract and Store:**\n- `userCurrencyCode` for subsequent steps\n\n---\n\n### **Step 2: Initialize Financial Data**\n\n**Tool:** Invoke `giftAndHospitality`\n\n**Payload Structure:**\n```json\n{\n  \"currency\": {\n    \"name\": \"<userCurrencyCode from user_context>\",\n    \"code\": \"<userCurrencyCode from user_context>\"\n  },\n  \"currencyCode\": \"<userCurrencyCode from user_context>\",\n  \"costCenter\": \"\",\n  \"doesEngagementRequireMultiPayment\": \"\",\n  \"engagementEndDate\": \"\",\n  \"engagementStartDate\": \"\",\n  \"finalPaymentAmount\": {\"value\": \"\", \"convertedValue\": 0},\n  \"finalPaymentDate\": \"\",\n  \"gl\": \"\",\n  \"initialPaymentAmount\": {\"value\": \"\", \"convertedValue\": 0},\n  \"ioInput\": \"\",\n  \"contactEmail\": \"\",\n  \"contactAndPhone\": \"\",\n  \"estimatedSpendAmount\": {\"value\": \"\", \"convertedValue\": 0},\n  \"supplier\": {\n    \"sections\": {\n      \"basicDetails\": {\n        \"legalCompanyName\": \"\"\n      }\n    }\n  },\n  \"visibleControl\": {\"isPrimaryVisible\": true},\n  \"uploadedFiles\": []\n}\n```\n\n**Post-Submission:**\n- Store form response data\n- Update `currencyCode` from response\n- **Supplier data** may be stringified - will be parsed in Step 3b\n\n---\n\n### **Step 3: Generate Summary**\n\n**⚠️ EXECUTE ONCE ONLY** - Do not repeat after completion\n\n#### **Step 3a: Get Attachment Details** (Conditional)\n\n**Condition Check:**\n```javascript\nif (attachments exist in context) {\n  // Execute this step\n} else {\n  // Skip - set decyptedFileObject = []\n  // Proceed to Step 3b\n}\n```\n\n**Execution (if attachments exist):**\n\n1. **Invoke Get_Internal_File_Ids** (ONCE ONLY)\n   ```json\n   {\n     \"fileIds\": [\"<fileId1>\", \"<fileId2>\"]\n   }\n   ```\n\n2. **Process Response:**\n   ```json\n   // Response format:\n   {\n     \"internalFileIds\": [\n       {\"fileId\": \"...\", \"encryptedFileId\": \"...\"}\n     ]\n   }\n   ```\n\n3. **Store in Context:**\n   ```javascript\n   decyptedFileObject = response.internalFileIds; // Array format\n   ```\n\n4. **✅ Mark Complete** - Do NOT call this tool again\n\n---\n\n#### **Step 3b: Store in Memory** (Execute ONCE)\n\n**Pre-Check:**\n```javascript\nif (questionnaireResponse already stored) {\n  // Skip - proceed to Step 3c\n} else {\n  // Execute storage\n}\n```\n\n**Critical Field Mappings:**\n\n| Field | Source | Notes |\n|-------|--------|-------|\n| `supplier` | Form submission | **MUST parse to plain object** (see parsing rules) |\n| `budgetAmount` | Form submission | **MUST parse to plain object** (see parsing rules) |\n| `primaryBOName` | Collected data | Primary Business Owner Name |\n| `primaryBOEmail` | Collected data | Primary Business Owner Email |\n| `contactAndPhone` | Form property | NOT primaryOwnerName |\n| `contactEmail` | Form property | NOT primaryOwnerEmail |\n| `startDateQSP` | Form response | Start Date of Engagement |\n| `endDateQSP` | Form response | End Date of Engagement |\n| `multiplePaymentQSP` | Form response | Multiple payments required? |\n| `initialPaymentAmount` | Form response | Decimal number |\n| `finalPaymentAmount` | Form response | Decimal number |\n| `finalPaymentDate` | Form response | Final payment date |\n| `costCenter` | Form response | Cost Center |\n| `glCode` | Form response | GL Code |\n| `marketingSpendQSP` | Form response | IO Input |\n| `projectRequestCurrency` | Step 2 response | Currency object |\n| `attachment` | Step 3a output | `decyptedFileObject` array or `[]` |\n\n**Supplier Parsing Example:**\n```javascript\n// Received from form\nlet supplier = formData.supplier;\n\n// Parse according to format\nif (Array.isArray(supplier)) {\n  supplier = supplier[0];\n}\n\nwhile (typeof supplier === 'string') {\n  supplier = JSON.parse(supplier);\n}\n\n// Now supplier is plain object: {\"sections\": {...}}\n```\n\n**budgetAmount Parsing Example:**\n```javascript\nlet budgetAmount = {\"budget\": formData.estimatedSpendAmount.value,\"currency\":{\"code\": formData.currency.code, \"name\": formData.currency.name}}\n```\n\n**Invoke Tool:**\n```javascript\nStoringQuestionnaireResponse({\n  data: {\n    questionnaireResponse: {\n      supplier: <parsed plain object of supplier>,\n      budgetAmount: <parsed plain object of budgetAmount>,\n      primaryBOName: \"...\",\n      primaryBOEmail: \"...\",\n      contactAndPhone: \"...\",\n      contactEmail: \"...\",\n      startDateQSP: \"...\",\n      endDateQSP: \"...\",\n      multiplePaymentQSP: \"...\",\n      initialPaymentAmount: 0.00,\n      finalPaymentAmount: 0.00,\n      finalPaymentDate: \"...\",\n      costCenter: \"...\",\n      glCode: \"...\",\n      marketingSpendQSP: \"...\",\n      projectRequestCurrency: {...},\n      attachment: [...]\n    }\n  }\n})\n```\n\n**✅ Mark Complete** - Do NOT invoke again (except for user updates)\n\n---\n\n#### **Step 3c: Display Summary**\n\n**Tool:** `label_and_buttons`\n\n**Label Override (Summary Format):**\nSummary format:-\n```\n<p>\n  Based on your organization's procurement policy, this request will follow the\n  <strong>\"Onboarding For Payees\"</strong> process.\n</p>\n\n<p><strong>Here is the summary of your request:</strong></p>\n\n<p>\n- <strong>Category:</strong> category_name from context <br>\n- <strong>Business Unit:</strong> business_unit from context <br>\n</p>\n\n<p><strong>Questionnaire Summary:</strong></p>\n<p>\n- <strong>question_1_text:</strong> user_response_question_1<br>\n- <strong>question_2_text:</strong> user_response_question_2<br>\n  (all questions) ...\n</p>\n\n<p>Please confirm to proceed with the identified channel.</p>\n```\n\n**Rules:**\n- Show question labels (Form Questions), NOT JSON keys\n- For attachments, show only filenames (not IDs)\n- Include only the questions from Form which the user responded to\n- Do not truncate any answered questions\n- Always suffix budget/cost/spend/amount anywhere in the summary with user selected currency <formData.currency.code>\n- Skip \"Final Payment Amount\" and \"Final Payment Date\" in the summary, if they are null or empty or zero in formData.\n\nIf summary contains a date, strictly:\n  - Format the date in the user specific format ({{flow.user_context.userDateFormat}}) before showing in summary.\n  - Example: If {{flow.user_context.userDateFormat}} is \"dd/MM/yyyy\" and answer is \"2024-12-31\", show \"31/12/2024\" in summary.\n\nIf summary contains any type of amount, strictly:\n- Format/convert the amount response in the user-specific format using {{flow.user_context.user_culture_code}} before showing in summary. \n   - Example: If user_culture_code = \"en-US\"\n                   - Input: 1234567.5\n                   - Output: $1,234,567.50\n\n      - Always append the <selected currency> present in context with the amount in summary, e.g. $1,234,567.50 USD\n\n\n**Buttons Override:**\n```json\n[{\n  \"label\": \"Create Request\",\n  \"value\": \"Create Request\",\n  \"systemMessage\": \"Proceed to Step 4 to create request.\"\n}]\n```\n\n**✅ Step 3 Complete**\n\n**Valid Next Actions:**\n1. User clicks \"Create Request\" → Proceed to Step 4\n2. User requests change → Update via StoringQuestionnaireResponse, re-display summary, STOP\n\n**DO NOT:**\n- Re-execute Step 3a or 3b\n- Loop back to previous steps\n- Continue without user action\n\n---\n\n### **Step 4: Create Project Request**\n\n#### **Pre-Validation Checklist**\n\n```javascript\n✅ {{flow.questionnaireResponse}}\n is stored and accessible\n✅ {{flow.supplier_data}}\n is available\n✅ {{flow.qa_master_data}}\n is available\n✅ {{flow.user_decision_points}}\n is available\n✅ {{flow.channel_identified}}\n is available\n```\n\n**If ANY validation fails:** STOP - Do NOT call projectRequestv2\n\n---\n\n#### **Payload Construction Rules**\n\n**🚨 CRITICAL RULES - NO EXCEPTIONS:**\n\n1. **Native JSON Object**\n   - Build as pure JSON object\n   - NEVER use `JSON.stringify()`\n   - NEVER wrap in quotes\n   - NEVER escape characters\n\n2. **Nested Structure**\n   - Keep `{{flow.questionnaireResponse}}\n` nested under `\"questionnaireResponse\"` key\n   - Do NOT flatten fields to root level\n\n3. **No Stringification**\n   ```javascript\n   // ✅ CORRECT\n   \"data\": { \"questionnaireResponse\": {...} }\n   \n   // ❌ WRONG\n   \"data\": \"{\\\"questionnaireResponse\\\":{...}}\"\n   ```\n\n---\n\n#### **Complete Payload Format**\n\n**Tool:** `projectRequestv2`\n\n```json\n{\n  \"data\": {\n    \"questionnaireResponse\": {{flow.questionnaireResponse}}\n,\n    \"supplier_data\": {{flow.supplier_data}}\n,\n    \"qa_master_data\": {{flow.qa_master_data}}\n,\n    \"user_decision_points\": {{flow.user_decision_points}}\n,\n    \"channel_identified\": {{flow.channel_identified}}\n,\n    \"project_description\": \"<20-word description based on user intent>\",\n    \"requestSummary\": \"<Brief summary of request>\",\n    \"requestType\": \"Onboarding For Payees\",\n    \"intake_type\": \"Onboarding For Payees\"\n  }\n}\n```\n\n**Field Descriptions:**\n\n| Field | Value | Notes |\n|-------|-------|-------|\n| `questionnaireResponse` | `{{flow.questionnaireResponse}}\n` | Complete object from storage |\n| `supplier_data` | `{{flow.supplier_data}}\n` | From flow context |\n| `qa_master_data` | `{{flow.qa_master_data}}\n` | From flow context |\n| `user_decision_points` | `{{flow.user_decision_points}}\n` | From flow context |\n| `channel_identified` | `{{flow.channel_identified}}\n` | From flow context |\n| `project_description` | Generated | 20 words max |\n| `requestSummary` | Generated | Brief summary |\n| `requestType` | Static | \"Onboarding For Payees\" |\n| `intake_type` | Static | \"Onboarding For Payees\" |\n\n---\n\n#### **Post-Creation Actions**\n\n**On Success:**\n\n1. **Invoke Partial View:** `prf_createRequestForm_pv`\n2. **Override ProjectRequest:**\n   ```json\n   {\n     \"projectRequestOverrides\": <complete response from projectRequestv2>\n   }\n   ```\n3. **Keep Original Response:**\n   - Do NOT remove properties\n   - Do NOT add new properties\n   - Use exact JSON from response\n\n**On Failure:**\n\nDisplay failure banner:\n```html\n<div style=\"background: #FCE1E1; border: 2px solid #FB3728; border-radius: 8px; padding: 1rem; margin-bottom: 1rem;\">\n  <span style=\"font-weight: bold; color: #FB3728; padding-right: 0.5rem;\">\n    <span style=\"font-size: 1.2em;\">&#10060;</span> Failure\n  </span>\n  Your Project Request could not be created. Please try again or contact support.\n</div>\n```\n\n---\n\n#### **Final Submit**\n\n**When user clicks \"Send for Approval\" or \"Submit\":**\n\n**Invoke:** `prf_sentForValidationSuccess_section`\n\n**Display:** Final submit success banner\n\n---\n\n## Request Completion Handling\n\n**After Project Request is Created:**\n\n```\nUser: [Any follow-up question]\nAgent: \"Your request is already submitted. Please start a new chat for a new request.\"\n```\n\n**No exceptions** - workflow is complete, no further processing.\n\n---\n\n## Off-Topic Handling\n\n### Standard Responses\n\n| User Query | Agent Response |\n|------------|----------------|\n| \"What can you do?\" | \"I can guide you through every step of the Onboard Payees onboarding process.\" |\n| \"Who built you?\" | \"I'm an AI agent built by GEP to help streamline Onboard Payees onboardings and project request creation.\" |\n| Tasks outside domain | \"My focus is on Onboard Payees onboardings and project request creation. I can guide you step-by-step through that process.\" |\n\n---\n\n## Efficient Input Handling\n\n### Guidelines\n\n1. **Extract All Information**\n   - Process compound user input efficiently\n   - Extract all relevant data from single message\n   - Don't repeat questions for already-provided information\n\n2. **Ask Only What's Missing**\n   - Only request unanswered required fields\n   - Skip questions if user already provided data\n   - Avoid redundant clarifications\n\n3. **Stay On Topic**\n   - Politely redirect off-topic queries\n   - Keep conversation focused on onboarding workflow\n   - Maintain friendly, professional tone\n\n---\n\n## Request Type Reference\n\n| Request Type | Code |\n|--------------|------|\n| Direct Negotiations & Benchmarking | 1 |\n| Strategic Sourcing | 2 |\n| Tactical Sourcing | 3 |\n| 3-Bids-and-a-Buy | 4 |\n| Gifts and Hospitality Onboarding | 9 |\n| Fast Track POC | 10 |\n| Quick Setup and Pay | 14 |\n| **Onboarding For Payees** | **15** |\n\n---\n\n## Data Privacy & Display\n\n### Rules\n\n- ✅ Present information in user-friendly format\n- ❌ NEVER display raw JSON to user\n- ❌ NEVER show internal data structures\n- ❌ NEVER expose technical processing details\n- ✅ Use natural language for all user-facing content\n\n---\n\n## Quick Reference: Common Pitfalls\n\n| ❌ Avoid | ✅ Do Instead |\n|---------|--------------|\n| **Starting at Step 2, 3, or 4 based on user query** | **ALWAYS start at Step 1 regardless of user input** |\n| Looping back after Step 3c | Wait for user action (Create Request or change values) |\n| Calling Get_Internal_File_Ids multiple times | Invoke ONCE in Step 3a, store result |\n| Calling StoringQuestionnaireResponse repeatedly | Invoke ONCE in Step 3b, unless user updates data |\n| Storing supplier as string/array | Parse to plain object before storage |\n| Stringifying projectRequestv2 payload | Use native JSON object |\n| Flattening questionnaireResponse | Keep nested under \"questionnaireResponse\" key |\n| Asking already-answered questions | Extract from conversation history |\n| Displaying JSON to user | Use natural language summaries |\n\n---\n\n**End of Instructions**"
+          },
+          {
+            "id": "9167282e-eb49-484a-9172-ffcd275f0950",
+            "role": "user",
+            "text": "User Query: {{system.userQuery}}\n\nUser Provided Data: {{flow.partialViewData}}\n\nAttachments: {{system.attachments}}"
+          }
+        ],
+        "tools": [
+          {
+            "_id": "e189d8ab-6565-4248-8591-0d8a38d8679a",
+            "name": "projectRequestv2",
+            "description": "**Description:**\nTool for project request creation.\n\n**Purpose:**\nTo create the actual project request in the system with all collected information.\n\n**Payload Format:**\n```json\n{\n  \"data\": {\n    \"questionnaireResponse\": {{flow.questionnaireResponse}},\n    \"supplier_data\": {{flow.supplier_data}},\n    \"qa_master_data\": {{flow.qa_master_data}},\n    \"user_decision_points\": {{flow.user_decision_points}},\n    \"channel_identified\": {{flow.channel_identified}},\n    \"project_description\": \"<string>\",\n    \"requestSummary\": \"<string>\",\n    \"requestType\": \"Onboarding For Payees\",\n    \"intake_type\": \"Onboarding For Payees\",\n    \"generalRequestType\": { \"name\": \"Onboarding For Payees\", \"code\": \"15\" },\n  }\n}\n```\n\n**STRICT NON-NEGOTIABLE RULES:**\n\n1. **Payload Structure:**\n   - The entire {{flow.questionnaireResponse}} object MUST be nested under the \"questionnaireResponse\" key\n   - Do NOT flatten questionnaireResponse fields to root level\n   - Keep questionnaireResponse as a nested object containing \"key\" and \"value\" properties\n   - All other fields (supplier_data, qa_master_data, etc.) are at root level of data object\n\n2. **NO Stringification:**\n   - NEVER stringify the data object\n   - The data field must remain a native JSON object, not a stringified block\n   - Do NOT convert using JSON.stringify().toString()\n   - Do NOT wrap it inside quotes\n   - Under NO circumstances may ANY part of payload be stringified\n   - The tool will REJECT stringified JSON\n\n3. **Prohibited Actions:**\n   - ❌ \"data\": \"{\\\"budgetAmount\\\":123,...}\"\n   - ❌ \"data\": \"<stringified JSON>\"\n   - ❌ \"data\": \"{ \\\"categories\\\": [...] }\"\n   - ❌ Flattening questionnaireResponse fields to root level\n\n4. **Request Type Mapping:**\n   Update intake_type and generalRequestType using lookup:\n   - \"Onboarding For Payees\" → name: \"Onboarding For Payees\", code: \"15\"\n   - \"Quick Setup and Pay\" → name: \"Quick Setup and Pay\", code: \"14\"\n   - \"Strategic Sourcing\" → name: \"Strategic Sourcing\", code: \"2\"\n   - \"Tactical Sourcing\" → name: \"Tactical Sourcing\", code: \"3\"\n   - \"3-Bids-and-a-Buy\" → name: \"3-Bids-and-a-Buy\", code: \"4\"\n   - \"Fast Track POC\" → name: \"Fast Track POC\", code: \"10\"\n   - \"Gifts and Hospitality Onboarding\" → name: \"Gifts and Hospitality Onboarding\", code: \"9\"\n   - \"Direct Negotiations & Benchmarking\" → name: \"Direct Negotiations & Benchmarking\", code: \"1\"\n   - \"Purchase Request\" → name: \"Purchase Request\", code: \"\"\n\n5. **Additional Requirements:**\n   - \"additionalData\" must be an empty object\n   - Never send empty arguments\n   - Summary must appear only once after tool execution\n   - Do not display summary before tool response or after partial view loads\n\n**Post-Invocation Actions:**\n- On success: Invoke \"prf_createRequestForm_pv\" with the result json\n- On failure: Display failure banner with appropriate message\n- After final submission: Inform user their request is submitted and to start new chat for new requests\n",
+            "type": "tool",
+            "config": {
+              "enabled": true,
+              "toolId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c-projectRequestv2-18",
+              "type": "mcp",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "questionnaireResponse": {
+                        "type": "object",
+                        "properties": {},
+                        "required": [],
+                        "additionalProperties": true
+                      },
+                      "qa_master_data": {
+                        "type": "object",
+                        "properties": {},
+                        "required": [],
+                        "additionalProperties": true
+                      },
+                      "project_description": {
+                        "type": "string"
+                      },
+                      "requestSummary": {
+                        "type": "string"
+                      },
+                      "generalRequestType": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "description": "Onboarding For Payees"
+                          },
+                          "code": {
+                            "type": "string",
+                            "description": "15"
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "code"
+                        ],
+                        "additionalProperties": false,
+                        "description": "Intake type: Onboarding For Payees"
+                      },
+                      "intake_type": {
+                        "type": "string",
+                        "description": "Onboarding For Payees"
+                      },
+                      "requestType": {
+                        "type": "string",
+                        "description": "Onboarding For Payees"
+                      }
+                    },
+                    "required": [
+                      "questionnaireResponse",
+                      "project_description",
+                      "requestSummary",
+                      "generalRequestType",
+                      "requestType",
+                      "intake_type"
+                    ],
+                    "additionalProperties": true
+                  }
+                },
+                "additionalProperties": true
+              },
+              "settings": {
+                "serverId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c",
+                "serverName": "module mcp"
+              },
+              "returnDirect": false,
+              "_meta": {
+                "functionId": "661f1e85-9423-4828-94ca-ed4ca1fc4f8b",
+                "type": "ssf-call",
+                "source": "current-module",
+                "moduleId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c",
+                "toolId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c",
+                "serverName": "module mcp"
+              },
+              "parameters": {
+                "event": "\"\"",
+                "additionalData": {}
+              },
+              "captureRawResponse": true
+            },
+            "alias": "projectRequestv2"
+          },
+          {
+            "_id": "5d24c3ab-fe14-4313-bb97-a37f2a2ef2b5",
+            "name": "handoff_to_node",
+            "description": "#### StoringQuestionnaireResponse Tool Usage\n\n**When to Invoke:**\n- After collecting all required information and before showing summary\n- To maintain a structured record of all user responses\n- Before creating project request\n- If user updates any values before clicking \"Create Request\"\n- When user provides corrections or additional information\n\n**Payload Format:**\n```json\n{\n  \"questionnaireResponse\": {\n    \"supplier\": <supplier-Info>,\n    \"primaryBOName\": \"<primaryOwnerName>\",\n    \"primaryBOEmail\": \"<primaryOwnerEmail>\",\n    \"contactAndPhone\": \"<contactAndPhone>\",\n    \"contactEmail\": \"<contactEmail>\",\n    \"startDateQSP\": \"<engagementStartDate>\",\n    \"endDateQSP\": \"<engagementEndDate>\",\n    \"multiplePaymentQSP\": \"<doesEngagementRequireMultiPayment>\",\n    \"initialPaymentAmount\": \"<initialPaymentAmount>\",\n    \"finalPaymentAmount\": \"<finalPaymentAmount>\",\n    \"finalPaymentDate\": \"<finalPaymentDate>\",\n    \"attachment\": [\n      {\n        \"fileId\": \"<fileId>\",\n        \"encryptedFileId\": \"<encryptedFileId>\"\n      }\n    ],\n    \"costCenter\": \"<costCenter>\",\n    \"glCode\": \"<glCode>\",\n    \"marketingSpendQSP\": \"<ioInput>\",\n    \"projectRequestCurrency\": {\n      \"name\": \"<currencyName>\",\n      \"code\": \"<currencyCode>\"\n    }\n  }\n}\n```\n\n**Field Notes:**\n- All string fields should contain actual values (not placeholders)\n- Fields are stored directly under questionnaireResponse (no key/value wrapper)\n- `attachment`: Array of file objects from Get_Internal_File_Ids tool response. Use empty array [] if no attachments\n- `initialPaymentAmount` and `finalPaymentAmount`: String representation of decimal numbers\n- All fields are required, use empty string \"\" for optional/not-applicable fields\n\n",
+            "type": "tool",
+            "config": {
+              "enabled": true,
+              "toolId": "tool-handoff",
+              "type": "handoff",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "questionnaireResponse": {
+                    "type": "object",
+                    "properties": {},
+                    "required": [],
+                    "additionalProperties": true
+                  }
+                },
+                "required": [
+                  "questionnaireResponse"
+                ],
+                "additionalProperties": true
+              },
+              "settings": {
+                "nodeId": "t125wn8"
+              },
+              "returnDirect": false,
+              "parameters": {}
+            },
+            "alias": "storingquestionnaireresponse"
+          },
+          {
+            "_id": "a63c1522-7136-46dd-9499-97f58e708c17",
+            "name": "prfsentForApprovalSuccesspv007",
+            "description": "#### prf_sentForApprovalSuccess_pv\n\n**View Unique ID:**\n`a4283a13-ee72-45cf-9662-b1e01102ac44`\n\n**Description:**\nThis partial view is displayed when the Send for Approval action succeeds.\n\n**Purpose:**\nTo confirm successful submission of the project request for approval.\n\n**When the tool should be invoked:**\n- Only when Send for Approval action succeeds\n- After user clicks \"send for approval\" or \"submit\" button\n- To display final submit banner\n\n**Payloads/Inputs Required:**\nStandard partial view invocation (no special overrides required)\n\n**Constraints:**\n- Render only on approval success\n- No additional overrides required\n- Ensure it is shown exclusively on successful submission\n",
+            "type": "tool",
+            "config": {
+              "enabled": true,
+              "toolId": "ac51937a-532b-4186-9209-2ab379e5c66e-prfsentForApprovalSuccesspv007-11",
+              "type": "mcp",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "preText": {
+                    "description": "Optional Markdown shown immediately before this view. Use to introduce what it shows/why it matters or give brief instructions. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+                    "type": "string"
+                  },
+                  "postText": {
+                    "description": "Optional Markdown shown immediately after this view. Use for next steps, brief context/interpretation, or a transition to the next section/view. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+                    "type": "string"
+                  },
+                  "sendForApprovalOverrides": {
+                    "description": "Description:\nUse agent history and set the value to ovverride 'sendForApprovalOverrides' from '${sendForValidationPV}' \n\nNotes:\nUse agent history and set the value to ovverride 'sendForApprovalOverrides' from '${sendForValidationPV}' ",
+                    "type": "string"
+                  }
+                },
+                "condition": "Description:\nShow this PV on success of send for Approval.\n\nOutputs:\n- Returns an object containing:\n  - `RenderingId` (string): The unique identifier of the rendered template. Must be used in final response when referencing this template e.g. [partial_view: RenderingId]\n  - `ContentType` (string): Specifies what type of template this is (e.g. `partial_view`).\n  - `Template` (string): A string representing the UI View Template.\n  - `TemplateDescription` (string): A short description of what the template will present to the user.\n\nNotes:\nShow this PV on success of send for Approval."
+              },
+              "settings": {
+                "serverId": "ac51937a-532b-4186-9209-2ab379e5c66e",
+                "serverName": "Projects AI Manager - Project Request Quantum AI"
+              },
+              "returnDirect": false,
+              "_meta": {
+                "uiView": "{\"RefId\":null,\"ViewUniqueId\":\"a4283a13-ee72-45cf-9662-b1e01102ac44\",\"Version\":[0,0],\"Type\":\"partialSection\",\"Name\":\"prf_sentForApprovalSuccess_pv-0.0.7\",\"Icon\":null,\"Channel\":\"conversation\",\"Description\":\"Show this PV on success of send for Approval.\",\"Instruction\":\"Show this PV on success of send for Approval.\",\"AppId\":null,\"ModuleId\":null,\"EnableContextSharing\":true,\"Overrides\":{\"sendForApprovalOverrides\":{\"Type\":\"data\",\"OverrideId\":\"sendForApprovalOverrides\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"projectrequest\",\"Description\":\"Use agent history and set the value to ovverride \\u0027sendForApprovalOverrides\\u0027 from \\u0027${sendForValidationPV}\\u0027 \",\"Instruction\":\"Use agent history and set the value to ovverride \\u0027sendForApprovalOverrides\\u0027 from \\u0027${sendForValidationPV}\\u0027 \",\"Value\":null,\"DataType\":\"object\",\"Source\":\"static\"}}}",
+                "type": "partial-view",
+                "source": "shared-module",
+                "serverName": "Projects AI Manager - Project Request Quantum AI"
+              },
+              "parameters": {
+                "preText": "",
+                "postText": ""
+              },
+              "llmProjection": [
+                {
+                  "exclude": [
+                    "Template"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "_id": "e3d7b43f-b942-4d49-96ce-9cf9b2f246c0",
+            "name": "prfsendForApprovalFailuresection007",
+            "description": "#### prf_sendForApprovalFailure_section\n\n**View Unique ID:**\n`0d9a13de-0369-4124-a7c7-48d52ccb2632`\n\n**Description:**\nThis partial view is displayed when the Send for Approval action fails.\n\n**Purpose:**\nTo inform users when their project request approval submission has failed.\n\n**When the tool should be invoked:**\n- Only when the Send for Approval action fails\n- To display failure message with appropriate formatting\n\n**Payloads/Inputs Required:**\n```html\n<div style=\"background: #FCE1E1; border: 2px solid #FB3728; border-radius: 8px; padding: 1rem; margin-bottom: 1rem;\">\n  <span style=\"font-weight: bold; color: #FB3728; padding-right: 0.5rem;\">\n    <span style=\"font-size: 1.2em;\">&#10060;</span> Failure\n    Your Project Request could not be created. Please try again or contact support.\n  </span>\n</div>\n```\n\n**Constraints:**\n- Render only on approval failure\n- No additional logic or data transformation required\n- Ensure correct triggering based on failure state\n\nNotes:\nShow this PV on failure of send for Approval.",
+            "type": "tool",
+            "config": {
+              "enabled": true,
+              "toolId": "ac51937a-532b-4186-9209-2ab379e5c66e-prfsendForApprovalFailuresection007-20",
+              "type": "mcp",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "preText": {
+                    "description": "Optional Markdown shown immediately before this view. Use to introduce what it shows/why it matters or give brief instructions. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+                    "type": "string"
+                  },
+                  "postText": {
+                    "description": "Optional Markdown shown immediately after this view. Use for next steps, brief context/interpretation, or a transition to the next section/view. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+                    "type": "string"
+                  },
+                  "sendForApprovalFailureOverrides": {
+                    "description": "Description:\nUse agent history and set the value to ovverride 'sendForApprovalFailureOverrides' from '${sendForValidationPV}'\n\nNotes:\nUse agent history and set the value to ovverride 'sendForApprovalFailureOverrides' from '${sendForValidationPV}'",
+                    "type": "string"
+                  }
+                },
+                "condition": "Description:\nShow this PV on failure of send for Approval.\n\nOutputs:\n- Returns an object containing:\n  - `RenderingId` (string): The unique identifier of the rendered template. Must be used in final response when referencing this template e.g. [partial_view: RenderingId]\n  - `ContentType` (string): Specifies what type of template this is (e.g. `partial_view`).\n  - `Template` (string): A string representing the UI View Template.\n  - `TemplateDescription` (string): A short description of what the template will present to the user.\n\nNotes:\nShow this PV on failure of send for Approval."
+              },
+              "settings": {
+                "serverId": "ac51937a-532b-4186-9209-2ab379e5c66e",
+                "serverName": "Projects AI Manager - Project Request Quantum AI"
+              },
+              "returnDirect": false,
+              "_meta": {
+                "uiView": "{\"RefId\":null,\"ViewUniqueId\":\"0d9a13de-0369-4124-a7c7-48d52ccb2632\",\"Version\":[0,0],\"Type\":\"partialSection\",\"Name\":\"prf_sendForApprovalFailure_section-0.0.7\",\"Icon\":null,\"Channel\":\"conversation\",\"Description\":\"Show this PV on failure of send for Approval.\",\"Instruction\":\"Show this PV on failure of send for Approval.\",\"AppId\":null,\"ModuleId\":null,\"EnableContextSharing\":true,\"Overrides\":{\"sendForApprovalFailureOverrides\":{\"Type\":\"data\",\"OverrideId\":\"sendForApprovalFailureOverrides\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"projectrequest\",\"Description\":\"Use agent history and set the value to ovverride \\u0027sendForApprovalFailureOverrides\\u0027 from \\u0027${sendForValidationPV}\\u0027\",\"Instruction\":\"Use agent history and set the value to ovverride \\u0027sendForApprovalFailureOverrides\\u0027 from \\u0027${sendForValidationPV}\\u0027\",\"Value\":null,\"DataType\":\"object\",\"Source\":\"static\"}}}",
+                "type": "partial-view",
+                "source": "shared-module",
+                "serverName": "Projects AI Manager - Project Request Quantum AI"
+              },
+              "parameters": {
+                "preText": "",
+                "postText": ""
+              },
+              "llmProjection": [
+                {
+                  "exclude": [
+                    "Template"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "_id": "c81352a7-e61b-4743-9398-c3bd538ca5cd",
+            "name": "GetInternalFileIdsByUploadedFilesIds",
+            "description": "Description:\n\n\nReturns:\n- \n\nFriendly Name: Get_InternalFileIdsByUploadedFilesIds",
+            "type": "tool",
+            "config": {
+              "enabled": true,
+              "toolId": "a4deb011-ea94-418d-9912-822447e4ce1f-GetInternalFileIdsByUploadedFilesIds-5",
+              "type": "mcp",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "event": {
+                    "description": "Event to execute DAC policy in server function.",
+                    "type": "string"
+                  },
+                  "data": {
+                    "description": "Payload used to execute the function.",
+                    "type": "object",
+                    "properties": {},
+                    "required": []
+                  },
+                  "additionalData": {
+                    "description": "Any additional data used by the function.",
+                    "type": "object"
+                  }
+                },
+                "required": [
+                  "data"
+                ],
+                "condition": "Description:\n\n\nReturns:\n- \n\nFriendly Name: Get_InternalFileIdsByUploadedFilesIds"
+              },
+              "settings": {
+                "serverId": "a4deb011-ea94-418d-9912-822447e4ce1f",
+                "serverName": "Intake Agent - IntakeAgent BaseModule"
+              },
+              "returnDirect": false,
+              "_meta": {
+                "functionId": "fd6a97bb-ba0f-4ba0-a873-46934167844f",
+                "type": "ssf-call",
+                "source": "shared-module",
+                "serverName": "Intake Agent - IntakeAgent BaseModule"
+              },
+              "parameters": {
+                "event": "\"\"",
+                "additionalData": "{}"
+              },
+              "captureRawResponse": true
+            },
+            "alias": "Get_Internal_File_Ids"
+          },
+          {
+            "_id": "9416c35f-96c3-4f25-bb67-9e77a0a33793",
+            "name": "handoff_to_node",
+            "description": "#### prf_sentforvalidationsuccess_pv\n\n**View Unique ID:**\n`a4283a13-ee72-45cf-9662-b1e01102ac44`\n\n**Description:**\nThis partial view is displayed when the Send for Approval action succeeds.\n\n**Purpose:**\nTo confirm successful submission of the project request for approval.\n\n**When the tool should be invoked:**\n- Only when Send for Approval action succeeds\n- After user clicks \"send for approval\" or \"submit\" button\n- To display final submit banner\n\n**Payloads/Inputs Required:**\nStandard partial view invocation (no special overrides required)\n\n**Constraints:**\n- Render only on approval success\n- No additional overrides required\n- Ensure it is shown exclusively on successful submission\n",
+            "type": "tool",
+            "config": {
+              "enabled": true,
+              "toolId": "tool-handoff",
+              "type": "handoff",
+              "schema": {
+                "type": "object",
+                "properties": {},
+                "required": [],
+                "additionalProperties": false
+              },
+              "settings": {
+                "nodeId": "8ykzyin"
+              },
+              "returnDirect": false
+            },
+            "alias": "prf_sentforvalidationsuccess_pv"
+          },
+          {
+            "_id": "92dfee3f-1176-426f-98b0-43eb8795157a",
+            "name": "handoff_to_node",
+            "description": "#### prf_sendForValidationFailure_section\n\n**View Unique ID:**\n`0d9a13de-0369-4124-a7c7-48d52ccb2632`\n\n**Description:**\nThis partial view is displayed when the Send for Approval action fails.\n\n**Purpose:**\nTo inform users when their project request approval submission has failed.\n\n**When the tool should be invoked:**\n- Only when the Send for Approval action fails\n- To display failure message with appropriate formatting\n\n**Payloads/Inputs Required:**\n```html\n<div style=\"background: #FCE1E1; border: 2px solid #FB3728; border-radius: 8px; padding: 1rem; margin-bottom: 1rem;\">\n  <span style=\"font-weight: bold; color: #FB3728; padding-right: 0.5rem;\">\n    <span style=\"font-size: 1.2em;\">&#10060;</span> Failure\n    Your Project Request could not be created. Please try again or contact support.\n  </span>\n</div>\n```\n\n**Constraints:**\n- Render only on approval failure\n- No additional logic or data transformation required\n- Ensure correct triggering based on failure state\n\nNotes:\nShow this PV on failure of send for Approval.",
+            "type": "tool",
+            "config": {
+              "enabled": true,
+              "toolId": "tool-handoff",
+              "type": "handoff",
+              "schema": {
+                "type": "object",
+                "properties": {},
+                "required": [],
+                "additionalProperties": false
+              },
+              "settings": {
+                "nodeId": "59x9qii"
+              },
+              "returnDirect": false
+            },
+            "alias": "prf_sendforvalidationfailure_section"
+          },
+          {
+            "_id": "ab793507-7d50-43da-b07a-f1713cbbdd51",
+            "name": "handoff_to_node",
+            "description": "#### giftsAndHospitality\n\n**Mode:**\n`show`\n\n**Description:**\nThis partial view captures and displays Gifts and Hospitality details, including supplier, payment, ownership, and financial data.\n\n**Purpose:**\nTo initialize and collect comprehensive financial, supplier, and engagement information for the onboarding process.\n\n**When the tool should be invoked:**\n- Always invoke this tool early in the workflow (after get_user_context)\n- To initialize currency and financial data structures\n- To capture engagement dates, payment information, and supplier details\n\n**Payloads/Inputs Required:**\n```json\n {\n    \"giftAndHospitalityDetails\": {\n      \"currency\": {\n        \"name\":  {{flow.user_context.userCurrencyCode}},\n        \"code\":  {{flow.user_context.userCurrencyCode}}\n      },\n      \"currencyCode\":  {{flow.user_context.userCurrencyCode}},\n      \"costCenter\": \"\",\n      \"primaryOwnerName\": \"\",\n\t  \"primaryOwnerEmail\":\"\",\n      \"doesEngagementRequireMultiPayment\": \"\",\n      \"engagementEndDate\": \"\",\n      \"engagementStartDate\": \"\",\n      \"finalPaymentAmount\": {\n        \"value\": \"\",\n        \"convertedValue\": 0\n      },\n      \"finalPaymentDate\": \"\",\n      \"gl\": \"\",\n      \"initialPaymentAmount\": {\n        \"value\": \"\",\n        \"convertedValue\": 0\n      },\n      \"ioInput\": \"\",\n      \"contactEmail\": \"\",\n      \"contactAndPhone\": \"\",\n      \"estimatedSpendAmount\": {\n        \"value\": \"\",\n        \"convertedValue\": 0\n      },\n      \"supplier\": {\n        \"sections\": {\n          \"basicDetails\": {\n            \"legalCompanyName\": \"\"\n          }\n        }\n      },\n      \"visibleControl\": {\n         \"isCostCenterVisible\": true,\n        \"isPrimaryVisible\": true\n      },\n      \"uploadedFiles\": []\n    }\n  }\n\n```\n\n**Constraints:**\n- Do not default any value\n- All numeric values must be initialized to 0\n- All fields must exist, even if empty\n- Final override must be valid JSON and fully populated with defaults\n- Store/Update details from the response\n- Update currencyCode in context from the response",
+            "type": "tool",
+            "config": {
+              "enabled": true,
+              "toolId": "tool-handoff",
+              "type": "handoff",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "giftAndHospitalityDetails": {
+                    "type": "object",
+                    "properties": {
+                      "currency": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "code"
+                        ],
+                        "additionalProperties": true
+                      },
+                      "currencyCode": {
+                        "type": "string"
+                      },
+                      "costCenter": {
+                        "type": "string"
+                      },
+                      "primaryOwnerName": {
+                        "type": "string"
+                      },
+                      "primaryOwnerEmail": {
+                        "type": "string"
+                      },
+                      "doesEngagementRequireMultiPayment": {
+                        "type": "string"
+                      },
+                      "engagementEndDate": {
+                        "type": "string"
+                      },
+                      "engagementStartDate": {
+                        "type": "string"
+                      },
+                      "finalPaymentAmount": {
+                        "type": "object",
+                        "properties": {
+                          "value": {
+                            "type": "string"
+                          },
+                          "convertedValue": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "value",
+                          "convertedValue"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "finalPaymentDate": {
+                        "type": "string"
+                      },
+                      "gl": {
+                        "type": "string"
+                      },
+                      "initialPaymentAmount": {
+                        "type": "object",
+                        "properties": {
+                          "value": {
+                            "type": "string"
+                          },
+                          "convertedValue": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "value",
+                          "convertedValue"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "estimatedSpendAmount": {
+                        "type": "object",
+                        "properties": {
+                          "value": {
+                            "type": "string"
+                          },
+                          "convertedValue": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "value",
+                          "convertedValue"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "ioInput": {
+                        "type": "string"
+                      },
+                      "contactEmail": {
+                        "type": "string"
+                      },
+                      "contactAndPhone": {
+                        "type": "string"
+                      },
+                      "supplier": {
+                        "type": "object",
+                        "properties": {
+                          "sections": {
+                            "type": "object",
+                            "properties": {
+                              "supplierSourceInfo": {
+                                "type": "object",
+                                "properties": {
+                                  "rows": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "name": {
+                                          "type": "string"
+                                        },
+                                        "sourceIdentificationNo": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "required": [
+                                        "name",
+                                        "sourceIdentificationNo"
+                                      ],
+                                      "additionalProperties": false
+                                    }
+                                  }
+                                },
+                                "required": [
+                                  "rows"
+                                ],
+                                "additionalProperties": false
+                              },
+                              "basicDetails": {
+                                "type": "object",
+                                "properties": {
+                                  "legalCompanyName": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "legalCompanyName"
+                                ],
+                                "additionalProperties": false
+                              }
+                            },
+                            "required": [
+                              "supplierSourceInfo",
+                              "basicDetails"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "required": [
+                          "sections"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "visibleControl": {
+                        "type": "object",
+                        "properties": {
+                          "isCostCenterVisible": {
+                            "type": "boolean"
+                          },
+                          "isPrimaryVisible": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "isCostCenterVisible"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "uploadedFiles": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "required": [
+                      "currency",
+                      "currencyCode",
+                      "costCenter",
+                      "primaryOwnerName",
+                      "primaryOwnerEmail",
+                      "doesEngagementRequireMultiPayment",
+                      "engagementEndDate",
+                      "engagementStartDate",
+                      "finalPaymentAmount",
+                      "finalPaymentDate",
+                      "gl",
+                      "initialPaymentAmount",
+                      "ioInput",
+                      "contactEmail",
+                      "contactAndPhone",
+                      "supplier",
+                      "visibleControl",
+                      "uploadedFiles"
+                    ],
+                    "additionalProperties": true
+                  }
+                },
+                "required": [
+                  "giftAndHospitalityDetails"
+                ],
+                "additionalProperties": true
+              },
+              "settings": {
+                "nodeId": "gksg1uc"
+              },
+              "returnDirect": false,
+              "parameters": {}
+            },
+            "alias": "giftsandhospitality"
+          },
+          {
+            "_id": "bbad7fc1-7014-48ca-9e4f-ef10d177eb9f",
+            "name": "handoff_to_node",
+            "description": "#### prf_createRequestForm_pv\n\n**Name:**\nCreate Project Request\n\n**Description:**\nThis partial view renders the Create Project Request form, allowing users to initiate a new project request workflow.\n\n**Purpose:**\nTo display the project request creation form after all information has been collected and confirmed by the user.\n\n**When the tool should be invoked:**\n- Only after successful creation of project request via projectRequestv2 tool\n- When displaying the project request details for final submission\n- After user confirms the summary and clicks \"Create Request\"\n\n**Payloads/Inputs Required:**\n```json\n{\n  \"projectRequestOverrides\": \"<result_json_from_projectRequestv2_tool>\"\n}\n```\n\n**Constraints:**\n- Each element must be a valid JSON object\n- Do NOT add extra `{}` at beginning or end\n- Do NOT wrap already stringified JSON in quotes\n- Do NOT URL-encode JSON\n- Do NOT truncate or replace content with `...`\n- Output only one JSON object in a single code block\n- Ensure `{}` and `[]` counts are perfectly balanced\n- Override using the \"result\" json object from projectRequestv2 tool response\n- Do not remove or add any properties from the response\n- Save generated overrides value with key `projectRequestOverrides` in variable `${sendForValidationPV}`\n\n\nNotes:\nsave value of generated overrides 'projectRequestOverrides' to ${sendForValidationPV}",
+            "type": "tool",
+            "config": {
+              "enabled": true,
+              "toolId": "tool-handoff",
+              "type": "handoff",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "projectRequestOverrides": {
+                    "description": "Description:\nThe value of this override can be user specific like ```json {\"documentCode\":\"&lt;documentCode&gt;\"}```\n\nNotes:\nThe value of this override can be user specific like ```json {\"documentCode\":\"&lt;documentCode&gt;\"}```",
+                    "type": "string"
+                  }
+                },
+                "required": []
+              },
+              "settings": {
+                "nodeId": "qwhsgzl"
+              },
+              "returnDirect": false
+            },
+            "alias": "prf_createrequestform_pv"
+          },
+          {
+            "_id": "a334d3d3-7fc3-4bf0-8caf-28ef6c838b2d",
+            "name": "handoff_to_node",
+            "description": "#### label_and_buttons\n\n**Description:**\nThis partial view is responsible for rendering a label (instructional or informational text) along with buttons/options for user interaction.\n\n**Purpose:**\nTo present information to users and provide interactive buttons for them to make selections or proceed through the workflow.\n\n**When the tool should be invoked:**\n- At every step of the flow where \"label_and_buttons\" tool is specified\n- When displaying options to users for selection\n- When presenting summary information requiring user confirmation\n- Before project request creation to confirm collected information\n\n**Payloads/Inputs Required:**\n```json\n{\n  \"viewUniqueId\": \"<unique_identifier>\",\n  \"overrides\": {\n    \"label_datamodel\": \"<HTML_string_content>\",\n    \"buttons_datamodel\": [\n      {\n        \"label\": \"<button_label>\",\n        \"value\": \"<button_value>\",\n        \"systemMessage\": \"<optional_system_message>\"\n      }\n    ]\n  }\n}\n```\n\n**Constraints:**\n- `viewUniqueId` must be updated based on the selected partial view (do not auto-generate)\n- `label_datamodel` must be an HTML string\n- `buttons_datamodel` must be an array of valid JSON objects\n- Final payload must be valid JSON with correct nesting\n- Use `$VIEW-START$` and `$VIEW-END$` markers\n- Must strictly override with exact label text and button values provided in instructions\n- Cannot skip, alter, or replace with free-text alternatives\n",
+            "type": "tool",
+            "config": {
+              "enabled": true,
+              "toolId": "tool-handoff",
+              "type": "handoff",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "label_datamodel": {
+                    "type": "string"
+                  },
+                  "buttons_datamodel": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "label": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string"
+                        },
+                        "systemMessage": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "label",
+                        "value",
+                        "systemMessage"
+                      ],
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "required": [
+                  "label_datamodel",
+                  "buttons_datamodel"
+                ],
+                "additionalProperties": false
+              },
+              "settings": {
+                "nodeId": "7glmeqm"
+              },
+              "returnDirect": false,
+              "parameters": {}
+            },
+            "alias": "label_and_buttons"
+          }
+        ],
+        "resources": [],
+        "libraries": [],
+        "maxIterations": 5,
+        "structuredOutput": {
+          "enable": false,
+          "name": "",
+          "description": "",
+          "schema": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        "includeThoughts": true
+      },
+      "data": {},
+      "variableUpdates": [
+        {
+          "fieldName": "thread.messages",
+          "operation": "append",
+          "value": "{{nodeOutput.text}}",
+          "role": "assistant"
+        }
+      ],
+      "width": 350,
+      "height": 186,
+      "selected": false,
+      "dragging": false,
+      "positionAbsolute": {
+        "x": 560.0805392020088,
+        "y": 51.74510750845738
+      }
+    },
+    {
+      "id": "7glmeqm",
+      "type": "tool",
+      "name": "labelandbuttons1012",
+      "description": "Description:\nThis partial view is responsible for rendering the label and buttons/options.\n\nNotes:\nThis partial view is responsible for rendering the label and buttons/options.",
+      "position": {
+        "x": 255.9285714285715,
+        "y": 327.1428571428571
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "enabled": true,
+        "toolId": "mcp-a4deb011-ea94-418d-9912-822447e4ce1f-labelandbuttons1012",
+        "type": "mcp",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "preText": {
+              "description": "Optional Markdown shown immediately before this view. Use to introduce what it shows/why it matters or give brief instructions. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+              "type": "string"
+            },
+            "postText": {
+              "description": "Optional Markdown shown immediately after this view. Use for next steps, brief context/interpretation, or a transition to the next section/view. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+              "type": "string"
+            },
+            "label_datamodel": {
+              "description": "Description:\n**If data is not a valid html string then convert the value to string.  **Use `label_datamodel` override to pass data to form label.\n\nNotes:\n**If data is not a valid html string then convert the value to string.  **Use `label_datamodel` override to pass data to form label.",
+              "type": "string"
+            },
+            "buttons_datamodel": {
+              "description": "Description:\n\n\nNotes:\n",
+              "type": "string"
+            }
+          },
+          "condition": "Description:\nThis partial view is responsible for rendering the label and buttons/options.\n\nNotes:\nThis partial view is responsible for rendering the label and buttons/options."
+        },
+        "settings": {
+          "serverId": "a4deb011-ea94-418d-9912-822447e4ce1f"
+        },
+        "returnDirect": false,
+        "_meta": {
+          "uiView": "{\"RefId\":null,\"ViewUniqueId\":\"e1a380cd-75d0-4534-ac80-aaa5301718ee\",\"Version\":[1,0],\"Type\":\"partialView\",\"Name\":\"label_and_buttons-1.0.12\",\"Icon\":null,\"Channel\":\"conversation\",\"Description\":\"This partial view is responsible for rendering the label and buttons/options.\",\"Instruction\":\"This partial view is responsible for rendering the label and buttons/options.\",\"AppId\":null,\"ModuleId\":null,\"EnableContextSharing\":true,\"Overrides\":{\"label_datamodel\":{\"Type\":\"data\",\"OverrideId\":\"label_datamodel\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"label_datamodel\",\"Description\":\"**If data is not a valid html string then convert the value to string.  **Use \\u0060label_datamodel\\u0060 override to pass data to form label.\",\"Instruction\":\"**If data is not a valid html string then convert the value to string.  **Use \\u0060label_datamodel\\u0060 override to pass data to form label.\",\"Value\":null,\"DataType\":\"string\",\"Source\":\"static\"},\"buttons_datamodel\":{\"Type\":\"data\",\"OverrideId\":\"buttons_datamodel\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"buttons_datamodel\",\"Description\":\"\",\"Instruction\":\"\",\"Value\":null,\"DataType\":\"array\",\"Source\":\"static\"}}}",
+          "type": "partial-view"
+        },
+        "parameters": {
+          "preText": "",
+          "postText": "",
+          "label_datamodel": "{{nodes.agent_0.toolResults.label_and_buttons.label_datamodel}}",
+          "buttons_datamodel": "{{nodes.agent_0.toolResults.label_and_buttons.buttons_datamodel}}"
+        }
+      },
+      "data": {},
+      "width": 350,
+      "height": 112,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 252.14285714285717,
+        "y": 327.1428571428571
+      },
+      "dragging": false,
+      "variableUpdates": [
+        {
+          "fieldName": "thread.agent_0_messages",
+          "operation": "append",
+          "value": "Summary has been rendered and waiting for user response",
+          "role": "tool"
+        }
+      ]
+    },
+    {
+      "id": "io8igp3",
+      "type": "variable",
+      "name": "variable_0",
+      "description": "",
+      "position": {
+        "x": 796.3554701450893,
+        "y": 624.857142857143
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {},
+      "data": {},
+      "width": 250,
+      "height": 72,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 796.3554701450893,
+        "y": 620.0897186569941
+      },
+      "dragging": false,
+      "variableUpdates": [
+        {
+          "fieldName": "thread.messages",
+          "operation": "append",
+          "value": " ",
+          "role": "assistant"
+        }
+      ]
+    },
+    {
+      "id": "t125wn8",
+      "type": "variable",
+      "name": "variable_1",
+      "description": "",
+      "position": {
+        "x": 781.5091106305803,
+        "y": -254.48017810639914
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {},
+      "data": {},
+      "width": 250,
+      "height": 72,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 781.5091106305803,
+        "y": -254.48017810639914
+      },
+      "dragging": false,
+      "variableUpdates": [
+        {
+          "fieldName": "thread.agent_0_messages",
+          "operation": "append",
+          "value": "stored questionnaire response along with decrypted Object of FileIds",
+          "role": "tool"
+        },
+        {
+          "fieldName": "flow.questionnaireResponse",
+          "operation": "set",
+          "value": "{{nodes.agent_0.toolResults.storingquestionnaireresponse.questionnaireResponse}}"
+        }
+      ]
+    },
+    {
+      "id": "qwhsgzl",
+      "type": "tool",
+      "name": "prfcreaterequestformpv00164",
+      "description": "Description:\nCreate Project Request\n\nNotes:\nsave value of generated overrides 'projectRequestOverrides' to ${sendForValidationPV}",
+      "position": {
+        "x": 273.5714285714286,
+        "y": 487.372034115817
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "enabled": true,
+        "toolId": "mcp-ac51937a-532b-4186-9209-2ab379e5c66e-prfcreateRequestFormpv00164",
+        "type": "mcp",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "preText": {
+              "description": "Optional Markdown shown immediately before this view. Use to introduce what it shows/why it matters or give brief instructions. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+              "type": "string"
+            },
+            "postText": {
+              "description": "Optional Markdown shown immediately after this view. Use for next steps, brief context/interpretation, or a transition to the next section/view. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+              "type": "string"
+            },
+            "projectRequestOverrides": {
+              "description": "Description:\nThe value of this override can be user specific like ```json {\"documentCode\":\"&lt;documentCode&gt;\"}```\n\nNotes:\nThe value of this override can be user specific like ```json {\"documentCode\":\"&lt;documentCode&gt;\"}```",
+              "type": "string"
+            }
+          },
+          "condition": "Description:\nCreate Project Request\n\nNotes:\nsave value of generated overrides 'projectRequestOverrides' to ${sendForValidationPV}"
+        },
+        "settings": {
+          "serverId": "ac51937a-532b-4186-9209-2ab379e5c66e"
+        },
+        "returnDirect": false,
+        "_meta": {
+          "uiView": "{\"RefId\":null,\"ViewUniqueId\":\"d2801162-5faa-4e94-a6ed-39b9b4e3453a\",\"Version\":[0,0],\"Type\":\"partialSection\",\"Name\":\"prf_createRequestForm_pv-0.0.164\",\"Icon\":null,\"Channel\":\"conversation\",\"Description\":\"Create Project Request\",\"Instruction\":\"save value of generated overrides \\u0027projectRequestOverrides\\u0027 to ${sendForValidationPV}\",\"AppId\":null,\"ModuleId\":null,\"EnableContextSharing\":true,\"Overrides\":{\"projectRequestOverrides\":{\"Type\":\"data\",\"OverrideId\":\"projectRequestOverrides\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"projectRequestDM\",\"Description\":\"The value of this override can be user specific like \\u0060\\u0060\\u0060json {\\u0022documentCode\\u0022:\\u0022\\u0026lt;documentCode\\u0026gt;\\u0022}\\u0060\\u0060\\u0060\",\"Instruction\":\"The value of this override can be user specific like \\u0060\\u0060\\u0060json {\\u0022documentCode\\u0022:\\u0022\\u0026lt;documentCode\\u0026gt;\\u0022}\\u0060\\u0060\\u0060\",\"Value\":null,\"DataType\":\"object\",\"Source\":\"static\"}}}",
+          "type": "partial-view"
+        },
+        "parameters": {
+          "preText": "",
+          "postText": "",
+          "projectRequestOverrides": "{{nodes.agent_0.toolResults.prf_createrequestform_pv.projectRequestOverrides}}"
+        }
+      },
+      "data": {},
+      "width": 350,
+      "height": 112,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 274.0665389755379,
+        "y": 487.372034115817
+      },
+      "dragging": false
+    },
+    {
+      "id": "8ykzyin",
+      "type": "tool",
+      "name": "prfsentforvalidationsuccesspv0024",
+      "description": "Description:\nShow this PV on success of send for validation.\n\nNotes:\nShow this PV on success of send for validation.",
+      "position": {
+        "x": 255.9285714285715,
+        "y": 777.0347923994929
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "enabled": true,
+        "toolId": "mcp-ac51937a-532b-4186-9209-2ab379e5c66e-prfsentForValidationSuccesspv0024",
+        "type": "mcp",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "preText": {
+              "description": "Optional Markdown shown immediately before this view. Use to introduce what it shows/why it matters or give brief instructions. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+              "type": "string"
+            },
+            "postText": {
+              "description": "Optional Markdown shown immediately after this view. Use for next steps, brief context/interpretation, or a transition to the next section/view. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+              "type": "string"
+            },
+            "sendForValidationOverrides": {
+              "description": "Description:\nUse agent history and set the value to ovverride 'sendForValidationOverrides' from '${sendForValidationPV}' \n\nNotes:\nUse agent history and set the value to ovverride 'sendForValidationOverrides' from '${sendForValidationPV}' ",
+              "type": "string"
+            }
+          },
+          "condition": "Description:\nShow this PV on success of send for validation.\n\nNotes:\nShow this PV on success of send for validation."
+        },
+        "settings": {
+          "serverId": "ac51937a-532b-4186-9209-2ab379e5c66e"
+        },
+        "returnDirect": false,
+        "_meta": {
+          "uiView": "{\"RefId\":null,\"ViewUniqueId\":\"56a8778a-e705-4a1b-acf9-2eafd3029cae\",\"Version\":[0,0],\"Type\":\"partialSection\",\"Name\":\"prf_sentForValidationSuccess_pv-0.0.24\",\"Icon\":null,\"Channel\":\"conversation\",\"Description\":\"Show this PV on success of send for validation.\",\"Instruction\":\"Show this PV on success of send for validation.\",\"AppId\":null,\"ModuleId\":null,\"EnableContextSharing\":true,\"Overrides\":{\"sendForValidationOverrides\":{\"Type\":\"data\",\"OverrideId\":\"sendForValidationOverrides\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"projectrequest\",\"Description\":\"Use agent history and set the value to ovverride \\u0027sendForValidationOverrides\\u0027 from \\u0027${sendForValidationPV}\\u0027 \",\"Instruction\":\"Use agent history and set the value to ovverride \\u0027sendForValidationOverrides\\u0027 from \\u0027${sendForValidationPV}\\u0027 \",\"Value\":null,\"DataType\":\"object\",\"Source\":\"static\"}}}",
+          "type": "partial-view"
+        },
+        "parameters": {
+          "preText": "",
+          "postText": "",
+          "sendForValidationOverrides": "{{nodes.agent_0.toolResults.projectrequestv2}}"
+        }
+      },
+      "data": {},
+      "width": 350,
+      "height": 112,
+      "selected": false,
+      "dragging": false,
+      "positionAbsolute": {
+        "x": 251.80115995602438,
+        "y": 777.0347923994929
+      }
+    },
+    {
+      "id": "59x9qii",
+      "type": "tool",
+      "name": "prfsendforvalidationfailuresection009",
+      "description": "Description:\nShow this PV on failure of send for validation.\n\nNotes:\nShow this PV on failure of send for validation.",
+      "position": {
+        "x": 255.9285714285715,
+        "y": 973.3061969230523
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "enabled": true,
+        "toolId": "mcp-ac51937a-532b-4186-9209-2ab379e5c66e-prfsendForValidationFailuresection009",
+        "type": "mcp",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "preText": {
+              "description": "Optional Markdown shown immediately before this view. Use to introduce what it shows/why it matters or give brief instructions. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+              "type": "string"
+            },
+            "postText": {
+              "description": "Optional Markdown shown immediately after this view. Use for next steps, brief context/interpretation, or a transition to the next section/view. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+              "type": "string"
+            },
+            "sendForValidationFailureOverrides": {
+              "description": "Description:\nUse agent history and set the value to ovverride 'sendForValidationFailureOverrides' from '${submitForApprovalPV}' \n\nNotes:\nUse agent history and set the value to ovverride 'sendForValidationFailureOverrides' from '${submitForApprovalPV}' ",
+              "type": "string"
+            }
+          },
+          "condition": "Description:\nShow this PV on failure of send for validation.\n\nNotes:\nShow this PV on failure of send for validation."
+        },
+        "settings": {
+          "serverId": "ac51937a-532b-4186-9209-2ab379e5c66e"
+        },
+        "returnDirect": false,
+        "_meta": {
+          "uiView": "{\"RefId\":null,\"ViewUniqueId\":\"fab6b606-ee60-4f25-8405-97ea06932bf8\",\"Version\":[0,0],\"Type\":\"partialSection\",\"Name\":\"prf_sendForValidationFailure_section-0.0.9\",\"Icon\":null,\"Channel\":\"conversation\",\"Description\":\"Show this PV on failure of send for validation.\",\"Instruction\":\"Show this PV on failure of send for validation.\",\"AppId\":null,\"ModuleId\":null,\"EnableContextSharing\":true,\"Overrides\":{\"sendForValidationFailureOverrides\":{\"Type\":\"data\",\"OverrideId\":\"sendForValidationFailureOverrides\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"projectRequestDM\",\"Description\":\"Use agent history and set the value to ovverride \\u0027sendForValidationFailureOverrides\\u0027 from \\u0027${submitForApprovalPV}\\u0027 \",\"Instruction\":\"Use agent history and set the value to ovverride \\u0027sendForValidationFailureOverrides\\u0027 from \\u0027${submitForApprovalPV}\\u0027 \",\"Value\":null,\"DataType\":\"object\",\"Source\":\"static\"}}}",
+          "type": "partial-view"
+        },
+        "parameters": {
+          "preText": "",
+          "postText": "",
+          "sendForValidationFailureOverrides": "{{nodes.agent_0.toolResults.projectrequestv2.result}}"
+        }
+      },
+      "data": {},
+      "width": 350,
+      "height": 112,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 251.80115995602415,
+        "y": 973.3061969230523
+      },
+      "dragging": false
+    },
+    {
+      "id": "gksg1uc",
+      "type": "tool",
+      "name": "giftsandhospitality106",
+      "description": "Description:\nshow\n\nNotes:\nshow",
+      "position": {
+        "x": 272.92857142857156,
+        "y": 647.8578744736774
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "enabled": true,
+        "toolId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c-giftsAndHospitality106-147",
+        "type": "mcp",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "preText": {
+              "description": "Optional Markdown shown immediately before this view. Use to introduce what it shows/why it matters or give brief instructions. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+              "type": "string"
+            },
+            "postText": {
+              "description": "Optional Markdown shown immediately after this view. Use for next steps, brief context/interpretation, or a transition to the next section/view. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+              "type": "string"
+            },
+            "giftAndHospitalityDetails": {
+              "description": "Description:\n\n\nNotes:\n",
+              "type": "string"
+            }
+          },
+          "condition": "Description:\nshow\n\nNotes:\nshow"
+        },
+        "settings": {
+          "serverId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c"
+        },
+        "returnDirect": false,
+        "_meta": {
+          "uiView": "{\"RefId\":null,\"ViewUniqueId\":\"5c4081b2-25e2-499f-bae1-726257ad610d\",\"Version\":[1,0],\"Type\":\"partialView\",\"Name\":\"giftsAndHospitality-1.0.6\",\"Icon\":null,\"Channel\":\"conversation\",\"Description\":\"show\",\"Instruction\":\"show\",\"AppId\":null,\"ModuleId\":null,\"EnableContextSharing\":true,\"Overrides\":{\"giftAndHospitalityDetails\":{\"Type\":\"data\",\"OverrideId\":\"giftAndHospitalityDetails\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"giftAndHospitalityDetails\",\"Description\":\"\",\"Instruction\":\"\",\"Value\":null,\"DataType\":\"object\",\"Source\":\"static\"}}}",
+          "type": "partial-view",
+          "source": "current-module",
+          "moduleId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c",
+          "toolId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c",
+          "serverName": "module mcp"
+        },
+        "parameters": {
+          "preText": "",
+          "postText": "",
+          "giftAndHospitalityDetails": "{{nodes.agent_0.toolResults.giftsandhospitality.giftAndHospitalityDetails}}"
+        }
+      },
+      "data": {},
+      "width": 333,
+      "height": 96,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 270.34302766774323,
+        "y": 647.8578744736774
+      },
+      "dragging": false,
+      "variableUpdates": [
+        {
+          "fieldName": "thread.agent_0_messages",
+          "operation": "append",
+          "value": "giftAndHospitalityDetails have been rendered and waiting for user response",
+          "role": "tool"
+        }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "reactflow__edge-start-zo1ua4d",
+      "source": "start",
+      "target": "zo1ua4d",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "start",
+        "targetType": "agent"
+      }
+    },
+    {
+      "id": "reactflow__edge-zo1ua4d-output",
+      "source": "zo1ua4d",
+      "target": "output",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "agent",
+        "targetType": "output"
+      }
+    },
+    {
+      "id": "zo1ua4d-handoff-a334d3d3-7fc3-4bf0-8caf-28ef6c838b2d",
+      "source": "zo1ua4d",
+      "target": "7glmeqm",
+      "type": "handoff",
+      "sourceHandle": "handoff",
+      "targetHandle": null,
+      "deletable": false,
+      "data": {
+        "toolId": "a334d3d3-7fc3-4bf0-8caf-28ef6c838b2d",
+        "isHandoff": true,
+        "sourceType": "agent",
+        "targetType": "tool"
+      },
+      "selected": false
+    },
+    {
+      "id": "reactflow__edge-7glmeqm-io8igp3",
+      "source": "7glmeqm",
+      "target": "io8igp3",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "tool",
+        "targetType": "variable"
+      },
+      "selected": false
+    },
+    {
+      "id": "reactflow__edge-io8igp3-output",
+      "source": "io8igp3",
+      "target": "output",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "variable",
+        "targetType": "output"
+      }
+    },
+    {
+      "id": "zo1ua4d-handoff-5d24c3ab-fe14-4313-bb97-a37f2a2ef2b5",
+      "source": "zo1ua4d",
+      "target": "t125wn8",
+      "type": "handoff",
+      "sourceHandle": "handoff",
+      "targetHandle": null,
+      "deletable": false,
+      "data": {
+        "toolId": "5d24c3ab-fe14-4313-bb97-a37f2a2ef2b5",
+        "isHandoff": true,
+        "sourceType": "agent",
+        "targetType": "variable"
+      }
+    },
+    {
+      "id": "reactflow__edge-t125wn8-zo1ua4d",
+      "source": "t125wn8",
+      "target": "zo1ua4d",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "variable",
+        "targetType": "agent"
+      }
+    },
+    {
+      "id": "reactflow__edge-qwhsgzl-io8igp3",
+      "source": "qwhsgzl",
+      "target": "io8igp3",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "tool",
+        "targetType": "variable"
+      }
+    },
+    {
+      "id": "zo1ua4d-handoff-bbad7fc1-7014-48ca-9e4f-ef10d177eb9f",
+      "source": "zo1ua4d",
+      "target": "qwhsgzl",
+      "type": "handoff",
+      "sourceHandle": "handoff",
+      "targetHandle": null,
+      "deletable": false,
+      "data": {
+        "toolId": "bbad7fc1-7014-48ca-9e4f-ef10d177eb9f",
+        "isHandoff": true,
+        "sourceType": "agent",
+        "targetType": "tool"
+      }
+    },
+    {
+      "id": "zo1ua4d-handoff-9416c35f-96c3-4f25-bb67-9e77a0a33793",
+      "source": "zo1ua4d",
+      "target": "8ykzyin",
+      "type": "handoff",
+      "sourceHandle": "handoff",
+      "targetHandle": null,
+      "deletable": false,
+      "data": {
+        "toolId": "9416c35f-96c3-4f25-bb67-9e77a0a33793",
+        "isHandoff": true,
+        "sourceType": "agent",
+        "targetType": "tool"
+      }
+    },
+    {
+      "id": "zo1ua4d-handoff-92dfee3f-1176-426f-98b0-43eb8795157a",
+      "source": "zo1ua4d",
+      "target": "59x9qii",
+      "type": "handoff",
+      "sourceHandle": "handoff",
+      "targetHandle": null,
+      "deletable": false,
+      "data": {
+        "toolId": "92dfee3f-1176-426f-98b0-43eb8795157a",
+        "isHandoff": true,
+        "sourceType": "agent",
+        "targetType": "tool"
+      }
+    },
+    {
+      "id": "reactflow__edge-8ykzyin-io8igp3",
+      "source": "8ykzyin",
+      "target": "io8igp3",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "tool",
+        "targetType": "variable"
+      }
+    },
+    {
+      "id": "reactflow__edge-59x9qii-io8igp3",
+      "source": "59x9qii",
+      "target": "io8igp3",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "tool",
+        "targetType": "variable"
+      }
+    },
+    {
+      "id": "reactflow__edge-gksg1uc-io8igp3",
+      "source": "gksg1uc",
+      "target": "io8igp3",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "tool",
+        "targetType": "variable"
+      }
+    },
+    {
+      "id": "zo1ua4d-handoff-ab793507-7d50-43da-b07a-f1713cbbdd51",
+      "source": "zo1ua4d",
+      "target": "gksg1uc",
+      "type": "handoff",
+      "sourceHandle": "handoff",
+      "targetHandle": null,
+      "deletable": false,
+      "data": {
+        "toolId": "ab793507-7d50-43da-b07a-f1713cbbdd51",
+        "isHandoff": true,
+        "sourceType": "agent",
+        "targetType": "tool"
+      }
+    }
+  ],
+  "originalBpc": "20210511",
+  "originalEnvironment": "DEV",
+  "freezeRelease": false,
+  "overwriteOnNextRelease": false,
+  "fromModuleVersion": "v1781093875659812800",
+  "lastModifiedVersion": "v1781121601712159400",
+  "rebasedFromVersion": null,
+  "createdBy": "balaji.vada@gep.com",
+  "createdOn": "2026-02-12T11:16:36.371Z",
+  "updatedBy": "Ashok.Bhobhiya@gep.com",
+  "updatedOn": "2026-03-19T07:25:48.664Z",
+  "environment": "DEV",
+  "appId": "e2c84064-171f-4f1a-a29a-19e0ac610935",
+  "moduleId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c",
+  "version": "v1781121601712159400"
+}

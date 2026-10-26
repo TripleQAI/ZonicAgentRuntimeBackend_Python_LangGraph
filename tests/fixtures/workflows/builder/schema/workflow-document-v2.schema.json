@@ -1,0 +1,1460 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:strands-builder:workflow-document:2",
+  "title": "Strands builder workflow document",
+  "description": "The workflow JSON the agent runtime executes, version 2. Generated from the node registry: structure and engine paths are enforced; form fields are described in x-form annotations, which validators ignore. Unknown keys are allowed everywhere and survive every round trip.",
+  "type": "object",
+  "required": [
+    "nodes",
+    "edges"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+$",
+      "description": "Absent means 1.0"
+    },
+    "agenticWorkflowId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "name": {
+      "type": "string"
+    },
+    "displayName": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "bpc": {
+      "type": "string"
+    },
+    "editAs": {
+      "type": "string"
+    },
+    "invocationType": {
+      "type": "string"
+    },
+    "appId": {
+      "type": "string"
+    },
+    "moduleId": {
+      "type": "string"
+    },
+    "environment": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "isDisabled": {
+      "type": "boolean"
+    },
+    "isAvailableForMigration": {
+      "type": "boolean"
+    },
+    "enableForAutoInvoke": {
+      "type": "boolean"
+    },
+    "includeThoughts": {
+      "type": "boolean"
+    },
+    "variables": {
+      "type": "object",
+      "description": "Typed flow variables: { name: { type, default, description } }"
+    },
+    "interface": {
+      "type": "object"
+    },
+    "security": {
+      "type": "object"
+    },
+    "skills": {
+      "type": "array"
+    },
+    "publishChannels": {
+      "type": "array"
+    },
+    "semanticSearchEnabled": {
+      "type": "boolean"
+    },
+    "semanticDomain": {
+      "type": "string"
+    },
+    "semanticKeywords": {
+      "type": "string"
+    },
+    "semanticUseCases": {
+      "type": "string"
+    },
+    "systemParams": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/node"
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/edge"
+      }
+    }
+  },
+  "$defs": {
+    "point": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        }
+      }
+    },
+    "nodeType": {
+      "description": "Node types from the registry; filled in by the generator",
+      "enum": [
+        "start",
+        "llm",
+        "agent",
+        "external_agent",
+        "script",
+        "http_request",
+        "guardrail",
+        "rule",
+        "workflow",
+        "variable",
+        "output",
+        "approval",
+        "human_input",
+        "tool",
+        "note",
+        "view",
+        "db_query",
+        "swarm"
+      ]
+    },
+    "node": {
+      "type": "object",
+      "required": [
+        "id",
+        "type"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "$ref": "#/$defs/nodeType"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "config": {
+          "type": "object"
+        },
+        "properties": {
+          "type": "object"
+        },
+        "variableUpdates": {
+          "type": "array"
+        },
+        "position": {
+          "$ref": "#/$defs/point"
+        },
+        "positionAbsolute": {
+          "$ref": "#/$defs/point"
+        },
+        "width": {
+          "type": "number"
+        },
+        "height": {
+          "type": "number"
+        },
+        "parentId": {
+          "type": "string",
+          "description": "Canvas layout only (a Swarm member's container); the runtime ignores it"
+        },
+        "data": {
+          "type": "object"
+        },
+        "style": {
+          "type": "object"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "start"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "config": {
+                "$ref": "#/$defs/config.start"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "llm"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "config": {
+                "$ref": "#/$defs/config.llm"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "agent"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "config": {
+                "$ref": "#/$defs/config.agent"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "external_agent"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "config": {
+                "$ref": "#/$defs/config.external_agent"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "script"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "config": {
+                "$ref": "#/$defs/config.script"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "http_request"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "config": {
+                "$ref": "#/$defs/config.http_request"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "guardrail"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "config": {
+                "$ref": "#/$defs/config.guardrail"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "rule"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "config": {
+                "$ref": "#/$defs/config.rule"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "workflow"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "config": {
+                "$ref": "#/$defs/config.workflow"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "variable"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "config": {
+                "$ref": "#/$defs/config.variable"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "output"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "config": {
+                "$ref": "#/$defs/config.output"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "approval"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "config": {
+                "$ref": "#/$defs/config.approval"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "human_input"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "config": {
+                "$ref": "#/$defs/config.human_input"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "tool"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "config": {
+                "$ref": "#/$defs/config.tool"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "note"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "config": {
+                "$ref": "#/$defs/config.note"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "view"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "config": {
+                "$ref": "#/$defs/config.view"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "db_query"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "config": {
+                "$ref": "#/$defs/config.db_query"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "swarm"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "config": {
+                "$ref": "#/$defs/config.swarm"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "edge": {
+      "type": "object",
+      "required": [
+        "source",
+        "target"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "target": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sourceHandle": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "targetHandle": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "type": {
+          "type": "string"
+        },
+        "data": {
+          "type": "object"
+        }
+      }
+    },
+    "config.start": {
+      "type": "object",
+      "title": "Start",
+      "description": "Entry point of the workflow.",
+      "properties": {
+        "interfaceInputs": {
+          "x-form": {
+            "widget": "schema_builder",
+            "label": "Interface Inputs",
+            "description": "Variables passed in when this workflow is invoked."
+          }
+        },
+        "outputStructure": {
+          "x-form": {
+            "widget": "key_value_list",
+            "label": "Fields",
+            "description": "Map named output fields from this node's response. Reference downstream as {{nodes.NODE_NAME.output.FIELD_NAME}}."
+          }
+        },
+        "variableUpdates": {
+          "x-form": {
+            "widget": "state_update_list",
+            "label": "Updates",
+            "description": "Update workflow variables when this node completes."
+          }
+        }
+      }
+    },
+    "config.llm": {
+      "type": "object",
+      "title": "LLM",
+      "description": "Calls a large language model with a prompt.",
+      "properties": {
+        "model": {
+          "x-form": {
+            "widget": "select",
+            "label": "Model",
+            "required": true
+          }
+        },
+        "messages": {
+          "x-form": {
+            "widget": "message_list",
+            "label": "Messages"
+          }
+        },
+        "tools": {
+          "x-form": {
+            "widget": "tool_list",
+            "label": "Tools"
+          }
+        },
+        "outputStructure": {
+          "x-form": {
+            "widget": "key_value_list",
+            "label": "Fields",
+            "description": "Map named output fields from this node's response. Reference downstream as {{nodes.NODE_NAME.output.FIELD_NAME}}."
+          }
+        },
+        "variableUpdates": {
+          "x-form": {
+            "widget": "state_update_list",
+            "label": "Updates",
+            "description": "Update workflow variables when this node completes."
+          }
+        },
+        "responseFormat": {
+          "x-form": {
+            "widget": "select",
+            "label": "Response Format",
+            "defaultValue": "text",
+            "options": [
+              "text",
+              "json"
+            ]
+          }
+        },
+        "temperature": {
+          "x-form": {
+            "widget": "number",
+            "label": "Temperature",
+            "defaultValue": 0.7,
+            "min": 0,
+            "max": 2,
+            "step": 0.1
+          }
+        },
+        "maxTokens": {
+          "x-form": {
+            "widget": "number",
+            "label": "Max Tokens",
+            "defaultValue": 1024
+          }
+        },
+        "errorHandling": {
+          "x-form": {
+            "widget": "switch",
+            "label": "Enable Error Handling",
+            "defaultValue": false
+          }
+        }
+      }
+    },
+    "config.agent": {
+      "type": "object",
+      "title": "Agent",
+      "description": "Invokes an agentic loop with tools and a model.",
+      "properties": {
+        "model": {
+          "x-form": {
+            "widget": "select",
+            "label": "Model",
+            "required": true
+          }
+        },
+        "strategy": {
+          "x-form": {
+            "widget": "select",
+            "label": "Agent Strategy",
+            "defaultValue": "react",
+            "options": [
+              "react",
+              "plan_exec",
+              "custom"
+            ]
+          }
+        },
+        "systemPrompt": {
+          "x-form": {
+            "widget": "markdown",
+            "label": "System Prompt"
+          }
+        },
+        "tools": {
+          "x-form": {
+            "widget": "tool_list",
+            "label": "Tools"
+          }
+        },
+        "handoffTarget": {
+          "x-form": {
+            "widget": "node_multiselect",
+            "label": "Handoff Targets",
+            "description": "When this agent completes, hand off execution to each selected node."
+          },
+          "type": [
+            "array",
+            "null"
+          ]
+        },
+        "outputStructure": {
+          "x-form": {
+            "widget": "key_value_list",
+            "label": "Fields",
+            "description": "Map named output fields from this node's response. Reference downstream as {{nodes.NODE_NAME.output.FIELD_NAME}}."
+          }
+        },
+        "variableUpdates": {
+          "x-form": {
+            "widget": "state_update_list",
+            "label": "Updates",
+            "description": "Update workflow variables when this node completes."
+          }
+        },
+        "maxIterations": {
+          "x-form": {
+            "widget": "number",
+            "label": "Max Iterations",
+            "defaultValue": 10
+          }
+        },
+        "includeThoughts": {
+          "x-form": {
+            "widget": "switch",
+            "label": "Include Thoughts",
+            "defaultValue": false
+          }
+        }
+      }
+    },
+    "config.external_agent": {
+      "type": "object",
+      "title": "External Agent",
+      "description": "Calls an agent hosted externally via HTTP.",
+      "properties": {
+        "endpoint": {
+          "x-form": {
+            "widget": "expression",
+            "label": "Endpoint URL",
+            "description": "Full URL of the external agent endpoint.",
+            "required": true
+          }
+        },
+        "authType": {
+          "x-form": {
+            "widget": "select",
+            "label": "Auth Type",
+            "defaultValue": "none",
+            "options": [
+              "none",
+              "bearer",
+              "apikey",
+              "basic"
+            ]
+          }
+        },
+        "apiKey": {
+          "x-form": {
+            "widget": "expression",
+            "label": "API Key / Token",
+            "description": "Supports variable references, e.g. {{secrets.myKey}}"
+          }
+        },
+        "inputMapping": {
+          "x-form": {
+            "widget": "mapping_list",
+            "label": "Input Fields"
+          }
+        },
+        "outputStructure": {
+          "x-form": {
+            "widget": "key_value_list",
+            "label": "Fields",
+            "description": "Map named output fields from this node's response. Reference downstream as {{nodes.NODE_NAME.output.FIELD_NAME}}."
+          }
+        },
+        "variableUpdates": {
+          "x-form": {
+            "widget": "state_update_list",
+            "label": "Updates",
+            "description": "Update workflow variables when this node completes."
+          }
+        },
+        "timeoutSeconds": {
+          "x-form": {
+            "widget": "number",
+            "label": "Timeout (seconds)",
+            "defaultValue": 30
+          }
+        },
+        "retries": {
+          "x-form": {
+            "widget": "number",
+            "label": "Retries",
+            "defaultValue": 0
+          }
+        }
+      }
+    },
+    "config.script": {
+      "type": "object",
+      "title": "Script",
+      "description": "Runs a custom JavaScript or Python snippet.",
+      "properties": {
+        "inputs": {
+          "x-form": {
+            "widget": "mapping_list",
+            "label": "Input Mapping",
+            "description": "Mapped variables are accessible in the code as input.key — e.g. input.queryResponse."
+          }
+        },
+        "language": {
+          "x-form": {
+            "widget": "select",
+            "label": "Language",
+            "required": true,
+            "defaultValue": "javascript",
+            "options": [
+              "javascript",
+              "python",
+              "typescript"
+            ]
+          }
+        },
+        "code": {
+          "x-form": {
+            "widget": "code",
+            "label": "Code",
+            "required": true
+          }
+        },
+        "outputStructure": {
+          "x-form": {
+            "widget": "key_value_list",
+            "label": "Fields",
+            "description": "Map named output fields from this node's response. Reference downstream as {{nodes.NODE_NAME.output.FIELD_NAME}}."
+          }
+        },
+        "variableUpdates": {
+          "x-form": {
+            "widget": "state_update_list",
+            "label": "Updates",
+            "description": "Update workflow variables when this node completes."
+          }
+        }
+      }
+    },
+    "config.http_request": {
+      "type": "object",
+      "title": "HTTP Request",
+      "description": "Makes an outbound HTTP request.",
+      "properties": {
+        "method": {
+          "x-form": {
+            "widget": "select",
+            "label": "Method",
+            "required": true,
+            "defaultValue": "GET",
+            "options": [
+              "GET",
+              "POST",
+              "PUT",
+              "PATCH",
+              "DELETE"
+            ]
+          }
+        },
+        "url": {
+          "x-form": {
+            "widget": "expression",
+            "label": "URL",
+            "description": "Supports variable references in the URL.",
+            "required": true
+          }
+        },
+        "headers": {
+          "x-form": {
+            "widget": "key_value_list",
+            "label": "Request Headers"
+          }
+        },
+        "body": {
+          "x-form": {
+            "widget": "expression",
+            "label": "Request Body",
+            "description": "Supports variable references."
+          }
+        },
+        "outputStructure": {
+          "x-form": {
+            "widget": "key_value_list",
+            "label": "Fields",
+            "description": "Map named output fields from this node's response. Reference downstream as {{nodes.NODE_NAME.output.FIELD_NAME}}."
+          }
+        },
+        "variableUpdates": {
+          "x-form": {
+            "widget": "state_update_list",
+            "label": "Updates",
+            "description": "Update workflow variables when this node completes."
+          }
+        },
+        "timeoutSeconds": {
+          "x-form": {
+            "widget": "number",
+            "label": "Timeout (seconds)",
+            "defaultValue": 30
+          }
+        }
+      }
+    },
+    "config.guardrail": {
+      "type": "object",
+      "title": "Guardrail",
+      "description": "Enforces safety or policy constraints on the flow.",
+      "properties": {
+        "inputMapping": {
+          "x-form": {
+            "widget": "mapping_list",
+            "label": "Input Mapping"
+          }
+        },
+        "policy": {
+          "x-form": {
+            "widget": "textarea",
+            "label": "Policy / Rules",
+            "required": true
+          }
+        },
+        "action": {
+          "x-form": {
+            "widget": "select",
+            "label": "On Fail",
+            "required": true,
+            "defaultValue": "block",
+            "options": [
+              "block",
+              "warn",
+              "redirect"
+            ]
+          }
+        },
+        "outputStructure": {
+          "x-form": {
+            "widget": "key_value_list",
+            "label": "Fields",
+            "description": "Map named output fields from this node's response. Reference downstream as {{nodes.NODE_NAME.output.FIELD_NAME}}."
+          }
+        },
+        "variableUpdates": {
+          "x-form": {
+            "widget": "state_update_list",
+            "label": "Updates",
+            "description": "Update workflow variables when this node completes."
+          }
+        }
+      }
+    },
+    "config.rule": {
+      "type": "object",
+      "title": "Rule",
+      "description": "Evaluates conditional branches; each rule generates a canvas handle.",
+      "properties": {
+        "rules": {
+          "x-form": {
+            "widget": "condition_builder",
+            "label": "Rules",
+            "description": "Each rule creates a named output handle on the canvas node."
+          },
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "config.workflow": {
+      "type": "object",
+      "title": "Sub Flow",
+      "description": "Executes a child agent workflow as a sub-flow.",
+      "properties": {
+        "agenticWorkflowId": {
+          "x-form": {
+            "widget": "agentic_workflow_selector",
+            "label": "Child Workflow",
+            "description": "Select a loaded agent to reference as a sub-flow.",
+            "required": true
+          },
+          "type": "string"
+        },
+        "inputs": {
+          "x-form": {
+            "widget": "mapping_list",
+            "label": "Inputs"
+          }
+        },
+        "outputStructure": {
+          "x-form": {
+            "widget": "key_value_list",
+            "label": "Fields",
+            "description": "Map named output fields from this node's response. Reference downstream as {{nodes.NODE_NAME.output.FIELD_NAME}}."
+          }
+        },
+        "variableUpdates": {
+          "x-form": {
+            "widget": "state_update_list",
+            "label": "Updates",
+            "description": "Update workflow variables when this node completes."
+          }
+        }
+      }
+    },
+    "config.variable": {
+      "type": "object",
+      "title": "Variable Update",
+      "description": "Reads or writes workflow variables.",
+      "properties": {
+        "updates": {
+          "x-form": {
+            "widget": "state_update_list",
+            "label": "Updates"
+          }
+        }
+      }
+    },
+    "config.output": {
+      "type": "object",
+      "title": "Output",
+      "description": "Terminal output node — ends the workflow and returns a result.",
+      "properties": {
+        "variableUpdates": {
+          "x-form": {
+            "widget": "state_update_list",
+            "label": "Updates",
+            "description": "Update workflow variables when this node completes."
+          }
+        }
+      }
+    },
+    "config.approval": {
+      "type": "object",
+      "title": "Approval",
+      "description": "Pauses the workflow for a human approval gate.",
+      "properties": {
+        "message": {
+          "x-form": {
+            "widget": "textarea",
+            "label": "Approval Message"
+          }
+        },
+        "approvers": {
+          "x-form": {
+            "widget": "key_value_list",
+            "label": "Approvers",
+            "description": "List approver identifiers (email, userId, role)."
+          }
+        },
+        "timeoutHours": {
+          "x-form": {
+            "widget": "number",
+            "label": "Timeout (hours)",
+            "defaultValue": 24
+          }
+        },
+        "outputStructure": {
+          "x-form": {
+            "widget": "key_value_list",
+            "label": "Fields",
+            "description": "Map named output fields from this node's response. Reference downstream as {{nodes.NODE_NAME.output.FIELD_NAME}}."
+          }
+        },
+        "variableUpdates": {
+          "x-form": {
+            "widget": "state_update_list",
+            "label": "Updates",
+            "description": "Update workflow variables when this node completes."
+          }
+        },
+        "responseVariable": {
+          "x-form": {
+            "widget": "text",
+            "label": "Response Variable Path",
+            "description": "Variable path to store the approval response.",
+            "defaultValue": "approval.response"
+          }
+        }
+      }
+    },
+    "config.human_input": {
+      "type": "object",
+      "title": "Human Input",
+      "description": "Pauses the workflow to collect input from a human user.",
+      "properties": {
+        "prompt": {
+          "x-form": {
+            "widget": "textarea",
+            "label": "Prompt",
+            "required": true
+          }
+        },
+        "inputType": {
+          "x-form": {
+            "widget": "select",
+            "label": "Input Type",
+            "required": true,
+            "defaultValue": "text",
+            "options": [
+              "text",
+              "number",
+              "file",
+              "choice"
+            ]
+          }
+        },
+        "required": {
+          "x-form": {
+            "widget": "switch",
+            "label": "Required",
+            "defaultValue": true
+          }
+        },
+        "responseVariable": {
+          "x-form": {
+            "widget": "text",
+            "label": "Response Variable Path",
+            "description": "Variable path to store the collected input.",
+            "defaultValue": "human.response"
+          }
+        },
+        "stateUpdates": {
+          "x-form": {
+            "widget": "state_update_list",
+            "label": "State Updates"
+          }
+        }
+      }
+    },
+    "config.tool": {
+      "type": "object",
+      "title": "Tool",
+      "description": "Invokes a registered tool (function, MCP, handoff, or UI view).",
+      "properties": {
+        "toolName": {
+          "x-form": {
+            "widget": "text",
+            "label": "Tool Name",
+            "required": true
+          }
+        },
+        "toolType": {
+          "x-form": {
+            "widget": "select",
+            "label": "Tool Type",
+            "defaultValue": "function",
+            "options": [
+              "function",
+              "handoff",
+              "ui_view",
+              "mcp"
+            ]
+          }
+        },
+        "inputs": {
+          "x-form": {
+            "widget": "mapping_list",
+            "label": "Inputs"
+          }
+        },
+        "outputStructure": {
+          "x-form": {
+            "widget": "key_value_list",
+            "label": "Fields",
+            "description": "Map named output fields from this node's response. Reference downstream as {{nodes.NODE_NAME.output.FIELD_NAME}}."
+          }
+        },
+        "variableUpdates": {
+          "x-form": {
+            "widget": "state_update_list",
+            "label": "Updates",
+            "description": "Update workflow variables when this node completes."
+          }
+        },
+        "handoffTarget": {
+          "x-form": {
+            "widget": "text",
+            "label": "Handoff Target Node ID",
+            "description": "Required when toolType is 'handoff'."
+          }
+        },
+        "schema": {
+          "x-form": {
+            "widget": "json",
+            "label": "Tool Schema"
+          }
+        }
+      }
+    },
+    "config.note": {
+      "type": "object",
+      "title": "Note",
+      "description": "A non-executing annotation placed on the canvas.",
+      "properties": {
+        "text": {
+          "x-form": {
+            "widget": "textarea",
+            "label": "Note Text"
+          }
+        },
+        "color": {
+          "x-form": {
+            "widget": "select",
+            "label": "Color",
+            "defaultValue": "#6b7280",
+            "options": [
+              "#6b7280",
+              "#f9e2af",
+              "#89dceb",
+              "#a6e3a1",
+              "#f38ba8"
+            ]
+          }
+        }
+      }
+    },
+    "config.view": {
+      "type": "object",
+      "title": "View",
+      "description": "Prepares an HTML fragment that can embed node results and flow variable data.",
+      "properties": {
+        "viewMode": {
+          "x-form": {
+            "widget": "view_template",
+            "label": "HTML Template",
+            "required": true
+          }
+        },
+        "outputStructure": {
+          "x-form": {
+            "widget": "key_value_list",
+            "label": "Fields",
+            "description": "Map named output fields from this node's response. Reference downstream as {{nodes.NODE_NAME.output.FIELD_NAME}}."
+          }
+        },
+        "variableUpdates": {
+          "x-form": {
+            "widget": "state_update_list",
+            "label": "Updates",
+            "description": "Update workflow variables when this node completes."
+          }
+        }
+      }
+    },
+    "config.db_query": {
+      "type": "object",
+      "title": "DB Query",
+      "description": "Executes a SQL query against a configured database connection.",
+      "properties": {
+        "databaseType": {
+          "x-form": {
+            "widget": "select",
+            "label": "Database Type",
+            "required": true,
+            "defaultValue": "postgresql",
+            "options": [
+              "postgresql",
+              "mssql",
+              "mysql",
+              "mongodb",
+              "sqlite",
+              "oracle"
+            ]
+          }
+        },
+        "connectionId": {
+          "x-form": {
+            "widget": "text",
+            "label": "Connection ID",
+            "description": "Identifier of the registered database connection to use.",
+            "required": true
+          }
+        },
+        "query": {
+          "x-form": {
+            "widget": "code",
+            "label": "SQL Query",
+            "description": "SQL to execute. Use :param_name placeholders for bound parameters.",
+            "required": true
+          }
+        },
+        "timeoutSeconds": {
+          "x-form": {
+            "widget": "number",
+            "label": "Timeout (seconds)",
+            "defaultValue": 30
+          }
+        },
+        "parameters": {
+          "x-form": {
+            "widget": "key_value_list",
+            "label": "Bound Parameters",
+            "description": "Key-value pairs bound to :param_name placeholders in the query. Values support {{variable.path}} expressions."
+          }
+        },
+        "outputStructure": {
+          "x-form": {
+            "widget": "key_value_list",
+            "label": "Fields",
+            "description": "Map named output fields from this node's response. Reference downstream as {{nodes.NODE_NAME.output.FIELD_NAME}}."
+          }
+        },
+        "variableUpdates": {
+          "x-form": {
+            "widget": "state_update_list",
+            "label": "Updates",
+            "description": "Update workflow variables when this node completes."
+          }
+        },
+        "rowSchema": {
+          "x-form": {
+            "widget": "json",
+            "label": "Row Schema (JSON Schema)",
+            "description": "JSON Schema describing the expected shape of each result row (used for validation)."
+          }
+        }
+      }
+    },
+    "config.swarm": {
+      "type": "object",
+      "title": "Swarm",
+      "description": "A team of agents that hand work to each other autonomously (Strands Swarm).",
+      "x-layout": {
+        "kind": "container",
+        "minWidth": 420,
+        "minHeight": 240
+      },
+      "properties": {
+        "members": {
+          "x-form": {
+            "widget": "member_list",
+            "label": "Member agents",
+            "description": "Agents in this swarm. Drag Agent or LLM nodes into the swarm, or add them here."
+          },
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "entryPoint": {
+          "x-form": {
+            "widget": "node_select",
+            "label": "Entry point",
+            "description": "The member that receives the task first. Empty means the first member.",
+            "optionsFrom": "config.members"
+          },
+          "type": "string"
+        },
+        "taskMapping": {
+          "x-form": {
+            "widget": "expression",
+            "label": "Task",
+            "defaultValue": "{{system.userQuery}}"
+          }
+        },
+        "maxHandoffs": {
+          "x-form": {
+            "widget": "number",
+            "label": "Max handoffs",
+            "defaultValue": 20,
+            "min": 1
+          }
+        },
+        "maxIterations": {
+          "x-form": {
+            "widget": "number",
+            "label": "Max iterations",
+            "defaultValue": 20,
+            "min": 1
+          }
+        },
+        "executionTimeoutSeconds": {
+          "x-form": {
+            "widget": "number",
+            "label": "Swarm timeout (seconds)",
+            "defaultValue": 900,
+            "min": 1
+          }
+        },
+        "nodeTimeoutSeconds": {
+          "x-form": {
+            "widget": "number",
+            "label": "Agent timeout (seconds)",
+            "defaultValue": 300,
+            "min": 1
+          }
+        },
+        "repetitiveHandoffDetectionWindow": {
+          "x-form": {
+            "widget": "number",
+            "label": "Window (recent handoffs; 0 turns it off)",
+            "defaultValue": 0,
+            "min": 0
+          }
+        },
+        "repetitiveHandoffMinUniqueAgents": {
+          "x-form": {
+            "widget": "number",
+            "label": "Minimum unique agents in the window",
+            "defaultValue": 0,
+            "min": 0
+          }
+        },
+        "outputStructure": {
+          "x-form": {
+            "widget": "key_value_list",
+            "label": "Fields",
+            "description": "Map named output fields from this node's response. Reference downstream as {{nodes.NODE_NAME.output.FIELD_NAME}}."
+          }
+        },
+        "variableUpdates": {
+          "x-form": {
+            "widget": "state_update_list",
+            "label": "Updates",
+            "description": "Update workflow variables when this node completes."
+          }
+        }
+      }
+    }
+  }
+}

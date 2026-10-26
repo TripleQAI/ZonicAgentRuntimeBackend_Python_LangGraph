@@ -1,0 +1,119 @@
+{
+  "_comment": [
+    "Workflow template (design 5.8.1 and 7.8; implementation plan P5-06). See",
+    "question_answering_with_tools.json for the format. The three members hand the",
+    "request to each other at run time, so they have no edges and no handoff targets."
+  ],
+  "name": "customer-support-swarm",
+  "title": "Customer Support Swarm",
+  "description": "A swarm of three agents: triage reads the request and hands it to billing or technical support, who answer it.",
+  "document": {
+    "schemaVersion": "2.0",
+    "agenticWorkflowId": "template-customer-support-swarm",
+    "name": "customer-support",
+    "displayName": "Customer Support",
+    "description": "Answers customer requests with a swarm of specialist agents.",
+    "nodes": [
+      { "id": "start_1", "type": "start", "name": "Start_1", "description": "Receives the customer request.", "position": { "x": 40, "y": 160 }, "config": { "interfaceInputs": [], "variableUpdates": [] } },
+      {
+        "id": "swarm_1",
+        "type": "swarm",
+        "name": "support_team",
+        "description": "Specialists that hand the request to each other.",
+        "position": { "x": 260, "y": 60 },
+        "width": 560,
+        "height": 300,
+        "config": {
+          "members": ["agent_triage", "agent_billing", "agent_tech"],
+          "entryPoint": "agent_triage",
+          "taskMapping": "{{system.userQuery}}",
+          "maxHandoffs": 10,
+          "maxIterations": 15,
+          "executionTimeoutSeconds": 600,
+          "nodeTimeoutSeconds": 120,
+          "repetitiveHandoffDetectionWindow": 6,
+          "repetitiveHandoffMinUniqueAgents": 2,
+          "outputStructure": [],
+          "variableUpdates": []
+        }
+      },
+      {
+        "id": "agent_triage",
+        "type": "agent",
+        "name": "triage",
+        "description": "Classifies the request and hands it to the right specialist",
+        "parentId": "swarm_1",
+        "position": { "x": 24, "y": 56 },
+        "config": {
+          "model": "",
+          "strategy": "react",
+          "systemPrompt": "You triage customer requests. Hand billing, invoice, payment and refund questions to billing, and product or integration problems to tech_support. Answer only greetings yourself.",
+          "tools": [],
+          "maxIterations": 10,
+          "includeThoughts": false,
+          "stateUpdates": [],
+          "outputSchema": [],
+          "handoffTarget": [],
+          "variableUpdates": []
+        }
+      },
+      {
+        "id": "agent_billing",
+        "type": "agent",
+        "name": "billing",
+        "description": "Answers invoice, payment and refund questions",
+        "parentId": "swarm_1",
+        "position": { "x": 200, "y": 56 },
+        "config": {
+          "model": "",
+          "strategy": "react",
+          "systemPrompt": "You answer invoice, payment and refund questions clearly. Hand anything technical to tech_support.",
+          "tools": [],
+          "maxIterations": 10,
+          "includeThoughts": false,
+          "stateUpdates": [],
+          "outputSchema": [],
+          "handoffTarget": [],
+          "variableUpdates": []
+        }
+      },
+      {
+        "id": "agent_tech",
+        "type": "agent",
+        "name": "tech_support",
+        "description": "Troubleshoots product and integration issues",
+        "parentId": "swarm_1",
+        "position": { "x": 376, "y": 56 },
+        "config": {
+          "model": "",
+          "strategy": "react",
+          "systemPrompt": "You troubleshoot product and integration issues step by step. Hand billing questions to billing.",
+          "tools": [{ "name": "current_time", "title": "current_time", "type": "strands_builtin", "description": "The current date and time.", "config": {} }],
+          "maxIterations": 10,
+          "includeThoughts": false,
+          "stateUpdates": [],
+          "outputSchema": [],
+          "handoffTarget": [],
+          "variableUpdates": []
+        }
+      },
+      {
+        "id": "output_1",
+        "type": "output",
+        "name": "Output_1",
+        "description": "Returns the swarm's answer.",
+        "position": { "x": 880, "y": 160 },
+        "config": {
+          "outputMapping": [{ "target": "answer", "source": "{{nodes.support_team.output.text}}", "type": "string" }],
+          "variableUpdates": []
+        }
+      }
+    ],
+    "edges": [
+      { "id": "e1", "source": "start_1", "target": "swarm_1", "sourceHandle": "default", "targetHandle": "default", "type": "default", "data": { "sourceType": "start", "targetType": "swarm" } },
+      { "id": "e2", "source": "swarm_1", "target": "output_1", "sourceHandle": "default", "targetHandle": "default", "type": "default", "data": { "sourceType": "swarm", "targetType": "output" } }
+    ],
+    "variables": {},
+    "systemParams": []
+  }
+}

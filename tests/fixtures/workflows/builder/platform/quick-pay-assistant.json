@@ -1,0 +1,2419 @@
+{
+  "agenticWorkflowId": "7e406737-bded-4021-857b-e7e949915048",
+  "bpc": "20210511",
+  "name": "quick-pay-assistant",
+  "displayName": "Quick Pay Assistant",
+  "description": "Quick Pay Assistant",
+  "isDisabled": false,
+  "isAvailableForMigration": true,
+  "editAs": "canvas",
+  "enableForAutoInvoke": false,
+  "includeThoughts": false,
+  "invocationType": "API",
+  "publishChannels": [
+    {
+      "refId": "api",
+      "code": "api",
+      "name": "API",
+      "description": "Expose the agent as a REST API for system and app integrations"
+    },
+    {
+      "refId": "qi-ui",
+      "code": "qi-ui",
+      "name": "Qi UI",
+      "description": "Make your agent available in GEP’s Qi interface"
+    }
+  ],
+  "security": {
+    "activities": [
+      {
+        "refId": "10100002",
+        "code": "10100002",
+        "name": "Home"
+      }
+    ]
+  },
+  "skills": [],
+  "variables": {
+    "flow": [
+      {
+        "refId": "questionnareResponses",
+        "name": "questionnareResponses",
+        "type": "object",
+        "id": "var-c3zuof8ik",
+        "default": {},
+        "required": false
+      },
+      {
+        "refId": "partial_view_data",
+        "name": "partial_view_data",
+        "type": "string",
+        "id": "var-pahhjfu3k",
+        "default": "",
+        "required": false
+      },
+      {
+        "refId": "current_step",
+        "name": "current_step",
+        "type": "number",
+        "id": "var-1tn9quy09",
+        "default": 0,
+        "required": false
+      },
+      {
+        "refId": "user_context",
+        "name": "user_context",
+        "type": "object",
+        "id": "var-e2v6au42p",
+        "default": {},
+        "required": false
+      },
+      {
+        "refId": "category",
+        "name": "category",
+        "type": "object",
+        "id": "var-bo305ov5l",
+        "default": {},
+        "required": false
+      },
+      {
+        "refId": "knowledge",
+        "name": "knowledge",
+        "type": "string",
+        "id": "var-c11rulmac",
+        "default": "",
+        "required": false
+      },
+      {
+        "refId": "qa_master_data",
+        "name": "qa_master_data",
+        "type": "string",
+        "id": "var-rz9yjfm1a",
+        "default": "",
+        "required": false
+      },
+      {
+        "refId": "current_state",
+        "name": "current_state",
+        "type": "string",
+        "id": "var-p87w1m6o4",
+        "default": "",
+        "required": false
+      },
+      {
+        "refId": "lastQuestionAsked",
+        "name": "lastQuestionAsked",
+        "type": "string",
+        "id": "var-23wjhbgms",
+        "default": "",
+        "required": false
+      },
+      {
+        "refId": "response",
+        "name": "response",
+        "type": "string",
+        "id": "var-j3dako0yx",
+        "default": "Yes",
+        "required": false
+      },
+      {
+        "refId": "user_decision_points",
+        "name": "user_decision_points",
+        "type": "object",
+        "id": "var-qrxwg9149",
+        "default": {},
+        "required": false
+      },
+      {
+        "refId": "supplier_data",
+        "name": "supplier_data",
+        "type": "object",
+        "id": "var-n05v3hu8q",
+        "default": {},
+        "required": false
+      },
+      {
+        "refId": "user_selected_currency",
+        "name": "user_selected_currency",
+        "type": "object",
+        "id": "var-3alwsyjjq",
+        "description": "user selected currency details",
+        "default": {},
+        "required": false
+      },
+      {
+        "refId": "category_name",
+        "name": "category_name",
+        "type": "string",
+        "id": "var-xoe9zzy83",
+        "default": "",
+        "required": false
+      },
+      {
+        "refId": "business_unit",
+        "name": "business_unit",
+        "type": "string",
+        "id": "var-bgt5jil7d",
+        "default": "",
+        "required": false
+      }
+    ],
+    "system": []
+  },
+  "interface": {
+    "inputs": {
+      "query": {
+        "type": "string",
+        "description": "User query to process",
+        "required": true
+      }
+    },
+    "outputs": {
+      "response": {
+        "type": "string",
+        "description": "Final response to the user"
+      }
+    }
+  },
+  "nodes": [
+    {
+      "id": "start",
+      "type": "start",
+      "name": "start",
+      "description": "Starting point of the workflow",
+      "position": {
+        "x": -84.75225998962716,
+        "y": -858.456569162844
+      },
+      "deletable": false,
+      "selected": false,
+      "dragging": false,
+      "data": {},
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "label": "start",
+        "nodeType": "start"
+      },
+      "variableUpdates": [
+        {
+          "fieldName": "flow.supplier_data",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.supplier_data}}"
+        },
+        {
+          "fieldName": "flow.user_decision_points",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.user_decision_points}}"
+        },
+        {
+          "fieldName": "flow.questionnareResponses",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.questionnaireForSummary}}"
+        },
+        {
+          "fieldName": "flow.user_context",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.user_context}}"
+        },
+        {
+          "fieldName": "flow.qa_master_data",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.qa_master_data}}"
+        },
+        {
+          "fieldName": "thread.quick_pay_messages",
+          "operation": "append",
+          "value": "{{nodeOutput.interface.inputs.partialViewData}}",
+          "role": "user",
+          "rules": {
+            "conditions": [
+              {
+                "field": "{{nodeOutput.interface.inputs.partialViewData}}",
+                "operator": "is not empty",
+                "value": ""
+              },
+              {
+                "field": "{{nodeOutput.interface.inputs.partialViewData}}",
+                "operator": "!=",
+                "value": "[]"
+              },
+              {
+                "field": "{{nodeOutput.interface.inputs.partialViewData}}",
+                "operator": "!=",
+                "value": "\"[]\""
+              },
+              {
+                "field": "{{nodeOutput.interface.inputs.partialViewData}}",
+                "operator": "!=",
+                "value": "\"\""
+              }
+            ],
+            "logicType": "AND"
+          }
+        },
+        {
+          "fieldName": "thread.quick_pay_messages",
+          "operation": "append",
+          "value": "{{nodeOutput.interface.inputs.message}}",
+          "role": "user"
+        },
+        {
+          "fieldName": "thread.messages",
+          "operation": "append",
+          "value": "{{nodeOutput.interface.inputs.message}}",
+          "role": "user"
+        },
+        {
+          "fieldName": "system.userQuery",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.message}}"
+        },
+        {
+          "fieldName": "system.attachments",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.attachments}}"
+        },
+        {
+          "fieldName": "{{flow.current_state}}",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.current_state}}"
+        }
+      ],
+      "width": 250,
+      "height": 95,
+      "positionAbsolute": {
+        "x": -84.75225998962716,
+        "y": -854.3311473858116
+      }
+    },
+    {
+      "id": "qp_agent_001",
+      "type": "agent",
+      "name": "quick_pay",
+      "description": "Quick Pay Agent for procurement questionnaire flow",
+      "position": {
+        "x": 1476.8336572880023,
+        "y": -946.1205550645182
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "agentStrategy": "react",
+        "model": {
+          "vendor": "openai",
+          "provider": "azureopenai",
+          "code": "gpt-5.2",
+          "name": "OpenAI GPT-5.2",
+          "temperature": 0.1
+        },
+        "promptTemplate": [
+          {
+            "id": "quick-pay-system-prompt",
+            "role": "system",
+            "text": "\nDeveloper: # Quick Pay Agent\n\n## Role and Objective\nYou are a Quick Pay Agent for procurement data requests, built by GEP. Your mission is to manage the Gate Keeper Questionnaire flow by asking questions one at a time, strictly following the Questionnaire Knowledge. You never invent or alter questions. On the first turn only (when there is no last question), begin with a concise checklist (3-7 bullets) of what you will do; keep items conceptual, not implementation-level. On later turns, do not repeat the checklist, proceed directly to the next action.\n\n---\n\n## Context\n- **Last Question Asked:** {{flow.lastQuestionAsked}}\n\n\n\n\n\n\n- **User Context:**\n  {{flow.user_context}}\n\n\n\n\n\n\n**user_specific_date_format** = {{flow.user_context.userDateFormat}}\n\n\n\n\n\n\n\n\n\n\n\n\n- **Category Information:**\n  {{flow.qa_master_data.category}}\n\n\n\n\n\n\n\n\n\n\n\n\n- **Questionnaire Knowledge:**\n  {{flow.knowledge}}\n\n\n\n\n\n- **user_selected_currency:** {{flow.user_selected_currency}}\n\n [Use this currency details for the complete user flow, including any form rendering, summary and project request creation.]\n\n---\n\n## Flow Management after Form Submission\n\n**After the user submits the question_form (\"Looks good\"), follow this sequence strictly:**\n\n1. **Resolve attachments** (if any) → Call `GetInternalFileIdsByUploadedFilesIds`\n2. **Save responses** → Call `save_questionnaire_response` with complete questionnaireResponse and `flowStatus=\"positive\"`\n3. **Show summary** → Call `render_summary` with summary HTML\n4. **Wait for user action** → User clicks \"Create Request\"\n5. **Create project** → Call `projectRequest`\n6. **Show result** → Call `render_project_request`\n7. **END** - Flow concludes naturally. **Do NOT call mark_quick_pay_flow_complete after form submission.**\n\n- After saving questionnaire responses in the positive flow, you must call `render_summary` immediately next.\n- Never call `mark_quick_pay_flow_complete` post-form submission.\n\nAfter each tool call or code edit, validate the result in 1-2 lines and proceed or self-correct if validation fails.\n\n---\n\n## Questionnaire Knowledge Reference\n\n| Column | Purpose |\n|--------|---------|\n| categoryId | \"Any\" or specific category filter |\n| Question ID | Sequential question identifier |\n| Custom Questions | The displayed question (may include HTML) |\n| Question Key | Key for the response |\n| Response Type | UI element selection (e.g., \"Dropdown\") |\n| Options | Choice list (e.g., \"1. Yes 2. No\") |\n| Correct | Value to continue the flow |\n| Wrong | Value to terminate the flow |\n| Pre condition | Additional ask/filtering condition |\n| i-Text | HTML info banner (for infoBannerDetails only) |\n\n---\n\n## Gate Keeper Flow Logic\n\n### Case 1: No Last Question\n- First interaction. No validation required.\n- Steps:\n  1. Find the first applicable question for the current category:\n    - Sort questions by Question ID ascending.\n    - Skip any question where Pre-condition filters are not satisfied\n  2. The first row that passes the above checks is the first question to ask.\n  3. Present the question via designated UI tool; else, find next applicable.\n- In reasoning, always explicitly state:\n  1. Current category.id and category.name.\n  2. The selected question’s Question ID and categoryId from the table.\n  3. Why it is applicable (e.g., “categoryId=Any” or “categoryId matches 123456”).\n  4. Any earlier Question IDs skipped due to category mismatch.\n\n### Case 2: Previous Question Exists\n- The user responded to a question. Validation is required.\n- Steps:\n  1. **Validation:**\n     - Find row in Questionnaire Knowledge with \"Custom Questions\" = `{{flow.lastQuestionAsked}}\n\n\n\n\n`.\n     - Read \"Correct\" and \"Wrong\" columns.\n     - Compare latest user response from chat to these values.\n  2. **If response = Wrong:**\n     - Immediately terminate the flow. No other context like conversation history, flow momentum, or prior correct answers can override this. Do NOT proceed to the next question\n     - Call `save_questionnaire_response` (all questions to date, `flowStatus=\"negative\"`)\n     - Call `mark_quick_pay_flow_complete` (exit)\n     - **No further questions.**\n  3. **If response = Correct:**\n     - Go to next sequential Question ID (apply categoryId filter, ignore Pre condition phrasing like \"Yes\"/\"No\").\n     - If next question applicable, present via correct UI. Else, resolve next until applicable or finish.\n  4. **If no more questions:**\n     - Transition to `question_form`.\n\n---\n\n## Response Validation Steps\n1. Locate question row by matching \"Custom Questions\" to last asked.\n2. Fetch **Correct** and **Wrong** answers.\n3. Use latest user response from chat.\n4. `normalize(value)`: trim whitespace, lowercase. Compare.\n   - If normalized user response = Correct: **continue**\n   - If = Wrong or neither: **fail**\n\n### Validation Examples:\n- **User answers matches Correct:** Continue\n- **User answers matches Wrong:** Call `save_questionnaire_response` then `mark_quick_pay_flow_complete` (stop)\n\n---\n\n## Category and Pre-condition Rules\n\n1. **categoryId:** \"Any\" = question applies; specific ID = must match `{{flow.qa_master_data.category.id}}\n\n\n\n\n\n\n\n\n\n`.\n2. **Pre condition:**\n   - Category filters (e.g., \"category.id==105147\") are true filters—check against category info.\n   - Response-based phrasing (e.g., \"To be asked if user responds 'Yes'...\") IS NOT a filter. As long as flow is active (previous = Correct), ask question.\n   - Never skip a categoryId=\"Any\" question because Pre condition mentions \"Yes\"/\"No\"—always ask sequentially if user keeps answering correctly.\n\n\n## Tool Invocation Rules\n- **Never call a tool with empty or partial arguments.** Every tool requires all parameters from its schema. Passing `{}` or omitting required fields will fail.\n- **If a tool fails due to schema validation:** Retry with complete arguments. Do not substitute with generated text.\n\n---\n\n## Tool Invocation Matrix\n\nBefore any significant tool call, state one line: purpose and minimal inputs. Use only tools listed in this matrix; for routine read-only tasks, call automatically; display Gate Keeper Questions only via the render_question_to_user tool call; never write the question text or \"Question shown to user: …\" in your message content; for destructive operations require explicit confirmation.\n\n| Tool                              | When to Use                                                      |\n|------------------------------------|------------------------------------------------------------------|\n| render_question_to_user            | Response Type = \"Dropdown\"                                      |\n| currency_budget                    | Response Type = \"currencyBudget\" or \"Budget\"                   |\n| store_currency                     | Internal tool, stores the selected currency from currency_budget tool. This is an internal tool |\n| question_form                      | All Gate Keeper questions complete                              |\n| GetInternalFileIdsByUploadedFilesIds | After form, if attachments uploaded                            |\n| save_questionnaire_response        | After resolving attachments (positive) OR before mark_quick_pay...|\n| render_summary                     | Immediately after save_questionnaire_response in positive flow    |\n| projectRequest                     | User clicks \"Create Request\" after summary                      |\n| render_project_request             | After successful projectRequest                                 |\n| mark_quick_pay_flow_complete       | Only if a Gate Keeper validation fails                          |\n\n---\n\n## When to Call mark_quick_pay_flow_complete\n- Only invoked following a Gate Keeper question validation failure (user response = **Wrong**).\n- Never invoked after form submission or in positive flow.\n\n---\n\n## Handling save_questionnaire_response\n\n- Must only call once per flow, with all required parameters at root (not nested): questionnaireResponse, flowStatus, thoughts, reasoning.\n- After success:\n  - For `flowStatus=\"negative\"`: Call `mark_quick_pay_flow_complete`.\n  - For `flowStatus=\"positive\"`: Call `render_summary` immediately next.\n  - Never re-call or retry save_questionnaire_response on success.\n\n### Building the questionnaireResponse object:\n- Use chat history (for Gate Keeper) and form response (for positive flow), mapped via Field Mapping below.\n- For the supplier key in questionnaireResponse, assign the form field value as-is. Do not add or default nested sections (e.g. supplierSourceInfo) that are not present in the form response.\n- Attachments must first be file-ID-resolved.\n- Always ensure to add below non form fields in questionnaireResponse keys:\n   - budgetAmount, supplierSelectionQSP, and msp_question_1 are NOT collected from questionnaire questions. \n   - The values are pre-populated from the flow context and shown in the \"Context-Injected Values\" table below. \n   - Extract the value from the \"Context Value\" column and use it directly in questionnaireResponse. Never default these to 0, null, or empty string\n\n#### **Form Response → questionnaireResponse Key Mapping:**\n\n| Form Field                                         | questionnaireResponse Key |\n|----------------------------------------------------|--------------------------|\n| supplier                                          | supplier                 |\n| contactAndPhone                                   | contactAndPhone          |\n| contactEmail                                      | contactEmail             |\n| engagementstartdate                               | startDateQSP             |\n| engagementenddate                                 | endDateQSP               |\n| multiplePaymentQSP                                | multiplePaymentQSP       |\n| firstPaymentAmount.value                          | initialPaymentAmount     |\n| lastPaymentAmount.value                           | finalPaymentAmount       |\n| duedatefinalpayment                               | finalPaymentDate         |\n| costCenterText                                    | costCenter               |\n| glAccountText                                     | glCode                   |\n| marketingspend (mention \"I/O Input\" in summary)   | marketingSpendQSP        |\n| uploadedFiles (resolved)                          | attachment               |\n\n- **attachment**: Use the full `internalFileIds` array from `GetInternalFileIdsByUploadedFilesIds` (shape: `[{ \"fileId\": \"<string>\", \"encryptedFileId\": \"<string>\" }, ...]`). Do not pass only `[\"<fileId>\", ...]`.\n\n- **marketingspend**: This field is collected via a question, but this is not a currency field. Show exact value without any formatting in the summary. Mention this field as \"I/O Input\" in the summary, not \"Marketing Spend\".\n\n#### **Context-Injected Values → questionnaireResponse Key Mapping:**\nThese values come from the flow context (not from questionnaire questions or form fields).\nExtract the value in the \"Context Value\" column and assign it as it is to the corresponding questionnaireResponse key irrespective of whether its a string or object or array or number.\n\n| Context Value (pre-evaluated)                    | questionnaireResponse Key |  Required shape |\n|--------------------------------------------------|--------------------------|----------------|\n| {{flow.user_decision_points.budgetAmount}}\n\n\n\n\n\n\n\n       | budgetAmount             |  **Object** – use the entire context value as-is. Do **not** pass only the numeric `budget` field; `budgetAmount` must be the full object `{ \"budget\": <number>, \"currency\": { \"code\": \"<string>\", \"name\": \"<string>\" } }`. |\n| {{flow.user_decision_points.msp_question_1}}\n\n\n\n\n\n\n\n     | supplierSelectionQSP     |  String  |\n| {{flow.user_decision_points.msp_question_1}}\n\n\n\n\n\n\n\n     | msp_question_1           |  String  |\n---\n\n## Summary Generation (displayed after positive flow save)\n- Include: Category, Business Unit, Estimated Cost, full questionnaire summary (labels not keys), attachments as filenames, no question truncation.\n- Only include fields whose values are **non-empty and non-null**. Omit them entirely from the summary when they are not answered by user.\n- Wait for user to click \"Create Request\".\n\n\n## User Date Format Handling\nIf summary contains a date, strictly:\n  - Format the date in the user specific format (<user_specific_date_format>) before showing in summary.\n  - Example: If <user_specific_date_format> is \"dd/MM/yyyy\" and answer is \"2024-12-31\", show \"31/12/2024\" in summary.\n---\n\n## Project Request Creation\n- On \"Create Request\", call `projectRequest` with the complete set of root fields.\n- On success: call `render_project_request` (flow complete, never mark_quick_pay_flow_complete).\n\n---\n\n## Global/Behavioral Rules\n\n1. Never output empty responses.\n2. Do not narrate internal flow actions to the user.\n3. Always render questions and info banners as HTML, not plain text. When presenting the next Gate Keeper question, you must call render_question_to_user; do not output the question in your message content.\n4. One question per turn; do not repeat questions.\n5. After a Wrong answer, no further questions.\n6. Questionnaire Knowledge is the only source of truth—do not guess.\n7. File IDs must be resolved before saving response (if there are attachments).\n8. Mark flow complete **only** on Gate Keeper validation failure (never after form submission).\n9. Do not call save again after it succeeds.\n10. Always follow up save with the correct next tool (`render_summary` for positive, `mark_quick_pay_flow_complete` for negative).\n\n---\n\n## Off-Topic and Post-Completion Handling\n- If the user goes off-topic: “That seems unrelated to Quick Pay. Shall we continue with your request?”\n- If user returns after project submission: “Your request has already been submitted. Please start a new chat for a new request.”"
+          }
+        ],
+        "tools": [
+          {
+            "_id": "db94a68f-2818-416a-9543-45125d1b7015",
+            "name": "handoff_to_node",
+            "description": "when user clicks on send for validation",
+            "type": "tool",
+            "config": {
+              "enabled": true,
+              "toolId": "tool-handoff",
+              "type": "handoff",
+              "schema": {
+                "type": "object",
+                "properties": {},
+                "required": [],
+                "additionalProperties": false
+              },
+              "settings": {
+                "nodeId": "54rqgbx"
+              },
+              "returnDirect": false
+            },
+            "alias": "render_send_for_validation"
+          },
+          {
+            "_id": "fe9caefb-17e7-40a8-aeaf-7f713d782689",
+            "name": "handoff_to_node",
+            "description": "## WHAT IT DOES\nStore user-selected currency\n\n## WHEN TO CALL\nCall this step once currency_budget is rendered, and the user provide response for the budget and currency.\n\n## HOW TO CALL\npass currency as an object having name and code.\n```json\n{\n  \"currency\": {\n    \"name\": \"<user selected currency name>\",\n    \"code\": \"<user selected currency code>\"\n  }\n}\n```",
+            "type": "tool",
+            "config": {
+              "enabled": true,
+              "toolId": "tool-handoff",
+              "type": "handoff",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "thoughts": {
+                    "type": "string",
+                    "description": "Non-technical explanation for end users about what this agent is doing at this stage. Explain the purpose and outcome in simple, business-friendly language that helps users understand the process without technical jargon."
+                  },
+                  "reasoning": {
+                    "type": "string",
+                    "description": "Technical reason why this specific tool/agent is being called. Explain the decision logic, conditions met, or context that led to selecting this tool for the current task."
+                  },
+                  "currency": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "currency name from selected currency"
+                      },
+                      "code": {
+                        "type": "string",
+                        "description": "currency code from selected currency"
+                      }
+                    },
+                    "required": [],
+                    "additionalProperties": true,
+                    "description": "user selected currency in `currency_budget` tool response. Pass a currency object having code and name from the currency object."
+                  }
+                },
+                "required": [],
+                "additionalProperties": true
+              },
+              "settings": {
+                "nodeId": "orzygwp"
+              },
+              "returnDirect": false
+            },
+            "alias": "store_currency"
+          },
+          {
+            "_id": "0d71a693-bcc3-4149-8851-03672a9bd95c",
+            "name": "handoff_to_node",
+            "description": "## WHAT IT DOES\nResolves uploaded file IDs to internal encrypted file IDs for attachment processing.\n\n## WHEN TO CALL\nCall this tool AFTER user submits the question_form PV and BEFORE generating summary.\nOnly call if user uploaded files (check file array from question_form response).\n\n## HOW TO CALL\nPass the fileIds array from uploadedFiles. Use fileId or uploadId values exactly as received.\n\nExample:\nIf uploadedFiles = [{\"fileId\": \"abc123\"}, {\"fileId\": \"def456\"}]\nThen call: {\"fileIds\": [\"abc123\", \"def456\"]}\n",
+            "type": "tool",
+            "config": {
+              "enabled": true,
+              "toolId": "tool-handoff",
+              "type": "handoff",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "event": {
+                    "description": "Event to execute DAC policy in server function.",
+                    "type": "string"
+                  },
+                  "data": {
+                    "type": "object",
+                    "description": "Payload to call the function",
+                    "properties": {
+                      "fileIds": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "description": "Array of file IDs from uploadedFiles"
+                      }
+                    }
+                  },
+                  "additionalData": {
+                    "description": "Any additional data used by the function.",
+                    "type": "object"
+                  },
+                  "thoughts": {
+                    "type": "string",
+                    "description": "Non-technical explanation for end users about what this agent is doing at this stage. Explain the purpose and outcome in simple, business-friendly language that helps users understand the process without technical jargon."
+                  },
+                  "reasoning": {
+                    "type": "string",
+                    "description": "Technical reason why this specific tool/agent is being called. Explain the decision logic, conditions met, or context that led to selecting this tool for the current task."
+                  }
+                },
+                "required": [
+                  "data",
+                  "thoughts",
+                  "reasoning"
+                ]
+              },
+              "settings": {
+                "nodeId": "txfqfxu"
+              },
+              "returnDirect": false
+            },
+            "alias": "getinternalfileidsbyuploadedfilesids"
+          },
+          {
+            "_id": "a169cf29-0403-4b2c-9f71-ea5f77b6f96b",
+            "name": "handoff_to_node",
+            "description": "Creates the project request via API. Call after user confirms summary and clicks 'Create Request'.\nAlways ensure to pass below fields correctly to project request tool:\nResponse of As part of this engagement with Adobe, do you expect any of the supplier's personnel to access (a) an Adobe or Adobe Customer site and/or (b) Adobe or Adobe Customer IT network, system, or data? ->msp_question_1 and supplierSelectionQSP\nEstimated Budget Amount   -> budgetAmount\nProposed new supplier -> proposeSole",
+            "type": "tool",
+            "config": {
+              "enabled": true,
+              "toolId": "tool-handoff",
+              "type": "handoff",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "summary": {
+                    "type": "string",
+                    "description": "A short one line summary of the project request"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "A short one line description of the project request"
+                  },
+                  "thoughts": {
+                    "type": "string",
+                    "description": "Non-technical explanation for end users about what this agent is doing at this stage. Explain the purpose and outcome in simple, business-friendly language that helps users understand the process without technical jargon."
+                  },
+                  "reasoning": {
+                    "type": "string",
+                    "description": "Technical reason why this specific tool/agent is being called. Explain the decision logic, conditions met, or context that led to selecting this tool for the current task."
+                  }
+                },
+                "required": [
+                  "summary",
+                  "description",
+                  "thoughts",
+                  "reasoning"
+                ],
+                "additionalProperties": false
+              },
+              "settings": {
+                "nodeId": "h8pmnpl"
+              },
+              "returnDirect": false
+            },
+            "alias": "project_request"
+          },
+          {
+            "_id": "4539ab76-a5f1-4187-b263-155e29abf1e6",
+            "name": "handoff_to_node",
+            "description": "Save all questionnaire responses collected during the Quick Pay flow.\n\nCRITICAL REQUIREMENTS:\n- MUST include ALL four required parameters: questionnaireResponse, flowStatus, thoughts, reasoning\n- questionnaireResponse: Object containing all question-answer pairs (Gate Keeper + Form if positive flow)\n- flowStatus: \"positive\" (form submitted) or \"negative\" (Gate Keeper validation failed)\n- thoughts: User-friendly explanation message\n- reasoning: Technical reasoning for this action\n\nNEVER call with empty or missing parameters.\nDO NOT call this tool again after it succeeds.",
+            "type": "tool",
+            "config": {
+              "enabled": true,
+              "toolId": "tool-handoff",
+              "type": "handoff",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "questionnaireResponse": {
+                    "type": "object",
+                    "description": "REQUIRE a Flat object containing ALL Gate Keeper question responses and ALL submitted Form field values as key-value pairs. Keys must match the defined property names exactly. Do NOT pass an empty object. Do NOT nest fields. Include every required field. Do not omit any key that exists in the form submission.",
+                    "properties": {
+                      "equipmentRental": {
+                        "type": "string"
+                      },
+                      "brandAmbassador": {
+                        "type": "string"
+                      },
+                      "serviceProductGandH": {
+                        "type": "string"
+                      },
+                      "engagementSupplier": {
+                        "type": "string"
+                      },
+                      "contentCreation": {
+                        "type": "string"
+                      },
+                      "competeProductServiceQSP": {
+                        "type": "string"
+                      },
+                      "productServiceQSP": {
+                        "type": "string"
+                      },
+                      "supplierInvolvementQSP": {
+                        "type": "string"
+                      },
+                      "contactAndPhone": {
+                        "type": "string"
+                      },
+                      "contactEmail": {
+                        "type": "string"
+                      },
+                      "startDateQSP": {
+                        "type": "string"
+                      },
+                      "endDateQSP": {
+                        "type": "string"
+                      },
+                      "multiplePaymentQSP": {
+                        "type": "string"
+                      },
+                      "initialPaymentAmount": {
+                        "type": "string"
+                      },
+                      "costCenter": {
+                        "type": "string"
+                      },
+                      "glCode": {
+                        "type": "string"
+                      },
+                      "budgetAmount": {
+                        "type": "object",
+                        "properties": {
+                          "budget": {
+                            "type": "number"
+                          },
+                          "currency": {
+                            "type": "object",
+                            "properties": {
+                              "code": {
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "marketingSpendQSP": {
+                        "type": "string"
+                      },
+                      "currencyCode": {
+                        "type": "string"
+                      },
+                      "supplier": {
+                        "type": "object",
+                        "properties": {
+                          "sections": {
+                            "type": "object",
+                            "properties": {
+                              "basicDetails": {
+                                "type": "object",
+                                "properties": {
+                                  "legalCompanyName": {
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            },
+                            "additionalProperties": true
+                          },
+                          "partnerCode": {
+                            "type": "string"
+                          },
+                          "rootMetaData": {
+                            "type": "object",
+                            "properties": {
+                              "isPreferredSupplier": {
+                                "type": "boolean"
+                              }
+                            }
+                          }
+                        },
+                        "additionalProperties": true
+                      },
+                      "attachment": {
+                        "type": "array",
+                        "items": {
+                          "type": "object"
+                        }
+                      },
+                      "finalPaymentDate": {
+                        "type": "string"
+                      },
+                      "finalPaymentAmount": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "serviceProductGandH",
+                      "engagementSupplier",
+                      "contentCreation",
+                      "competeProductServiceQSP",
+                      "productServiceQSP",
+                      "supplierInvolvementQSP",
+                      "contactAndPhone",
+                      "contactEmail",
+                      "startDateQSP",
+                      "endDateQSP",
+                      "multiplePaymentQSP",
+                      "initialPaymentAmount",
+                      "costCenter",
+                      "glCode",
+                      "budgetAmount",
+                      "marketingSpendQSP",
+                      "currencyCode",
+                      "finalPaymentDate",
+                      "finalPaymentAmount"
+                    ],
+                    "additionalProperties": true
+                  },
+                  "flowStatus": {
+                    "description": "Flow outcome: 'positive' if all questions passed, 'negative' if terminated due to wrong answer",
+                    "type": "string",
+                    "enum": [
+                      "positive",
+                      "negative"
+                    ]
+                  },
+                  "thoughts": {
+                    "type": "string",
+                    "description": "Non-technical explanation for end users about what this agent is doing at this stage. Explain the purpose and outcome in simple, business-friendly language that helps users understand the process without technical jargon."
+                  },
+                  "reasoning": {
+                    "type": "string",
+                    "description": "Technical reason why this specific tool/agent is being called. Explain the decision logic, conditions met, or context that led to selecting this tool for the current task."
+                  }
+                },
+                "required": [
+                  "questionnaireResponse",
+                  "flowStatus",
+                  "reasoning",
+                  "thoughts"
+                ],
+                "additionalProperties": true
+              },
+              "settings": {
+                "nodeId": "r154kra"
+              },
+              "returnDirect": false,
+              "parameters": {}
+            },
+            "alias": "save_questionnaire_response"
+          },
+          {
+            "_id": "d19833d9-6978-4664-b60a-02bd526991fe",
+            "name": "handoff_to_node",
+            "description": "Terminate the Quick Pay flow when a Gate Keeper question validation FAILS.\n\nONLY call this tool when:\n- User's response to a Gate Keeper question matches the \"Wrong\" column\n- You have already called save_questionnaire_response with flowStatus=\"negative\"\n\nNEVER call this tool:\n- After form submission (question_form)\n- After save_questionnaire_response with flowStatus=\"positive\"\n- After render_summary\n- After projectRequest\n- At any point after all Gate Keeper questions pass\n\nThis tool is ONLY for negative flow termination during Gate Keeper questions.",
+            "type": "tool",
+            "config": {
+              "enabled": true,
+              "toolId": "tool-handoff",
+              "type": "handoff",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "thoughts": {
+                    "type": "string",
+                    "description": "Non-technical explanation for end users about what this agent is doing at this stage. Explain the purpose and outcome in simple, business-friendly language that helps users understand the process without technical jargon."
+                  },
+                  "reasoning": {
+                    "type": "string",
+                    "description": "Technical reason why this specific tool/agent is being called. Explain the decision logic, conditions met, or context that led to selecting this tool for the current task."
+                  }
+                },
+                "required": [
+                  "thoughts",
+                  "reasoning"
+                ],
+                "additionalProperties": true
+              },
+              "settings": {
+                "nodeId": "zi3zxuv"
+              },
+              "returnDirect": false
+            },
+            "alias": "mark_quick_pay_flow_complete"
+          },
+          {
+            "_id": "563e3fde-98a6-4346-bf7f-ad32c579fa46",
+            "name": "handoff_to_node",
+            "description": "## WHAT IT DOES\nRenders the Summary in label_and_buttons along with the Create Request button.\n\n## WHEN TO CALL\nInvoke this tool ONLY after:\n1. All required Quick Pay questions are answered and required Form details are collected\n2. Attachments are resolved OR no attachments uploaded\n\n## HOW TO CALL\nPass label_datamodel as HTML summary block.\n\nExample:\n{\n  \"label_datamodel\": \"<div class='summary'>...your HTML summary...</div>\"\n}\n\n## SUMMARY FORMAT\n<p>\n  Based on your organization's procurement policy, this request will follow the\n  <strong>\"Quick Setup & Pay\"</strong> process.\n</p>\n\n<p><strong>Here is the summary of your request:</strong></p>\n\n<p>\n- <strong>Category:</strong> {{flow.category_name}}<br>\n- <strong>Business Unit:</strong> {{flow.business_unit}}<br>\n- <strong>Estimated Cost:</strong> {{flow.user_decision_points.budgetAmount.currency.code}} {{flow.user_decision_points.budgetAmount.budget}}<br>\n</p>\n\n<p><strong>Questionnaire Summary:</strong></p>\n<p>\n- <strong>{{question_1_text}}:</strong> {{user_response_question_1}}<br>\n- <strong>{{question_2_text}}:</strong> {{user_response_question_2}}<br>\n  (repeat for all questions, Include only the ones answered by user in Gate Kepper questionnaire and Form)\n</p>\n\n<p>Please confirm to proceed with the identified channel.</p>\n\n## SUMMARY RENDERING RULES ##:\n\n- **marketingspend**:  Mention this field as \"I/O Input\" in the summary, not \"Marketing Spend\". This field is collected via a question, but this is not a currency field. Show exact value without any formatting in the summary.\n\n## ATTACHMENTS RULE\nIn the summary, show filenames only. Do not show any IDs.\n\n## DATE FORMAT RULE\nIf summary contains a date, strictly:\n  - Format the date in the user specific format (<user_specific_date_format>) before showing in summary.\n  - Example: If <user_specific_date_format> is \"dd/MM/yyyy\" and answer is \"2024-12-31\", show \"31/12/2024\" in summary.\n\nIf <answer> is a type of amount, strictly:\n- Format/convert the amount response in the user-specific format using {{flow.user_context.user_culture_code}} before showing in summary. \n   - Example: If user_culture_code = \"en-US\"\n                   - Input: 1234567.5\n                   - Output: $1,234,567.50\n\n      - Always append the <selected currency> {{flow.user_decision_points.budgetAmount.currency.code}} present in context with the amount in summary, e.g. $1,234,567.50 USD\n\n**Rules:**\n- Show question labels (Custom Questions), NOT JSON keys\n- Include ONLY the questions that user responded to from Gate Keeper AND Form questions\n- Do not truncate any questions",
+            "type": "tool",
+            "config": {
+              "enabled": true,
+              "toolId": "tool-handoff",
+              "type": "handoff",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "preText": {
+                    "description": "Optional Markdown shown immediately before this view.",
+                    "type": "string"
+                  },
+                  "postText": {
+                    "description": "Optional Markdown shown immediately after this view.",
+                    "type": "string"
+                  },
+                  "label_datamodel": {
+                    "description": "Summary should be in following format\n<html>\nBased on your organization's procurement policy, this request will follow the Quick Setup & Pay process.<br><br>\n\nHere is the summary of your request:<br><br>\n- Category: <category_name> <br>\n- Business Unit: <business_unit> <br>\n- Estimated Cost: <budget_amount> <currency_code><br><br>\n\nQuestionnaire Summary:<br>\n- <Question 1 text>: <User Response from context> <br>\n- <Question 2 text>: <User Response from context > <br>\n... (all questions) ...<br>\n<br>\nPlease confirm to proceed with the identified channel.\n</html>",
+                    "type": "string"
+                  },
+                  "buttons_datamodel": {
+                    "description": "Array of button objects with label and value",
+                    "type": "string"
+                  },
+                  "thoughts": {
+                    "type": "string",
+                    "description": "Non-technical explanation for end users about what this agent is doing at this stage. Explain the purpose and outcome in simple, business-friendly language that helps users understand the process without technical jargon."
+                  },
+                  "reasoning": {
+                    "type": "string",
+                    "description": "Technical reason why this specific tool/agent is being called. Explain the decision logic, conditions met, or context that led to selecting this tool for the current task."
+                  }
+                },
+                "required": [
+                  "label_datamodel",
+                  "buttons_datamodel",
+                  "thoughts",
+                  "reasoning"
+                ],
+                "additionalProperties": true
+              },
+              "settings": {
+                "nodeId": "4fnpkxj"
+              },
+              "returnDirect": false,
+              "parameters": {
+                "postText": "",
+                "preText": "",
+                "buttons_datamodel": ""
+              }
+            },
+            "alias": "render_summary"
+          },
+          {
+            "_id": "e436af60-df5f-481f-886a-51a7fb6c4d8e",
+            "name": "handoff_to_node",
+            "description": "Renders the mandatory question form after all Gate Keeper questions are answered correctly. This form collects additional details like supplier info, payment amounts, dates, etc.\n\nParameters:\n- questionDetails: JSON object with all form fields initialized\n\n- Do not default any value; all numeric values should be null by default in dataModel\nSet datamodel id \"questionDetails\" with below json object:\n`\n{\n\t\"currencyCode\": \"<user_selected_currency_code>\",\n\t\"serviceProductGandH\": \"\",\n\t\"engagementSupplier\": \"\",\n\t\"contentCreation\": \"\",\n\t\"competeProductServiceQSP\": \"\",\n\t\"productServiceQSP\": \"\",\n\t\"supplierInvolvementQSP\": \"\",\n\t\"supplierSelectionQSP\": \"\",\n\t\"firstPaymentAmount\": {\n\t\t\"value\": \"\",\n\t\t\"convertedValue\": 0\n\t},\n\t\"lastPaymentAmount\": {\n\t\t\"value\": \"\",\n\t\t\"convertedValue\": 0\n\t},\n\t\"duedatefinalpayment\": \"\",\n\t\"engagementenddate\": \"\",\n\t\"engagementstartdate\": \"\",\n\t\"marketingspend\": \"\",\n\t\"suppliername\": \"\",\n\t\"multiplePaymentQSP\": \"\",\n\t\"isSupplierIndividualText\": \"\",\n\t\"formerEmployeeQSP\": \"\",\n\t\"costCenterText\": \"\",\n\t\"glAccountText\": \"\",\n\t\"upload\": \"\",\n\t\"supplier\": {\n\t\t\"sections\": {\n\t\t\t\"supplierSourceInfo\": {\n\t\t\t\t\"rows\": [\n\t\t\t\t\t{\n\t\t\t\t\t\t\"name\": \"\",\n\t\t\t\t\t\t\"sourceIdentificationNo\": \"\"\n\t\t\t\t\t}\n\t\t\t\t]\n\t\t\t},\n\t\t\t\"basicDetails\": {\n\t\t\t\t\"legalCompanyName\": \"\"\n\t\t\t}\n\t\t}\n\t},\n\t\"contactEmail\":\"\",\n\t\"contactAndPhone\":\"\",\n    \"uploadedFiles\":[]\n}`",
+            "type": "tool",
+            "config": {
+              "enabled": true,
+              "toolId": "tool-handoff",
+              "type": "handoff",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "preText": {
+                    "description": "Optional Markdown shown immediately before this view.",
+                    "type": "string"
+                  },
+                  "postText": {
+                    "description": "Optional Markdown shown immediately after this view.",
+                    "type": "string"
+                  },
+                  "questionDetails": {
+                    "type": "object",
+                    "properties": {},
+                    "required": [],
+                    "additionalProperties": true,
+                    "description": "JSON object containing all form field initializations. Example schema:-\n{\n  \"currencyCode\": \"<user_selected_currency_code>\",\n  \"serviceProductGandH\": \"\",\n  \"engagementSupplier\": \"\",\n  \"contentCreation\": \"\",\n  \"competeProductServiceQSP\": \"\",\n  \"productServiceQSP\": \"\",\n  \"supplierInvolvementQSP\": \"\",\n  \"firstPaymentAmount\": { \"value\": \"\", \"convertedValue\": 0 },\n  \"lastPaymentAmount\": { \"value\": \"\", \"convertedValue\": 0 },\n  \"duedatefinalpayment\": \"\",\n  \"engagementenddate\": \"\",\n  \"engagementstartdate\": \"\",\n  \"marketingspend\": \"\",\n  \"contactEmail\": \"\",\n  \"contactAndPhone\": \"\",\n  \"suppliername\": \"\",\n  \"multiplePaymentQSP\": \"\",\n  \"isSupplierIndividualText\": \"\",\n  \"formerEmployeeQSP\": \"\",\n  \"costCenterText\": \"\",\n  \"glAccountText\": \"\",\n  \"upload\": \"\",\n  \"supplier\": {\n    \"sections\": {\n      \"supplierSourceInfo\": { \"rows\": [{ \"name\": \"\", \"sourceIdentificationNo\": \"\" }] },\n      \"basicDetails\": { \"legalCompanyName\": \"\" }\n    }\n  }\n}"
+                  },
+                  "thoughts": {
+                    "type": "string",
+                    "description": "Non-technical explanation for end users about what this agent is doing at this stage. Explain the purpose and outcome in simple, business-friendly language that helps users understand the process without technical jargon."
+                  },
+                  "reasoning": {
+                    "type": "string",
+                    "description": "Technical reason why this specific tool/agent is being called. Explain the decision logic, conditions met, or context that led to selecting this tool for the current task."
+                  }
+                },
+                "required": [
+                  "questionDetails",
+                  "thoughts",
+                  "reasoning"
+                ],
+                "additionalProperties": true
+              },
+              "settings": {
+                "nodeId": "2726zbj"
+              },
+              "returnDirect": false,
+              "parameters": {
+                "preText": "",
+                "postText": ""
+              }
+            },
+            "alias": "question_form"
+          },
+          {
+            "_id": "8135e601-4c5b-48c3-806c-8d0d757eb236",
+            "name": "handoff_to_node",
+            "description": "Renders the currency and budget input form. Use for questions with Response Type 'currencyBudget' or 'Budget'.\n\nParameters:\n- label_datamodel: The question text\n- currencyBudget: Object with budget and currency {\"budget\": \"\", \"currency\": {\"name\": \"<currencyCode>\", \"code\": \"<currencyCode>\"}}\n- infoBannerDetails: Optional info banner for i-Text\n\n## After this step:\n- Proceed to `store_currency` .",
+            "type": "tool",
+            "config": {
+              "enabled": true,
+              "toolId": "tool-handoff",
+              "type": "handoff",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "preText": {
+                    "description": "Optional Markdown shown immediately before this view.",
+                    "type": "string"
+                  },
+                  "postText": {
+                    "description": "Optional Markdown shown immediately after this view.",
+                    "type": "string"
+                  },
+                  "currencyBudget": {
+                    "description": "Currency and budget object",
+                    "type": "string"
+                  },
+                  "label_datamodel": {
+                    "description": "The question text to display",
+                    "type": "string"
+                  },
+                  "infoBannerDetails": {
+                    "description": "Info banner object for i-Text",
+                    "type": "string"
+                  },
+                  "thoughts": {
+                    "type": "string",
+                    "description": "Non-technical explanation for end users about what this agent is doing at this stage. Explain the purpose and outcome in simple, business-friendly language that helps users understand the process without technical jargon."
+                  },
+                  "reasoning": {
+                    "type": "string",
+                    "description": "Technical reason why this specific tool/agent is being called. Explain the decision logic, conditions met, or context that led to selecting this tool for the current task."
+                  }
+                },
+                "required": [
+                  "label_datamodel",
+                  "currencyBudget",
+                  "thoughts",
+                  "reasoning"
+                ],
+                "additionalProperties": false
+              },
+              "settings": {
+                "nodeId": "qnq6uja"
+              },
+              "returnDirect": false,
+              "parameters": {
+                "preText": "",
+                "postText": ""
+              }
+            },
+            "alias": "currency_budget"
+          },
+          {
+            "_id": "fe3125f5-7591-4e35-ac62-256125e96ae5",
+            "name": "handoff_to_node",
+            "description": "Renders a label with clickable buttons and optional info banner. Use for Yes/No questions and Dropdown questions\n\nParameters:\n- label_datamodel: The question text (string)\n- buttons_datamodel: Array of button objects [{\"label\": \"Yes\", \"value\": \"Yes\"}, {\"label\": \"No\", \"value\": \"No\"}]\n- infoBannerDetails: Optional info banner object {\"bannerId\": \"intake-label-info-banner\", \"message\": \"<i-Text>\"}",
+            "type": "tool",
+            "config": {
+              "enabled": true,
+              "toolId": "tool-handoff",
+              "type": "handoff",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "preText": {
+                    "description": "Optional Markdown shown immediately before this view.",
+                    "type": "string"
+                  },
+                  "postText": {
+                    "description": "Optional Markdown shown immediately after this view.",
+                    "type": "string"
+                  },
+                  "label_datamodel": {
+                    "description": "The question text to display as label",
+                    "type": "string"
+                  },
+                  "buttons_datamodel": {
+                    "description": "Array of button objects with label and value properties",
+                    "type": "string"
+                  },
+                  "infoBannerDetails": {
+                    "description": "Info banner object with bannerId and message for i-Text display",
+                    "type": "string"
+                  },
+                  "thoughts": {
+                    "type": "string",
+                    "description": "Non-technical explanation for end users about what this agent is doing at this stage. Explain the purpose and outcome in simple, business-friendly language that helps users understand the process without technical jargon."
+                  },
+                  "reasoning": {
+                    "type": "string",
+                    "description": "Technical reason why this specific tool/agent is being called. Explain the decision logic, conditions met, or context that led to selecting this tool for the current task."
+                  }
+                },
+                "required": [
+                  "label_datamodel",
+                  "buttons_datamodel",
+                  "infoBannerDetails",
+                  "thoughts",
+                  "reasoning"
+                ],
+                "additionalProperties": true
+              },
+              "settings": {
+                "nodeId": "4093zln"
+              },
+              "returnDirect": false,
+              "parameters": {
+                "preText": "",
+                "postText": ""
+              }
+            },
+            "alias": "render_question_to_user"
+          }
+        ],
+        "resources": [],
+        "libraries": [],
+        "maxIterations": 15,
+        "structuredOutput": {
+          "enable": false,
+          "name": "",
+          "description": "",
+          "schema": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        "includeThoughts": true
+      },
+      "data": {},
+      "variableUpdates": [
+        {
+          "fieldName": "thread.messages",
+          "operation": "append",
+          "value": "{{nodeOutput.text}}",
+          "role": "assistant"
+        }
+      ],
+      "width": 350,
+      "height": 209,
+      "selected": true,
+      "positionAbsolute": {
+        "x": 1476.8336572880023,
+        "y": -946.1205550645182
+      },
+      "dragging": false
+    },
+    {
+      "id": "output",
+      "type": "output",
+      "name": "output",
+      "description": "Final output of the workflow",
+      "position": {
+        "x": 2670.9423245280987,
+        "y": -821.456569162844
+      },
+      "deletable": true,
+      "selected": false,
+      "dragging": false,
+      "data": {},
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "outputMapping": {
+          "messages": {
+            "type": "string",
+            "value": "{{thread.messages}}"
+          },
+          "selectedAgentId": {
+            "type": "string",
+            "value": "{{runtime.workflowMetaData.workflowId}}"
+          },
+          "selectedAgentName": {
+            "type": "string",
+            "value": "{{runtime.workflowMetaData.agentName}}"
+          },
+          "current_state": {
+            "type": "string",
+            "value": "{{flow.current_state}}"
+          },
+          "questionnaireResponse": {
+            "type": "string",
+            "value": "{{flow.questionnareResponses}}"
+          },
+          "response": {
+            "type": "string",
+            "value": "{{flow.response}}"
+          },
+          "user_decision_points": {
+            "type": "string",
+            "value": "flow.user_decision_points"
+          }
+        }
+      },
+      "width": 150,
+      "height": 95,
+      "positionAbsolute": {
+        "x": 2670.9423245280987,
+        "y": -818.0816889922988
+      }
+    },
+    {
+      "id": "4fnpkxj",
+      "type": "tool",
+      "name": "render_summary",
+      "description": "Description:\nThis partial view is responsible for rendering the label and buttons/options.\n\nNotes:\nThis partial view is responsible for rendering the label and buttons/options.",
+      "position": {
+        "x": 852.2293348847206,
+        "y": -534.7218546504242
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "enabled": true,
+        "toolId": "mcp-a4deb011-ea94-418d-9912-822447e4ce1f-labelandbuttons1012",
+        "type": "mcp",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "preText": {
+              "description": "Optional Markdown shown immediately before this view. Use to introduce what it shows/why it matters or give brief instructions. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+              "type": "string"
+            },
+            "postText": {
+              "description": "Optional Markdown shown immediately after this view. Use for next steps, brief context/interpretation, or a transition to the next section/view. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+              "type": "string"
+            },
+            "label_datamodel": {
+              "description": "Description:\n**If data is not a valid html string then convert the value to string.  **Use `label_datamodel` override to pass data to form label.\n\nNotes:\n**If data is not a valid html string then convert the value to string.  **Use `label_datamodel` override to pass data to form label.",
+              "type": "string"
+            },
+            "buttons_datamodel": {
+              "description": "Description:\n\n\nNotes:\n",
+              "type": "string"
+            }
+          },
+          "condition": "Description:\nThis partial view is responsible for rendering the label and buttons/options.\n\nNotes:\nThis partial view is responsible for rendering the label and buttons/options."
+        },
+        "settings": {
+          "serverId": "a4deb011-ea94-418d-9912-822447e4ce1f"
+        },
+        "returnDirect": false,
+        "_meta": {
+          "uiView": "{\"RefId\":null,\"ViewUniqueId\":\"e1a380cd-75d0-4534-ac80-aaa5301718ee\",\"Version\":[1,0],\"Type\":\"partialView\",\"Name\":\"label_and_buttons-1.0.12\",\"Icon\":null,\"Channel\":\"conversation\",\"Description\":\"This partial view is responsible for rendering the label and buttons/options.\",\"Instruction\":\"This partial view is responsible for rendering the label and buttons/options.\",\"AppId\":null,\"ModuleId\":null,\"EnableContextSharing\":true,\"Overrides\":{\"label_datamodel\":{\"Type\":\"data\",\"OverrideId\":\"label_datamodel\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"label_datamodel\",\"Description\":\"**If data is not a valid html string then convert the value to string.  **Use \\u0060label_datamodel\\u0060 override to pass data to form label.\",\"Instruction\":\"**If data is not a valid html string then convert the value to string.  **Use \\u0060label_datamodel\\u0060 override to pass data to form label.\",\"Value\":null,\"DataType\":\"string\",\"Source\":\"static\"},\"buttons_datamodel\":{\"Type\":\"data\",\"OverrideId\":\"buttons_datamodel\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"buttons_datamodel\",\"Description\":\"\",\"Instruction\":\"\",\"Value\":null,\"DataType\":\"array\",\"Source\":\"static\"}}}",
+          "type": "partial-view"
+        },
+        "parameters": {
+          "preText": "",
+          "postText": "",
+          "label_datamodel": "{{nodes.quick_pay.toolResults.render_summary.label_datamodel}}",
+          "buttons_datamodel": "[{\"label\":\"Create Request\",\"value\":\"Create Request\"}]"
+        }
+      },
+      "data": {},
+      "width": 350,
+      "height": 111,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 852.2293348847206,
+        "y": -534.7218546504242
+      },
+      "dragging": false,
+      "variableUpdates": [
+        {
+          "fieldName": "thread.quick_pay_messages",
+          "operation": "append",
+          "value": "Summary rendered successfully: {{nodes.quick_pay.toolResults.render_summary.label_datamodel}}",
+          "role": "assistant"
+        }
+      ]
+    },
+    {
+      "id": "4093zln",
+      "type": "tool",
+      "name": "render_question_to_user",
+      "description": "Description:\nlabel_and_buttons_link\n\nNotes:\nlabel_and_buttons_link",
+      "position": {
+        "x": 852.2293348847206,
+        "y": -374.2932526326672
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "enabled": true,
+        "toolId": "mcp-a4deb011-ea94-418d-9912-822447e4ce1f-labelandbuttonslink0012",
+        "type": "mcp",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "preText": {
+              "description": "Optional Markdown shown immediately before this view. Use to introduce what it shows/why it matters or give brief instructions. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+              "type": "string"
+            },
+            "postText": {
+              "description": "Optional Markdown shown immediately after this view. Use for next steps, brief context/interpretation, or a transition to the next section/view. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+              "type": "string"
+            },
+            "label_datamodel": {
+              "description": "Description:\n\n\nNotes:\n",
+              "type": "string"
+            },
+            "buttons_datamodel": {
+              "description": "Description:\n\n\nNotes:\n",
+              "type": "string"
+            },
+            "infoBannerDetails": {
+              "description": "Description:\n\n\nNotes:\n",
+              "type": "string"
+            }
+          },
+          "condition": "Description:\nlabel_and_buttons_link\n\nNotes:\nlabel_and_buttons_link"
+        },
+        "settings": {
+          "serverId": "a4deb011-ea94-418d-9912-822447e4ce1f"
+        },
+        "returnDirect": false,
+        "_meta": {
+          "uiView": "{\"RefId\":null,\"ViewUniqueId\":\"4677dd6a-caa2-4574-b9ad-cd2e97fc01f4\",\"Version\":[0,0],\"Type\":\"partialView\",\"Name\":\"label_and_buttons_link-0.0.12\",\"Icon\":null,\"Channel\":\"conversation\",\"Description\":\"label_and_buttons_link\",\"Instruction\":\"label_and_buttons_link\",\"AppId\":null,\"ModuleId\":null,\"EnableContextSharing\":true,\"Overrides\":{\"label_datamodel\":{\"Type\":\"data\",\"OverrideId\":\"label_datamodel\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"label_datamodel\",\"Description\":\"\",\"Instruction\":\"\",\"Value\":null,\"DataType\":\"string\",\"Source\":\"static\"},\"buttons_datamodel\":{\"Type\":\"data\",\"OverrideId\":\"buttons_datamodel\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"buttons_datamodel\",\"Description\":\"\",\"Instruction\":\"\",\"Value\":null,\"DataType\":\"array\",\"Source\":\"static\"},\"infoBannerDetails\":{\"Type\":\"data\",\"OverrideId\":\"infoBannerDetails\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"infoBannerDetails\",\"Description\":\"\",\"Instruction\":\"\",\"Value\":null,\"DataType\":\"object\",\"Source\":\"static\"}}}",
+          "type": "partial-view"
+        },
+        "parameters": {
+          "preText": "",
+          "postText": "",
+          "label_datamodel": "{{nodes.quick_pay.toolResults.render_question_to_user.label_datamodel}}",
+          "buttons_datamodel": "[{\"label\": \"Yes\",\"value\": \"Yes\"},{\"label\": \"No\",\"value\": \"No\"}]",
+          "infoBannerDetails": "{{nodes.quick_pay.toolResults.render_question_to_user.infoBannerDetails}}"
+        }
+      },
+      "data": {},
+      "width": 350,
+      "height": 111,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 851.5171596257757,
+        "y": -374.2932526326672
+      },
+      "dragging": false,
+      "variableUpdates": [
+        {
+          "fieldName": "flow.lastQuestionAsked",
+          "operation": "set",
+          "value": "{{nodes.quick_pay.toolResults.render_question_to_user.label_datamodel}}"
+        },
+        {
+          "fieldName": "thread.quick_pay_messages",
+          "operation": "append",
+          "value": "Question shown to user: {{nodes.quick_pay.toolResults.render_question_to_user.label_datamodel}}",
+          "role": "assistant"
+        }
+      ]
+    },
+    {
+      "id": "ivz0cri",
+      "type": "variable",
+      "name": "append_empty_assistant_message",
+      "description": "",
+      "position": {
+        "x": 2341.1854698535994,
+        "y": -185.6871096660059
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {},
+      "data": {},
+      "width": 350,
+      "height": 71,
+      "selected": false,
+      "dragging": false,
+      "variableUpdates": [
+        {
+          "fieldName": "thread.messages",
+          "operation": "append",
+          "value": " ",
+          "role": "assistant"
+        }
+      ],
+      "positionAbsolute": {
+        "x": 2341.1854698535994,
+        "y": -182.2991134168482
+      }
+    },
+    {
+      "id": "zi3zxuv",
+      "type": "variable",
+      "name": "mark_quick_pay_complete",
+      "description": "",
+      "position": {
+        "x": 1756.2958219890984,
+        "y": -560.649378836961
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {},
+      "data": {},
+      "width": 350,
+      "height": 71,
+      "selected": false,
+      "dragging": false,
+      "variableUpdates": [
+        {
+          "fieldName": "flow.response",
+          "operation": "set",
+          "value": "negative"
+        },
+        {
+          "fieldName": "flow.current_state",
+          "operation": "set",
+          "value": "quick_pay_completed"
+        }
+      ],
+      "positionAbsolute": {
+        "x": 1756.2958219890984,
+        "y": -560.649378836961
+      }
+    },
+    {
+      "id": "8mw9yfz",
+      "type": "agent",
+      "name": "knowledge_agent",
+      "description": "Quick Pay Agent for procurement questionnaire flow",
+      "position": {
+        "x": 724.2653252042854,
+        "y": -1086.0118742026657
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "agentStrategy": "react",
+        "model": {
+          "vendor": "openai",
+          "provider": "azureopenai",
+          "code": "gpt-5.2",
+          "name": "OpenAI GPT-5.2",
+          "temperature": 0.1
+        },
+        "promptTemplate": [
+          {
+            "id": "quick-pay-system-prompt",
+            "role": "system",
+            "text": "Always call quick_pay_complete_questionnaire tool to fetch the knowledge"
+          }
+        ],
+        "tools": [
+          {
+            "_id": "1c1bcfd7-547e-4eab-b9cd-b853b0809933",
+            "name": "quick_pay_complete_questionnaire.xlsx",
+            "description": "Quick Pay Questionnaire knowledge base. Returns markdown table with columns:\\\\\\\\\\\\\\\\n- Question ID: Sequential number for each question\\\\\\\\\\\\\\\\n- Custom Questions: The question text (may contain HTML)\\\\\\\\\\\\\\\\n- Response Type: Yes/No, Dropdown, currencyBudget, Free Text\\\\\\\\\\\\\\\\n- Options: Semicolon-separated values for Dropdown type\\\\\\\\\\\\\\\\n- Post Response Condition: Validation rule (e.g., \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"If 'No', end process\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\")\\\\\\\\\\\\\\\\n- i-Text: Info banner message (may be empty or N/A)\\\\\\\\\\\\\\\\n- Buying Path: Question category\\\\\\\\\\\\\\\\n- categoryId: \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"Any\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\" or specific category ID for filtering\\\\\\\\\\\\\\\\n- Question Key: Key name for storing response\\\\\\\\\\\\\\\\n\\\\\\\\\\\\\\\\nInvoke with no parameters. Call once per turn as first tool call.",
+            "type": "tool",
+            "config": {
+              "enabled": true,
+              "toolId": "eb86ff21-7372-48f9-bc81-0afd08425b2e",
+              "type": "mcp-resource",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "thoughts": {
+                    "type": "string",
+                    "description": "Non-technical explanation for end users about what this agent is doing at this stage. Explain the purpose and outcome in simple, business-friendly language that helps users understand the process without technical jargon."
+                  },
+                  "reasoning": {
+                    "type": "string",
+                    "description": "Technical reason why this specific tool/agent is being called. Explain the decision logic, conditions met, or context that led to selecting this tool for the current task."
+                  }
+                },
+                "required": [
+                  "thoughts",
+                  "reasoning"
+                ],
+                "additionalProperties": false
+              },
+              "settings": {
+                "uri": "eb86ff21-7372-48f9-bc81-0afd08425b2e",
+                "serverId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c",
+                "serverName": "module mcp"
+              },
+              "returnDirect": false,
+              "_meta": {
+                "library_id": "5a5765af-c96f-479d-bf83-7cae963f7b55",
+                "library_name": "Quick Pay Questionnaire",
+                "source": "mcp-resource",
+                "uri": "eb86ff21-7372-48f9-bc81-0afd08425b2e",
+                "mimeType": "text/plain",
+                "serverName": "module mcp"
+              },
+              "captureRawResponse": true
+            },
+            "alias": "quick_pay_complete_questionnaire"
+          }
+        ],
+        "resources": [],
+        "libraries": [
+          {
+            "libraryId": "5a5765af-c96f-479d-bf83-7cae963f7b55",
+            "name": "Quick Pay Questionnaire",
+            "description": "Quick Pay Questionnaire",
+            "libraryType": "Upload Files",
+            "knowledgeStorageType": "reference-file",
+            "targetTools": [
+              "get_library_metadata",
+              "get_reference_file"
+            ]
+          }
+        ],
+        "maxIterations": 15,
+        "includeThoughts": true,
+        "streamResponse": true,
+        "structuredOutput": {
+          "enable": false,
+          "name": "",
+          "description": "",
+          "schema": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        }
+      },
+      "data": {},
+      "variableUpdates": [
+        {
+          "fieldName": "flow.knowledge",
+          "operation": "set",
+          "value": "{{nodeOutput.toolResults.quick_pay_complete_questionnaire.text}}"
+        },
+        {
+          "fieldName": "thread.messages",
+          "operation": "append",
+          "value": "{{nodeOutput.text}}",
+          "role": "assistant"
+        }
+      ],
+      "width": 314,
+      "height": 157,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 724.2653252042854,
+        "y": -1086.0118742026657
+      },
+      "dragging": false
+    },
+    {
+      "id": "ex0cnyj",
+      "type": "rule",
+      "name": "rule_0",
+      "description": "",
+      "position": {
+        "x": 282.35925028160744,
+        "y": -895.456569162844
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "rules": [
+          {
+            "ruleId": "r-sl5yk8a5",
+            "enable": true,
+            "conditions": [
+              {
+                "field": "{{flow.knowledge}}",
+                "operator": "is empty"
+              }
+            ],
+            "logicType": "AND"
+          },
+          {
+            "ruleId": "r-else",
+            "enable": true,
+            "conditions": [],
+            "logicType": "default"
+          }
+        ]
+      },
+      "data": {},
+      "width": 271,
+      "height": 170,
+      "selected": false,
+      "dragging": false,
+      "positionAbsolute": {
+        "x": 282.35925028160744,
+        "y": -895.456569162844
+      }
+    },
+    {
+      "id": "r154kra",
+      "type": "variable",
+      "name": "save_questionnaire_response",
+      "description": "",
+      "position": {
+        "x": 1215.3492631226247,
+        "y": -1173.9409033132158
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {},
+      "data": {},
+      "width": 350,
+      "height": 71,
+      "selected": false,
+      "dragging": false,
+      "variableUpdates": [
+        {
+          "fieldName": "thread.quick_pay_messages",
+          "operation": "append",
+          "value": "Questionnaire responses saved successfully.  NEXT ACTION REQUIRED: Call render_summary with the summary HTML. DO NOT call save_questionnaire_response again. DO NOT call mark_quick_pay_flow_complete.",
+          "role": "tool",
+          "rules": {
+            "conditions": [
+              {
+                "field": "{{nodes.quick_pay.toolResults.save_questionnaire_response.flowStatus}}",
+                "operator": "equals",
+                "value": "positive"
+              }
+            ],
+            "logicType": "AND"
+          }
+        },
+        {
+          "fieldName": "thread.quick_pay_messages",
+          "operation": "append",
+          "value": "Questionnaire responses saved successfully.  NEXT ACTION REQUIRED: Call mark_quick_pay_flow_complete to terminate the flow. DO NOT call save_questionnaire_response again.",
+          "role": "tool",
+          "rules": {
+            "conditions": [
+              {
+                "field": "{{nodes.quick_pay.toolResults.save_questionnaire_response.flowStatus}}",
+                "operator": "equals",
+                "value": "negative"
+              }
+            ],
+            "logicType": "AND"
+          }
+        },
+        {
+          "fieldName": "{{flow.questionnareResponses}}",
+          "operation": "set",
+          "value": "{{nodes.quick_pay.toolResults.save_questionnaire_response.questionnaireResponse}}"
+        },
+        {
+          "fieldName": "{{flow.user_decision_points.quick_pay_aggregated_response}}",
+          "operation": "set",
+          "value": "{{nodes.quick_pay.toolResults.save_questionnaire_response.flowStatus}}"
+        }
+      ],
+      "positionAbsolute": {
+        "x": 1215.3492631226247,
+        "y": -1173.9409033132158
+      }
+    },
+    {
+      "id": "h8pmnpl",
+      "type": "tool",
+      "name": "projectrequestv2",
+      "description": "Description:\n\n\nReturns:\n- \n\nFriendly Name: projectRequest_v2",
+      "position": {
+        "x": 1405.3569480896397,
+        "y": 92.76735873599509
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "enabled": true,
+        "toolId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c-projectRequestv2-13",
+        "type": "mcp",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "event": {
+              "description": "Event to execute DAC policy in server function.",
+              "type": "string"
+            },
+            "data": {
+              "description": "Payload used to execute the function.",
+              "type": "object"
+            },
+            "additionalData": {
+              "description": "Any additional data used by the function.",
+              "type": "object"
+            }
+          },
+          "required": [
+            "data"
+          ],
+          "condition": "Description:\n\n\nReturns:\n- \n\nFriendly Name: projectRequest_v2"
+        },
+        "settings": {
+          "serverId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c"
+        },
+        "returnDirect": false,
+        "_meta": {
+          "functionId": "661f1e85-9423-4828-94ca-ed4ca1fc4f8b",
+          "type": "ssf-call",
+          "source": "current-module",
+          "moduleId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c",
+          "toolId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c",
+          "serverName": "module mcp"
+        },
+        "parameters": {
+          "event": "\"\"",
+          "data": {
+            "questionnaireResponse": "{{flow.questionnareResponses}}",
+            "supplier_data": "{{flow.supplier_data}}",
+            "qa_master_data": "{{flow.qa_master_data}}",
+            "user_decision_points": "{{flow.user_decision_points}}",
+            "project_description": "{{nodes.quick_pay.toolResults.project_request.description}}",
+            "requestSummary": "{{nodes.quick_pay.toolResults.project_request.summary}}",
+            "requestType": "Quick Setup and Pay",
+            "generalRequestType": {
+              "name": "Quick Setup and Pay",
+              "code": "14"
+            },
+            "intake_type": "Quick Setup and Pay"
+          },
+          "additionalData": "{}"
+        }
+      },
+      "data": {},
+      "width": 335,
+      "height": 95,
+      "selected": false,
+      "dragging": false,
+      "positionAbsolute": {
+        "x": 1405.3569480896397,
+        "y": 92.76735873599509
+      }
+    },
+    {
+      "id": "txfqfxu",
+      "type": "tool",
+      "name": "getinternalfileidsbyuploadedfilesids",
+      "description": "Description:\n\n\nReturns:\n- \n\nFriendly Name: Get_InternalFileIdsByUploadedFilesIds",
+      "position": {
+        "x": 1679.7516525944936,
+        "y": -1205.4876294635244
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "enabled": true,
+        "toolId": "mcp-a4deb011-ea94-418d-9912-822447e4ce1f-GetInternalFileIdsByUploadedFilesIds",
+        "type": "mcp",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "event": {
+              "description": "Event to execute DAC policy in server function.",
+              "type": "string"
+            },
+            "data": {
+              "description": "Payload used to execute the function.",
+              "type": "object"
+            },
+            "additionalData": {
+              "description": "Any additional data used by the function.",
+              "type": "object"
+            }
+          },
+          "required": [
+            "data"
+          ],
+          "condition": "Description:\n\n\nReturns:\n- \n\nFriendly Name: Get_InternalFileIdsByUploadedFilesIds"
+        },
+        "settings": {
+          "serverId": "a4deb011-ea94-418d-9912-822447e4ce1f"
+        },
+        "returnDirect": false,
+        "_meta": {
+          "functionId": "fd6a97bb-ba0f-4ba0-a873-46934167844f",
+          "type": "ssf-call"
+        },
+        "parameters": {
+          "event": "\"\"",
+          "data": "{{nodes.quick_pay.toolResults.getinternalfileidsbyuploadedfilesids.data}}",
+          "additionalData": {}
+        }
+      },
+      "data": {},
+      "width": 350,
+      "height": 111,
+      "selected": false,
+      "dragging": false,
+      "variableUpdates": [
+        {
+          "fieldName": "thread.quick_pay_messages",
+          "operation": "append",
+          "value": "Got internal fileIds: {{nodeOutput.result}}. NEXT_ACTION: invoke save_questionnaire_response with appropriate payload.",
+          "role": "tool"
+        }
+      ],
+      "positionAbsolute": {
+        "x": 1679.7516525944936,
+        "y": -1205.4876294635244
+      }
+    },
+    {
+      "id": "qnq6uja",
+      "type": "tool",
+      "name": "currencybudget0023",
+      "description": "Description:\nshow\n\nNotes:\nThis partial view is to take user input for currency and budget.",
+      "position": {
+        "x": 852.2293348847206,
+        "y": -205.6871096660059
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "enabled": true,
+        "toolId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c-currencyBudget0023-140",
+        "type": "mcp",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "preText": {
+              "description": "Optional Markdown shown immediately before this view. Use to introduce what it shows/why it matters or give brief instructions. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+              "type": "string"
+            },
+            "postText": {
+              "description": "Optional Markdown shown immediately after this view. Use for next steps, brief context/interpretation, or a transition to the next section/view. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+              "type": "string"
+            },
+            "currencyBudget": {
+              "description": "Description:\n\n\nNotes:\n",
+              "type": "string"
+            },
+            "label_datamodel": {
+              "description": "Description:\n\n\nNotes:\n",
+              "type": "string"
+            },
+            "infoBannerDetails": {
+              "description": "Description:\n\n\nNotes:\n",
+              "type": "string"
+            }
+          },
+          "condition": "Description:\nshow\n\nNotes:\nThis partial view is to take user input for currency and budget."
+        },
+        "settings": {
+          "serverId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c"
+        },
+        "returnDirect": false,
+        "_meta": {
+          "uiView": "{\"RefId\":null,\"ViewUniqueId\":\"73fc9e0e-7df0-4444-89a6-243d6dda8c53\",\"Version\":[0,0],\"Type\":\"partialView\",\"Name\":\"currencyBudget-0.0.23\",\"Icon\":null,\"Channel\":\"conversation\",\"Description\":\"show\",\"Instruction\":\"This partial view is to take user input for currency and budget.\",\"AppId\":null,\"ModuleId\":null,\"EnableContextSharing\":true,\"Overrides\":{\"currencyBudget\":{\"Type\":\"data\",\"OverrideId\":\"currencyBudget\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"currencyBudget\",\"Description\":\"\",\"Instruction\":\"\",\"Value\":null,\"DataType\":\"object\",\"Source\":\"static\"},\"label_datamodel\":{\"Type\":\"data\",\"OverrideId\":\"label_datamodel\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"label_datamodel\",\"Description\":\"\",\"Instruction\":\"\",\"Value\":null,\"DataType\":\"string\",\"Source\":\"static\"},\"infoBannerDetails\":{\"Type\":\"data\",\"OverrideId\":\"infoBannerDetails\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"infoBannerDetails\",\"Description\":\"\",\"Instruction\":\"\",\"Value\":null,\"DataType\":\"object\",\"Source\":\"static\"}}}",
+          "type": "partial-view",
+          "source": "current-module",
+          "moduleId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c",
+          "toolId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c",
+          "serverName": "module mcp"
+        },
+        "parameters": {
+          "preText": "",
+          "postText": "",
+          "currencyBudget": "{{nodes.quick_pay.toolResults.currency_budget.currencyBudget}}",
+          "label_datamodel": "{{nodes.quick_pay.toolResults.currency_budget.label_datamodel}}",
+          "infoBannerDetails": "{{nodes.quick_pay.toolResults.currency_budget.infoBannerDetails}}"
+        }
+      },
+      "data": {},
+      "width": 350,
+      "height": 111,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 850.9420314584365,
+        "y": -205.6871096660059
+      },
+      "dragging": false,
+      "variableUpdates": [
+        {
+          "fieldName": "thread.quick_pay_messages",
+          "operation": "append",
+          "value": "Currency and budget rendered. Waiting for user response. After user respond, invoke store_currency for storing selected currency.",
+          "role": "tool"
+        }
+      ]
+    },
+    {
+      "id": "8c9xotw",
+      "type": "tool",
+      "name": "prfcreaterequestformpv00164",
+      "description": "Description:\nCreate Project Request\n\nNotes:\nsave value of generated overrides 'projectRequestOverrides' to ${sendForValidationPV}",
+      "position": {
+        "x": 1797.7173774786802,
+        "y": 501.573604053542
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "enabled": true,
+        "toolId": "mcp-ac51937a-532b-4186-9209-2ab379e5c66e-prfcreateRequestFormpv00164",
+        "type": "mcp",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "preText": {
+              "description": "Optional Markdown shown immediately before this view. Use to introduce what it shows/why it matters or give brief instructions. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+              "type": "string"
+            },
+            "postText": {
+              "description": "Optional Markdown shown immediately after this view. Use for next steps, brief context/interpretation, or a transition to the next section/view. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+              "type": "string"
+            },
+            "projectRequestOverrides": {
+              "description": "Description:\nThe value of this override can be user specific like ```json {\"documentCode\":\"&lt;documentCode&gt;\"}```\n\nNotes:\nThe value of this override can be user specific like ```json {\"documentCode\":\"&lt;documentCode&gt;\"}```",
+              "type": "string"
+            }
+          },
+          "condition": "Description:\nCreate Project Request\n\nNotes:\nsave value of generated overrides 'projectRequestOverrides' to ${sendForValidationPV}"
+        },
+        "settings": {
+          "serverId": "ac51937a-532b-4186-9209-2ab379e5c66e"
+        },
+        "returnDirect": false,
+        "_meta": {
+          "uiView": "{\"RefId\":null,\"ViewUniqueId\":\"d2801162-5faa-4e94-a6ed-39b9b4e3453a\",\"Version\":[0,0],\"Type\":\"partialSection\",\"Name\":\"prf_createRequestForm_pv-0.0.164\",\"Icon\":null,\"Channel\":\"conversation\",\"Description\":\"Create Project Request\",\"Instruction\":\"save value of generated overrides \\u0027projectRequestOverrides\\u0027 to ${sendForValidationPV}\",\"AppId\":null,\"ModuleId\":null,\"EnableContextSharing\":true,\"Overrides\":{\"projectRequestOverrides\":{\"Type\":\"data\",\"OverrideId\":\"projectRequestOverrides\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"projectRequestDM\",\"Description\":\"The value of this override can be user specific like \\u0060\\u0060\\u0060json {\\u0022documentCode\\u0022:\\u0022\\u0026lt;documentCode\\u0026gt;\\u0022}\\u0060\\u0060\\u0060\",\"Instruction\":\"The value of this override can be user specific like \\u0060\\u0060\\u0060json {\\u0022documentCode\\u0022:\\u0022\\u0026lt;documentCode\\u0026gt;\\u0022}\\u0060\\u0060\\u0060\",\"Value\":null,\"DataType\":\"object\",\"Source\":\"static\"}}}",
+          "type": "partial-view"
+        },
+        "parameters": {
+          "preText": "",
+          "postText": "",
+          "projectRequestOverrides": "{{nodes.projectrequestv2.result}}"
+        }
+      },
+      "data": {},
+      "width": 350,
+      "height": 111,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 1797.7173774786802,
+        "y": 501.573604053542
+      },
+      "dragging": false,
+      "variableUpdates": [
+        {
+          "fieldName": "{{thread.quick_pay_messages}}",
+          "operation": "append",
+          "value": "Rendered Project Request to End User For Confirmation",
+          "role": "tool"
+        }
+      ]
+    },
+    {
+      "id": "orzygwp",
+      "type": "variable",
+      "name": "store_currency",
+      "description": "",
+      "position": {
+        "x": 899.2293348847206,
+        "y": -632.2856113402862
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {},
+      "data": {},
+      "width": 256,
+      "height": 71,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 901.7459262905629,
+        "y": -632.2856113402862
+      },
+      "dragging": false,
+      "variableUpdates": [
+        {
+          "fieldName": "{{flow.user_selected_currency}}",
+          "operation": "set",
+          "value": "{{nodes.quick_pay.toolResults.store_currency.currency}}"
+        }
+      ]
+    },
+    {
+      "id": "54rqgbx",
+      "type": "tool",
+      "name": "prfsentforvalidationsuccesspv0024",
+      "description": "Description:\nShow this PV on success of send for validation.\n\nNotes:\nShow this PV on success of send for validation.",
+      "position": {
+        "x": 1282.1108439351053,
+        "y": 507.1719148374718
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "enabled": true,
+        "toolId": "mcp-ac51937a-532b-4186-9209-2ab379e5c66e-prfsentForValidationSuccesspv0024",
+        "type": "mcp",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "preText": {
+              "description": "Optional Markdown shown immediately before this view. Use to introduce what it shows/why it matters or give brief instructions. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+              "type": "string"
+            },
+            "postText": {
+              "description": "Optional Markdown shown immediately after this view. Use for next steps, brief context/interpretation, or a transition to the next section/view. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+              "type": "string"
+            },
+            "sendForValidationOverrides": {
+              "description": "Description:\nUse agent history and set the value to ovverride 'sendForValidationOverrides' from '${sendForValidationPV}' \n\nNotes:\nUse agent history and set the value to ovverride 'sendForValidationOverrides' from '${sendForValidationPV}' ",
+              "type": "string"
+            }
+          },
+          "condition": "Description:\nShow this PV on success of send for validation.\n\nNotes:\nShow this PV on success of send for validation."
+        },
+        "settings": {
+          "serverId": "ac51937a-532b-4186-9209-2ab379e5c66e"
+        },
+        "returnDirect": false,
+        "_meta": {
+          "uiView": "{\"RefId\":null,\"ViewUniqueId\":\"56a8778a-e705-4a1b-acf9-2eafd3029cae\",\"Version\":[0,0],\"Type\":\"partialSection\",\"Name\":\"prf_sentForValidationSuccess_pv-0.0.24\",\"Icon\":null,\"Channel\":\"conversation\",\"Description\":\"Show this PV on success of send for validation.\",\"Instruction\":\"Show this PV on success of send for validation.\",\"AppId\":null,\"ModuleId\":null,\"EnableContextSharing\":true,\"Overrides\":{\"sendForValidationOverrides\":{\"Type\":\"data\",\"OverrideId\":\"sendForValidationOverrides\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"projectrequest\",\"Description\":\"Use agent history and set the value to ovverride \\u0027sendForValidationOverrides\\u0027 from \\u0027${sendForValidationPV}\\u0027 \",\"Instruction\":\"Use agent history and set the value to ovverride \\u0027sendForValidationOverrides\\u0027 from \\u0027${sendForValidationPV}\\u0027 \",\"Value\":null,\"DataType\":\"object\",\"Source\":\"static\"}}}",
+          "type": "partial-view"
+        },
+        "parameters": {
+          "preText": "",
+          "postText": "",
+          "sendForValidationOverrides": "{{nodes.projectrequestv2.result}}"
+        }
+      },
+      "data": {},
+      "width": 350,
+      "height": 111,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 1282.1108439351053,
+        "y": 507.1719148374718
+      },
+      "dragging": false,
+      "variableUpdates": [
+        {
+          "fieldName": "thread.quick_pay_messages",
+          "operation": "append",
+          "value": "Project Request Sent for validation",
+          "role": "tool"
+        }
+      ]
+    },
+    {
+      "id": "2726zbj",
+      "type": "tool",
+      "name": "questionform105",
+      "description": "Description:\nshow question form\n\nNotes:\nshow question form",
+      "position": {
+        "x": 843.4357949121857,
+        "y": -16.16134817817631
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "enabled": true,
+        "toolId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c-questionForm105-116",
+        "type": "mcp",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "preText": {
+              "description": "Optional Markdown shown immediately before this view. Use to introduce what it shows/why it matters or give brief instructions. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+              "type": "string"
+            },
+            "postText": {
+              "description": "Optional Markdown shown immediately after this view. Use for next steps, brief context/interpretation, or a transition to the next section/view. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+              "type": "string"
+            },
+            "questionDetails": {
+              "description": "Description:\n\n\nNotes:\n",
+              "type": "string"
+            }
+          },
+          "condition": "Description:\nshow question form\n\nNotes:\nshow question form"
+        },
+        "settings": {
+          "serverId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c"
+        },
+        "returnDirect": false,
+        "_meta": {
+          "uiView": "{\"RefId\":null,\"ViewUniqueId\":\"62eb7c08-8a6a-48f5-8b57-07c7f3823d27\",\"Version\":[1,0],\"Type\":\"partialView\",\"Name\":\"questionForm-1.0.5\",\"Icon\":null,\"Channel\":\"conversation\",\"Description\":\"show question form\",\"Instruction\":\"show question form\",\"AppId\":null,\"ModuleId\":null,\"EnableContextSharing\":true,\"Overrides\":{\"questionDetails\":{\"Type\":\"data\",\"OverrideId\":\"questionDetails\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"questionDetails\",\"Description\":\"\",\"Instruction\":\"\",\"Value\":null,\"DataType\":\"object\",\"Source\":\"static\"}}}",
+          "type": "partial-view",
+          "source": "current-module",
+          "moduleId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c",
+          "toolId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c",
+          "serverName": "module mcp"
+        },
+        "parameters": {
+          "preText": "",
+          "postText": "",
+          "questionDetails": "{{nodes.quick_pay.toolResults.question_form.questionDetails}}"
+        }
+      },
+      "data": {},
+      "width": 350,
+      "height": 111,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 843.4357949121857,
+        "y": -16.16134817817631
+      },
+      "dragging": false,
+      "variableUpdates": [
+        {
+          "fieldName": "thread.quick_pay_messages",
+          "operation": "append",
+          "value": "Rendered Question Form to End User",
+          "role": "assistant"
+        }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "qp_agent_001-handoff-fe3125f5-7591-4e35-ac62-256125e96ae5",
+      "source": "qp_agent_001",
+      "target": "4093zln",
+      "type": "handoff",
+      "sourceHandle": "handoff",
+      "targetHandle": null,
+      "deletable": false,
+      "data": {
+        "toolId": "fe3125f5-7591-4e35-ac62-256125e96ae5",
+        "isHandoff": true,
+        "sourceType": "agent",
+        "targetType": "tool"
+      }
+    },
+    {
+      "id": "qp_agent_001-handoff-563e3fde-98a6-4346-bf7f-ad32c579fa46",
+      "source": "qp_agent_001",
+      "target": "4fnpkxj",
+      "type": "handoff",
+      "sourceHandle": "handoff",
+      "targetHandle": null,
+      "deletable": false,
+      "data": {
+        "toolId": "563e3fde-98a6-4346-bf7f-ad32c579fa46",
+        "isHandoff": true,
+        "sourceType": "agent",
+        "targetType": "tool"
+      }
+    },
+    {
+      "id": "reactflow__edge-4fnpkxj-ivz0cri",
+      "source": "4fnpkxj",
+      "target": "ivz0cri",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "tool",
+        "targetType": "variable"
+      }
+    },
+    {
+      "id": "reactflow__edge-4093zln-ivz0cri",
+      "source": "4093zln",
+      "target": "ivz0cri",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "tool",
+        "targetType": "variable"
+      }
+    },
+    {
+      "id": "qp_agent_001-handoff-d19833d9-6978-4664-b60a-02bd526991fe",
+      "source": "qp_agent_001",
+      "target": "zi3zxuv",
+      "type": "handoff",
+      "sourceHandle": "handoff",
+      "targetHandle": null,
+      "deletable": false,
+      "data": {
+        "toolId": "d19833d9-6978-4664-b60a-02bd526991fe",
+        "isHandoff": true,
+        "sourceType": "agent",
+        "targetType": "variable"
+      }
+    },
+    {
+      "id": "reactflow__edge-ivz0cri-output",
+      "source": "ivz0cri",
+      "target": "output",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "variable",
+        "targetType": "output"
+      }
+    },
+    {
+      "id": "reactflow__edge-qp_agent_001-output",
+      "source": "qp_agent_001",
+      "target": "output",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "agent",
+        "targetType": "output"
+      }
+    },
+    {
+      "id": "reactflow__edge-zi3zxuv-ivz0cri",
+      "source": "zi3zxuv",
+      "target": "ivz0cri",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "variable",
+        "targetType": "variable"
+      }
+    },
+    {
+      "id": "reactflow__edge-ex0cnyjr-else-qp_agent_001",
+      "source": "ex0cnyj",
+      "target": "qp_agent_001",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": "r-else",
+      "targetHandle": null,
+      "data": {
+        "sourceType": "rule",
+        "targetType": "agent"
+      }
+    },
+    {
+      "id": "reactflow__edge-ex0cnyjr-sl5yk8a5-8mw9yfz",
+      "source": "ex0cnyj",
+      "target": "8mw9yfz",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": "r-sl5yk8a5",
+      "targetHandle": null,
+      "data": {
+        "sourceType": "rule",
+        "targetType": "agent"
+      }
+    },
+    {
+      "id": "reactflow__edge-8mw9yfz-qp_agent_001",
+      "source": "8mw9yfz",
+      "target": "qp_agent_001",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "agent",
+        "targetType": "agent"
+      }
+    },
+    {
+      "id": "reactflow__edge-start-ex0cnyj",
+      "source": "start",
+      "target": "ex0cnyj",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "start",
+        "targetType": "rule"
+      }
+    },
+    {
+      "id": "qp_agent_001-handoff-4539ab76-a5f1-4187-b263-155e29abf1e6",
+      "source": "qp_agent_001",
+      "target": "r154kra",
+      "type": "handoff",
+      "sourceHandle": "handoff",
+      "targetHandle": null,
+      "deletable": false,
+      "data": {
+        "toolId": "4539ab76-a5f1-4187-b263-155e29abf1e6",
+        "isHandoff": true,
+        "sourceType": "agent",
+        "targetType": "variable"
+      }
+    },
+    {
+      "id": "reactflow__edge-r154kra-qp_agent_001",
+      "source": "r154kra",
+      "target": "qp_agent_001",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "variable",
+        "targetType": "agent"
+      }
+    },
+    {
+      "id": "qp_agent_001-handoff-a169cf29-0403-4b2c-9f71-ea5f77b6f96b",
+      "source": "qp_agent_001",
+      "target": "h8pmnpl",
+      "type": "handoff",
+      "sourceHandle": "handoff",
+      "targetHandle": null,
+      "deletable": false,
+      "data": {
+        "toolId": "a169cf29-0403-4b2c-9f71-ea5f77b6f96b",
+        "isHandoff": true,
+        "sourceType": "agent",
+        "targetType": "tool"
+      }
+    },
+    {
+      "id": "qp_agent_001-handoff-0d71a693-bcc3-4149-8851-03672a9bd95c",
+      "source": "qp_agent_001",
+      "target": "txfqfxu",
+      "type": "handoff",
+      "sourceHandle": "handoff",
+      "targetHandle": null,
+      "deletable": false,
+      "data": {
+        "toolId": "0d71a693-bcc3-4149-8851-03672a9bd95c",
+        "isHandoff": true,
+        "sourceType": "agent",
+        "targetType": "tool"
+      }
+    },
+    {
+      "id": "reactflow__edge-txfqfxu-qp_agent_001",
+      "source": "txfqfxu",
+      "target": "qp_agent_001",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "tool",
+        "targetType": "agent"
+      }
+    },
+    {
+      "id": "reactflow__edge-qnq6uja-ivz0cri",
+      "source": "qnq6uja",
+      "target": "ivz0cri",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "tool",
+        "targetType": "variable"
+      }
+    },
+    {
+      "id": "qp_agent_001-handoff-8135e601-4c5b-48c3-806c-8d0d757eb236",
+      "source": "qp_agent_001",
+      "target": "qnq6uja",
+      "type": "handoff",
+      "sourceHandle": "handoff",
+      "targetHandle": null,
+      "deletable": false,
+      "data": {
+        "toolId": "8135e601-4c5b-48c3-806c-8d0d757eb236",
+        "isHandoff": true,
+        "sourceType": "agent",
+        "targetType": "tool"
+      }
+    },
+    {
+      "id": "reactflow__edge-8c9xotw-ivz0cri",
+      "source": "8c9xotw",
+      "target": "ivz0cri",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "tool",
+        "targetType": "variable"
+      }
+    },
+    {
+      "id": "reactflow__edge-h8pmnpl-8c9xotw",
+      "source": "h8pmnpl",
+      "target": "8c9xotw",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "tool",
+        "targetType": "tool"
+      }
+    },
+    {
+      "id": "qp_agent_001-handoff-fe9caefb-17e7-40a8-aeaf-7f713d782689",
+      "source": "qp_agent_001",
+      "target": "orzygwp",
+      "type": "handoff",
+      "sourceHandle": "handoff",
+      "targetHandle": null,
+      "deletable": false,
+      "data": {
+        "toolId": "fe9caefb-17e7-40a8-aeaf-7f713d782689",
+        "isHandoff": true,
+        "sourceType": "agent",
+        "targetType": "variable"
+      }
+    },
+    {
+      "id": "reactflow__edge-orzygwp-qp_agent_001",
+      "source": "orzygwp",
+      "target": "qp_agent_001",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "variable",
+        "targetType": "agent"
+      }
+    },
+    {
+      "id": "qp_agent_001-handoff-db94a68f-2818-416a-9543-45125d1b7015",
+      "source": "qp_agent_001",
+      "target": "54rqgbx",
+      "type": "handoff",
+      "sourceHandle": "handoff",
+      "targetHandle": null,
+      "deletable": false,
+      "data": {
+        "toolId": "db94a68f-2818-416a-9543-45125d1b7015",
+        "isHandoff": true,
+        "sourceType": "agent",
+        "targetType": "tool"
+      }
+    },
+    {
+      "id": "reactflow__edge-54rqgbx-ivz0cri",
+      "source": "54rqgbx",
+      "target": "ivz0cri",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "tool",
+        "targetType": "variable"
+      }
+    },
+    {
+      "id": "qp_agent_001-handoff-e436af60-df5f-481f-886a-51a7fb6c4d8e",
+      "source": "qp_agent_001",
+      "target": "2726zbj",
+      "type": "handoff",
+      "sourceHandle": "handoff",
+      "targetHandle": null,
+      "deletable": false,
+      "data": {
+        "toolId": "e436af60-df5f-481f-886a-51a7fb6c4d8e",
+        "isHandoff": true,
+        "sourceType": "agent",
+        "targetType": "tool"
+      }
+    },
+    {
+      "id": "reactflow__edge-2726zbj-ivz0cri",
+      "source": "2726zbj",
+      "target": "ivz0cri",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "tool",
+        "targetType": "variable"
+      }
+    }
+  ],
+  "originalBpc": "20210511",
+  "originalEnvironment": "DEV",
+  "freezeRelease": false,
+  "overwriteOnNextRelease": false,
+  "fromModuleVersion": "v1781093875659812800",
+  "lastModifiedVersion": "v1781121601712159400",
+  "rebasedFromVersion": null,
+  "createdBy": "vishwas.tak@gep.com",
+  "createdOn": "2026-02-11T21:25:47.343Z",
+  "updatedBy": "Ashok.Bhobhiya@gep.com",
+  "updatedOn": "2026-03-18T13:57:26.797Z",
+  "environment": "DEV",
+  "appId": "e2c84064-171f-4f1a-a29a-19e0ac610935",
+  "moduleId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c",
+  "version": "v1781121601712159400"
+}

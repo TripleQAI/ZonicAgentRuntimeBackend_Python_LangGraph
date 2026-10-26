@@ -44,6 +44,18 @@ def marked_fields(model: type[BaseModel], marker: type[Any]) -> dict[str, Any]:
     return found
 
 
+def marked_values(instance: BaseModel, marker: type[Any]) -> dict[str, Any]:
+    """Field name -> value, for the fields annotated with ``marker`` that hold a value.
+
+    The template resolver reads only these (case M-08): an unmarked field is never resolved.
+    """
+    return {
+        name: getattr(instance, name)
+        for name in marked_fields(type(instance), marker)
+        if getattr(instance, name) is not None
+    }
+
+
 def column_map(model: type[BaseModel]) -> dict[str, str]:
     """Field name -> column name; fields without ``Column`` use their own name."""
     columns = marked_fields(model, Column)

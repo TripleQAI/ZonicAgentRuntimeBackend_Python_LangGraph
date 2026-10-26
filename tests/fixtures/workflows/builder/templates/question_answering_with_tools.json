@@ -1,0 +1,69 @@
+{
+  "_comment": [
+    "Workflow template (design 5.8.1; implementation plan P4-08), served by",
+    "GET /api/v1/templates. `document` is a complete workflow document; creating a",
+    "workflow from it copies it with a new workflow ID and new node and edge IDs.",
+    "Model fields are left empty: the builder fills them with the deployment's",
+    "DEFAULT_MODEL_ID, as it does for a new node. Tests require every template to",
+    "pass the workflow JSON Schema and the validation rules with no errors."
+  ],
+  "name": "question-answering-with-tools",
+  "title": "Question Answering with Tools",
+  "description": "An agent that answers the user's question, using a calculator and the current time when it needs them, and returns the answer.",
+  "document": {
+    "schemaVersion": "2.0",
+    "agenticWorkflowId": "template-question-answering-with-tools",
+    "name": "question-answering-with-tools",
+    "displayName": "Question Answering with Tools",
+    "description": "Answers a question with an agent that can call tools.",
+    "nodes": [
+      {
+        "id": "start_1",
+        "type": "start",
+        "name": "Start_1",
+        "description": "Receives the user's question.",
+        "position": { "x": 0, "y": 120 },
+        "config": { "interfaceInputs": [], "variableUpdates": [] }
+      },
+      {
+        "id": "agent_1",
+        "type": "agent",
+        "name": "Agent_1",
+        "description": "Answers the question, calling tools when needed.",
+        "position": { "x": 320, "y": 120 },
+        "config": {
+          "model": "",
+          "strategy": "react",
+          "systemPrompt": "You answer questions accurately and briefly. Use the calculator for arithmetic and current_time for dates and times. Say so when you do not know.",
+          "tools": [
+            { "name": "calculator", "title": "calculator", "type": "strands_builtin", "description": "Arithmetic.", "config": {} },
+            { "name": "current_time", "title": "current_time", "type": "strands_builtin", "description": "The current date and time.", "config": {} }
+          ],
+          "maxIterations": 10,
+          "includeThoughts": false,
+          "stateUpdates": [],
+          "outputSchema": [],
+          "handoffTarget": [],
+          "variableUpdates": []
+        }
+      },
+      {
+        "id": "output_1",
+        "type": "output",
+        "name": "Output_1",
+        "description": "Returns the agent's answer.",
+        "position": { "x": 640, "y": 120 },
+        "config": {
+          "outputMapping": [{ "target": "answer", "source": "{{nodes.Agent_1.output.result}}", "type": "string" }],
+          "variableUpdates": []
+        }
+      }
+    ],
+    "edges": [
+      { "id": "edge_1", "source": "start_1", "target": "agent_1", "sourceHandle": "default", "targetHandle": "default", "type": "default", "data": { "sourceType": "start", "targetType": "agent" } },
+      { "id": "edge_2", "source": "agent_1", "target": "output_1", "sourceHandle": "default", "targetHandle": "default", "type": "default", "data": { "sourceType": "agent", "targetType": "output" } }
+    ],
+    "variables": {},
+    "systemParams": []
+  }
+}

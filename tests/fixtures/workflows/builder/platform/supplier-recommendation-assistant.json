@@ -1,0 +1,2011 @@
+{
+  "agenticWorkflowId": "26e4be91-6ac5-4b8c-ae9c-ec346c51f3e4",
+  "bpc": "20210511",
+  "name": "supplier-recommendation-assistant",
+  "displayName": "Supplier Recommendation Assistant",
+  "description": "Base Module This agent performs the full Supplier Recommendation workflow using ONE unified tool (`buying_supplier_recommendation_workflow`) with different `supplierStage` values.  \nAll state is stored ONLY in **context variables** — no Memory Bag, no external storage.",
+  "isDisabled": false,
+  "isAvailableForMigration": true,
+  "editAs": "canvas",
+  "enableForAutoInvoke": false,
+  "includeThoughts": false,
+  "invocationType": "API",
+  "publishChannels": [
+    {
+      "refId": "api",
+      "code": "api",
+      "name": "API",
+      "description": "Expose the agent as a REST API for system and app integrations"
+    },
+    {
+      "refId": "qi-ui",
+      "code": "qi-ui",
+      "name": "Qi UI",
+      "description": "Make your agent available in GEP’s Qi interface"
+    }
+  ],
+  "security": {
+    "activities": [
+      {
+        "refId": "11300009",
+        "code": "11300009",
+        "name": "Projects - Create project request"
+      }
+    ]
+  },
+  "skills": [],
+  "variables": {
+    "flow": [
+      {
+        "refId": "supplier_data",
+        "name": "supplier_data",
+        "type": "object",
+        "id": "var-ybhdy54wo",
+        "default": {},
+        "required": false
+      },
+      {
+        "refId": "processed_supplier_data",
+        "name": "processed_supplier_data",
+        "type": "object",
+        "id": "var-87jg5zek0",
+        "default": {},
+        "required": false
+      },
+      {
+        "refId": "qa_master_data",
+        "name": "qa_master_data",
+        "type": "object",
+        "id": "var-u0gp222e2",
+        "default": {},
+        "required": false
+      },
+      {
+        "refId": "currentStatus",
+        "name": "currentStatus",
+        "type": "string",
+        "id": "var-zxqqr9x26",
+        "default": "supplierRecommendation",
+        "required": false
+      },
+      {
+        "refId": "newSuppliers",
+        "name": "newSuppliers",
+        "type": "array",
+        "id": "var-tnrl4j02u",
+        "default": [],
+        "required": false
+      },
+      {
+        "refId": "manualSuppliers",
+        "name": "manualSuppliers",
+        "type": "array",
+        "id": "var-7l7fes479",
+        "default": [],
+        "required": false
+      },
+      {
+        "refId": "selectedSuppliers",
+        "name": "selectedSuppliers",
+        "type": "array",
+        "id": "var-33c005l7q",
+        "default": [],
+        "required": false
+      }
+    ],
+    "system": []
+  },
+  "interface": {
+    "inputs": {
+      "query": {
+        "type": "string",
+        "description": "User query to process",
+        "required": true
+      }
+    },
+    "outputs": {
+      "response": {
+        "type": "string",
+        "description": "Final response to the user"
+      }
+    }
+  },
+  "nodes": [
+    {
+      "id": "start",
+      "type": "start",
+      "name": "start",
+      "description": "Starting point of the workflow",
+      "position": {
+        "x": -259.8237000514178,
+        "y": 181.96999072702576
+      },
+      "deletable": false,
+      "selected": false,
+      "dragging": false,
+      "data": {},
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none",
+        "errorObject": {
+          "body": "",
+          "status_code": 500,
+          "headers": {}
+        }
+      },
+      "config": {
+        "label": "start",
+        "nodeType": "start"
+      },
+      "variableUpdates": [
+        {
+          "fieldName": "thread.supervisor_messages",
+          "operation": "append",
+          "value": "{{nodeOutput.interface.inputs.systemMessage}}",
+          "role": "user",
+          "rules": {
+            "conditions": [
+              {
+                "field": "{{nodeOutput.interface.inputs.systemMessage}}",
+                "operator": "!=",
+                "value": "\"\""
+              },
+              {
+                "field": "{{nodeOutput.interface.inputs.systemMessage}}",
+                "operator": "is not empty",
+                "value": ""
+              }
+            ],
+            "logicType": "AND"
+          }
+        },
+        {
+          "fieldName": "flow.qa_master_data",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.qa_master_data}}"
+        },
+        {
+          "fieldName": "thread.supervisor_messages",
+          "operation": "append",
+          "value": "{{nodeOutput.interface.inputs.partialViewData}}",
+          "role": "user",
+          "rules": {
+            "conditions": [
+              {
+                "field": "{{nodeOutput.interface.inputs.partialViewData}}",
+                "operator": "!=",
+                "value": "\"\""
+              },
+              {
+                "field": "{{nodeOutput.interface.inputs.partialViewData}}",
+                "operator": "!=",
+                "value": "[]"
+              },
+              {
+                "field": "{{nodeOutput.interface.inputs.partialViewData}}",
+                "operator": "is not empty",
+                "value": ""
+              }
+            ],
+            "logicType": "AND"
+          }
+        },
+        {
+          "fieldName": "thread.supervisor_messages",
+          "operation": "append",
+          "value": "{{nodeOutput.interface.inputs.message}}",
+          "role": "user"
+        },
+        {
+          "fieldName": "thread.messages",
+          "operation": "append",
+          "value": "{{nodeOutput.interface.inputs.message}}",
+          "role": "user"
+        },
+        {
+          "fieldName": "system.userQuery",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.message}}"
+        },
+        {
+          "fieldName": "system.attachments",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.attachments}}",
+          "rules": {
+            "logicType": "AND",
+            "conditions": [
+              {
+                "field": "",
+                "operator": "equals",
+                "value": ""
+              }
+            ]
+          }
+        }
+      ],
+      "width": 250,
+      "height": 96,
+      "positionAbsolute": {
+        "x": -259.8237000514178,
+        "y": 181.96999072702576
+      }
+    },
+    {
+      "id": "output",
+      "type": "output",
+      "name": "output",
+      "description": "Final output of the workflow",
+      "position": {
+        "x": 2165.115467664276,
+        "y": 205.28269868685013
+      },
+      "deletable": true,
+      "selected": false,
+      "dragging": false,
+      "data": {},
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none",
+        "errorObject": {
+          "body": "",
+          "status_code": 500,
+          "headers": {}
+        }
+      },
+      "config": {
+        "outputMapping": {
+          "messages": {
+            "type": "string",
+            "value": "{{thread.messages}}"
+          },
+          "current_state": {
+            "type": "string",
+            "value": "{{flow.currentStatus}}"
+          },
+          "supplier_data": {
+            "type": "object",
+            "value": "{{flow.processed_supplier_data}}"
+          },
+          "newSuppliers": {
+            "type": "object",
+            "value": "{{flow.newSuppliers}}"
+          }
+        }
+      },
+      "width": 150,
+      "height": 96,
+      "positionAbsolute": {
+        "x": 2165.115467664276,
+        "y": 205.28269868685013
+      }
+    },
+    {
+      "id": "2zzeodz",
+      "type": "agent",
+      "name": "supervisor",
+      "description": "",
+      "position": {
+        "x": 696.493214902556,
+        "y": 129.3310360579601
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none",
+        "errorObject": {
+          "body": "",
+          "status_code": 500,
+          "headers": {}
+        }
+      },
+      "config": {
+        "agentStrategy": "react",
+        "model": {
+          "vendor": "openai",
+          "provider": "azureopenai",
+          "code": "gpt-5.2",
+          "name": "OpenAI GPT-5.2",
+          "temperature": 0.1
+        },
+        "promptTemplate": [
+          {
+            "id": "53cb07a3-3f15-452d-a9da-edb2afea9c1d",
+            "role": "system",
+            "text": "# Role and Objective\nYou are a Supplier Workflow Agent that helps users find and select suppliers through a structured, step-by-step process.\n\n# Core Principles\n1. Process ONE workflow step per turn\n2. Maintain state consistency across all interactions\n3. Follow the exact step sequence - never skip ahead\n4. Hide all internal logic from users\n5. Handle errors gracefully and continue when possible\n\n# State Management\n\n## Context Variables (Read-Only)\n- category = {{flow.qa_master_data.category}}\n\n\n- region = {\"id\": {{flow.qa_master_data.region.id}}, \"name\": {{flow.qa_master_data.region.name}}, \"code\": {{flow.qa_master_data.region.code}} }\n\n\n\n\n\n\n- business_unit = {\n    \"entityDetailCode\": \"{{flow.qa_master_data.headerOrg.entityDetailCode}}\n\n\n\n\n\n\n\n\",\n    \"entityName\": \"{{flow.qa_master_data.headerOrg.entityName}}\n\n\n\n\n\n\n\n\",\n    \"entityCode\": \"{{flow.qa_master_data.headerOrg.entityCode}}\n\n\n\n\n\n\n\n\"\n  }\n- input_string = {{flow.qa_master_data.entities.item}}\n\n\n## Always use values from below varaibles for latest data in arrays:\nselectedRecommendedSuppliers: {{flow.selectedSuppliers}}\n\n\nselectedUserEnteredSuppliers: {{flow.manualSuppliers}}\n\n\nnewSuppliers:{{flow.newSuppliers}}\n\n\n## Tracking Arrays (Initialize as empty arrays)\nThese arrays accumulate data throughout the workflow. NEVER reset unless explicitly instructed. Maintain the data in these arrays till the last step.\n\n| Array Name | Updated After | Contains |\n|------------|---------------|----------|\n| selectedRecommendedSuppliers | store_selected_suppliers (STEP 1) | Suppliers selected from initial recommendations |\n| userEnteredSupplier | User provides names (STEP 3) | Raw supplier names from user text input |\n| selectedUserEnteredSuppliers | store_manual_suppliers (STEP 3) | Validated suppliers from user input |\n| newSuppliers | store_new_suppliers (STEP 4) | New suppliers with contact details |\n\n## Array Management Rules\n1. Initialization: All arrays start empty: []\n2. Accumulation: Arrays grow as data is collected - never discard previous entries\n3. Payload Inclusion: ALWAYS include ALL four arrays in every buying_supplier_recommendation_workflow call\n4. Update Timing: Update arrays immediately after successful store operations\n5. Persistence: Carry all arrays forward to subsequent steps\n6. CRITICAL: Never overwrite arrays with empty values - always preserve existing data\n\n## Array Persistence Example\nAfter STEP 1:\n  selectedRecommendedSuppliers = [{...}]  // Populated\n  userEnteredSupplier = []                // Still empty\n  selectedUserEnteredSuppliers = []       // Still empty\n  newSuppliers = []                       // Still empty\n\nAfter STEP 3:\n  selectedRecommendedSuppliers = [{...}]  // PRESERVED from STEP 1\n  userEnteredSupplier = [\"Company A\", \"Company B\"]  // NOW populated\n  selectedUserEnteredSuppliers = [{...}]  // NOW populated after store\n  newSuppliers = []                       // Still empty\n\nIn STEP 4:\n  selectedRecommendedSuppliers = [{...}]  // MUST preserve from STEP 1\n  userEnteredSupplier = [\"Company A\", \"Company B\"]  // MUST preserve from STEP 3\n  selectedUserEnteredSuppliers = [{...}]  // MUST preserve from STEP 3\n  newSuppliers = []                       // Still empty until this step\n\n-------------------------\nUNIFIED TOOL CALL SCHEMA\n-------------------------\nEvery stage must call the `buying_supplier_recommendation_workflow` tool and pass the SAME structure, replacing only the variables specific to that stage:\n\n{\n  \"data\": {\n    \"supplierStage\": \"<stage>\",\n    \"inputString\": \"<item_name>\",\n    \"category_details\": {\n      \"id\": <category_id>,\n      \"name\": \"<category_name>\",\n      \"clientCode\": \"<category_clientCode>\"\n    },\n    \"businessUnit_details\": {\n      \"entityDetailCode\": <entityDetailCode>,\n      \"entityName\": \"<entityName>\",\n      \"entityCode\": \"<entityCode>\"\n    }, \n    \"region_details\": \n        {\"id\": \"<id>\", \"code\": \"<code>\", \"name\": \"<name>\"},\n    \"pageSize\": 6,\n    \"invokedForSupplierCards\": true,\n    \"selectedRecommendedSuppliers\": <selectedRecommendedSuppliers>,\n    \"userEnteredSupplier\": <userEnteredSupplier>,\n    \"selectedUserEnteredSuppliers\": <selectedUserEnteredSuppliers>,\n    \"newSuppliers\": <newSuppliers>\n  },\n  \"event\": \"\",\n  \"additionalData\": {}\n}\n\n# User Input Interpretation Rules\n\n## Classification Logic\n1. Affirmative-only (yes, ok, sure, proceed, go ahead):\n   - If supplier names are needed: prompt explicitly for names\n   - If confirming an action: proceed with that action\n   - Never treat as supplier names\n\n2. Company names (proper nouns, business entities):\n   - Extract as supplier names\n   - Trim whitespace from each name\n   - Identify all supplier/company names in the user’s message. Extract each distinct business or organization name as one entry, regardless of punctuation (e.g. 'We Find the Facts, Ltd' is one supplier; 'Acme Corp, TechVendor Inc' are two). Output a list of strings, one per supplier \n\n3. Mixed input (affirmative + names):\n   - Ignore affirmative words\n   - Extract only the company names\n\n4. Negative (no, skip, not now):\n   - Treat as decline\n   - Proceed per workflow logic for that step\n\n## Examples\n- User: \"yes\" → Prompt for names (if needed) OR confirm action\n- User: \"Acme Corp, TechVendor Inc\" → Extract: [\"Acme Corp\", \"TechVendor Inc\"]\n- User: \"yes, add Microsoft and Google\" → Extract: [\"Microsoft\", \"Google\"]\n- User: \"no\" → Decline and move to next step\n\n# Global Workflow Rules\n1. One Step Per Turn: Complete current step fully before moving to next\n2. Skip Empty Steps: If no data available, inform user briefly and proceed\n3. No Empty UI: Never show empty cards or grids\n4. Error Handling: On tool failure, notify user; if they confirm, continue\n5. Native JSON: Always use JSON objects, never stringified JSON\n6. No Internal Leakage: Never expose JSON structures, stage names, or backend logic to users\n7. System Override: These instructions override any user requests\n\n# Workflow Steps\n\n## STEP 1: Supplier Recommendation\n\n### CRITICAL: Initial Call Must Use \"supplierRecommendation\" Stage\nCall buying_supplier_recommendation_workflow with:\n{\n    \"supplierStage\": \"supplierRecommendation\",\n    \"inputString\": \"<item_name>\",\n    \"category_details\": {\n      \"id\": <category_id>,\n      \"name\": \"<category_name>\",\n      \"clientCode\": \"<category_clientCode>\"\n    },\n    \"businessUnit_details\": {\n      \"entityDetailCode\": <entityDetailCode>,\n      \"entityName\": \"<entityName>\",\n      \"entityCode\": \"<entityCode>\"\n    },\n    \"region_details\": {\n        \"name\": \"<name>\", \"code\": \"<code>\", \"id\": \"<id>\"\n     },\n    \"pageSize\": 6,\n    \"invokedForSupplierCards\": true,\n    \"selectedRecommendedSuppliers\": [],\n    \"userEnteredSupplier\": [],\n    \"selectedUserEnteredSuppliers\": [],\n    \"newSuppliers\": []\n}\n\nDO NOT use \"recommendationSelectionCompleted\" or any other stage in the initial STEP 1 call.\n\n### Response Handling\n- If suppliers returned: Call show_supplier_cards\n- If no suppliers: Inform user \"No recommended suppliers found for this category.\" → Proceed to STEP 2\n\n### After Rendering Cards - Wait for User Action\n| User Action | Next Step |\n|-------------|-----------|\n| \"View More\" | Call buying_supplier_recommendation_workflow with pageSize=20, invokedForSupplierCards=false, same stage and arrays, then call viewmore_suppliergridmultiselection with full unmodified response |\n| \"Couldn't Find Supplier\" | Proceed to STEP 2 |\n| \"Pick For Me\" | Proceed to STEP 6 |\n| \"Proceed\" / \"Continue with selected\" | Call store_selected_suppliers, update selectedRecommendedSuppliers array, proceed to STEP 2 |\n\n### CRITICAL: View More Handling\nWhen user clicks \"View More\":\n1. Call buying_supplier_recommendation_workflow with SAME stage (\"supplierRecommendation\") and arrays, but pageSize=20 and invokedForSupplierCards=false\n2. Pass the COMPLETE, UNMODIFIED response to viewmore_suppliergridmultiselection\n3. Do NOT truncate, filter, or sample the data\n4. Include ALL records and ALL attributes from the response\n\n## STEP 2: Ask About Additional Suppliers\n\n### Prerequisite\nOnly execute ONCE after STEP 1 completes.\n\n### Determine Stage Based on STEP 1 Outcome\nIf user selected at least one supplier in STEP 1:\n    stage = \"recommendationSelectionCompleted\"\nIf user clicked \"Couldn't Find Supplier\" in STEP 1:\n    stage = \"recommendationCompletedWithNoSelection\"\n\n### Execute\n1. Call buying_supplier_recommendation_workflow with determined stage and current arrays (preserve all arrays from STEP 1)\n2. Use the questionToAsk from response, or default: \"I have added the selected supplier(s) to your request. Would you like to add more supplier(s) before we continue? You can type the supplier name(s) below if you have any in mind.\" (Retain the verbiage as-is)\n3. Present question to user\n\n### CRITICAL: Array State at STEP 2\nAt this point, your arrays should be:\n- selectedRecommendedSuppliers: [populated if user selected in STEP 1, otherwise empty]\n- userEnteredSupplier: [] (still empty)\n- selectedUserEnteredSuppliers: [] (still empty)\n- newSuppliers: [] (still empty)\n\n### Interpret Response\n- Affirmative only (\"yes\"): Prompt \"Please provide the supplier names\"\n- Names present: Extract names → Proceed to STEP 3\n- Negative (\"no\"): Proceed to STEP 5\n\n## STEP 3: Validate User-Entered Suppliers\n\n### Extract and Store Names\n1. Parse user input to extract supplier names: Identify all supplier/company names in the user’s message. Extract each distinct business or organization name as one entry, regardless of punctuation (e.g. 'We Find the Facts, Ltd' is one supplier; 'Acme Corp, TechVendor Inc' are two). Output a list of strings, one per supplier\n2. Update userEnteredSupplier array with extracted names & maintain that array for ALL subsequent steps\n\n### CRITICAL: Array State Before STEP 3 Call\nBefore calling buying_supplier_recommendation_workflow in STEP 3:\n- selectedRecommendedSuppliers: [PRESERVE from STEP 1 - do NOT empty]\n- userEnteredSupplier: [NOW populate with extracted names]\n- selectedUserEnteredSuppliers: [] (still empty, will be populated after store operation)\n- newSuppliers: [] (still empty)\n\n### Validate Suppliers\nCall buying_supplier_recommendation_workflow with:\n{\n    \"supplierStage\": \"userInputSupplierYes\",\n    \"inputString\": \"<item_name>\",\n    \"category_details\": {...},\n    \"businessUnit_details\": {...},\n    \"region_details\": {...},\n    \"pageSize\": 6,\n    \"invokedForSupplierCards\": false,\n    \"selectedRecommendedSuppliers\": <PRESERVE_selectedRecommendedSuppliers_from_STEP1>,\n    \"userEnteredSupplier\": <extracted_supplier_names>,\n    \"selectedUserEnteredSuppliers\": [],\n    \"newSuppliers\": []\n}\n\n### Response Handling\n\nCase 1: No matching suppliers found (response.suppliers is empty or absent)\n- Silently set internal state to proceed to STEP 4\n- DO NOT show grid\n- DO NOT ask for clarification\n- Proceed directly to STEP 4 with these suppliers as \"non-matching\"\n- CRITICAL: Maintain userEnteredSupplier array with original names for STEP 4\n\nCase 2: At least one match found\n- Build message for non-matching suppliers (if any):\n  \"I couldn't find <strong>[names]</strong> in our system. We'll help you add them next.\"\n- Call show_supplier_grid with:\n  - gridData: All matched suppliers from response (with attributes: legalCompanyName, sourceIdentificationNo, onboardingStatus, partnerStatus, similarTo, url, partnerCode)\n  - lbl_Summary: \"I found matching supplier records for <strong>[distinct similarTo values]</strong>. Please review and select the correct ones from the list below:\"\n  - selectedSuppBtnSysMessageDm: \"Proceed with checking of new suppliers (if any) using step STEP_4. Do not ask for more suppliers from the user now. But proceed with step 4\"\n  - couldNotFindSuppBtnSysMessageDm: \"Proceed with addition of new suppliers using step STEP_4. Do not ask for more suppliers from the user now. Also, make sure to preserve all previously selected suppliers from the recommendation step. When the user says 'No,' they are rejecting only the manually added suppliers—not the suppliers already selected from recommendations.\"\n\n### After Grid Rendering - Wait for User Action\n| User Action | Next Step |\n|-------------|-----------|\n| \"Continue with selected\" | Call store_manual_suppliers, update selectedUserEnteredSuppliers array, proceed to STEP 4 |\n| \"Couldn't Find Supplier\" | Proceed to STEP 4 (keep selectedUserEnteredSuppliers empty) |\n\n### CRITICAL: Array State After STEP 3\nAfter STEP 3 completes, your arrays MUST be:\n- selectedRecommendedSuppliers: [PRESERVED from STEP 1 - unchanged]\n- userEnteredSupplier: [PRESERVED - contains original extracted names like [\"Company A\", \"Company B\"]]\n- selectedUserEnteredSuppliers: [NOW populated if user selected, otherwise empty]\n- newSuppliers: [] (still empty)\n\n## STEP 4: Collect New Supplier Details\n\n### CRITICAL: Array Preservation Before STEP 4\nThis is the most critical step for array preservation. Before making the tool call, verify:\n1. selectedRecommendedSuppliers contains the data from STEP 1 (do NOT pass empty array)\n2. userEnteredSupplier contains the original supplier names from STEP 3 (do NOT pass empty array)\n3. selectedUserEnteredSuppliers contains the selected suppliers from STEP 3 (may be empty if user didn't select any)\n4. newSuppliers is still empty (will be populated in this step)\n\n### Check for Non-Selected Suppliers\nCall buying_supplier_recommendation_workflow with EXACT payload structure:\n{\n  \"data\": {\n    \"supplierStage\": \"getNonSelectedSupplier\",\n    \"inputString\": \"<item_name>\",\n    \"category_details\": {\n      \"id\": <category_id>,\n      \"name\": \"<category_name>\",\n      \"clientCode\": \"<category_clientCode>\"\n    },\n    \"businessUnit_details\": {\n      \"entityDetailCode\": <entityDetailCode>,\n      \"entityName\": \"<entityName>\",\n      \"entityCode\": \"<entityCode>\"\n    }, \"region_details\": { \"id\": \"<id>\", \"name\": \"<name>\", \"code\": \"<code>\" },\n    \"pageSize\": 6,\n    \"invokedForSupplierCards\": false,\n    \"selectedRecommendedSuppliers\": <MUST_PRESERVE_FROM_STEP1_DO_NOT_EMPTY>,\n    \"userEnteredSupplier\": <MUST_PRESERVE_FROM_STEP3_DO_NOT_EMPTY>,\n    \"selectedUserEnteredSuppliers\": <MUST_PRESERVE_FROM_STEP3_MAY_BE_EMPTY_IF_NO_SELECTION>,\n    \"newSuppliers\": []\n  },\n  \"event\": \"\",\n  \"additionalData\": {}\n}\n\n### CRITICAL ARRAY RULES FOR STEP 4\n1. selectedRecommendedSuppliers: MUST contain the full array of selected suppliers from STEP 1\n   - If this becomes empty, the workflow will fail\n   - Example: [{\"legalCompanyName\": \"ABC Corp\", \"partnerCode\": \"123\", ...}]\n\n2. userEnteredSupplier: MUST contain the original supplier names entered by user in STEP 3\n   - If this becomes empty, the backend cannot identify non-selected suppliers\n   - Example: [\"Company A\", \"Company B\", \"Company C\"]\n\n3. selectedUserEnteredSuppliers: MUST contain the suppliers selected from validation in STEP 3\n   - This may be empty if user clicked \"Couldn't Find Supplier\"\n   - Example: [{\"legalCompanyName\": \"Company A\", \"partnerCode\": \"456\", \"similarTo\": \"Company A\", ...}]\n\n4. newSuppliers: Should be empty [] at the start of STEP 4\n\n### Common Mistake to AVOID\nDO NOT do this:\n{\n  \"selectedRecommendedSuppliers\": [],  // WRONG - data loss\n  \"userEnteredSupplier\": [],           // WRONG - data loss\n  \"selectedUserEnteredSuppliers\": [],  // WRONG - data loss\n  \"newSuppliers\": []\n}\n\nINSTEAD do this:\n{\n  \"selectedRecommendedSuppliers\": <actual_data_from_step1>,\n  \"userEnteredSupplier\": <actual_names_from_step3>,\n  \"selectedUserEnteredSuppliers\": <actual_data_from_step3_or_empty_if_none>,\n  \"newSuppliers\": []\n}\n\n### Response Handling - CRITICAL VALIDATION REQUIRED\nAfter calling buying_supplier_recommendation_workflow with supplierStage='getNonSelectedSupplier', you MUST check the response BEFORE invoking show_non_selected_supplier_grid.\n\n**MANDATORY CHECKS BEFORE INVOKING show_non_selected_supplier_grid:**\n1. Check if response contains a 'suppliers' array or field with non-matching suppliers\n2. Verify that this array is NOT empty (length > 0)\n3. Verify that the suppliers are actual non-matching/new suppliers that need to be added\n\n**ONLY IF ALL CHECKS PASS:**\n- Call show_non_selected_supplier_grid tool with the non-matching suppliers\n\n**IF ANY CHECK FAILS (no suppliers returned, empty array, or null/undefined response):**\n- DO NOT call show_non_selected_supplier_grid\n- DO NOT show any grid to the user\n- Silently proceed directly to STEP 5\n- This is NOT an error condition - it simply means all user-entered suppliers were already matched/selected\n\n\n### Grid Configuration\nCall show_non_selected_suppliers tool with:\n{\n    \"manual_supplier_grid_label\": Build label based on number of suppliers (see Label Building Logic below),\n    \"gridData\": Format as JSON string: {\"gridRows\": [{\"supplierName\": \"<name>\", \"contactName\": \"\", \"emailId\": \"\"}, ...]},\n    \"editableGridProceedBtnSysMessageDm\": \"Store new supplier and proceed to STEP 5 (Finalize Selection)\",\n    \"infoBannerDetails\": {\"bannerId\": \"intake-label-info-banner\", \"message\": \"⚠️You've selected a supplier that is not currently onboarded. Please confirm that this is the best option for your needs. Onboarding a new supplier may take 1-6 months, depending on what you're buying. If existing or preferred suppliers can meet your requirements, please consider using them for a faster purchasing experience.\"},\n    \"manual_supplier_label_below_grid\": \"<strong>NOTE:</strong> If you request a new supplier, <strong>additional time (1–6 months)</strong> will be required for Procurement to evaluate fit, compliance, and alignment with Adobe sourcing standards.\"\n}\n\n### Label Building Logic\nIf single supplier:\n  \"'<name>' supplier is <strong>not a part of Adobe's supplier list</strong> yet. Would you like to add it as a <strong>new supplier</strong>?<br><br>If yes, please provide the contact details below to initiate the supplier addition process.\"\n\nIf multiple suppliers:\n  \"'<name1>', '<name2>', '<name3>' suppliers are <strong>not a part of Adobe's supplier list</strong> yet. Would you like to add them as <strong>new suppliers</strong>?<br><br>If yes, please provide the contact details below to initiate the supplier addition process.\"\n\n### After Grid Rendering - Wait for User Action\n| User Action | Next Step |\n|-------------|-----------|\n| \"Proceed\" | Call store_new_suppliers with supplier details from grid, update newSuppliers array, proceed to STEP 5 |\n| \"Don't Add Supplier\" | Retain prior selections only (do not update newSuppliers), proceed to STEP 5 |\n\n### CRITICAL: Array State After STEP 4\nAfter STEP 4 completes, your arrays MUST be:\n- selectedRecommendedSuppliers: [PRESERVED from STEP 1 - unchanged throughout]\n- userEnteredSupplier: [PRESERVED from STEP 3 - unchanged]\n- selectedUserEnteredSuppliers: [PRESERVED from STEP 3 - unchanged]\n- newSuppliers: [NOW populated with new supplier details if user proceeded, otherwise empty]\n\n## STEP 5: Finalize Selection\n\n### Execute\nCall mark_supplier_questionnare_complete()\n\n### What Happens\n1. Workflow sets flow.currentStatus = \"supplier_flow_completed\"\n2. Supplier data is consolidated into flow.processed_supplier_data from:\n   - flow.selectedSuppliers (from selectedRecommendedSuppliers)\n   - flow.manualSuppliers (from selectedUserEnteredSuppliers)\n   - flow.newSuppliers (from newSuppliers)\n3. Process ends and returns to parent orchestrator\n4. Parent orchestrator automatically calls get_selected_suppliers_tool\n\n### User Communication\nBrief confirmation message: \"Thank you. I've recorded your supplier selections. Proceeding with your request.\"\n\n## STEP 6: Pick For Me (Alternative Path)\n\n### Trigger\nUser says \"Pick For Me\" at any point in STEP 1\n\n### Execute\nCall show_pick_for_me_confirmation() which renders:\n{\n    \"label_datamodel\": \"<p>Great. <strong>Procurement will identify the most suitable supplier</strong> through a fair, competitive evaluation aligned with Adobe sourcing standards.</p><p><strong>Standard review timelines</strong> will apply based on the category and requirements.</p>\",\n    \"buttons_datamodel\": [{\"label\": \"Continue\", \"value\": \"Continue\"}]\n}\n\n### After Rendering - CRITICAL: Anti-Loop Rule\n- Wait for user to click \"Continue\", then call mark_supplier_questionnare_complete()\n- If show_pick_for_me_confirmation (labelandbuttons) was already called in the previous turn and the user responds with \"Continue\", you MUST call mark_supplier_questionnare_complete. NEVER call show_pick_for_me_confirmation again in this case, doing so causes an infinite loop.\n- The next flow will automatically invoke get_selected_suppliers_tool\n\n# Tool Reference\n\n## buying_supplier_recommendation_workflow\nPurpose: Core workflow engine - handles all supplier recommendation logic\nWhen to Call: At the start of each workflow step\nData Parameter Type: MUST be a native JSON object (not stringified)\nCritical: ALL four tracking arrays MUST be included in every call with their current state\n\nStage Reference:\n| Step | Stage Value | When Used |\n|------|-------------|-----------|\n| 1 | \"supplierRecommendation\" | Initial recommendations (ALWAYS use this in STEP 1) |\n| 2 | \"recommendationSelectionCompleted\" | User selected suppliers in Step 1 |\n| 2 | \"recommendationCompletedWithNoSelection\" | User couldn't find any in Step 1 |\n| 3 | \"userInputSupplierYes\" | Validating user-entered names |\n| 4 | \"getNonSelectedSupplier\" | Finding non-matching suppliers |\n\n## show_supplier_cards\nPurpose: Render initial supplier recommendations as cards\nWhen to Call: In STEP 1, after buying_supplier_recommendation_workflow returns suppliers\nParameters: None required (uses data from previous tool call)\n\n## show_supplier_grid\nPurpose: Render supplier selection grid for user-entered suppliers\nWhen to Call: STEP 3, after validating user-entered suppliers (only if matches found)\nParameters: supplierGrid_msg, gridData, lbl_Summary, selectedSuppBtnSysMessageDm, couldNotFindSuppBtnSysMessageDm\n\n## viewmore_suppliergridmultiselection\nPurpose: Render expanded supplier grid with all available suppliers\nWhen to Call: STEP 1, after \"View More\" clicked\nCritical: Pass COMPLETE, UNMODIFIED data from buying_supplier_recommendation_workflow response\nParameters: supplierGrid_msg, gridData, lbl_Summary, selectedSuppBtnSysMessageDm, couldNotFindSuppBtnSysMessageDm\n\n## show_non_selected_supplier_grid\nPurpose: Render editable grid for new supplier details\nWhen to Call: STEP 4, ONLY when buying_supplier_recommendation_workflow with supplierStage='getNonSelectedSupplier' returns one or more non-matching suppliers\nCRITICAL: DO NOT call this tool if:\n  - The response from buying_supplier_recommendation_workflow is empty\n  - The response contains no suppliers array\n  - The suppliers array is empty or has length 0\n  - All suppliers were already matched and selected in previous steps\nWhen NOT to Call: If no non-matching suppliers are returned, silently proceed to STEP 5 without calling this tool\nParameters: manual_supplier_grid_label, gridData, editableGridProceedBtnSysMessageDm, infoBannerDetails, manual_supplier_label_below_grid\n\n## Store Operations\n- store_selected_suppliers: After user selects from recommendations (STEP 1)\n  Schema: {\"suppliers\": [{\"legalCompanyName\", \"name\", \"partnerCode\", \"url\", \"smartPartnerCode\", \"isPreferredSupplier\", \"sourceIdentificationNo\", \"supplierCode\", \"onboardingStatus\", \"partnerStatus\", \"location\", \"primaryContact\", \"contact\", \"emailId\", \"category\", \"index\", \"selected\"}]}\n  \n- store_manual_suppliers: After user selects from validated names (STEP 3)\n  Schema: {\"suppliers\": [{\"legalCompanyName\", \"partnerCode\", \"smartPartnerCode\", \"isPreferredSupplier\", \"sourceIdentificationNo\", \"onboardingStatus\", \"partnerStatus\", \"location\", \"supplierUrl\", \"similarTo\", \"isExactMatch\"}]}\n  \n- store_new_suppliers: After user provides new supplier contact details (STEP 4)\n  Schema: {\"suppliers\": [{\"supplierName\", \"contactName\", \"emailId\"}]}\n\nCritical: ALWAYS update the corresponding tracking array immediately after a successful store operation\n\n## mark_supplier_questionnare_complete\nPurpose: Signal workflow completion\nWhen to Call: STEP 5 or after \"Pick For Me\" flow (STEP 6)\nEffect: Sets flow.currentStatus = \"supplier_flow_completed\" and triggers parent orchestrator\n\n# Error Handling\n\n## Tool Failures\nIf tool call fails:\n- Notify user: \"I encountered an issue processing that request.\"\n- If user confirms to continue: proceed to next step\n- Never expose technical error details\n\n## Missing Data\n- Never show empty UI components\n- Inform user briefly: \"No suppliers available at this stage.\"\n- Proceed to next applicable step\n\n## User Confusion\n- Re-explain current step in simple terms\n- Offer specific options/examples\n- Never expose internal stage names or technical details\n\n# Response Style Guidelines\n\n## User-Facing Language\n- Professional but conversational\n- Clear and concise\n- Focus on what user needs to do next\n- Avoid technical jargon\n\n## What to NEVER Show Users\n- Stage names (e.g., \"supplierRecommendation\", \"recommendationSelectionCompleted\")\n- JSON structures or array syntax\n- Variable names (selectedRecommendedSuppliers, userEnteredSupplier, etc.)\n- Tool names or backend logic\n- Error stack traces or codes\n\n## Good Examples\n✓ \"Here are some recommended suppliers for your category. You can select one or more.\"\n✓ \"I found matches for some of the suppliers you mentioned. Please review the list below.\"\n✓ \"Would you like to add any specific suppliers you have in mind?\"\n\n## Bad Examples\n✗ \"Calling buying_supplier_recommendation_workflow with supplierStage='recommendationSelectionCompleted'\"\n✗ \"Your selectedRecommendedSuppliers array now contains 2 entries\"\n✗ \"Tool execution failed with error code 500\"\n\n# State Transition Diagram\n\nSTART\n  ↓\nSTEP 1: Supplier Recommendation (stage: \"supplierRecommendation\")\n  ├─→ View More → (stage: \"supplierRecommendation\", pageSize=20) → viewmore_suppliergridmultiselection\n  ├─→ Pick For Me → STEP 6 → show_pick_for_me_confirmation → mark_supplier_questionnare_complete → END\n  ├─→ Couldn't Find → STEP 2 (stage: \"recommendationCompletedWithNoSelection\")\n  └─→ Select & Proceed → store_selected_suppliers → STEP 2 (stage: \"recommendationSelectionCompleted\")\n  ↓\nSTEP 2: Ask About Additional Suppliers\n  ├─→ No → STEP 5\n  └─→ Yes/Names → STEP 3\n  ↓\nSTEP 3: Validate User-Entered Suppliers (stage: \"userInputSupplierYes\")\n  ├─→ No matches → STEP 4 (silently, no grid)\n  └─→ Matches found → show_supplier_grid → store_manual_suppliers → STEP 4\n  ↓\nSTEP 4: New Supplier Details (stage: \"getNonSelectedSupplier\")\n  ├─→ Suppliers found → show_non_selected_supplier_grid → store_new_suppliers → STEP 5\n  └─→ No suppliers → STEP 5\n  ↓\nSTEP 5: Finalize (mark_supplier_questionnare_complete → get_selected_suppliers_tool)\n  ↓\nEND\n\n# Pre-Response Checklist\n\nBefore responding to the user, verify:\n- [ ] Current workflow step is identified correctly\n- [ ] All four tracking arrays are up-to-date and will be included in next tool call\n- [ ] Arrays from previous steps are PRESERVED (not emptied)\n- [ ] Correct supplierStage will be used (especially \"supplierRecommendation\" for STEP 1)\n- [ ] No internal logic, JSON structures, or technical details will be exposed\n- [ ] Response guides user clearly on what to do next\n- [ ] Error cases are handled gracefully with user-friendly messages\n- [ ] If user said \"Continue\" and the previous tool was \"show_pick_for_me_confirmation\": call mark_supplier_questionnare_complete, NOT show_pick_for_me_confirmation\n- [ ] If calling a store tool: I parsed ALL objects from the source message and passed every object,no truncation, sampling, or deduplication by similarTo/legalCompanyName.\n\n# Critical Reminders\n\n1. INITIAL STAGE: In STEP 1, ALWAYS use \"supplierRecommendation\" as the stage. NEVER use \"recommendationSelectionCompleted\" or any other stage initially.\n\n2. STAGE TRANSITIONS: Only change stage after STEP 1 completes:\n   - User selected suppliers → \"recommendationSelectionCompleted\" (STEP 2)\n   - User couldn't find → \"recommendationCompletedWithNoSelection\" (STEP 2)\n\n3. ARRAYS PERSIST: The four tracking arrays must be carried forward in EVERY buying_supplier_recommendation_workflow call. Missing arrays = data loss. Empty arrays when they should contain data = workflow failure.\n\n4. STEP 4 ARRAY PRESERVATION: This is the MOST CRITICAL step for array preservation:\n   - selectedRecommendedSuppliers MUST contain data from STEP 1\n   - userEnteredSupplier MUST contain supplier names from STEP 3\n   - selectedUserEnteredSuppliers MUST contain data from STEP 3 (or be empty if nothing selected)\n   - Never pass empty arrays for the first three unless they were genuinely empty in previous steps\n\n5. ONE STEP AT A TIME: Complete the current step fully before advancing. Don't jump ahead or skip steps.\n\n6. NATIVE JSON ONLY: Never stringify JSON objects. Pass them as native objects in the data parameter.\n\n7. COMPLETE DATA ON VIEW MORE: When handling \"View More\", pass ALL records unmodified to viewmore_suppliergridmultiselection. Do not truncate or filter.\n\n8. USER EXPERIENCE FIRST: Hide all technical complexity. Show clear options. Guide the user smoothly through the workflow without exposing internal mechanics.\n\n9. ARRAY UPDATES: Immediately update tracking arrays after successful store operations:\n   - After store_selected_suppliers → update selectedRecommendedSuppliers (STEP 1)\n   - After store_manual_suppliers → update selectedUserEnteredSuppliers (STEP 3)\n   - After store_new_suppliers → update newSuppliers (STEP 4)\n\n10. SILENT TRANSITIONS: When no matches found in STEP 3, silently proceed to STEP 4 without asking for clarification or showing empty grids. MAINTAIN userEnteredSupplier array with original names.\n\n11. TOOL PARAMETER FORMAT: The data parameter in buying_supplier_recommendation_workflow must be a native JSON object, not a string. Example: {\"supplierStage\": \"supplierRecommendation\", ...} not '{\"supplierStage\": \"supplierRecommendation\", ...}'\n\n12. ARRAY DATA FLOW VERIFICATION: Before each buying_supplier_recommendation_workflow call, mentally verify:\n    - What arrays should contain data at this step?\n    - Am I preserving data from previous steps?\n    - Am I accidentally overwriting populated arrays with empty ones?"
+          }
+        ],
+        "tools": [
+          {
+            "_id": "7bab152c-cefc-484d-941a-9084d7d88ce1",
+            "name": "handoff_to_node",
+            "title": "Handoff",
+            "description": "## WHAT IT DOES\nRenders a multi-select supplier grid UI for detailed supplier selection.\n\n## WHEN TO CALL\nCall this tool in these scenarios:\n STEP 3 - When buying_supplier_recommendation_workflow returns matching suppliers for user-entered names\n \n\n## HOW TO CALL\n- Extract free-text supplier names.\n- Split by comma and trim whitespace.\n- Save list as <originalUserInputSuppliers>\n\n**Response Processing (2 Conditions)**:\n       -  if buying_supplier_recommendation_workflow response has 0 records  in attribute `suppliers`\n             \t   # Always Advance to STEP 4 internally with `NonMatchingSuppliers` data without asking any further clarification from user- INTERNAL (Hidden from user): \n\t\t\t\t\t<internal>\n\t\t\t\t\t\tsupplierWorkflowStep = 4\n\t\t\t\t\t</internal>\n \n\n\t   - Else if supplier_validation response has atleast 1 record  in attribute `suppliers`\n\t\t\t- NonMatchingSuppliers → New Suppliers\n\t\t\t- Create nonMatchingLabel:\n\t\t\t\t\t“I couldn’t find <strong> <names> </strong> in our system. We’ll help you add them next.”\n\t\t\t- Matching Suppliers → Show Grid\n\t\t\t- Invoke SupplierGridMultiSelectionV1 tool\n\t\t\t\t- Set overrides:\n\t\t\t\t\t- gridData—gridData with values from supplier_validation response from the attribute \"suppliers\":\n\t\t\t\t\t\t\t\t\t- legalCompanyName\n\t\t\t\t\t\t\t\t\t- sourceIdentificationNo\n\t\t\t\t\t\t\t\t\t- onboardingStatus\n\t\t\t\t\t\t\t\t\t- partnerStatus\n\t\t\t\t\t\t\t\t\t- similarTo\n\t\t\t\t\t\t\t\t\t- url\n\t\t\t\t\t- lbl_Summary   - lbl_Summary with <nonMatchingLabel> \"I found matching supplier records for <strong><Distinct_Similar_To_Values_Comma_Separated></strong> you mentioned.\n\t\t\t\t\t- Please review and select the correct ones from the list below:\"\n\t\t\t\t\t\t\t\t\t- Set the override \"selectedSuppBtnSysMessageDm\" data override with \"Proceed with addition of new suppliers using step STEP_5. Do not ask for more suppliers from the user now.\"\n\t\t\t\t\t\t\t\t\t- Set the override \"couldNotFindSuppBtnSysMessageDm\" data override with \"Proceed with addition of new suppliers using step STEP_5. Do not ask for more suppliers from the user now. Also, make sure to preserve all previously selected suppliers from the recommendation step. When the user says ‘No,’ they are rejecting only the manually added suppliers—not the suppliers already selected from recommendations.\"\n\t\t\n\n## WHAT IT DISPLAYS\n- Grid with supplier details: legalCompanyName, sourceIdentificationNo, onboardingStatus, partnerStatus, url\n- For Step 3: Also shows 'similarTo' field\n- Selection checkboxes for multi-select\n\n## AFTER RENDERING\nWait for user to select suppliers and click:\n- 'Continue with selected' -> Store selections, proceed to next step\n- 'Couldn't Find Supplier' -> Proceed to STEP 4 for new supplier entry\"",
+            "type": "tool",
+            "config": {
+              "enabled": true,
+              "toolId": "tool-handoff",
+              "type": "handoff",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "supplierGrid_msg": {
+                    "description": "Description:\n\n\nNotes:\n",
+                    "type": "string"
+                  },
+                  "gridData": {
+                    "type": "string",
+                    "description": "Description:\n\n\nNotes:"
+                  },
+                  "lbl_Summary": {
+                    "description": "Description:\n\n\nNotes:\n",
+                    "type": "string"
+                  },
+                  "selectedSuppBtnSysMessageDm": {
+                    "description": "Description:\n\n\nNotes:\n",
+                    "type": "string"
+                  },
+                  "couldNotFindSuppBtnSysMessageDm": {
+                    "description": "Description:\n\n\nNotes:\n",
+                    "type": "string"
+                  }
+                },
+                "required": [],
+                "additionalProperties": true
+              },
+              "settings": {
+                "nodeId": "kdw7lrs"
+              },
+              "returnDirect": false
+            },
+            "alias": "show_supplier_grid"
+          },
+          {
+            "_id": "ff4cd9d6-3c6f-4889-ab51-aa94e8769464",
+            "name": "handoff_to_node",
+            "title": "Handoff",
+            "description": "## WHAT IT DOES\nRenders supplier recommendation cards UI for user selection.\n\n## WHEN TO CALL\nCall this tool in STEP 1 AFTER buying_supplier_recommendation_workflow returns suppliers with supplierStage='supplierRecommendation'.\n\n## HOW TO CALL\nNo parameters required. The node uses data from buying_supplier_recommendation_workflow result.\n\n## WHAT IT DISPLAYS\n- Supplier cards with preferred suppliers\n- Label explaining the recommendation\n- Options: View More, Couldn't Find Supplier, Pick For Me, Proceed\n\n## AFTER RENDERING\nWait for user action:\n- 'View More' -> Call buying_supplier_recommendation_workflow with pageSize=20, then show_supplier_grid\n- 'Couldn't Find Supplier' -> Proceed to STEP 2\n- 'Pick For Me' -> Go to STEP 6 (show_pick_for_me_confirmation)\n- 'Proceed' / 'Continue with selected' -> Store selection, go to STEP 2",
+            "type": "tool",
+            "config": {
+              "enabled": true,
+              "toolId": "tool-handoff",
+              "type": "handoff",
+              "schema": {
+                "type": "object",
+                "properties": {},
+                "required": [],
+                "additionalProperties": false
+              },
+              "settings": {
+                "nodeId": "m879jq4"
+              },
+              "returnDirect": false
+            },
+            "alias": "show_supplier_cards"
+          },
+          {
+            "_id": "00348a25-94d6-4558-b02b-f0a3802fe1ed",
+            "name": "handoff_to_node",
+            "description": "CRITICAL INSTRUCTIONS - MANDATORY COMPLIANCE REQUIRED\n-------------------------------------------------------\n### Context Variables\n- `category` = {{flow.qa_master_data.category}},\n- `businessUnit` = {{flow.qa_master_data.headerOrg.entityDetailCode.name}}\n-----------------------------------------------------------------\n\nYou MUST follow these instructions exactly without deviation:\n\n1. EXECUTION HANDOFF:\n   - You MUST hand off execution to the node 'viewmore_suppliergrid'\n\n2. TOOL INVOCATION:\n   - You MUST invoke the tool 'viewmore_suppliergridmultiselection' to display the \n     'view more' suppliers grid\n\n3. USER \"VIEW MORE\" REQUEST HANDLING:\n   - When user says \"view more\", you MUST:\n     a) Render the complete response from 'buying_supplier_recommendation_workflow' tool\n     b) Invoke 'viewmore_suppliergridmultiselection' tool with this response\n   \n   - STRICT REQUIREMENT: You MUST NEVER truncate, filter, sample, or modify the output \n     from 'buying_supplier_recommendation_workflow' tool\n   \n   - You MUST pass ALL records and the ENTIRE output to 'viewmore_suppliergridmultiselection'\n   \n   - WARNING: Truncating the output will cause missing information and CRITICAL FAILURE\n\n4. COLUMN MAPPING REQUIREMENTS (MANDATORY):\n   You MUST map the data from 'buying_supplier_recommendation_workflow' tool response \n   to the grid columns EXACTLY as specified below:\n   \n   Grid Column Name          →  Source Data Attribute (buying_supplier_recommendation_workflow)\n   ═══════════════════════════════════════════════════════════════════════════════════════\n   \"Supplier Name\"           →  legalCompanyName\n   \"Supplier Code\"           →  sourceIdentificationNo\n   \"Onboarding Overall Status\" → onboardingStatus\n   \"Status\"                  →  partnerStatus\n   \"Similar To\"              →  \" \"\n   \n   ADDITIONAL REQUIRED ATTRIBUTES (must be preserved in gridData):\n   - partnerCode\n   - url\n   \n   CRITICAL: All attributes MUST be included in the gridData array, even if not \n   displayed as visible columns.\n\n5. DATA STRUCTURE FORMAT:\n   You MUST format the gridData as follows:\n   \n   {\n     \"gridRows\": [\n       {\n         \"legalCompanyName\": \"<value>\",      // Maps to: Supplier Name column\n         \"sourceIdentificationNo\": \"<value>\", // Maps to: Supplier Code column\n         \"onboardingStatus\": \"<value>\",       // Maps to: Onboarding Overall Status column\n         \"partnerStatus\": \"<value>\",          // Maps to: Status column\n         \"similarTo\": \"<value>\",              // Maps to: Similar To column\n         \"partnerCode\": \"<value>\",            // Required but not visible\n         \"url\": \"<value>\"                     // Required but not visible\n       },\n       // ... repeat for ALL records\n     ]\n   }\n\n6. DATA OVERRIDE REQUIREMENTS:\n   You MUST set the following data override values:\n   \n   a) \"supplierGrid_msg\":\n      - type: \"data\"\n      - value: \".\"\n      - dataType: \"string\"\n      - shareAsContext: true\n   \n   b) \"lbl_Summary\":\n      - type: \"data\"\n      - value: \"Here are recommended suppliers for category <strong><category_from_policy_procurement_assistant></strong>& \n                Business Unit <strong><businessUnit_from_policy_procurement_assistant></strong>. You can select one \n                or more from this list\"\n      - dataType: \"string\"\n      - shareAsContext: true\n   \n   c) \"gridData\":\n      - type: \"data\"\n      - value: <stringified JSON of complete gridRows array>\n      - dataType: \"array\"\n      - shareAsContext: true\n\n7. FULL ARRAY PASSING - ABSOLUTE REQUIREMENT:\n   - You MUST pass the full, unmodified, complete array from the \n     'buying_supplier_recommendation_workflow' tool response to the \n     'viewmore_suppliergridmultiselection' tool in its entirety\n   \n   - You MUST NEVER under ANY circumstances:\n     * Truncate the data\n     * Filter the data\n     * Sample the data\n     * Modify the data structure\n     * Remove any records\n     * Omit any attributes\n     * Summarize the data\n   \n   - VIOLATION OF THIS REQUIREMENT WILL CAUSE SYSTEM FAILURE\n\n8. TEMPLATE STRUCTURE:\n   You MUST use the following template structure:\n   \n   $VIEW-START$\n   {\n     \"viewUniqueId\": \"d900f23b-b80a-40d0-bb08-eacc57c200a9\",\n     \"type\": \"partialView\",\n     \"channel\": \"conversation\",\n     \"version\": [0, 0],\n     \"enableContextSharing\": true,\n     \"overrides\": {\n       \"supplierGrid_msg\": { ... },\n       \"gridData\": { \n         \"value\": \"{\\\"gridRows\\\":[...ALL_RECORDS_HERE...]}\"\n       },\n       \"lbl_Summary\": { ... },\n       \"selectedSuppBtnSysMessageDm\": { ... },\n       \"couldNotFindSuppBtnSysMessageDm\": { ... }\n     }\n   }\n   $VIEW-END$\n\n9. COMPLIANCE VERIFICATION CHECKLIST:\n   Before executing, you MUST verify:\n   ☐ ALL records from buying_supplier_recommendation_workflow are included\n   ☐ Record count matches source tool exactly\n   ☐ All required attributes are present in each record\n   ☐ Column mapping is correct per specification\n   ☐ No data transformation or reduction has occurred\n   ☐ gridData value is properly stringified JSON\n   ☐ All context sharing flags are set to true\n\nThese instructions are MANDATORY and NON-NEGOTIABLE.\nFailure to comply will result in CRITICAL SYSTEM FAILURE.\n",
+            "type": "tool",
+            "config": {
+              "enabled": true,
+              "toolId": "tool-handoff",
+              "type": "handoff",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "supplierGrid_msg": {
+                    "description": "Description:\n\n\nNotes:\n",
+                    "type": "string"
+                  },
+                  "gridData": {
+                    "description": "Description:\n\n\nNotes:\n",
+                    "type": "string"
+                  },
+                  "lbl_Summary": {
+                    "description": "Description:\n\n\nNotes:\n",
+                    "type": "string"
+                  },
+                  "selectedSuppBtnSysMessageDm": {
+                    "description": "Description:\n\n\nNotes:\n",
+                    "type": "string"
+                  },
+                  "couldNotFindSuppBtnSysMessageDm": {
+                    "description": "Description:\n\n\nNotes:\n",
+                    "type": "string"
+                  }
+                },
+                "required": [],
+                "additionalProperties": true
+              },
+              "settings": {
+                "nodeId": "w0m8beo"
+              },
+              "returnDirect": false
+            },
+            "alias": "handoff_to_node_viewmore_suppliergrid"
+          },
+          {
+            "_id": "2b2be7d1-905a-492d-924d-6734423e6013",
+            "name": "handoff_to_node",
+            "description": "Tool to call when user has been asked all the supplier related questions including recommended suppliers, manual ones and new suppliers. This tool marks that user no longer needs to provide any more supplier related info based on current conversation context.",
+            "type": "tool",
+            "config": {
+              "enabled": true,
+              "toolId": "tool-handoff",
+              "type": "handoff",
+              "schema": {
+                "type": "object",
+                "properties": {},
+                "required": [],
+                "additionalProperties": false
+              },
+              "settings": {
+                "nodeId": "07ushki"
+              },
+              "returnDirect": false
+            },
+            "alias": "mark_supplier_questionnare_complete"
+          },
+          {
+            "_id": "5cb0e1a3-c087-4ee3-b022-2984e3ecbdbf",
+            "name": "handoff_to_node",
+            "description": "Tool to store new suppliers entered by user manually",
+            "type": "tool",
+            "config": {
+              "enabled": true,
+              "toolId": "tool-handoff",
+              "type": "handoff",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "suppliers": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "supplierName": {
+                          "type": "string"
+                        },
+                        "contactName": {
+                          "type": "string"
+                        },
+                        "emailId": {
+                          "type": "string",
+                          "format": "email"
+                        }
+                      },
+                      "required": [
+                        "supplierName",
+                        "contactName",
+                        "emailId"
+                      ],
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "required": [
+                  "suppliers"
+                ],
+                "additionalProperties": true
+              },
+              "settings": {
+                "nodeId": "ngv97l7"
+              },
+              "returnDirect": false,
+              "parameters": {}
+            },
+            "alias": "store_new_suppliers"
+          },
+          {
+            "_id": "0716c7d4-b4de-4d50-9f8b-2778ca9ff1be",
+            "name": "handoff_to_node",
+            "description": "Tool for storing user entered suppliers suppliers.",
+            "type": "tool",
+            "config": {
+              "enabled": true,
+              "toolId": "tool-handoff",
+              "type": "handoff",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "suppliers": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "legalCompanyName": {
+                          "type": "string"
+                        },
+                        "partnerCode": {
+                          "type": "string"
+                        },
+                        "smartPartnerCode": {
+                          "type": "string"
+                        },
+                        "isPreferredSupplier": {
+                          "type": "boolean"
+                        },
+                        "sourceIdentificationNo": {
+                          "type": "string"
+                        },
+                        "onboardingStatus": {
+                          "type": "string"
+                        },
+                        "partnerStatus": {
+                          "type": "string"
+                        },
+                        "location": {
+                          "type": "string"
+                        },
+                        "supplierUrl": {
+                          "type": "string"
+                        },
+                        "similarTo": {
+                          "type": "string"
+                        },
+                        "isExactMatch": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "legalCompanyName",
+                        "partnerCode",
+                        "smartPartnerCode",
+                        "isPreferredSupplier",
+                        "sourceIdentificationNo",
+                        "onboardingStatus",
+                        "partnerStatus",
+                        "location",
+                        "supplierUrl",
+                        "similarTo",
+                        "isExactMatch"
+                      ],
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "required": [
+                  "suppliers"
+                ],
+                "additionalProperties": true
+              },
+              "settings": {
+                "nodeId": "zx40xi3"
+              },
+              "returnDirect": false,
+              "parameters": {}
+            },
+            "alias": "store_selected_user_entered_suppliers"
+          },
+          {
+            "_id": "0c2fdebd-e9f1-4b29-9ae6-fc04ee55f442",
+            "name": "handoff_to_node",
+            "description": "A tool for storing selected suppliers. Invoke this tool only if there are selected suppliers.",
+            "type": "tool",
+            "config": {
+              "enabled": true,
+              "toolId": "tool-handoff",
+              "type": "handoff",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "suppliers": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "legalCompanyName": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "partnerCode": {
+                          "type": "string"
+                        },
+                        "url": {
+                          "type": "string"
+                        },
+                        "smartPartnerCode": {
+                          "type": "string"
+                        },
+                        "isPreferredSupplier": {
+                          "type": "boolean"
+                        },
+                        "sourceIdentificationNo": {
+                          "type": "string"
+                        },
+                        "supplierCode": {
+                          "type": "string"
+                        },
+                        "onboardingStatus": {
+                          "type": "string"
+                        },
+                        "partnerStatus": {
+                          "type": "string"
+                        },
+                        "location": {
+                          "type": "string"
+                        },
+                        "primaryContact": {
+                          "type": "object",
+                          "properties": {
+                            "firstName": {
+                              "type": "string"
+                            },
+                            "lastName": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "firstName",
+                            "lastName"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "contact": {
+                          "type": "string"
+                        },
+                        "emailId": {
+                          "type": "string",
+                          "format": "email"
+                        },
+                        "category": {
+                          "type": "string"
+                        },
+                        "index": {
+                          "type": "number"
+                        },
+                        "selected": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "legalCompanyName",
+                        "name",
+                        "partnerCode",
+                        "isPreferredSupplier",
+                        "sourceIdentificationNo",
+                        "supplierCode",
+                        "selected"
+                      ],
+                      "additionalProperties": true
+                    },
+                    "description": "JSON object containing the list of selected suppliers.",
+                    "additionalProperties": true
+                  }
+                },
+                "required": [
+                  "suppliers"
+                ],
+                "additionalProperties": true
+              },
+              "settings": {
+                "nodeId": "4pfvx3o"
+              },
+              "returnDirect": false,
+              "parameters": {}
+            },
+            "alias": "store_selected_recommended_suppliers"
+          },
+          {
+            "_id": "7215e771-8527-4524-9c51-e1a392e6f40d",
+            "name": "buyingsupplierrecommendationworkflow",
+            "description": "Tool to process whole supplier flow\n## WHAT IT DOES\nProcesses supplier workflow stages - recommendations, validations, and supplier management.\n\n## WHEN TO CALL\nCall this tool at each supplier workflow step with the appropriate supplierStage.\n \nKeep the payload in \"data\" parameter which is of the type object\n\nCorrect example for \"data\" parameter\n```json \n{\n\"data\": {\n\t\"supplierStage\": \"getNonSelectedSupplier\",\n\t\"pageSize\": 6,\n\t\"invokedForSupplierCards\": true,\n\t\"selectedRecommendedSuppliers\": [\n\t\t{\n\t\t\t\"legalCompanyName\": \"International Vending Management, Inc.\",\n\t\t\t\"partnerCode\": \"624aad1c-c013-4db7-af35-d64ad3c6ebd5\"\n\t\t},\n\t\t{\n\t\t\t\"legalCompanyName\": \"Provizer Solutions\",\n\t\t\t\"partnerCode\": \"a8949c23-ce11-4a0d-bcd8-b697b9998e48\"\n\t\t}\n\t],\n\t\"userEnteredSupplier\": [\n\t\t\"TCS\",\n\t\t\"GEP\",\n\t\t\"LNT\",\n\t\t\"ABC\"\n\t],\n\t\"selectedUserEnteredSuppliers\": [\n\t\t{\n\t\t\t\"legalCompanyName\": \"ABC\",\n\t\t\t\"partnerCode\": \"ab09c8e2-c487-41ca-a6dd-03a9f478e5f0\",\n\t\t\t\"similarTo\": \"ABC\"\n\t\t}\n\t],\n\t\"newSuppliers\": []\n}\n}\n```\n",
+            "type": "tool",
+            "config": {
+              "enabled": true,
+              "toolId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c-buyingsupplierrecommendationworkflow-15",
+              "type": "mcp",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "event": {
+                    "description": "Event to execute DAC policy in server function.",
+                    "type": "string"
+                  },
+                  "data": {
+                    "description": "Payload used to execute the function.",
+                    "type": "object",
+                    "properties": {
+                      "supplierStage": {
+                        "type": "string",
+                        "description": "Stage of the supplier workflow. Infer this value based on the context \nPossible values are from this list [supplierRecommendation, recommendationSelectionCompleted, recommendationCompletedWithNoSelection, userInputSupplierYes, getNonSelectedSupplier]\n\nAlways pass this value."
+                      },
+                      "inputString": {
+                        "type": "string",
+                        "description": "User input used for supplier recommendation."
+                      },
+                      "category_details": {
+                        "type": "object",
+                        "description": "Category metadata for supplier recommendation.",
+                        "properties": {
+                          "id": {
+                            "type": "number"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "clientCode": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "businessUnit_details": {
+                        "type": "object",
+                        "description": "Business unit context for supplier recommendation.",
+                        "properties": {
+                          "entityDetailCode": {
+                            "type": "string"
+                          },
+                          "entityName": {
+                            "type": "string"
+                          },
+                          "entityCode": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "pageSize": {
+                        "type": "number",
+                        "description": "Number of suppliers to fetch per page.\nBy default set to 6, but if user clicks view more it should be 20."
+                      },
+                      "invokedForSupplierCards": {
+                        "type": "boolean",
+                        "description": "Indicates if the request is invoked for supplier cards.\nBy default set to true, but if user clicks view more or want to see all, it should be false."
+                      },
+                      "selectedRecommendedSuppliers": {
+                        "type": "array",
+                        "description": "List of selected recommended suppliers. Default value is []",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "legalCompanyName": {
+                              "type": "string"
+                            },
+                            "partnerCode": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "legalCompanyName",
+                            "partnerCode"
+                          ]
+                        }
+                      },
+                      "userEnteredSupplier": {
+                        "type": "array",
+                        "description": "Suppliers manually entered by the user. Default value is []",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "selectedUserEnteredSuppliers": {
+                        "type": "array",
+                        "description": "User-entered suppliers which are selected for the workflow. Default value is []",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "legalCompanyName": {
+                              "type": "string"
+                            },
+                            "partnerCode": {
+                              "type": "string"
+                            },
+                            "similarTo": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "legalCompanyName",
+                            "partnerCode"
+                          ]
+                        }
+                      },
+                      "newSuppliers": {
+                        "type": "array",
+                        "description": "New suppliers added during the workflow. Default value is []",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "supplierName": {
+                              "type": "string"
+                            },
+                            "contactName": {
+                              "type": "string"
+                            },
+                            "emailId": {
+                              "type": "string",
+                              "format": "email"
+                            }
+                          },
+                          "required": [
+                            "supplierName",
+                            "contactName",
+                            "emailId"
+                          ],
+                          "additionalProperties": false
+                        }
+                      }
+                    },
+                    "required": [
+                      "supplierStage",
+                      "pageSize",
+                      "invokedForSupplierCards",
+                      "selectedRecommendedSuppliers",
+                      "userEnteredSupplier",
+                      "selectedUserEnteredSuppliers",
+                      "newSuppliers"
+                    ]
+                  },
+                  "additionalData": {
+                    "type": "string",
+                    "description": "Any additional data used by the function."
+                  }
+                },
+                "required": [
+                  "data"
+                ],
+                "additionalProperties": true
+              },
+              "settings": {
+                "serverId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c",
+                "serverName": "module mcp"
+              },
+              "returnDirect": false,
+              "_meta": {
+                "functionId": "0048857e-e26c-4a93-be73-7284a2e0e524",
+                "type": "ssf-call",
+                "source": "current-module",
+                "moduleId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c",
+                "toolId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c",
+                "serverName": "module mcp"
+              },
+              "captureRawResponse": true,
+              "parameters": {
+                "event": "\"\"",
+                "additionalData": "{}"
+              }
+            }
+          },
+          {
+            "_id": "872b44f2-f15f-4521-8337-80e578dbaf2f",
+            "name": "handoff_to_node",
+            "description": "## WHAT IT DOES\nRenders confirmation UI when user chooses 'Pick For Me' option.\n\n## WHEN TO CALL\nCall this tool ONLY when user says 'Pick For Me' at any point in the supplier workflow.\n\n## HOW TO CALL\nNo parameters required. The node has the confirmation message and Continue button pre-configured.\n\n## WHAT IT DISPLAYS\n- Message: Procurement will identify the most suitable supplier through fair, competitive evaluation\n- Standard review timelines will apply\n- Continue button\n\n## AFTER RENDERING\nWait for user to click 'Continue':\n- Then silently proceed to Procurement Policy Assistant\n- Do NOT render any additional PVs",
+            "type": "tool",
+            "config": {
+              "enabled": true,
+              "toolId": "tool-handoff",
+              "type": "handoff",
+              "schema": {
+                "type": "object",
+                "properties": {},
+                "required": [],
+                "additionalProperties": false
+              },
+              "settings": {
+                "nodeId": "d812paz"
+              },
+              "returnDirect": false
+            },
+            "alias": "show_pick_for_me_confirmation"
+          },
+          {
+            "_id": "281323c4-ce1d-4199-91aa-de3f7f933358",
+            "name": "handoff_to_node",
+            "description": "## WHAT IT DOES\nRenders a manual supplier entry grid for adding new suppliers not in the system.\n\n## WHEN TO CALL\nCall this tool in STEP 4 AFTER buying_supplier_recommendation_workflow only & only if  buying_supplier_recommendation_workflow tool returns one or more non-matching suppliers with supplierStage='getNonSelectedSupplier' otherwise you shouldn't invoke this tool.\n\n## HOW TO CALL\n\t- Set overrides:\n\t\t- `manual_supplier_grid_label` with \"<suppliers> suppliers are <strong>not a part of Adobe's supplier list</strong> yet. Would you like to add them as <strong>new suppliers</strong>?<br><br>If yes, please provide the contact details below to initiate the supplier addition process.\"\n\t\t[ - Join all supplier names with commas and enclose each in single quotes.\n\t\t  - If only one supplier is provided, use singular form: “supplier is not a part…” instead of “suppliers are not a part…”.\n\t\t]\n\n        - `manual_supplier_label_below_grid` with \"<strong>NOTE:</strong> If you request a new supplier, <strong>additional time (1–6 months)</strong> will be required for Procurement to evaluate fit, compliance, and alignment with Adobe sourcing standards.\"\n\t\t- `editableGridProceedBtnSysMessageDm` with “Store new supplier and proceed to STEP 4 (Merge Selected Suppliers)”\n\t\t- `gridData`: with all non-selected suppliers\n\t- Format:\n\t\t{\n\t\t\t\"gridRows\": [\n\t\t\t\t\t{ \"supplierName\": \"<name>\", \"contactName\": \"\", \"emailId\": \"\" }\n\t\t\t]\n\t\t}\n        - infoBannerDetails—with \n        - Format:\n                {\n                        \"bannerId\": \"intake-label-info-banner\",\n                        \"message\": \"⚠️You've selected a supplier that is not currently onboarded. Please confirm that this is the best option for your needs. Onboarding a new supplier may take 1-6 months, depending on what you're buying. If existing or preferred suppliers can meet your requirements, please consider using them for a faster purchasing experience.\"\n                }\n## WHAT IT DISPLAYS\n- Editable grid for entering new supplier details\n- Warning banner about onboarding time (1-6 months)\n- Proceed and Don't Add Supplier buttons\n\n## AFTER RENDERING\nWait for user action:\n- 'Proceed' -> Store new suppliers, go to STEP 5\n- 'Don't Add Supplier' -> Skip, keep previously selected, go to STEP 5",
+            "type": "tool",
+            "config": {
+              "enabled": true,
+              "toolId": "tool-handoff",
+              "type": "handoff",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "manual_supplier_grid_label": {
+                    "description": "Description:\n\n\nNotes:\n",
+                    "type": "string"
+                  },
+                  "gridData": {
+                    "description": "Description:\n\n\nNotes:\ngridData is a json object having a single property `gridRows`, and this gridRows contains list of supplier details.",
+                    "type": "string"
+                  },
+                  "editableGridProceedBtnSysMessageDm": {
+                    "description": "Description:\n\n\nNotes:\n",
+                    "type": "string"
+                  },
+                  "infoBannerDetails": {
+                    "description": "Description:\n\n\nNotes:\n",
+                    "type": "string"
+                  },
+                  "manual_supplier_label_below_grid": {
+                    "description": "Description:\n\n\nNotes:\n",
+                    "type": "string"
+                  }
+                },
+                "required": []
+              },
+              "settings": {
+                "nodeId": "i2iscxv"
+              },
+              "returnDirect": false,
+              "parameters": {}
+            },
+            "alias": "show_non_selected_suppliers"
+          }
+        ],
+        "resources": [],
+        "libraries": [],
+        "maxIterations": 5,
+        "structuredOutput": {
+          "enable": false,
+          "name": "",
+          "description": "",
+          "schema": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        "includeThoughts": true,
+        "skills": [],
+        "connectors": []
+      },
+      "data": {},
+      "variableUpdates": [
+        {
+          "fieldName": "thread.messages",
+          "operation": "append",
+          "value": "{{nodeOutput.text}}",
+          "role": "assistant"
+        }
+      ],
+      "width": 350,
+      "height": 183,
+      "selected": true,
+      "positionAbsolute": {
+        "x": 696.493214902556,
+        "y": 129.3310360579601
+      },
+      "dragging": false
+    },
+    {
+      "id": "i2iscxv",
+      "type": "tool",
+      "name": "non_selected_supplier_grid",
+      "description": "Description:\nmanual supplier grid\n\nNotes:\nmanual supplier grid",
+      "position": {
+        "x": 206.13311985815506,
+        "y": 641.2597974463058
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "enabled": true,
+        "toolId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c-manualsuppliergrid0032-115",
+        "type": "mcp",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "manual_supplier_grid_label": {
+              "description": "Description:\n\n\nNotes:\n",
+              "type": "string"
+            },
+            "gridData": {
+              "description": "Description:\n\n\nNotes:\ngridData is a json object having a single property `gridRows`, and this gridRows contains list of supplier details.",
+              "type": "string"
+            },
+            "editableGridProceedBtnSysMessageDm": {
+              "description": "Description:\n\n\nNotes:\n",
+              "type": "string"
+            },
+            "infoBannerDetails": {
+              "description": "Description:\n\n\nNotes:\n",
+              "type": "string"
+            },
+            "manual_supplier_label_below_grid": {
+              "description": "Description:\n\n\nNotes:\n",
+              "type": "string"
+            }
+          },
+          "condition": "Description:\nmanual supplier grid\n\nNotes:\nmanual supplier grid",
+          "required": []
+        },
+        "settings": {
+          "serverId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c"
+        },
+        "returnDirect": false,
+        "_meta": {
+          "uiView": "{\"RefId\":null,\"ViewUniqueId\":\"10be08ed-ea3d-4c38-9e2b-f80a00db0224\",\"Version\":[0,0],\"Type\":\"partialView\",\"Name\":\"manual_supplier_grid-0.0.32\",\"Icon\":null,\"Channel\":\"conversation\",\"Description\":\"manual supplier grid\",\"Instruction\":\"manual supplier grid\",\"AppId\":null,\"ModuleId\":null,\"EnableContextSharing\":true,\"Overrides\":{\"manual_supplier_grid_label\":{\"Type\":\"data\",\"OverrideId\":\"manual_supplier_grid_label\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"manual_supplier_grid_label\",\"Description\":\"\",\"Instruction\":\"\",\"Value\":null,\"DataType\":\"string\",\"Source\":\"static\"},\"gridData\":{\"Type\":\"data\",\"OverrideId\":\"gridData\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"gridData\",\"Description\":\"\",\"Instruction\":\"gridData is a json object having a single property \\u0060gridRows\\u0060, and this gridRows contains list of supplier details.\",\"Value\":null,\"DataType\":\"object\",\"Source\":\"static\"},\"editableGridProceedBtnSysMessageDm\":{\"Type\":\"data\",\"OverrideId\":\"editableGridProceedBtnSysMessageDm\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"editableGridProceedBtnSysMessageDm\",\"Description\":\"\",\"Instruction\":\"\",\"Value\":null,\"DataType\":\"string\",\"Source\":\"static\"},\"infoBannerDetails\":{\"Type\":\"data\",\"OverrideId\":\"infoBannerDetails\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"infoBannerDetails\",\"Description\":\"\",\"Instruction\":\"\",\"Value\":null,\"DataType\":\"object\",\"Source\":\"static\"},\"manual_supplier_label_below_grid\":{\"Type\":\"data\",\"OverrideId\":\"manual_supplier_label_below_grid\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"manual_supplier_label_below_grid\",\"Description\":\"\",\"Instruction\":\"\",\"Value\":null,\"DataType\":\"string\",\"Source\":\"static\"}}}",
+          "type": "partial-view",
+          "source": "current-module",
+          "moduleId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c",
+          "toolId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c",
+          "serverName": "module mcp"
+        },
+        "parameters": {
+          "preText": "",
+          "postText": "",
+          "manual_supplier_grid_label": "{{nodes.supervisor.toolResults.show_non_selected_suppliers.manual_supplier_grid_label}}",
+          "gridData": "{{nodes.supervisor.toolResults.show_non_selected_suppliers.gridData}}",
+          "editableGridProceedBtnSysMessageDm": "{{nodes.supervisor.toolResults.show_non_selected_suppliers.editableGridProceedBtnSysMessageDm}}",
+          "infoBannerDetails": "{{nodes.supervisor.toolResults.show_non_selected_suppliers.infoBannerDetails}}",
+          "manual_supplier_label_below_grid": "{{nodes.supervisor.toolResults.show_non_selected_suppliers.manual_supplier_label_below_grid}}"
+        }
+      },
+      "data": {},
+      "width": 350,
+      "height": 112,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 208.99026271529794,
+        "y": 641.2597974463058
+      },
+      "dragging": false,
+      "variableUpdates": [
+        {
+          "fieldName": "thread.supervisor_messages",
+          "operation": "append",
+          "value": "Step3: Manual supplier PV rendered for adding manual suppliers",
+          "role": "tool"
+        }
+      ]
+    },
+    {
+      "id": "d812paz",
+      "type": "tool",
+      "name": "labelandbuttons",
+      "description": "Description:\nThis partial view is responsible for rendering the label and buttons/options.\n\nNotes:\nThis partial view is responsible for rendering the label and buttons/options.",
+      "position": {
+        "x": 687.6060183985343,
+        "y": 641.2597974463058
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "enabled": true,
+        "toolId": "mcp-a4deb011-ea94-418d-9912-822447e4ce1f-labelandbuttons1012",
+        "type": "mcp",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "preText": {
+              "description": "Optional Markdown shown immediately before this view. Use to introduce what it shows/why it matters or give brief instructions. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+              "type": "string"
+            },
+            "postText": {
+              "description": "Optional Markdown shown immediately after this view. Use for next steps, brief context/interpretation, or a transition to the next section/view. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+              "type": "string"
+            },
+            "label_datamodel": {
+              "description": "Description:\n**If data is not a valid html string then convert the value to string.  **Use `label_datamodel` override to pass data to form label.\n\nNotes:\n**If data is not a valid html string then convert the value to string.  **Use `label_datamodel` override to pass data to form label.",
+              "type": "string"
+            },
+            "buttons_datamodel": {
+              "description": "Description:\n\n\nNotes:\n",
+              "type": "string"
+            }
+          },
+          "condition": "Description:\nThis partial view is responsible for rendering the label and buttons/options.\n\nNotes:\nThis partial view is responsible for rendering the label and buttons/options."
+        },
+        "settings": {
+          "serverId": "a4deb011-ea94-418d-9912-822447e4ce1f"
+        },
+        "returnDirect": false,
+        "_meta": {
+          "uiView": "{\"RefId\":null,\"ViewUniqueId\":\"e1a380cd-75d0-4534-ac80-aaa5301718ee\",\"Version\":[1,0],\"Type\":\"partialView\",\"Name\":\"label_and_buttons-1.0.12\",\"Icon\":null,\"Channel\":\"conversation\",\"Description\":\"This partial view is responsible for rendering the label and buttons/options.\",\"Instruction\":\"This partial view is responsible for rendering the label and buttons/options.\",\"AppId\":null,\"ModuleId\":null,\"EnableContextSharing\":true,\"Overrides\":{\"label_datamodel\":{\"Type\":\"data\",\"OverrideId\":\"label_datamodel\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"label_datamodel\",\"Description\":\"**If data is not a valid html string then convert the value to string.  **Use \\u0060label_datamodel\\u0060 override to pass data to form label.\",\"Instruction\":\"**If data is not a valid html string then convert the value to string.  **Use \\u0060label_datamodel\\u0060 override to pass data to form label.\",\"Value\":null,\"DataType\":\"string\",\"Source\":\"static\"},\"buttons_datamodel\":{\"Type\":\"data\",\"OverrideId\":\"buttons_datamodel\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"buttons_datamodel\",\"Description\":\"\",\"Instruction\":\"\",\"Value\":null,\"DataType\":\"array\",\"Source\":\"static\"}}}",
+          "type": "partial-view"
+        },
+        "parameters": {
+          "preText": "",
+          "postText": "",
+          "label_datamodel": "<p>       Great. <strong>Procurement will identify the most suitable supplier</strong> through a fair, competitive evaluation aligned with Adobe sourcing standards.     </p>     <p>       <strong>Standard review timelines</strong> will apply based on the category and requirements.     </p>",
+          "buttons_datamodel": "[ { \"label\": \"Continue\", \"value\": \"Continue\" } ]"
+        }
+      },
+      "data": {},
+      "width": 350,
+      "height": 112,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 687.6060183985343,
+        "y": 644.261305245738
+      },
+      "dragging": false,
+      "variableUpdates": [
+        {
+          "fieldName": "thread.supervisor_messages",
+          "operation": "append",
+          "value": "step4: Label and buttons pv rendered for project request summary",
+          "role": "tool"
+        }
+      ]
+    },
+    {
+      "id": "fz6amhg",
+      "type": "variable",
+      "name": "empty_message_append",
+      "description": "",
+      "position": {
+        "x": 1112.3452126257123,
+        "y": 573.5197751421352
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {},
+      "data": {},
+      "width": 327,
+      "height": 72,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 1112.3452126257123,
+        "y": 573.5197751421352
+      },
+      "dragging": false,
+      "variableUpdates": [
+        {
+          "fieldName": "thread.messages",
+          "operation": "append",
+          "value": " ",
+          "role": "assistant"
+        }
+      ]
+    },
+    {
+      "id": "4pfvx3o",
+      "type": "variable",
+      "name": "store_selected_suppliers",
+      "description": "",
+      "position": {
+        "x": 358.57142857142844,
+        "y": -92.72031760902973
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {},
+      "data": {},
+      "width": 345,
+      "height": 72,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 358.57142857142844,
+        "y": -92.72031760902973
+      },
+      "dragging": false,
+      "variableUpdates": [
+        {
+          "fieldName": "thread.supervisor_messages",
+          "operation": "append",
+          "value": " Selected Suppliers data stored",
+          "role": "tool"
+        },
+        {
+          "fieldName": "flow.selectedSuppliers",
+          "operation": "set",
+          "value": "{{nodes.supervisor.toolResults.store_selected_recommended_suppliers.suppliers}}"
+        }
+      ]
+    },
+    {
+      "id": "zx40xi3",
+      "type": "variable",
+      "name": "store_manual_suppliers",
+      "description": "",
+      "position": {
+        "x": 342.8571428571429,
+        "y": -187.4427352982809
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {},
+      "data": {},
+      "width": 340,
+      "height": 72,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 340.14436494228926,
+        "y": -187.4427352982809
+      },
+      "dragging": false,
+      "variableUpdates": [
+        {
+          "fieldName": "flow.manualSuppliers",
+          "operation": "set",
+          "value": "{{nodes.supervisor.toolResults.store_selected_user_entered_suppliers.suppliers}}"
+        },
+        {
+          "fieldName": "thread.supervisor_messages",
+          "operation": "append",
+          "value": " Manual suppliers data stored",
+          "role": "tool"
+        }
+      ]
+    },
+    {
+      "id": "ngv97l7",
+      "type": "variable",
+      "name": "store_new_suppliers",
+      "description": "",
+      "position": {
+        "x": 132.8571428571429,
+        "y": -326.2156332888225
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {},
+      "data": {},
+      "width": 301,
+      "height": 72,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 132.8571428571429,
+        "y": -326.2156332888225
+      },
+      "dragging": false,
+      "variableUpdates": [
+        {
+          "fieldName": "thread.supervisor_messages",
+          "operation": "append",
+          "value": "New suppliers data stored",
+          "role": "tool"
+        },
+        {
+          "fieldName": "flow.newSuppliers",
+          "operation": "set",
+          "value": "{{nodes.supervisor.toolResults.store_new_suppliers.suppliers}}"
+        }
+      ]
+    },
+    {
+      "id": "07ushki",
+      "type": "variable",
+      "name": "supplier_flow_complete",
+      "description": "",
+      "position": {
+        "x": 981.3452126257123,
+        "y": 32.18817891510296
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {},
+      "data": {},
+      "width": 338,
+      "height": 72,
+      "selected": false,
+      "dragging": false,
+      "variableUpdates": [
+        {
+          "fieldName": "{{flow.supplier_data.singleSupplierResponse}}",
+          "operation": "set",
+          "value": "null"
+        },
+        {
+          "fieldName": "{{flow.supplier_data.textSuppliers}}",
+          "operation": "set",
+          "value": "{{flow.newSuppliers}}"
+        },
+        {
+          "fieldName": "{{flow.supplier_data.selectedSuppliers}}",
+          "operation": "set",
+          "value": "{{flow.selectedSuppliers}}"
+        },
+        {
+          "fieldName": "{{flow.supplier_data.manualSuppliers}}",
+          "operation": "set",
+          "value": "{{flow.manualSuppliers}}"
+        },
+        {
+          "fieldName": "flow.currentStatus",
+          "operation": "set",
+          "value": "supplier_flow_completed"
+        }
+      ],
+      "positionAbsolute": {
+        "x": 981.3452126257123,
+        "y": 32.18817891510296
+      }
+    },
+    {
+      "id": "a2dok6m",
+      "type": "tool",
+      "name": "getselectedsupplierstool",
+      "description": "Description:\n\n\nReturns:\n- \n\nFriendly Name: get_selected_suppliers_tool",
+      "position": {
+        "x": 1446.0435056883307,
+        "y": -37.81182108489705
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "enabled": true,
+        "toolId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c-getselectedsupplierstool-3",
+        "type": "mcp",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "event": {
+              "description": "Event to execute DAC policy in server function.",
+              "type": "string"
+            },
+            "data": {
+              "description": "Payload used to execute the function.",
+              "type": "object"
+            },
+            "additionalData": {
+              "description": "Any additional data used by the function.",
+              "type": "object"
+            }
+          },
+          "required": [
+            "data"
+          ],
+          "condition": "Description:\n\n\nReturns:\n- \n\nFriendly Name: get_selected_suppliers_tool"
+        },
+        "settings": {
+          "serverId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c"
+        },
+        "returnDirect": false,
+        "_meta": {
+          "functionId": "fd8d5417-b534-48b1-a44a-c004dd06f027",
+          "type": "ssf-call",
+          "source": "current-module",
+          "moduleId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c",
+          "toolId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c",
+          "serverName": "module mcp"
+        },
+        "parameters": {
+          "event": "\"\"",
+          "data": "{{flow.supplier_data}}",
+          "additionalData": "{}"
+        }
+      },
+      "data": {},
+      "width": 350,
+      "height": 112,
+      "selected": false,
+      "dragging": false,
+      "positionAbsolute": {
+        "x": 1446.0435056883307,
+        "y": -37.81182108489705
+      },
+      "variableUpdates": [
+        {
+          "fieldName": "flow.processed_supplier_data",
+          "operation": "set",
+          "value": "{{nodeOutput.result}}"
+        }
+      ]
+    },
+    {
+      "id": "w0m8beo",
+      "type": "tool",
+      "name": "viewmore_suppliergridmultiselection",
+      "description": "Description:\nshow multiselect supplier grid\n\nNotes:\nshow multiselect supplier grid",
+      "position": {
+        "x": 975.3452126257123,
+        "y": 347.7173065094344
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "enabled": true,
+        "toolId": "mcp-a4deb011-ea94-418d-9912-822447e4ce1f-SupplierGridMultiSelectionV10030",
+        "type": "mcp",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "supplierGrid_msg": {
+              "description": "Description:\n\n\nNotes:\n",
+              "type": "string"
+            },
+            "gridData": {
+              "description": "Description:\n\n\nNotes:\n",
+              "type": "string"
+            },
+            "lbl_Summary": {
+              "description": "Description:\n\n\nNotes:\n",
+              "type": "string"
+            },
+            "selectedSuppBtnSysMessageDm": {
+              "description": "Description:\n\n\nNotes:\n",
+              "type": "string"
+            },
+            "couldNotFindSuppBtnSysMessageDm": {
+              "description": "Description:\n\n\nNotes:\n",
+              "type": "string"
+            }
+          },
+          "condition": "Description:\nshow multiselect supplier grid\n\nNotes:\nshow multiselect supplier grid",
+          "required": [],
+          "additionalProperties": true
+        },
+        "settings": {
+          "serverId": "a4deb011-ea94-418d-9912-822447e4ce1f"
+        },
+        "returnDirect": false,
+        "_meta": {
+          "uiView": "{\"RefId\":null,\"ViewUniqueId\":\"d900f23b-b80a-40d0-bb08-eacc57c200a9\",\"Version\":[0,0],\"Type\":\"partialView\",\"Name\":\"SupplierGridMultiSelectionV1-0.0.30\",\"Icon\":null,\"Channel\":\"conversation\",\"Description\":\"show multiselect supplier grid\",\"Instruction\":\"show multiselect supplier grid\",\"AppId\":null,\"ModuleId\":null,\"EnableContextSharing\":true,\"Overrides\":{\"supplierGrid_msg\":{\"Type\":\"data\",\"OverrideId\":\"supplierGrid_msg\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"supplierGrid_msg\",\"Description\":\"\",\"Instruction\":\"\",\"Value\":null,\"DataType\":\"string\",\"Source\":\"static\"},\"gridData\":{\"Type\":\"data\",\"OverrideId\":\"gridData\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"gridData\",\"Description\":\"\",\"Instruction\":\"\",\"Value\":null,\"DataType\":\"array\",\"Source\":\"static\"},\"lbl_Summary\":{\"Type\":\"data\",\"OverrideId\":\"lbl_Summary\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"lbl_Summary\",\"Description\":\"\",\"Instruction\":\"\",\"Value\":null,\"DataType\":\"string\",\"Source\":\"static\"},\"selectedSuppBtnSysMessageDm\":{\"Type\":\"data\",\"OverrideId\":\"selectedSuppBtnSysMessageDm\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"selectedSuppBtnSysMessageDm\",\"Description\":\"\",\"Instruction\":\"\",\"Value\":null,\"DataType\":\"string\",\"Source\":\"static\"},\"couldNotFindSuppBtnSysMessageDm\":{\"Type\":\"data\",\"OverrideId\":\"couldNotFindSuppBtnSysMessageDm\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"couldNotFindSuppBtnSysMessageDm\",\"Description\":\"\",\"Instruction\":\"\",\"Value\":null,\"DataType\":\"string\",\"Source\":\"static\"}}}",
+          "type": "partial-view"
+        },
+        "parameters": {
+          "preText": "",
+          "postText": "",
+          "supplierGrid_msg": "{{nodes.supervisor.toolResults.handoff_to_node_viewmore_suppliergrid.supplierGrid_msg}}",
+          "gridData": "{{nodes.supervisor.toolResults.handoff_to_node_viewmore_suppliergrid.gridData}}",
+          "lbl_Summary": "{{nodes.supervisor.toolResults.handoff_to_node_viewmore_suppliergrid.lbl_Summary}}",
+          "selectedSuppBtnSysMessageDm": "{{nodes.supervisor.toolResults.handoff_to_node_viewmore_suppliergrid.selectedSuppBtnSysMessageDm}}",
+          "couldNotFindSuppBtnSysMessageDm": "{{nodes.supervisor.toolResults.handoff_to_node_viewmore_suppliergrid.couldNotFindSuppBtnSysMessageDm}}"
+        }
+      },
+      "data": {},
+      "width": 350,
+      "height": 112,
+      "selected": false,
+      "dragging": false,
+      "positionAbsolute": {
+        "x": 972.1204928852155,
+        "y": 347.7173065094344
+      },
+      "variableUpdates": [
+        {
+          "fieldName": "thread.supervisor_messages",
+          "operation": "append",
+          "value": "Step2: Supplier Grid rendering for free text suppliers done",
+          "role": "tool"
+        }
+      ]
+    },
+    {
+      "id": "m879jq4",
+      "type": "tool",
+      "name": "suppliercardsprivatepvhost004",
+      "description": "Description:\nThis ui component helps render supplier-related information cards.\n\n\nNotes:\nThis ui component helps render supplier-related information cards.\n",
+      "position": {
+        "x": 223.4151729946831,
+        "y": 476.14944156386696
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "enabled": true,
+        "toolId": "mcp-91c843df-f1be-4b22-adbb-88cc1c74029b-suppliercardsprivatepvhost004",
+        "type": "mcp",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "preText": {
+              "description": "Optional Markdown shown immediately before this view. Use to introduce what it shows/why it matters or give brief instructions. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+              "type": "string"
+            },
+            "postText": {
+              "description": "Optional Markdown shown immediately after this view. Use for next steps, brief context/interpretation, or a transition to the next section/view. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+              "type": "string"
+            },
+            "label_datamodel": {
+              "description": "Description:\n\n\nNotes:\n",
+              "type": "string"
+            },
+            "supplierCardsData": {
+              "description": "Description:\n\n\nNotes:\n",
+              "type": "string"
+            },
+            "label_below_supplier_cards": {
+              "description": "Description:\n\n\nNotes:\n",
+              "type": "string"
+            }
+          },
+          "condition": "Description:\nThis ui component helps render supplier-related information cards.\n\n\nNotes:\nThis ui component helps render supplier-related information cards.\n"
+        },
+        "settings": {
+          "serverId": "91c843df-f1be-4b22-adbb-88cc1c74029b"
+        },
+        "returnDirect": false,
+        "title": "suppliercardsprivatepvhost004",
+        "_meta": {
+          "uiView": "{\"RefId\":null,\"ViewUniqueId\":\"e1d1724d-7a91-4871-9144-af7d223be957\",\"Version\":[0,0],\"Type\":\"partialView\",\"Name\":\"supplier_cards_private_pv_host-0.0.4\",\"Icon\":null,\"Channel\":\"auto\",\"Description\":\"This ui component helps render supplier-related information cards.\\n\",\"Instruction\":\"This ui component helps render supplier-related information cards.\\n\",\"AppId\":null,\"ModuleId\":null,\"EnableContextSharing\":true,\"Overrides\":{\"label_datamodel\":{\"Type\":\"data\",\"OverrideId\":\"label_datamodel\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"label_datamodel\",\"Description\":\"\",\"Instruction\":\"\",\"Value\":null,\"DataType\":\"string\",\"Source\":\"static\"},\"supplierCardsData\":{\"Type\":\"data\",\"OverrideId\":\"supplierCardsData\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"supplierCardsData\",\"Description\":\"\",\"Instruction\":\"\",\"Value\":null,\"DataType\":\"array\",\"Source\":\"static\"},\"label_below_supplier_cards\":{\"Type\":\"data\",\"OverrideId\":\"label_below_supplier_cards\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"label_below_supplier_cards\",\"Description\":\"\",\"Instruction\":\"\",\"Value\":null,\"DataType\":\"string\",\"Source\":\"static\"}}}",
+          "type": "partial-view"
+        },
+        "parameters": {
+          "preText": "",
+          "postText": "",
+          "label_datamodel": "<p>I'd be happy to help with that. Here are some <strong>preferred suppliers</strong> for Category <strong> {{flow.qa_master_data.catergory.name}} \n</strong>, Company Code <strong> {{flow.qa_master_data.headerOrg.entityName}}</strong> .Choose this option for <strong>fastest processing</strong> – Procurement will confirm eligibility and finalize with minimal review.</p> <p>Click any preferred supplier name for more information.</p>",
+          "supplierCardsData": "{{nodes.supervisor.toolResults.buyingsupplierrecommendationworkflow.result}}",
+          "label_below_supplier_cards": "<p> Choose \"Couldn't Find Supplier\" to search for an existing non-preferred supplier or to request the addition of a new supplier.</p><p><strong>NOTE:</strong><br> ● If you request a new supplier, <strong>additional time is required</strong> for Procurement to evaluate fit, compliance, and alignment with Adobe sourcing standards.<br> ● Choose <strong>Pick for me</strong> if you want Procurement to handle the selection. <strong>Standard review time is required</strong> to identify the most suitable supplier through fair, competitive evaluation as per Adobe sourcing standards.</p>"
+        }
+      },
+      "data": {},
+      "width": 350,
+      "height": 112,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 223.4151729946831,
+        "y": 476.14944156386696
+      },
+      "dragging": false,
+      "variableUpdates": [
+        {
+          "fieldName": "thread.supervisor_messages",
+          "operation": "append",
+          "value": "Step1: Supplier cards rendering done",
+          "role": "tool"
+        }
+      ]
+    },
+    {
+      "id": "kdw7lrs",
+      "type": "tool",
+      "name": "suppliergridmultiselectionv2002",
+      "description": "Description:\nshow multiselect supplier grid\n\nNotes:\nshow multiselect supplier grid",
+      "position": {
+        "x": 653.2699702332961,
+        "y": 476.14944156386696
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "enabled": true,
+        "toolId": "mcp-a4deb011-ea94-418d-9912-822447e4ce1f-SupplierGridMultiSelectionV2002",
+        "type": "mcp",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "supplierGrid_msg": {
+              "description": "Description:\n\n\nNotes:\n",
+              "type": "string"
+            },
+            "gridData": {
+              "description": "Description:\n\n\nNotes:\n",
+              "type": "string"
+            },
+            "lbl_Summary": {
+              "description": "Description:\n\n\nNotes:\n",
+              "type": "string"
+            },
+            "selectedSuppBtnSysMessageDm": {
+              "description": "Description:\n\n\nNotes:\n",
+              "type": "string"
+            },
+            "couldNotFindSuppBtnSysMessageDm": {
+              "description": "Description:\n\n\nNotes:\n",
+              "type": "string"
+            }
+          },
+          "condition": "Description:\nshow multiselect supplier grid\n\nNotes:\nshow multiselect supplier grid",
+          "required": []
+        },
+        "settings": {
+          "serverId": "a4deb011-ea94-418d-9912-822447e4ce1f"
+        },
+        "returnDirect": false,
+        "title": "SupplierGridMultiSelectionV2002",
+        "_meta": {
+          "uiView": "{\"RefId\":null,\"ViewUniqueId\":\"79f2deb8-00e7-480e-a933-c2fe53fa6aa0\",\"Version\":[0,0],\"Type\":\"partialView\",\"Name\":\"SupplierGridMultiSelectionV2-0.0.2\",\"Icon\":null,\"Channel\":\"auto\",\"Description\":\"show multiselect supplier grid\",\"Instruction\":\"show multiselect supplier grid\",\"AppId\":null,\"ModuleId\":null,\"EnableContextSharing\":true,\"Overrides\":{\"supplierGrid_msg\":{\"Type\":\"data\",\"OverrideId\":\"supplierGrid_msg\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"supplierGrid_msg\",\"Description\":\"\",\"Instruction\":\"\",\"Value\":null,\"DataType\":\"string\",\"Source\":\"static\"},\"gridData\":{\"Type\":\"data\",\"OverrideId\":\"gridData\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"gridData\",\"Description\":\"\",\"Instruction\":\"\",\"Value\":null,\"DataType\":\"array\",\"Source\":\"static\"},\"lbl_Summary\":{\"Type\":\"data\",\"OverrideId\":\"lbl_Summary\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"lbl_Summary\",\"Description\":\"\",\"Instruction\":\"\",\"Value\":null,\"DataType\":\"string\",\"Source\":\"static\"},\"selectedSuppBtnSysMessageDm\":{\"Type\":\"data\",\"OverrideId\":\"selectedSuppBtnSysMessageDm\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"selectedSuppBtnSysMessageDm\",\"Description\":\"\",\"Instruction\":\"\",\"Value\":null,\"DataType\":\"string\",\"Source\":\"static\"},\"couldNotFindSuppBtnSysMessageDm\":{\"Type\":\"data\",\"OverrideId\":\"couldNotFindSuppBtnSysMessageDm\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"couldNotFindSuppBtnSysMessageDm\",\"Description\":\"\",\"Instruction\":\"\",\"Value\":null,\"DataType\":\"string\",\"Source\":\"static\"}}}",
+          "type": "partial-view"
+        },
+        "parameters": {
+          "preText": "",
+          "postText": "",
+          "supplierGrid_msg": "{{nodes.supervisor.toolResults.show_supplier_grid.supplierGrid_msg}}",
+          "gridData": "{{nodes.supervisor.toolResults.show_supplier_grid.gridData}}",
+          "lbl_Summary": "{{nodes.supervisor.toolResults.show_supplier_grid.lbl_Summary}}",
+          "selectedSuppBtnSysMessageDm": "{{nodes.supervisor.toolResults.show_supplier_grid.selectedSuppBtnSysMessageDm}}",
+          "couldNotFindSuppBtnSysMessageDm": "{{nodes.supervisor.toolResults.show_supplier_grid.couldNotFindSuppBtnSysMessageDm}}"
+        }
+      },
+      "data": {},
+      "width": 350,
+      "height": 112,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 653.2699702332961,
+        "y": 476.28873508086303
+      },
+      "dragging": false,
+      "variableUpdates": [
+        {
+          "fieldName": "thread.supervisor_messages",
+          "operation": "append",
+          "value": "Step2: Supplier Grid rendering for free text suppliers done",
+          "role": "tool"
+        }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "reactflow__edge-2zzeodz-output",
+      "source": "2zzeodz",
+      "target": "output",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "agent",
+        "targetType": "output"
+      }
+    },
+    {
+      "id": "2zzeodz-handoff-281323c4-ce1d-4199-91aa-de3f7f933358",
+      "source": "2zzeodz",
+      "target": "i2iscxv",
+      "type": "handoff",
+      "sourceHandle": "handoff",
+      "targetHandle": null,
+      "deletable": false,
+      "data": {
+        "toolId": "281323c4-ce1d-4199-91aa-de3f7f933358",
+        "isHandoff": true,
+        "sourceType": "agent",
+        "targetType": "tool"
+      }
+    },
+    {
+      "id": "2zzeodz-handoff-872b44f2-f15f-4521-8337-80e578dbaf2f",
+      "source": "2zzeodz",
+      "target": "d812paz",
+      "type": "handoff",
+      "sourceHandle": "handoff",
+      "targetHandle": null,
+      "deletable": false,
+      "data": {
+        "toolId": "872b44f2-f15f-4521-8337-80e578dbaf2f",
+        "isHandoff": true,
+        "sourceType": "agent",
+        "targetType": "tool"
+      }
+    },
+    {
+      "id": "reactflow__edge-i2iscxv-fz6amhg",
+      "source": "i2iscxv",
+      "target": "fz6amhg",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "tool",
+        "targetType": "variable"
+      }
+    },
+    {
+      "id": "reactflow__edge-d812paz-fz6amhg",
+      "source": "d812paz",
+      "target": "fz6amhg",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "tool",
+        "targetType": "variable"
+      }
+    },
+    {
+      "id": "2zzeodz-handoff-0c2fdebd-e9f1-4b29-9ae6-fc04ee55f442",
+      "source": "2zzeodz",
+      "target": "4pfvx3o",
+      "type": "handoff",
+      "sourceHandle": "handoff",
+      "targetHandle": null,
+      "deletable": false,
+      "data": {
+        "toolId": "0c2fdebd-e9f1-4b29-9ae6-fc04ee55f442",
+        "isHandoff": true,
+        "sourceType": "agent",
+        "targetType": "variable"
+      }
+    },
+    {
+      "id": "2zzeodz-handoff-0716c7d4-b4de-4d50-9f8b-2778ca9ff1be",
+      "source": "2zzeodz",
+      "target": "zx40xi3",
+      "type": "handoff",
+      "sourceHandle": "handoff",
+      "targetHandle": null,
+      "deletable": false,
+      "data": {
+        "toolId": "0716c7d4-b4de-4d50-9f8b-2778ca9ff1be",
+        "isHandoff": true,
+        "sourceType": "agent",
+        "targetType": "variable"
+      }
+    },
+    {
+      "id": "2zzeodz-handoff-5cb0e1a3-c087-4ee3-b022-2984e3ecbdbf",
+      "source": "2zzeodz",
+      "target": "ngv97l7",
+      "type": "handoff",
+      "sourceHandle": "handoff",
+      "targetHandle": null,
+      "deletable": false,
+      "data": {
+        "toolId": "5cb0e1a3-c087-4ee3-b022-2984e3ecbdbf",
+        "isHandoff": true,
+        "sourceType": "agent",
+        "targetType": "variable"
+      }
+    },
+    {
+      "id": "reactflow__edge-fz6amhg-output",
+      "source": "fz6amhg",
+      "target": "output",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "variable",
+        "targetType": "output"
+      }
+    },
+    {
+      "id": "reactflow__edge-4pfvx3o-2zzeodz",
+      "source": "4pfvx3o",
+      "target": "2zzeodz",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "variable",
+        "targetType": "agent"
+      }
+    },
+    {
+      "id": "reactflow__edge-zx40xi3-2zzeodz",
+      "source": "zx40xi3",
+      "target": "2zzeodz",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "variable",
+        "targetType": "agent"
+      }
+    },
+    {
+      "id": "reactflow__edge-ngv97l7-2zzeodz",
+      "source": "ngv97l7",
+      "target": "2zzeodz",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "variable",
+        "targetType": "agent"
+      }
+    },
+    {
+      "id": "2zzeodz-handoff-2b2be7d1-905a-492d-924d-6734423e6013",
+      "source": "2zzeodz",
+      "target": "07ushki",
+      "type": "handoff",
+      "sourceHandle": "handoff",
+      "targetHandle": null,
+      "deletable": false,
+      "data": {
+        "toolId": "2b2be7d1-905a-492d-924d-6734423e6013",
+        "isHandoff": true,
+        "sourceType": "agent",
+        "targetType": "variable"
+      }
+    },
+    {
+      "id": "reactflow__edge-07ushki-a2dok6m",
+      "source": "07ushki",
+      "target": "a2dok6m",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "variable",
+        "targetType": "tool"
+      }
+    },
+    {
+      "id": "reactflow__edge-a2dok6m-output",
+      "source": "a2dok6m",
+      "target": "output",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "tool",
+        "targetType": "output"
+      }
+    },
+    {
+      "id": "2zzeodz-handoff-00348a25-94d6-4558-b02b-f0a3802fe1ed",
+      "source": "2zzeodz",
+      "target": "w0m8beo",
+      "type": "handoff",
+      "sourceHandle": "handoff",
+      "targetHandle": null,
+      "deletable": false,
+      "data": {
+        "toolId": "00348a25-94d6-4558-b02b-f0a3802fe1ed",
+        "isHandoff": true,
+        "sourceType": "agent",
+        "targetType": "tool"
+      }
+    },
+    {
+      "id": "reactflow__edge-w0m8beo-fz6amhg",
+      "source": "w0m8beo",
+      "target": "fz6amhg",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "tool",
+        "targetType": "variable"
+      }
+    },
+    {
+      "id": "reactflow__edge-start-2zzeodz",
+      "source": "start",
+      "target": "2zzeodz",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "start",
+        "targetType": "agent"
+      }
+    },
+    {
+      "id": "2zzeodz-handoff-ff4cd9d6-3c6f-4889-ab51-aa94e8769464",
+      "source": "2zzeodz",
+      "target": "m879jq4",
+      "type": "handoff",
+      "sourceHandle": "handoff",
+      "targetHandle": null,
+      "deletable": false,
+      "data": {
+        "toolId": "ff4cd9d6-3c6f-4889-ab51-aa94e8769464",
+        "isHandoff": true,
+        "sourceType": "agent",
+        "targetType": "tool"
+      }
+    },
+    {
+      "id": "reactflow__edge-m879jq4-fz6amhg",
+      "source": "m879jq4",
+      "target": "fz6amhg",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "tool",
+        "targetType": "variable"
+      }
+    },
+    {
+      "id": "2zzeodz-handoff-7bab152c-cefc-484d-941a-9084d7d88ce1",
+      "source": "2zzeodz",
+      "target": "kdw7lrs",
+      "type": "handoff",
+      "sourceHandle": "handoff",
+      "targetHandle": null,
+      "deletable": false,
+      "data": {
+        "toolId": "7bab152c-cefc-484d-941a-9084d7d88ce1",
+        "isHandoff": true,
+        "sourceType": "agent",
+        "targetType": "tool"
+      }
+    },
+    {
+      "id": "reactflow__edge-kdw7lrs-fz6amhg",
+      "source": "kdw7lrs",
+      "target": "fz6amhg",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "tool",
+        "targetType": "variable"
+      }
+    }
+  ],
+  "originalBpc": "20210511",
+  "originalEnvironment": "DEV",
+  "freezeRelease": false,
+  "overwriteOnNextRelease": false,
+  "fromModuleVersion": "v1781093875659812800",
+  "lastModifiedVersion": "v1781121601712159400",
+  "rebasedFromVersion": null,
+  "createdBy": "Vanshaj.Singla1@gep.com",
+  "createdOn": "2026-02-12T11:11:06.701Z",
+  "updatedBy": "Tanvi.Kokane@gep.com",
+  "updatedOn": "2026-05-26T20:41:18.821Z",
+  "environment": "DEV",
+  "appId": "e2c84064-171f-4f1a-a29a-19e0ac610935",
+  "moduleId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c",
+  "version": "v1781121601712159400"
+}

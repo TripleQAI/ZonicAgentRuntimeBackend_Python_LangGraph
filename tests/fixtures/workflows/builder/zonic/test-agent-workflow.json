@@ -1,0 +1,212 @@
+{
+  "bpc": "",
+  "name": "test-agent-workflow",
+  "edges": [
+    {
+      "id": "edge_1781386689807_l1wb9",
+      "data": {
+        "sourceType": "start",
+        "targetType": "agent"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "start_1781386328321_q6vy9",
+      "target": "agent_1781386678857_qu9vs",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "default",
+      "targetHandle": "default"
+    },
+    {
+      "id": "edge_1781386691297_3m864",
+      "data": {
+        "sourceType": "agent",
+        "targetType": "output"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "agent_1781386678857_qu9vs",
+      "target": "output_1781386683842_9iyu6",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "default",
+      "targetHandle": "default"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "start_1781386328321_q6vy9",
+      "data": {
+        "interfaceInputs": [],
+        "variableUpdates": []
+      },
+      "name": "Start_1",
+      "type": "start",
+      "style": {},
+      "width": 200,
+      "config": {
+        "interfaceInputs": [],
+        "variableUpdates": []
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 204,
+        "y": 336
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 204,
+        "y": 336
+      }
+    },
+    {
+      "id": "agent_1781386678857_qu9vs",
+      "data": {
+        "model": "gpt-5-mini",
+        "tools": [],
+        "strategy": "react",
+        "outputSchema": [],
+        "stateUpdates": [],
+        "systemPrompt": "",
+        "handoffTarget": [],
+        "maxIterations": 10,
+        "includeThoughts": false,
+        "variableUpdates": [],
+        "userQueryMapping": "{{system.userQuery}}"
+      },
+      "name": "Agent_1",
+      "type": "agent",
+      "style": {},
+      "width": 200,
+      "config": {
+        "model": "gpt-5-mini",
+        "tools": [],
+        "strategy": "react",
+        "outputSchema": [],
+        "stateUpdates": [],
+        "systemPrompt": "",
+        "handoffTarget": [],
+        "maxIterations": 10,
+        "includeThoughts": false,
+        "variableUpdates": [],
+        "userQueryMapping": "{{system.userQuery}}"
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 494,
+        "y": 315
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 494,
+        "y": 315
+      }
+    },
+    {
+      "id": "output_1781386683842_9iyu6",
+      "data": {
+        "format": "text",
+        "outputKey": "result",
+        "stateUpdates": [],
+        "outputMapping": []
+      },
+      "name": "Output_1",
+      "type": "output",
+      "style": {},
+      "width": 200,
+      "config": {
+        "format": "text",
+        "outputKey": "result",
+        "stateUpdates": [],
+        "outputMapping": []
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 823,
+        "y": 333
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 823,
+        "y": 333
+      }
+    },
+    {
+      "id": "db_query_1781463381956_7g6sb",
+      "data": {
+        "query": "",
+        "maxRows": 1000,
+        "outputKey": "db.result",
+        "parameters": [],
+        "connectionId": "",
+        "databaseType": "postgresql",
+        "outputSchema": {},
+        "timeoutSeconds": 30,
+        "variableUpdates": []
+      },
+      "name": "DBQuery_1",
+      "type": "db_query",
+      "style": {},
+      "width": 200,
+      "config": {
+        "query": "select * from budget",
+        "maxRows": 1000,
+        "outputKey": "db.result",
+        "parameters": [],
+        "connectionId": "test-connection-id",
+        "databaseType": "mssql",
+        "outputSchema": {},
+        "timeoutSeconds": 30,
+        "variableUpdates": []
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 541,
+        "y": 555
+      },
+      "selected": true,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 541,
+        "y": 555
+      }
+    }
+  ],
+  "editAs": "",
+  "skills": [],
+  "security": {},
+  "interface": {},
+  "variables": {},
+  "isDisabled": false,
+  "description": "",
+  "displayName": "test-agent-workflow",
+  "invocationType": "",
+  "includeThoughts": false,
+  "publishChannels": [],
+  "agenticWorkflowId": "63e200aa-2078-4831-821c-74a8a7c1bd58",
+  "enableForAutoInvoke": false,
+  "isAvailableForMigration": false
+}

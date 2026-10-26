@@ -1,0 +1,1716 @@
+{
+  "agenticWorkflowId": "04d070d9-32f7-4399-b588-88db4d6565f4",
+  "bpc": "20210511",
+  "name": "catalogue-assistant",
+  "displayName": "Catalogue Assistant",
+  "description": "Catalogue Cart Management",
+  "isDisabled": false,
+  "isAvailableForMigration": true,
+  "editAs": "canvas",
+  "enableForAutoInvoke": false,
+  "includeThoughts": false,
+  "invocationType": "API",
+  "publishChannels": [
+    {
+      "refId": "api",
+      "code": "api",
+      "name": "API",
+      "description": "Expose the agent as a REST API for system and app integrations"
+    },
+    {
+      "refId": "qi-ui",
+      "code": "qi-ui",
+      "name": "Qi UI",
+      "description": "Make your agent available in GEP’s Qi interface"
+    }
+  ],
+  "security": {
+    "activities": [
+      {
+        "refId": "11300009",
+        "code": "11300009",
+        "name": "Projects - Create project request"
+      }
+    ]
+  },
+  "skills": [],
+  "variables": {
+    "flow": [
+      {
+        "refId": "itemName",
+        "name": "itemName",
+        "type": "string",
+        "id": "var-x6bleszyy",
+        "default": "",
+        "required": false
+      },
+      {
+        "refId": "partial_view_data",
+        "name": "partial_view_data",
+        "type": "string",
+        "id": "var-zn0n6yhdt",
+        "default": "",
+        "required": false
+      },
+      {
+        "refId": "nextStep",
+        "name": "nextStep",
+        "type": "string",
+        "id": "var-16lmhdqtr",
+        "default": "",
+        "required": false
+      },
+      {
+        "refId": "cartStatus",
+        "name": "cartStatus",
+        "type": "string",
+        "id": "var-vlvcbbigm",
+        "default": "",
+        "required": false
+      },
+      {
+        "refId": "userDefaults",
+        "name": "userDefaults",
+        "type": "object",
+        "id": "var-4270fl7cy",
+        "default": {},
+        "required": false
+      },
+      {
+        "refId": "extractedEntities",
+        "name": "extractedEntities",
+        "type": "object",
+        "id": "var-w60jxwmv9",
+        "default": {},
+        "required": false
+      },
+      {
+        "refId": "userContext",
+        "name": "userContext",
+        "type": "object",
+        "id": "var-yo82c1yuh",
+        "default": {},
+        "required": false
+      },
+      {
+        "refId": "isDefaultFlow",
+        "name": "isDefaultFlow",
+        "type": "boolean",
+        "id": "var-42rj4i623",
+        "default": true,
+        "required": false
+      },
+      {
+        "refId": "placeHolderArray",
+        "name": "placeHolderArray",
+        "type": "array",
+        "id": "var-4ttu8rr1f",
+        "default": [],
+        "required": false
+      },
+      {
+        "refId": "catalogAssistPayload",
+        "name": "catalogAssistPayload",
+        "type": "object",
+        "id": "var-3o016pfj7",
+        "default": {},
+        "required": false
+      },
+      {
+        "refId": "queryContext",
+        "name": "queryContext",
+        "type": "string",
+        "id": "var-johep9gs3",
+        "default": "",
+        "required": false
+      },
+      {
+        "refId": "responseMessage",
+        "name": "responseMessage",
+        "type": "string",
+        "id": "var-u43cnqojy",
+        "default": "",
+        "required": false
+      },
+      {
+        "refId": "alternateSearchKey",
+        "name": "alternateSearchKey",
+        "type": "string",
+        "id": "var-lo7jkcmnh",
+        "default": "",
+        "required": false
+      },
+      {
+        "refId": "buttonMessage",
+        "name": "buttonMessage",
+        "type": "string",
+        "id": "var-ip2rru19h",
+        "default": "",
+        "required": false
+      },
+      {
+        "refId": "handoff_to",
+        "name": "handoff_to",
+        "type": "string",
+        "id": "var-qgveuojjp",
+        "default": "",
+        "required": false
+      },
+      {
+        "refId": "cart",
+        "name": "cart",
+        "type": "array",
+        "id": "var-8w8b3q67b",
+        "default": [],
+        "required": false
+      },
+      {
+        "refId": "tempCatalogSSFResponse",
+        "name": "tempCatalogSSFResponse",
+        "type": "object",
+        "id": "var-yx816ovza",
+        "default": {},
+        "required": false
+      },
+      {
+        "refId": "assistantMeta",
+        "name": "assistantMeta",
+        "type": "object",
+        "id": "var-2brtckftc",
+        "default": {},
+        "required": false
+      },
+      {
+        "refId": "filterLabel",
+        "name": "filterLabel",
+        "type": "string",
+        "id": "var-9675wanw4",
+        "default": "",
+        "required": false
+      },
+      {
+        "refId": "createRequisitionResponseDM",
+        "name": "createRequisitionResponseDM",
+        "type": "object",
+        "id": "var-uwjtttr30",
+        "default": {},
+        "required": false
+      }
+    ],
+    "system": []
+  },
+  "interface": {
+    "inputs": {
+      "query": {
+        "type": "string",
+        "description": "User query to process",
+        "required": true
+      }
+    },
+    "outputs": {
+      "response": {
+        "type": "string",
+        "description": "Final response to the user"
+      }
+    }
+  },
+  "nodes": [
+    {
+      "id": "start",
+      "type": "start",
+      "name": "start",
+      "description": "Starting point of the orchestration",
+      "position": {
+        "x": -2314.3858728074615,
+        "y": 20.490776473025733
+      },
+      "deletable": false,
+      "selected": false,
+      "dragging": false,
+      "data": {},
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "label": "start",
+        "nodeType": "start"
+      },
+      "variableUpdates": [
+        {
+          "fieldName": "flow.handoff_to",
+          "operation": "clear"
+        },
+        {
+          "fieldName": "flow.buttonMessage",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.parameters.systemMessage}}"
+        },
+        {
+          "fieldName": "flow.extractedEntities",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.extractedEntities}}"
+        },
+        {
+          "fieldName": "flow.userContext",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.userContext}}"
+        },
+        {
+          "fieldName": "flow.partial_view_data",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.partialViewData}}"
+        },
+        {
+          "fieldName": "thread.messages",
+          "operation": "append",
+          "value": "{{nodeOutput.interface.inputs.message}}",
+          "role": "user"
+        },
+        {
+          "fieldName": "system.userQuery",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.message}}",
+          "rules": {
+            "conditions": [
+              {
+                "field": "{{nodeOutput.interface.inputs.parameters.systemMessage}}",
+                "operator": "is empty"
+              }
+            ],
+            "logicType": "AND"
+          }
+        }
+      ],
+      "width": 250,
+      "height": 96,
+      "positionAbsolute": {
+        "x": -2314.3858728074615,
+        "y": 19.990776473025733
+      }
+    },
+    {
+      "id": "output",
+      "type": "output",
+      "name": "output",
+      "description": "Final output of the orchestration",
+      "position": {
+        "x": 1473.6519800776407,
+        "y": 57.65156960249519
+      },
+      "deletable": true,
+      "selected": false,
+      "dragging": false,
+      "data": {},
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "outputMapping": {
+          "messages": {
+            "type": "string",
+            "value": "{{thread.messages}}"
+          },
+          "selectedAgentId": {
+            "type": "string",
+            "value": "{{runtime.workflowMetaData.workflowId}}"
+          },
+          "selectedAgentName": {
+            "type": "string",
+            "value": "{{runtime.workflowMetaData.agentName}}"
+          },
+          "handoff_to": {
+            "type": "string",
+            "value": "{{flow.handoff_to}}"
+          },
+          "itemName": {
+            "type": "string",
+            "value": "{{flow.assistantMeta.inputString}}"
+          },
+          "queryContext": {
+            "type": "string",
+            "value": "{{flow.queryContext}}"
+          },
+          "cartItems": {
+            "type": "string",
+            "value": "{{flow.cart}}"
+          },
+          "frontdoorIntent": {
+            "type": "string",
+            "value": "{{flow.assistantMeta.frontdoorIntent}}"
+          },
+          "catalogUserDefault": {
+            "type": "string",
+            "value": "{{flow.userDefaults}}"
+          }
+        }
+      },
+      "width": 150,
+      "height": 96,
+      "positionAbsolute": {
+        "x": 1473.6519800776407,
+        "y": 57.65156960249519
+      }
+    },
+    {
+      "id": "ujm35ij",
+      "type": "agent",
+      "name": "supervisor",
+      "description": "Cart Manager",
+      "position": {
+        "x": -1611.5701982959852,
+        "y": 11.93766324026219
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "agentStrategy": "react",
+        "model": {
+          "code": "gpt-5.2",
+          "name": "OpenAI GPT-5.2",
+          "vendor": "openai",
+          "provider": "azureopenai"
+        },
+        "promptTemplate": [
+          {
+            "id": "c163d9b6-9330-45ec-8367-e9dbeafdb2bf",
+            "role": "system",
+            "text": "You are a deterministic intent classifier. Output ONLY valid JSON. No markdown, no fences, no explanation.\n\n# Schema\n\n{\"assistantMeta\":{\"currentSearchKey\":\"\",\"queryContext\":\"\",\"frontdoorIntent\":\"\",\"filterLabel\":\"\"},\"nextStep\":\"search\"|\"proceed\"|\"shop_more\"|\"couldnt_find\",\"selectedItems\":[]}\n\nDefaults: strings → \"\", arrays → [].\n\n# Inputs\n\nUSER_QUERY, BUTTON_MESSAGE, SELECTED_ITEMS, PREVIOUS_CONTEXT, PREVIOUS_FILTER_LABEL, CONVERSATION_HISTORY\n\n# Step 1 — Determine selectedItems\n\nPass through SELECTED_ITEMS as-is. If not a valid array → [].\n\n# Step 2 — Resolve nextStep\n\n## 2A — BUTTON_MESSAGE (highest priority, skip 2B if matched)\n\n| Contains (case-insensitive) | nextStep |\n|---|---|\n| proceed, checkout, submit, create | proceed |\n| shop more, continue shopping | shop_more |\n| couldn't find, not found | couldnt_find |\n\n## 2B — USER_QUERY (first match wins, top to bottom)\n\n| Contains | nextStep |\n|---|---|\n| checkout, submit, proceed, create, place order, done, finish | proceed |\n| shop more, continue shopping, add more, also need, another item, I also want, one more | shop_more |\n| not available, didn't find, no results, out of stock, can't find, couldn't find, not found | couldnt_find |\n| anything else | search |\n\n**Ambiguity rule:** If a `proceed` keyword (e.g., \"order\", \"create\", \"submit\") is followed by a **product noun** (something shoppable), treat it as a shopping action verb → fall through to `search`. `proceed` keywords only trigger `proceed` when followed by a **workflow/transaction noun** (requisition, PO, purchase order, cart) or no noun at all.\n\n# Step 3 — Classify query as REFINEMENT, FILTER, or NEW_SEARCH\n\nThis step determines how USER_QUERY relates to the previous search.\nSkip this step if PREVIOUS_CONTEXT is empty → always NEW_SEARCH.\n\n## 3.0 — Broad intent check (evaluate first, before 3.1/3.2/3.3)\n\nIf PREVIOUS_CONTEXT describes a **broad project, activity, or setup** rather than a specific purchasable product, default to **NEW_SEARCH** for the current query instead of REFINEMENT. A broad intent is identified by the presence of action/project words in PREVIOUS_CONTEXT such as: setup, install, installation, configure, configuration, deploy, deployment, renovation, migration, build-out, implement, implementation, onboarding. If PREVIOUS_CONTEXT is a bare noun or adjective+noun without such action/project words (e.g., \"office\", \"new office\", \"laptop\", \"bearing\"), this check does NOT trigger — proceed to 3.1.\n\n## 3.1 — REFINEMENT signals (modifies the PRODUCT DESCRIPTION)\n\nUSER_QUERY changes WHAT the product is — sub-type, variant, material, size, spec, brand, color, dimension, performance characteristic, or catalog/part number that alters the product description itself:\n- \"tapered\" refines \"pump shaft\" → \"tapered pump shaft\"\n- \"stainless steel\" refines \"bearing\" → \"stainless steel bearing\"\n- \"hollow\" refines \"pump shaft\" → \"hollow pump shaft\"\n- \"dell\" refines \"laptop\" → \"dell laptop\"\n- \"32gb ram\" refines \"laptop\" → \"laptop with 32gb ram\"\n- \"ergonomic\" refines \"office chair\" → \"ergonomic office chair\"\n- \"black laptop case\" refines \"laptop\" → \"black laptop case\"\n- \"4KHP9-3\" refines \"pump shaft\" → \"pump shaft 4KHP9-3\"\n- \"MIN1287783\" refines \"laptop\" → \"laptop MIN1287783\"\n\nThese change currentSearchKey via merge logic (Step 4) AND generate a filterLabel.\n\n## 3.2 — FILTER signals (narrows results by catalog metadata)\n\nUSER_QUERY narrows DISPLAYED results by a metadata property WITHOUT changing what the product is:\n- Supplier/vendor/distributor name — ONLY when accompanied by explicit filter phrasing (\"from X\", \"only from X\", \"supplier X\", \"show only X\", \"filter by X\"). A bare name without filter phrasing is REFINEMENT (brand), not FILTER.\n  Exception: if the name IS the product (e.g., \"WD-40\", \"Fevicol\") → NEW_SEARCH\n- Item source type: \"hosted\", \"punchout\", \"contract items\"\n- Price constraint on existing results: \"under 100\", \"below 50\", \"cheapest\"\n- Lead time constraint: \"ships in 5 days\", \"lead time under 10\"\n- Filter phrasing: \"only from\", \"filter by\", \"show only\", \"from supplier\"\n- Contract or document number references\n- UOM filter: \"sold by box\", \"per each\"\n\nThese keep currentSearchKey and queryContext unchanged (= PREVIOUS_CONTEXT) AND generate a filterLabel.\n\n## 3.2.1 — Compound queries\n\nIf USER_QUERY contains multiple attribute tokens separated by delimiters (|, comma, slash, semicolon, \"and\"), treat the whole query as REFINEMENT and merge all tokens into currentSearchKey, preserving the user's delimiter.\n\n## 3.3 — NEW_SEARCH signals\n\n- USER_QUERY contains a clearly different product category that is independently shoppable and unrelated to PREVIOUS_CONTEXT (e.g., PREVIOUS_CONTEXT is \"bearing\" and USER_QUERY is \"laptop\")\n- USER_QUERY contains phrasing like \"I want\", \"I need\", \"search for\", \"find me\", \"looking for\" followed by a new product noun **that is unrelated to PREVIOUS_CONTEXT**. If the product noun contains, overlaps with, or is a variation of PREVIOUS_CONTEXT (e.g., \"I want to buy apple laptop\" when PREVIOUS_CONTEXT is \"laptop\"), treat as REFINEMENT instead.\n- USER_QUERY is a well-known standalone product/service noun with no logical relationship to PREVIOUS_CONTEXT\n\n## 3.4 — When uncertain\n\nDefault to REFINEMENT if PREVIOUS_CONTEXT exists. It is safer to refine than to lose context.\n\n# Step 4 — Build currentSearchKey\n\n## If FILTER:\nSkip this step entirely. Set:\n- currentSearchKey = PREVIOUS_CONTEXT (copy exactly as-is)\n- queryContext = PREVIOUS_CONTEXT (copy exactly as-is)\n\n## If NEW_SEARCH:\nApply standard extraction:\n\n### 4.1 Normalize USER_QUERY\nStrip: articles (a/an/the), action verbs (buy/need/find/show me/get me/search/want/hire/engage/onboard/looking for/order/setup/install/configure/deploy/implement), workflow phrases (add to cart/place order/checkout), filler (please/can you/I'd like/could you). Lowercase. Singular (bearings→bearing, laptops→laptop).\n\n### 4.2 Extract search phrase\nKeep brands, specs, and attributes — they are part of the search intent. Only drop generic filler nouns if something more specific exists alongside them.\n\nGeneric filler nouns to drop (ONLY when a brand or specific term is also present):\n\"product\", \"item\", \"thing\", \"stuff\", \"goods\", \"supply\", \"solution\"\n\nExamples:\n- \"dell laptop 16gb\" → \"dell laptop 16gb\"\n- \"blue wireless mouse\" → \"blue wireless mouse\"\n- \"senior data analyst\" → \"data analyst\"\n- \"SKF ball bearings\" → \"SKF ball bearing\"\n- \"ergonomic office chair\" → \"ergonomic office chair\"\n- \"SAP consultant\" → \"SAP consultant\"\n- \"Pears shampoo\" → \"Pears shampoo\"\n- \"Dettol product\" → \"Dettol\"\n- \"3M safety equipment\" → \"3M safety equipment\"\n- \"Bosch power tools\" → \"Bosch power tools\"\n- \"I need some WD-40\" → \"WD-40\"\n- \"buy some Fevicol\" → \"Fevicol\"\n- \"I want to order pump shaft\" → \"pump shaft\"\n- \"I want to setup a new office\" → \"new office\"\n- \"I want to install a data center\" → \"data center\"\n\n### 4.3 Fallback (no noun found)\nPriority order:\n1. PREVIOUS_CONTEXT has a noun → reuse it\n2. Cleaned USER_QUERY is non-empty → use as-is\n3. Last resort → \"\"\n\n## If REFINEMENT:\nMerge USER_QUERY into PREVIOUS_CONTEXT to produce a short, natural, human-readable item description.\n\n### Merge rules:\n1. Identify the core product noun from PREVIOUS_CONTEXT\n2. Identify what USER_QUERY adds (sub-type, spec, brand, attribute, etc.)\n3. Construct a concise combined phrase using natural connectors. The product noun must always be present.\n4. If USER_QUERY contains a replacement (e.g., \"hp instead\"), swap the relevant part rather than append.\n5. Keep it short — no more than 10-12 words. No full sentences. Must read like a natural product description, not a keyword dump.\n\n### Connector rules:\nUse the appropriate connector based on what the USER_QUERY adds:\n\n| What is being added | Connector | Example |\n|---|---|---|\n| Spec/feature (ram, storage, speed, resolution) | \"with\" | \"laptop with 32gb ram\" |\n| Comparative/directional constraint (price, weight, speed, lead time, etc.) | Preserve the user's EXACT preposition verbatim — \"under\", \"above\", \"below\", \"over\", \"around\", \"at least\", \"up to\", \"more than\", \"less than\". Never substitute or invert. | \"bearing above 50\", \"laptop under 80000\" |\n| Sub-type/variant (roller, tapered, ergonomic) | NO connector — place before noun | \"roller bearing\", \"ergonomic office chair\" |\n| Brand (dell, hp, apple, SKF) | NO connector — place before noun | \"dell laptop\", \"SKF bearing\" |\n| Color/material | NO connector — place before noun | \"red office chair\", \"stainless steel bearing\" |\n| Domain/industry | \"for\" | \"consultant for healthcare\" |\n| Catalog/part number or alphanumeric code | NO connector — place after noun | \"pump shaft 4KHP9-3\", \"laptop MIN1287783\" |\n| Multiple attributes already present | preserve existing connectors, integrate new one naturally | see examples below |\n\n### Refinement examples:\n- PREVIOUS_CONTEXT=\"bearing\", USER_QUERY=\"roller\" → \"roller bearing\"\n- PREVIOUS_CONTEXT=\"bearing\", USER_QUERY=\"tapered\" → \"tapered bearing\"\n- PREVIOUS_CONTEXT=\"laptop\", USER_QUERY=\"32 gb ram\" → \"laptop with 32gb ram\"\n- PREVIOUS_CONTEXT=\"laptop\", USER_QUERY=\"dell\" → \"dell laptop\"\n- PREVIOUS_CONTEXT=\"dell laptop\", USER_QUERY=\"hp instead\" → \"hp laptop\"\n- PREVIOUS_CONTEXT=\"laptop with 32gb ram\", USER_QUERY=\"dell\" → \"dell laptop with 32gb ram\"\n- PREVIOUS_CONTEXT=\"dell laptop with 32gb ram\", USER_QUERY=\"apple instead\" → \"apple laptop with 32gb ram\"\n- PREVIOUS_CONTEXT=\"laptop\", USER_QUERY=\"with 32gb ram\" → \"laptop with 32gb ram\"\n- PREVIOUS_CONTEXT=\"laptop with 32gb ram\", USER_QUERY=\"under 80000\" → \"laptop with 32gb ram under 80000\"\n- PREVIOUS_CONTEXT=\"office chair\", USER_QUERY=\"under 5000\" → \"office chair under 5000\"\n- PREVIOUS_CONTEXT=\"office chair\", USER_QUERY=\"red\" → \"red office chair\"\n- PREVIOUS_CONTEXT=\"red office chair\", USER_QUERY=\"ergonomic\" → \"ergonomic red office chair\"\n- PREVIOUS_CONTEXT=\"projector under 50000\", USER_QUERY=\"under 70000\" → \"projector under 70000\"\n- PREVIOUS_CONTEXT=\"laptop with 16gb ram\", USER_QUERY=\"32gb\" → \"laptop with 32gb ram\"\n- PREVIOUS_CONTEXT=\"consultant for healthcare\", USER_QUERY=\"manufacturing instead\" → \"consultant for manufacturing\"\n- PREVIOUS_CONTEXT=\"bearing\", USER_QUERY=\"stainless steel\" → \"stainless steel bearing\"\n- PREVIOUS_CONTEXT=\"stainless steel bearing\", USER_QUERY=\"roller\" → \"stainless steel roller bearing\"\n- PREVIOUS_CONTEXT=\"pump shaft\", USER_QUERY=\"4KHP9-3\" → \"pump shaft 4KHP9-3\"\n- PREVIOUS_CONTEXT=\"laptop\", USER_QUERY=\"MIN1287783\" → \"laptop MIN1287783\"\n- PREVIOUS_CONTEXT=\"dell laptop\", USER_QUERY=\"3FCP1\" → \"dell laptop 3FCP1\"\n\n## Step 4 Overrides (apply last)\n\n| Condition | Action |\n|---|---|\n| nextStep == \"proceed\" | force currentSearchKey = \"\" |\n| nextStep == \"shop_more\" AND USER_QUERY == \"\" | force currentSearchKey = \"\" |\n| nextStep == \"couldnt_find\" AND currentSearchKey == \"\" | extract noun from PREVIOUS_CONTEXT |\n\n# Step 5 — Build queryContext\n\n| nextStep | Rule |\n|---|---|\n| proceed | \"\" |\n| shop_more | \"\" |\n| couldnt_find | PREVIOUS_CONTEXT (preserve as-is) |\n| search + NEW_SEARCH | cleaned USER_QUERY (fresh context) |\n| search + REFINEMENT | the merged currentSearchKey from Step 4 |\n| search + FILTER | PREVIOUS_CONTEXT (copy exactly as-is) |\n\n# Step 6 — Build filterLabel\n\nIf NEW_SEARCH → filterLabel = \"\"\n\nIf REFINEMENT or FILTER:\n\nFormat: \"[Acknowledgment] — filtered results only for [product term][, from/under/matching <condition>]...\"\n\nThe product term (from PREVIOUS_CONTEXT or the merged currentSearchKey) MUST always appear in the sentence, even for supplier, price, or source filters.\n\n- Start with one of: \"Got it\", \"Understood\", \"Sure\", \"On it\" — followed by \" — \"\n- First condition uses \"filtered results only for [value]\" or \"filtered results only from [value]\"\n- Each additional condition appends \", matching [value]\". Only include a property label (e.g., \"item number\", \"part number\") if the USER explicitly stated it. Never infer a property label from the format of the value.\n- Same filter type repeated → replace that part, don't append\n- If PREVIOUS_FILTER_LABEL exists, extend it with the new condition; don't rewrite from scratch unless replacing\n- Do NOT wrap filter values in asterisks, quotes, or any other formatting markers. Output plain text only.\n\nExamples:\n- REFINEMENT \"tapered\" after \"pump shaft\" → \"Got it — filtered results only for tapered pump shaft.\"\n- FILTER \"Grainger\" after \"bearing\" → \"Understood — filtered results only for bearing, from Grainger.\"\n- prev \"...from Grainger.\" + \"MIN1287783\" → \"Understood — filtered results only from Grainger, matching MIN1287783.\"\n- prev \"...for tapered pump shaft.\" + \"Grainger\" → \"Got it — filtered results only for tapered pump shaft, from Grainger.\"\n- prev \"...from Grainger.\" + \"Amazon Business\" → \"Got it — filtered results only from Amazon Business.\"\n- REFINEMENT \"4KHP9-3\" after \"pump shaft\" → \"Got it — filtered results only for pump shaft 4KHP9-3.\"\n\nStyle: under 25 words, plain text with no special formatting or markup around values.\n\n# Hard rules\n\n1. NEVER return empty currentSearchKey when nextStep is \"search\" — use fallback chain\n2. ALWAYS prefer reuse over empty\n3. If uncertain → search with best available signal\n4. When PREVIOUS_CONTEXT exists and USER_QUERY is short (1-2 words), favor REFINEMENT — **only if the query could logically modify, narrow, or describe PREVIOUS_CONTEXT** (e.g., a brand, attribute, spec, or sub-type of the same product). If the short query is a recognizable standalone product with no logical relationship to PREVIOUS_CONTEXT (e.g., \"bearing\" when PREVIOUS_CONTEXT is \"laptop\"), treat as NEW_SEARCH regardless of length.\n5. JSON only. No wrapping. No explanation.\n6. When query is a FILTER, currentSearchKey and queryContext MUST be copied exactly from PREVIOUS_CONTEXT\n7. filterLabel MUST be \"\" ONLY for NEW_SEARCH. It MUST be non-empty for both REFINEMENT and FILTER.\n8. Comparative/directional words (above, below, over, under, more than, less than, at least, up to, around) must be preserved verbatim from USER_QUERY in currentSearchKey and queryContext."
+          },
+          {
+            "id": "49e1390d-6f10-448d-bde1-774e0d9c111c",
+            "role": "user",
+            "text": "Classify the following inputs.\n---\nUSER_QUERY: {{system.userQuery}}\n\nBUTTON_MESSAGE: {{flow.buttonMessage}}\n\nSELECTED_ITEMS: {{flow.cart}}\n\nPREVIOUS_CONTEXT: {{flow.queryContext}}\n\nPREVIOUS_FILTER_LABEL: {{flow.filterLabel}}\n\nCONVERSATION_HISTORY:{{thread.messages}}"
+          }
+        ],
+        "tools": [],
+        "resources": [],
+        "libraries": [],
+        "maxIterations": 5,
+        "structuredOutput": {
+          "enable": true,
+          "name": "",
+          "description": "",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "assistantMeta": {
+                "type": "object",
+                "properties": {
+                  "cartStatus": {
+                    "type": "string",
+                    "enum": [
+                      "loaded",
+                      "empty"
+                    ]
+                  },
+                  "currentSearchKey": {
+                    "type": "string"
+                  },
+                  "queryContext": {
+                    "type": "string"
+                  },
+                  "frontdoorIntent": {
+                    "type": "string"
+                  },
+                  "filterLabel": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "cartStatus",
+                  "currentSearchKey",
+                  "queryContext",
+                  "filterLabel"
+                ],
+                "additionalProperties": false
+              },
+              "nextStep": {
+                "type": "string",
+                "enum": [
+                  "search",
+                  "proceed",
+                  "shop_more",
+                  "couldnt_find",
+                  "clarify"
+                ]
+              }
+            },
+            "required": [
+              "assistantMeta",
+              "nextStep"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "includeThoughts": true,
+        "skills": []
+      },
+      "data": {},
+      "variableUpdates": [
+        {
+          "fieldName": "flow.assistantMeta",
+          "operation": "set",
+          "value": "{{nodeOutput.structuredOutput.assistantMeta}}"
+        },
+        {
+          "fieldName": "flow.nextStep",
+          "operation": "set",
+          "value": "{{nodeOutput.structuredOutput.nextStep}}"
+        },
+        {
+          "fieldName": "flow.itemName",
+          "operation": "set",
+          "value": "{{nodeOutput.structuredOutput.assistantMeta.currentSearchKey}}"
+        },
+        {
+          "fieldName": "flow.queryContext",
+          "operation": "set",
+          "value": "{{nodeOutput.structuredOutput.assistantMeta.queryContext}}"
+        },
+        {
+          "fieldName": "flow.filterLabel",
+          "operation": "set",
+          "value": "{{nodeOutput.structuredOutput.assistantMeta.filterLabel}}"
+        }
+      ],
+      "width": 250,
+      "height": 126,
+      "selected": false,
+      "positionAbsolute": {
+        "x": -1611.5701982959852,
+        "y": 11.93766324026219
+      },
+      "dragging": false
+    },
+    {
+      "id": "eohz83u",
+      "type": "variable",
+      "name": "next_search_request",
+      "description": "",
+      "position": {
+        "x": 108.86841615839012,
+        "y": -291.9084888805121
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {},
+      "data": {},
+      "width": 307,
+      "height": 72,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 110.97352195751182,
+        "y": -291.9084888805121
+      },
+      "dragging": false,
+      "variableUpdates": [
+        {
+          "fieldName": "thread.messages",
+          "operation": "append",
+          "value": "What item would you like to shop for next?",
+          "role": "assistant"
+        }
+      ]
+    },
+    {
+      "id": "tmkq5pt",
+      "type": "variable",
+      "name": "next_search_or_create",
+      "description": "",
+      "position": {
+        "x": 116.86841615839012,
+        "y": -100.17638722779829
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {},
+      "data": {},
+      "width": 325,
+      "height": 72,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 114.55694525903584,
+        "y": -100.17638722779829
+      },
+      "dragging": false,
+      "variableUpdates": [
+        {
+          "fieldName": "thread.messages",
+          "operation": "append",
+          "value": "Okay, do you want to search for a new item or create a requisition?",
+          "role": "assistant"
+        }
+      ]
+    },
+    {
+      "id": "dhxvxvh",
+      "type": "rule",
+      "name": "navigator",
+      "description": "",
+      "position": {
+        "x": -1327.8429043091937,
+        "y": -118.64840244480263
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "rules": [
+          {
+            "ruleId": "r-search",
+            "enable": true,
+            "conditions": [
+              {
+                "field": "{{flow.nextStep}}",
+                "operator": "equals",
+                "value": "search"
+              }
+            ],
+            "logicType": "AND"
+          },
+          {
+            "ruleId": "r-shop_more",
+            "enable": true,
+            "conditions": [
+              {
+                "field": "{{flow.nextStep}}",
+                "operator": "equals",
+                "value": "shop_more"
+              }
+            ],
+            "logicType": "AND"
+          },
+          {
+            "ruleId": "r-couldnt_find_loaded",
+            "enable": true,
+            "conditions": [
+              {
+                "field": "{{flow.nextStep}}",
+                "operator": "equals",
+                "value": "couldnt_find"
+              },
+              {
+                "field": "{{flow.cart.length}}",
+                "operator": ">",
+                "value": 0
+              }
+            ],
+            "logicType": "AND"
+          },
+          {
+            "ruleId": "r-couldnt_find_empty",
+            "enable": true,
+            "conditions": [
+              {
+                "field": "{{flow.nextStep}}",
+                "operator": "equals",
+                "value": "couldnt_find"
+              },
+              {
+                "field": "{{flow.cart.length}}",
+                "operator": "equals",
+                "value": 0
+              }
+            ],
+            "logicType": "AND"
+          },
+          {
+            "ruleId": "r-proceed_empty",
+            "enable": true,
+            "conditions": [
+              {
+                "field": "{{flow.nextStep}}",
+                "operator": "equals",
+                "value": "proceed"
+              },
+              {
+                "field": "{{flow.cart.length}}",
+                "operator": "equals",
+                "value": 0
+              }
+            ],
+            "logicType": "AND"
+          },
+          {
+            "ruleId": "r-proceed_loaded",
+            "enable": true,
+            "conditions": [
+              {
+                "field": "{{flow.nextStep}}",
+                "operator": "equals",
+                "value": "proceed"
+              },
+              {
+                "field": "{{flow.cart.length}}",
+                "operator": ">",
+                "value": 0
+              }
+            ],
+            "logicType": "AND"
+          },
+          {
+            "ruleId": "r-wxl3so8p",
+            "enable": true,
+            "conditions": [
+              {
+                "field": "{{system.userQuery}}",
+                "operator": "equals",
+                "value": "Create Requisition"
+              }
+            ],
+            "logicType": "AND"
+          },
+          {
+            "ruleId": "r-else",
+            "enable": true,
+            "conditions": [],
+            "logicType": "default"
+          }
+        ]
+      },
+      "data": {},
+      "width": 316,
+      "height": 440,
+      "selected": false,
+      "positionAbsolute": {
+        "x": -1327.8429043091937,
+        "y": -118.64840244480263
+      },
+      "dragging": false
+    },
+    {
+      "id": "clrfy01",
+      "type": "variable",
+      "name": "ask_to_clarify",
+      "description": "",
+      "position": {
+        "x": 64.90958018421765,
+        "y": 376.9988483786993
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {},
+      "data": {},
+      "width": 250,
+      "height": 72,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 64.90958018421765,
+        "y": 376.9988483786993
+      },
+      "dragging": false,
+      "variableUpdates": [
+        {
+          "fieldName": "thread.messages",
+          "operation": "append",
+          "value": "I wasn't able to identify the specific item you're looking for. Could you describe what you need in a few words?",
+          "role": "assistant"
+        }
+      ]
+    },
+    {
+      "id": "1cb89x7",
+      "type": "script",
+      "name": "set_placeholder",
+      "description": "",
+      "position": {
+        "x": -266.32487066884835,
+        "y": 249.35159755519737
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "inputs": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "partialViewData": {
+                "type": "string"
+              },
+              "assistantMeta": {
+                "type": "object",
+                "properties": {},
+                "required": [],
+                "additionalProperties": false
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "values": {
+            "score": 95,
+            "isDefaultFlow": "{{flow.isDefaultFlow}}",
+            "partialViewData": "{{flow.partial_view_data}}",
+            "frontdoorIntent": "{{flow.assistantMeta}}",
+            "assistantMeta": "{{flow.assistantMeta}}"
+          }
+        },
+        "outputs": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "placeholderArr": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {},
+                  "required": [],
+                  "additionalProperties": false
+                }
+              },
+              "catalogAssistPayload": {
+                "type": "object",
+                "properties": {},
+                "required": [],
+                "additionalProperties": false
+              },
+              "assistantMeta": {
+                "type": "object",
+                "properties": {
+                  "cartStatus": {
+                    "type": "string"
+                  },
+                  "currentSearchKey": {
+                    "type": "string"
+                  },
+                  "queryContext": {
+                    "type": "string"
+                  },
+                  "frontdoorIntent": {
+                    "type": "string"
+                  },
+                  "inputString": {
+                    "type": "string"
+                  }
+                },
+                "required": [],
+                "additionalProperties": false
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        "code": "let placeholderArr = []\nlet catalogAssistPayload = {}\n\nlet assistantMeta = input.assistantMeta;\n\nlet partialViewData = []\n\nif (input.partialViewData && input.partialViewData.trim() !== \"\") {\n    partialViewData = JSON.parse(input.partialViewData)\n}\n\nif (!partialViewData || partialViewData.length === 0) {\n\n    placeholderArr =   [\n  {\n    \"key\": \"itemName\",\n    \"label\": \"Item Name\",\n    \"type\": \"text\",\n    \"editMode\": \"click\",\n    \"defaultValue\": \"\",\n    \"dataModelPath\": \"frontdoor_qa_masterData.keyword\",\n    \"dataModelRefreshConfig\": {\n      \"enabled\": true,\n      \"trigger\": \"blur\",\n      \"endpointId\": \"getFrontdoorResponse\",\n      \"payload\": {\n        \"userInput\": \"\"\n      },\n      \"payloadSearchKey\": \"userInput\",\n      \"inheritPlaceholderDependencies\": false,\n      \"inheritPlaceholderDataModelDependencies\": false,\n      \"dependencies\": [\n        {\n          \"placeholderKey\": \"requester\",\n          \"sourcePath\": [\"contactCode\", \"encryptedContactCode\"],\n          \"targetPayloadPath\": \"contactCode\",\n          \"applyMode\": \"changed\"\n        }\n      ],\n      \"responseDataPath\": \"result.data\",\n      \"channelMessageConfig\": [\n        {\n          \"enabled\": true,\n          \"receivers\": [\"catalog-item-cards\"],\n          \"action\": \"clearCart\"\n        },\n        {\n          \"enabled\": true,\n          \"receivers\": [\"catalog-item-cards\"],\n          \"action\": \"startLoading\"\n        },\n        {\n          \"enabled\": true,\n          \"receivers\": [\"catalog-item-cards\"],\n          \"action\": \"refreshCards\"\n        }\n      ]\n    }\n  },\n  {\n    \"key\": \"requester\",\n    \"label\": \"Requester\",\n    \"type\": \"autocomplete\",\n    \"editMode\": \"click\",\n    \"defaultValue\": \"\",\n    \"readOnly\": false,\n    \"dataModelPath\": \"frontdoor_qa_masterData.obo.name\",\n    \"replaceSelectedObject\": true,\n    \"autosuggestConfig\": {\n      \"endpointId\": \"usersBasedOnActivityCode\",\n      \"payload\": {\n        \"activityCodes\": [10700023, 10700091],\n        \"PageSize\": 500,\n        \"ExcludeLoggedUser\": false,\n        \"PageIndex\": 0,\n        \"requestForSelfOption\": true,\n        \"searchText\": \"\"\n      },\n      \"payloadSearchKey\": \"searchText\",\n      \"dataKey\": \"returnValue.masterRecords\",\n      \"displayPath\": \"name\",\n      \"valuePath\": \"name\",\n      \"enableSelfOption\": false,\n      \"minChars\": 1,\n      \"debounceMs\": 300,\n      \"columns\": [\n        { \"header\": \"Name\", \"path\": \"name\", \"width\": \"60%\" },\n        { \"header\": \"Email Id\", \"path\": \"emailId\", \"width\": \"40%\" }\n      ]\n    },\n    \"dataModelRefreshConfig\": {\n      \"enabled\": true,\n      \"trigger\": \"change\",\n      \"endpointId\": \"getFrontdoorResponse\",\n      \"payload\": {\n        \"userInput\": \"\",\n        \"contactCode\": \"\"\n      },\n      \"inheritPlaceholderDependencies\": false,\n      \"inheritPlaceholderDataModelDependencies\": false,\n      \"dependencies\": [\n        {\n          \"placeholderKey\": \"itemName\",\n          \"sourcePath\": \"\",\n          \"targetPayloadPath\": \"userInput\",\n          \"applyMode\": \"always\"\n        },\n        {\n          \"placeholderKey\": \"requester\",\n          \"sourcePath\": [\"contactCode\", \"encryptedContactCode\"],\n          \"targetPayloadPath\": \"contactCode\",\n          \"applyMode\": \"changed\"\n        }\n      ],\n      \"responseDataPath\": \"result.data\",\n      \"channelMessageConfig\": [\n        {\n          \"enabled\": true,\n          \"receivers\": [\"catalog-item-cards\"],\n          \"action\": \"clearCart\"\n        },\n        {\n          \"enabled\": true,\n          \"receivers\": [\"catalog-item-cards\"],\n          \"action\": \"startLoading\"\n        },\n        {\n          \"enabled\": true,\n          \"receivers\": [\"catalog-item-cards\"],\n          \"action\": \"refreshCards\"\n        }\n      ]\n    }\n  },\n  {\n    \"key\": \"businessUnit\",\n    \"label\": \"Business Unit\",\n    \"type\": \"autocomplete\",\n    \"editMode\": \"click\",\n    \"readOnly\": false,\n    \"defaultValue\": \"\",\n    \"dependencies\": [\n      {\n        \"placeholderKey\": \"requester\",\n        \"sourcePath\": [\"encryptedContactCode\", \"contactCode\"],\n        \"targetPayloadPath\": \"encryptedContactCode\",\n        \"resetOnChange\": true,\n        \"autoFetch\": true\n      }\n    ],\n    \"dataModelPath\": \"frontdoor_qa_masterData.headerOrg.entityCode\",\n    \"autosuggestConfig\": {\n      \"endpointId\": \"userOrgMapping\",\n      \"payload\": {\n        \"preferenceLOBType\": 0,\n        \"encryptedContactCode\": \"\",\n        \"appName\": 1,\n        \"entityId\": 0,\n        \"entityType\": \"\",\n        \"searchText\": \"\"\n      },\n      \"payloadSearchKey\": \"searchText\",\n      \"dataKey\": \"returnValue.masterRecords\",\n      \"displayPath\": \"entityName\",\n      \"valuePath\": \"entityDetailCode\",\n      \"columns\": [\n        { \"header\": \"Entity Code\", \"path\": \"entityCode\", \"width\": \"40%\" },\n        { \"header\": \"Entity Name\", \"path\": \"entityName\", \"width\": \"60%\" }\n      ]\n    },\n    \"channelMessageConfig\": [\n      {\n        \"enabled\": true,\n        \"from\": \"intent-builder\",\n        \"receivers\": [\"catalog-item-cards\"],\n        \"action\": \"clearCart\",\n        \"responseFields\": [\n          { \"sourcePath\": \"entityDetailCode\", \"targetKey\": \"frontdoor_qa_masterData.headerOrg.entityDetailCode\" },\n          { \"sourcePath\": \"entityName\", \"targetKey\": \"frontdoor_qa_masterData.headerOrg.entityName\" },\n          { \"sourcePath\": \"entityCode\", \"targetKey\": \"frontdoor_qa_masterData.headerOrg.entityCode\" },\n          { \"sourcePath\": \"entityType\", \"targetKey\": \"frontdoor_qa_masterData.headerOrg.entityType\" }\n        ]\n      },\n      {\n        \"enabled\": true,\n        \"from\": \"intent-builder\",\n        \"receivers\": [\"catalog-item-cards\"],\n        \"action\": \"refreshCardsWithContext\",\n        \"responseFields\": [\n          { \"sourcePath\": \"entityDetailCode\", \"targetKey\": \"frontdoor_qa_masterData.headerOrg.entityDetailCode\" },\n          { \"sourcePath\": \"entityName\", \"targetKey\": \"frontdoor_qa_masterData.headerOrg.entityName\" },\n          { \"sourcePath\": \"entityCode\", \"targetKey\": \"frontdoor_qa_masterData.headerOrg.entityCode\" },\n          { \"sourcePath\": \"entityType\", \"targetKey\": \"frontdoor_qa_masterData.headerOrg.entityType\" },\n          { \"sourcePath\": \"entityDetailCode\", \"targetKey\": \"frontdoor_qa_masterData.headerOrg.entityDetailCodeList.0\" },\n          { \"sourcePath\": \"entityDetailCode\", \"targetKey\": \"selectedObjects.businessUnit.entityDetailCodeList.0\" }\n        ]\n      }\n    ]\n  },\n  {\n    \"key\": \"category\",\n    \"label\": \"Category\",\n    \"type\": \"dropdown-with-viewall\",\n    \"editMode\": \"click\",\n    \"searchable\": false,\n    \"dataModelPath\": \"frontdoor_qa_masterData.category.name\",\n    \"dependencies\": [\n      {\n        \"placeholderKey\": \"itemName\",\n        \"sourcePath\": \"\",\n        \"targetPayloadPath\": \"data.inputString\",\n        \"resetOnChange\": true,\n        \"autoFetch\": false\n      }\n    ],\n    \"dataModelDependencies\": [\n      {\n        \"dataModelId\": \"catalog_assist_payload\",\n        \"dataModelPath\": \"frontdoor_qa_masterData.headerOrg.entityDetailCodeList\",\n        \"targetPayloadPath\": \"data.entityDetailCodeList\"\n      }\n    ],\n    \"autosuggestConfig\": {\n      \"endpointId\": \"getRecommendedAICategoryEndpoint\",\n      \"payload\": {\n        \"event\": \"\",\n        \"data\": {\n          \"entityDetailCodeList\": [],\n          \"inputString\": \"\"\n        },\n        \"additionalData\": {}\n      },\n      \"payloadSearchKey\": \"data.inputString\",\n      \"dataKey\": \"result.data.categories.recommendedCategory\",\n      \"displayPath\": \"name\",\n      \"valuePath\": \"clientCode\",\n      \"minChars\": 0,\n      \"columns\": [\n        { \"header\": \"Name\", \"path\": \"name\", \"width\": \"50%\" },\n        { \"header\": \"Description\", \"path\": \"description\", \"width\": \"50%\" }\n      ],\n      \"attachedConfig\": {\n        \"endPointId\": \"qa_getAICategoryRecommendationsV2\",\n        \"dataPath\": \"ReturnValue\",\n        \"fieldConfig\": true,\n        \"params\": {},\n        \"dropdownStyle\": true,\n        \"popupConfig\": {\n          \"manifestPath\": \"nexxe.nextgen-multiselect-popup\",\n          \"label\": \"req_cat_new\",\n          \"pathForCategoryData\": \"itemCategory\",\n          \"onSelect\": \"updateCategoryForLine\",\n          \"disable\": false,\n          \"lookupType\": \"popup\",\n          \"lookupConfig\": {\n            \"config\": {\n              \"popupId\": \"categoryId\",\n              \"isQubeMeshAiEnabled\": true,\n              \"selectableLevel\": [2, 3, 4],\n              \"disable\": false,\n              \"idMapField\": \"id\",\n              \"singleSelect\": true,\n              \"onlyLeafNodeSelectable\": false,\n              \"nameMapField\": \"name\",\n              \"parentIdMapField\": \"parentId\",\n              \"levelMapField\": \"level\",\n              \"displayNameMapField\": \"displayName\",\n              \"popupHeading\": \"Item Category(s)\",\n              \"childCountMapField\": \"childCount\",\n              \"lvlOnetotalCountMapField\": \"totalCount\",\n              \"responseDataMapField\": \"masterRecords\",\n              \"selectedNodes\": [],\n              \"isSelectAll\": false,\n              \"pageSize\": 20,\n              \"searchEnabled\": true,\n              \"searchPlaceholder\": \"Search...\",\n              \"events\": {},\n              \"cdsDataModelId\": \"cdscategory\",\n              \"data\": {\n                \"getLevelOneData\": \"qaCentralDataGetCategory\",\n                \"searchInTree\": \"qaCentralDataGetSearchCategory\",\n                \"loadMore\": \"qaCentralDatagetCategoryLoadMore\",\n                \"fetchChildNodes\": \"qaCentralDatagetCategoryChildNodes\"\n              },\n              \"isParentChildSelection\": true,\n              \"displayUptoLevel\": 100,\n              \"levelOneData\": []\n            },\n            \"manifestPathWithVersion\": \"nexxe.nextgen-multiselect-popup\"\n          },\n          \"attributes\": { \"disable\": false }\n        }\n      }\n    },\n    \"channelMessageConfig\": {\n      \"enabled\": true,\n      \"from\": \"intent-builder\",\n      \"receivers\": [\"catalog-item-cards\"],\n      \"action\": \"refreshCardsWithContext\",\n      \"responseFields\": [\n        { \"sourcePath\": \"name\", \"targetKey\": \"frontdoor_qa_masterData.category.name\" },\n        { \"sourcePath\": \"clientCode\", \"targetKey\": \"frontdoor_qa_masterData.category.clientCode\" }\n      ]\n    }\n  }\n]\n\n\n    catalogAssistPayload = {}\n\n} else {\n\n    catalogAssistPayload = JSON.parse(partialViewData[0])\n\n        placeholderArr = [\n  {\n    \"key\": \"itemName\",\n    \"label\": \"Item Name\",\n    \"type\": \"text\",\n    \"editMode\": \"click\",\n    \"defaultValue\": \"\",\n    \"dataModelPath\": \"frontdoor_qa_masterData.keyword\",\n    \"dataModelRefreshConfig\": {\n      \"enabled\": true,\n      \"trigger\": \"blur\",\n      \"endpointId\": \"getFrontdoorResponse\",\n      \"payload\": {\n        \"userInput\": \"\"\n      },\n      \"payloadSearchKey\": \"userInput\",\n      \"inheritPlaceholderDependencies\": false,\n      \"inheritPlaceholderDataModelDependencies\": false,\n      \"dependencies\": [\n        {\n          \"placeholderKey\": \"requester\",\n          \"sourcePath\": [\"contactCode\", \"encryptedContactCode\"],\n          \"targetPayloadPath\": \"contactCode\",\n          \"applyMode\": \"changed\"\n        }\n      ],\n      \"responseDataPath\": \"result.data\",\n      \"channelMessageConfig\": [\n        {\n          \"enabled\": true,\n          \"receivers\": [\"catalog-item-cards\"],\n          \"action\": \"clearCart\"\n        },\n        {\n          \"enabled\": true,\n          \"receivers\": [\"catalog-item-cards\"],\n          \"action\": \"startLoading\"\n        },\n        {\n          \"enabled\": true,\n          \"receivers\": [\"catalog-item-cards\"],\n          \"action\": \"refreshCards\"\n        }\n      ]\n    }\n  },\n  {\n    \"key\": \"requester\",\n    \"label\": \"Requester\",\n    \"type\": \"autocomplete\",\n    \"editMode\": \"click\",\n    \"defaultValue\": \"\",\n    \"readOnly\": true,\n    \"dataModelPath\": \"frontdoor_qa_masterData.obo.name\",\n    \"replaceSelectedObject\": true,\n    \"autosuggestConfig\": {\n      \"endpointId\": \"usersBasedOnActivityCode\",\n      \"payload\": {\n        \"activityCodes\": [10700023, 10700091],\n        \"PageSize\": 500,\n        \"ExcludeLoggedUser\": false,\n        \"PageIndex\": 0,\n        \"requestForSelfOption\": true,\n        \"searchText\": \"\"\n      },\n      \"payloadSearchKey\": \"searchText\",\n      \"dataKey\": \"returnValue.masterRecords\",\n      \"displayPath\": \"name\",\n      \"valuePath\": \"name\",\n      \"enableSelfOption\": false,\n      \"minChars\": 1,\n      \"debounceMs\": 300,\n      \"columns\": [\n        { \"header\": \"Name\", \"path\": \"name\", \"width\": \"60%\" },\n        { \"header\": \"Email Id\", \"path\": \"emailId\", \"width\": \"40%\" }\n      ]\n    },\n    \"dataModelRefreshConfig\": {\n      \"enabled\": true,\n      \"trigger\": \"change\",\n      \"endpointId\": \"getFrontdoorResponse\",\n      \"payload\": {\n        \"userInput\": \"\",\n        \"contactCode\": \"\"\n      },\n      \"inheritPlaceholderDependencies\": false,\n      \"inheritPlaceholderDataModelDependencies\": false,\n      \"dependencies\": [\n        {\n          \"placeholderKey\": \"itemName\",\n          \"sourcePath\": \"\",\n          \"targetPayloadPath\": \"userInput\",\n          \"applyMode\": \"always\"\n        },\n        {\n          \"placeholderKey\": \"requester\",\n          \"sourcePath\": [\"contactCode\", \"encryptedContactCode\"],\n          \"targetPayloadPath\": \"contactCode\",\n          \"applyMode\": \"changed\"\n        }\n      ],\n      \"responseDataPath\": \"result.data\",\n      \"channelMessageConfig\": [\n        {\n          \"enabled\": true,\n          \"receivers\": [\"catalog-item-cards\"],\n          \"action\": \"clearCart\"\n        },\n        {\n          \"enabled\": true,\n          \"receivers\": [\"catalog-item-cards\"],\n          \"action\": \"startLoading\"\n        },\n        {\n          \"enabled\": true,\n          \"receivers\": [\"catalog-item-cards\"],\n          \"action\": \"refreshCards\"\n        }\n      ]\n    }\n  },\n  {\n    \"key\": \"businessUnit\",\n    \"label\": \"Business Unit\",\n    \"type\": \"autocomplete\",\n    \"editMode\": \"click\",\n    \"readOnly\": true,\n    \"defaultValue\": \"\",\n    \"dependencies\": [\n      {\n        \"placeholderKey\": \"requester\",\n        \"sourcePath\": [\"encryptedContactCode\", \"contactCode\"],\n        \"targetPayloadPath\": \"encryptedContactCode\",\n        \"resetOnChange\": true,\n        \"autoFetch\": true\n      }\n    ],\n    \"dataModelPath\": \"frontdoor_qa_masterData.headerOrg.entityCode\",\n    \"autosuggestConfig\": {\n      \"endpointId\": \"userOrgMapping\",\n      \"payload\": {\n        \"preferenceLOBType\": 0,\n        \"encryptedContactCode\": \"\",\n        \"appName\": 1,\n        \"entityId\": 0,\n        \"entityType\": \"\",\n        \"searchText\": \"\"\n      },\n      \"payloadSearchKey\": \"searchText\",\n      \"dataKey\": \"returnValue.masterRecords\",\n      \"displayPath\": \"entityName\",\n      \"valuePath\": \"entityDetailCode\",\n      \"columns\": [\n        { \"header\": \"Entity Code\", \"path\": \"entityCode\", \"width\": \"40%\" },\n        { \"header\": \"Entity Name\", \"path\": \"entityName\", \"width\": \"60%\" }\n      ]\n    },\n    \"channelMessageConfig\": [\n      {\n        \"enabled\": true,\n        \"from\": \"intent-builder\",\n        \"receivers\": [\"catalog-item-cards\"],\n        \"action\": \"clearCart\",\n        \"responseFields\": [\n          { \"sourcePath\": \"entityDetailCode\", \"targetKey\": \"frontdoor_qa_masterData.headerOrg.entityDetailCode\" },\n          { \"sourcePath\": \"entityName\", \"targetKey\": \"frontdoor_qa_masterData.headerOrg.entityName\" },\n          { \"sourcePath\": \"entityCode\", \"targetKey\": \"frontdoor_qa_masterData.headerOrg.entityCode\" },\n          { \"sourcePath\": \"entityType\", \"targetKey\": \"frontdoor_qa_masterData.headerOrg.entityType\" }\n        ]\n      },\n      {\n        \"enabled\": true,\n        \"from\": \"intent-builder\",\n        \"receivers\": [\"catalog-item-cards\"],\n        \"action\": \"refreshCardsWithContext\",\n        \"responseFields\": [\n          { \"sourcePath\": \"entityDetailCode\", \"targetKey\": \"frontdoor_qa_masterData.headerOrg.entityDetailCode\" },\n          { \"sourcePath\": \"entityName\", \"targetKey\": \"frontdoor_qa_masterData.headerOrg.entityName\" },\n          { \"sourcePath\": \"entityCode\", \"targetKey\": \"frontdoor_qa_masterData.headerOrg.entityCode\" },\n          { \"sourcePath\": \"entityType\", \"targetKey\": \"frontdoor_qa_masterData.headerOrg.entityType\" },\n          { \"sourcePath\": \"entityDetailCode\", \"targetKey\": \"frontdoor_qa_masterData.headerOrg.entityDetailCodeList.0\" },\n          { \"sourcePath\": \"entityDetailCode\", \"targetKey\": \"selectedObjects.businessUnit.entityDetailCodeList.0\" }\n        ]\n      }\n    ]\n  },\n  {\n    \"key\": \"category\",\n    \"label\": \"Category\",\n    \"type\": \"dropdown-with-viewall\",\n    \"editMode\": \"click\",\n    \"searchable\": false,\n    \"dataModelPath\": \"frontdoor_qa_masterData.category.name\",\n    \"dependencies\": [\n      {\n        \"placeholderKey\": \"itemName\",\n        \"sourcePath\": \"\",\n        \"targetPayloadPath\": \"data.inputString\",\n        \"resetOnChange\": true,\n        \"autoFetch\": false\n      }\n    ],\n    \"dataModelDependencies\": [\n      {\n        \"dataModelId\": \"catalog_assist_payload\",\n        \"dataModelPath\": \"frontdoor_qa_masterData.headerOrg.entityDetailCodeList\",\n        \"targetPayloadPath\": \"data.entityDetailCodeList\"\n      }\n    ],\n    \"autosuggestConfig\": {\n      \"endpointId\": \"getRecommendedAICategoryEndpoint\",\n      \"payload\": {\n        \"event\": \"\",\n        \"data\": {\n          \"entityDetailCodeList\": [],\n          \"inputString\": \"\"\n        },\n        \"additionalData\": {}\n      },\n      \"payloadSearchKey\": \"data.inputString\",\n      \"dataKey\": \"result.data.categories.recommendedCategory\",\n      \"displayPath\": \"name\",\n      \"valuePath\": \"clientCode\",\n      \"minChars\": 0,\n      \"columns\": [\n        { \"header\": \"Name\", \"path\": \"name\", \"width\": \"50%\" },\n        { \"header\": \"Description\", \"path\": \"description\", \"width\": \"50%\" }\n      ],\n      \"attachedConfig\": {\n        \"endPointId\": \"qa_getAICategoryRecommendationsV2\",\n        \"dataPath\": \"ReturnValue\",\n        \"fieldConfig\": true,\n        \"params\": {},\n        \"dropdownStyle\": true,\n        \"popupConfig\": {\n          \"manifestPath\": \"nexxe.nextgen-multiselect-popup\",\n          \"label\": \"req_cat_new\",\n          \"pathForCategoryData\": \"itemCategory\",\n          \"onSelect\": \"updateCategoryForLine\",\n          \"disable\": false,\n          \"lookupType\": \"popup\",\n          \"lookupConfig\": {\n            \"config\": {\n              \"popupId\": \"categoryId\",\n              \"isQubeMeshAiEnabled\": true,\n              \"selectableLevel\": [2, 3, 4],\n              \"disable\": false,\n              \"idMapField\": \"id\",\n              \"singleSelect\": true,\n              \"onlyLeafNodeSelectable\": false,\n              \"nameMapField\": \"name\",\n              \"parentIdMapField\": \"parentId\",\n              \"levelMapField\": \"level\",\n              \"displayNameMapField\": \"displayName\",\n              \"popupHeading\": \"Item Category(s)\",\n              \"childCountMapField\": \"childCount\",\n              \"lvlOnetotalCountMapField\": \"totalCount\",\n              \"responseDataMapField\": \"masterRecords\",\n              \"selectedNodes\": [],\n              \"isSelectAll\": false,\n              \"pageSize\": 20,\n              \"searchEnabled\": true,\n              \"searchPlaceholder\": \"Search...\",\n              \"events\": {},\n              \"cdsDataModelId\": \"cdscategory\",\n              \"data\": {\n                \"getLevelOneData\": \"qaCentralDataGetCategory\",\n                \"searchInTree\": \"qaCentralDataGetSearchCategory\",\n                \"loadMore\": \"qaCentralDatagetCategoryLoadMore\",\n                \"fetchChildNodes\": \"qaCentralDatagetCategoryChildNodes\"\n              },\n              \"isParentChildSelection\": true,\n              \"displayUptoLevel\": 100,\n              \"levelOneData\": []\n            },\n            \"manifestPathWithVersion\": \"nexxe.nextgen-multiselect-popup\"\n          },\n          \"attributes\": { \"disable\": false }\n        }\n      }\n    },\n    \"channelMessageConfig\": {\n      \"enabled\": true,\n      \"from\": \"intent-builder\",\n      \"receivers\": [\"catalog-item-cards\"],\n      \"action\": \"refreshCardsWithContext\",\n      \"responseFields\": [\n        { \"sourcePath\": \"name\", \"targetKey\": \"frontdoor_qa_masterData.category.name\" },\n        { \"sourcePath\": \"clientCode\", \"targetKey\": \"frontdoor_qa_masterData.category.clientCode\" }\n      ]\n    }\n  }\n]\n\n        assistantMeta.frontdoorIntent = catalogAssistPayload.resolvedText\n        assistantMeta.inputString = catalogAssistPayload.inputString\n}\n\nreturn {\n    placeholderArr: placeholderArr,\n    catalogAssistPayload: catalogAssistPayload,\n    assistantMeta: assistantMeta\n}\n"
+      },
+      "data": {},
+      "width": 261,
+      "height": 72,
+      "selected": false,
+      "positionAbsolute": {
+        "x": -266.32487066884835,
+        "y": 252.64271542405515
+      },
+      "dragging": false,
+      "variableUpdates": [
+        {
+          "fieldName": "flow.assistantMeta",
+          "operation": "set",
+          "value": "{{nodeOutput.result.assistantMeta}}"
+        },
+        {
+          "fieldName": "flow.catalogAssistPayload",
+          "operation": "set",
+          "value": "{{nodeOutput.result.catalogAssistPayload}}"
+        },
+        {
+          "fieldName": "flow.placeHolderArray",
+          "operation": "set",
+          "value": "{{nodeOutput.result.placeholderArr}}"
+        }
+      ]
+    },
+    {
+      "id": "vgjf3dr",
+      "type": "script",
+      "name": "set_catalog_default_payload",
+      "description": "",
+      "position": {
+        "x": 124.69189895811871,
+        "y": -457.7075564633958
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "inputs": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "userDefaults": {
+                "type": "object",
+                "properties": {},
+                "required": [],
+                "additionalProperties": false
+              },
+              "catalogAssistPayload": {
+                "type": "object",
+                "properties": {},
+                "required": [],
+                "additionalProperties": false
+              },
+              "userQuery": {
+                "type": "string"
+              },
+              "alternateSearchKey": {
+                "type": "string"
+              },
+              "filterLabel": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "userDefaults"
+            ],
+            "additionalProperties": false
+          },
+          "values": {
+            "score": "",
+            "userDefaults": "{{flow.userDefaults}}",
+            "partialViewData": "{{flow.catalogAssistPayload}}",
+            "catalogAssistPayload": "{{flow.catalogAssistPayload}}",
+            "userQuery": "{{flow.queryContext}}",
+            "alternateSearchKey": "{{flow.alternateSearchKey}}",
+            "userContext": "{{flow.userContext}}",
+            "filterLabel": "{{flow.filterLabel}}"
+          }
+        },
+        "outputs": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "userDefaults": {
+                "type": "object",
+                "properties": {},
+                "required": [],
+                "additionalProperties": false
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        "code": "  let catalogAssistPayload = input.catalogAssistPayload;\n  let userDefaults = input.userDefaults || {};\n  let filterLabel = input.filterLabel;\n\n  if (catalogAssistPayload &&\n    typeof catalogAssistPayload === \"object\" &&\n    Object.keys(catalogAssistPayload).length > 0) {\n\n    if (catalogAssistPayload.obo) {\n      userDefaults.obo = catalogAssistPayload.obo;\n    }\n\n    if (catalogAssistPayload.headerOrg) {\n      userDefaults.headerOrg = catalogAssistPayload.headerOrg;\n    }\n\n  }\n  userDefaults.keyword = input.userQuery;\n  if (input.alternateSearchKey) {\n    userDefaults.alternateSearchKey = input.alternateSearchKey;\n  }\n\n  userDefaults.filterLabel = input.filterLabel;\n  return {\n    userDefaults: userDefaults\n  };"
+      },
+      "data": {},
+      "width": 350,
+      "height": 72,
+      "selected": false,
+      "dragging": false,
+      "variableUpdates": [
+        {
+          "fieldName": "flow.userDefaults",
+          "operation": "set",
+          "value": "{{nodeOutput.result.userDefaults}}"
+        }
+      ],
+      "positionAbsolute": {
+        "x": 124.69189895811871,
+        "y": -453.65509381925096
+      }
+    },
+    {
+      "id": "nns949i",
+      "type": "variable",
+      "name": "handoff",
+      "description": "",
+      "position": {
+        "x": 157.36841615839012,
+        "y": 60.89666314827531
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {},
+      "data": {},
+      "width": 250,
+      "height": 72,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 152.91113938374997,
+        "y": 60.89666314827531
+      },
+      "dragging": false,
+      "variableUpdates": [
+        {
+          "fieldName": "flow.handoff_to",
+          "operation": "set",
+          "value": "handoff_to_ppa"
+        }
+      ]
+    },
+    {
+      "id": "8iruk95",
+      "type": "variable",
+      "name": "empty_msg",
+      "description": "",
+      "position": {
+        "x": 1106.6457434246502,
+        "y": 175.63461503807818
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {},
+      "data": {},
+      "width": 250,
+      "height": 72,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 1106.6457434246502,
+        "y": 175.63461503807818
+      },
+      "dragging": true,
+      "variableUpdates": [
+        {
+          "fieldName": "thread.messages",
+          "operation": "append",
+          "value": " ",
+          "role": "assistant"
+        }
+      ]
+    },
+    {
+      "id": "k32me1v",
+      "type": "script",
+      "name": "set_pv_data",
+      "description": "",
+      "position": {
+        "x": -1954.1437249690541,
+        "y": 32.49077647302573
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "inputs": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "pv_data": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "pv_data"
+            ],
+            "additionalProperties": false
+          },
+          "values": {
+            "score": 95,
+            "pv_data": "{{flow.partial_view_data}}"
+          }
+        },
+        "outputs": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "selectedItems": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {},
+                  "required": [],
+                  "additionalProperties": false
+                }
+              },
+              "createRequisitionResponseDM": {
+                "type": "string"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        "code": "function safeParse(val) {\n  if (val === null || val === undefined) return null;\n  if (typeof val === 'object') return val;\n  if (typeof val === 'string') {\n    try {\n      const parsed = JSON.parse(val);\n      return (typeof parsed === 'string') ? JSON.parse(parsed) : parsed;\n    } catch (e) {\n      return null;\n    }\n  }\n  return null;\n}\n\nvar pv_data = safeParse(input.pv_data);\nif (!pv_data) return {};\n\nvar createRequisitionResponseDMData = {};\nif (Array.isArray(pv_data)) {\n  if (pv_data.length > 0) {\n    createRequisitionResponseDMData =\n      pv_data\n        .map(elem1 => safeParse(elem1))\n        .find(elem2 => elem2 && elem2.result && elem2.httpStatusCode) || {};\n  }\n\n  for (var i = 0; i < pv_data.length; i++) {\n    var item = safeParse(pv_data[i]);\n    if (item && Array.isArray(item.selectedItems)) {\n      return {\n        selectedItems: item.selectedItems,\n        createRequisitionResponseDM:\n          createRequisitionResponseDMData &&\n          createRequisitionResponseDMData.result &&\n          createRequisitionResponseDMData.result.data\n            ? createRequisitionResponseDMData.result.data\n            : {}\n      };\n    }\n  }\n}\n\nreturn { selectedItems: [], createRequisitionResponseDM: {} };"
+      },
+      "data": {},
+      "width": 250,
+      "height": 72,
+      "selected": false,
+      "dragging": false,
+      "positionAbsolute": {
+        "x": -1954.1437249690541,
+        "y": 32.49077647302573
+      },
+      "variableUpdates": [
+        {
+          "fieldName": "flow.createRequisitionResponseDM",
+          "operation": "set",
+          "value": "{{nodeOutput.result.createRequisitionResponseDM}}"
+        },
+        {
+          "fieldName": "flow.cart",
+          "operation": "set",
+          "value": "{{nodeOutput.result.selectedItems}}"
+        }
+      ]
+    },
+    {
+      "id": "90axykj",
+      "type": "tool",
+      "name": "catalogcartpvhost004",
+      "description": "Description:\ncatalog_cart_pv_host\n\nNotes:\ncatalog_cart_pv_host",
+      "position": {
+        "x": 735.4086667687386,
+        "y": -477.7075564633958
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "enabled": true,
+        "toolId": "mcp-91c843df-f1be-4b22-adbb-88cc1c74029b-catalogcartpvhost004",
+        "type": "mcp",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "preText": {
+              "description": "Optional Markdown shown immediately before this view. Use to introduce what it shows/why it matters or give brief instructions. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+              "type": "string"
+            },
+            "postText": {
+              "description": "Optional Markdown shown immediately after this view. Use for next steps, brief context/interpretation, or a transition to the next section/view. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+              "type": "string"
+            },
+            "catalog_assist_payload": {
+              "description": "Description:\n\n\nNotes:\n",
+              "type": "string"
+            },
+            "catalog_assist_btn_container": {
+              "description": "Description:\n\n\nNotes:\n",
+              "type": "string"
+            },
+            "placeholderDM": {
+              "description": "Description:\n\n\nNotes:\n",
+              "type": "string"
+            }
+          },
+          "condition": "Description:\ncatalog_cart_pv_host\n\nNotes:\ncatalog_cart_pv_host"
+        },
+        "settings": {
+          "serverId": "91c843df-f1be-4b22-adbb-88cc1c74029b"
+        },
+        "returnDirect": false,
+        "title": "catalogcartpvhost004",
+        "_meta": {
+          "uiView": "{\"RefId\":null,\"ViewUniqueId\":\"b99bccc4-b09d-422a-a8d8-63ae68f77da2\",\"Version\":[0,0],\"Type\":\"partialView\",\"Name\":\"catalog_cart_pv_host-0.0.4\",\"Icon\":null,\"Channel\":\"auto\",\"Description\":\"catalog_cart_pv_host\",\"Instruction\":\"catalog_cart_pv_host\",\"AppId\":null,\"ModuleId\":null,\"EnableContextSharing\":true,\"Overrides\":{\"catalog_assist_payload\":{\"Type\":\"data\",\"OverrideId\":\"catalog_assist_payload\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"catalog_assist_payload\",\"Description\":\"\",\"Instruction\":\"\",\"Value\":null,\"DataType\":\"object\",\"Source\":\"static\"},\"catalog_assist_btn_container\":{\"Type\":\"data\",\"OverrideId\":\"catalog_assist_btn_container\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"catalog_assist_btn_container\",\"Description\":\"\",\"Instruction\":\"\",\"Value\":null,\"DataType\":\"array\",\"Source\":\"static\"},\"placeholderDM\":{\"Type\":\"data\",\"OverrideId\":\"placeholderDM\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"placeholderDM\",\"Description\":\"\",\"Instruction\":\"\",\"Value\":null,\"DataType\":\"array\",\"Source\":\"static\"}}}",
+          "type": "partial-view"
+        },
+        "parameters": {
+          "preText": "",
+          "postText": "",
+          "catalog_assist_payload": "{{flow.userDefaults}}",
+          "catalog_assist_btn_container": "",
+          "placeholderDM": "{{flow.placeHolderArray}}"
+        }
+      },
+      "data": {},
+      "width": 350,
+      "height": 112,
+      "selected": false,
+      "dragging": false,
+      "positionAbsolute": {
+        "x": 735.4086667687386,
+        "y": -475.01551487921546
+      }
+    },
+    {
+      "id": "5tlfj95",
+      "type": "tool",
+      "name": "buyingagentfrontdoortool",
+      "description": "Description:\n\n\nReturns:\n- \n\nFriendly Name: buying_agent_frontdoor_tool",
+      "position": {
+        "x": -454.5730380835729,
+        "y": -477.7075564633958
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "enabled": true,
+        "toolId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c-buyingagentfrontdoortool-34",
+        "type": "mcp",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "event": {
+              "description": "Event to execute DAC policy in server function.",
+              "type": "string"
+            },
+            "data": {
+              "description": "Payload used to execute the function.",
+              "type": "object"
+            },
+            "additionalData": {
+              "description": "Any additional data used by the function.",
+              "type": "object"
+            }
+          },
+          "required": [
+            "data"
+          ],
+          "condition": "Description:\n\n\nReturns:\n- \n\nFriendly Name: buying_agent_frontdoor_tool"
+        },
+        "settings": {
+          "serverId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c"
+        },
+        "returnDirect": false,
+        "title": "buyingagentfrontdoortool",
+        "_meta": {
+          "functionId": "335b82d7-e1a2-441d-983b-af1979a31d6c",
+          "type": "ssf-call",
+          "source": "current-module",
+          "moduleId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c",
+          "toolId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c",
+          "serverName": "module mcp"
+        },
+        "parameters": {
+          "event": "",
+          "data": {
+            "userInput": "{{flow.itemName}}"
+          },
+          "additionalData": {}
+        }
+      },
+      "data": {},
+      "width": 350,
+      "height": 112,
+      "selected": false,
+      "dragging": false,
+      "variableUpdates": [
+        {
+          "fieldName": "flow.userDefaults",
+          "operation": "set",
+          "value": "{{nodeOutput.result}}"
+        }
+      ],
+      "positionAbsolute": {
+        "x": -454.5730380835729,
+        "y": -475.6908051895255
+      }
+    },
+    {
+      "id": "043jesd",
+      "type": "tool",
+      "name": "getrequisitionbyid",
+      "description": "Description:\n\n\nReturns:\n- \n\nFriendly Name: get_requisition_by_id",
+      "position": {
+        "x": -438.80595382341573,
+        "y": 637.8842039500391
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "enabled": true,
+        "toolId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c-getrequisitionbyid-31",
+        "type": "mcp",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "event": {
+              "description": "Event to execute DAC policy in server function.",
+              "type": "string"
+            },
+            "data": {
+              "description": "Payload used to execute the function.",
+              "type": "object"
+            },
+            "additionalData": {
+              "description": "Any additional data used by the function.",
+              "type": "object"
+            }
+          },
+          "required": [
+            "data"
+          ],
+          "condition": "Description:\n\n\nReturns:\n- \n\nFriendly Name: get_requisition_by_id"
+        },
+        "settings": {
+          "serverId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c"
+        },
+        "returnDirect": false,
+        "title": "getrequisitionbyid",
+        "_meta": {
+          "functionId": "92508526-16d6-4148-8cd3-854d213ed0f7",
+          "type": "ssf-call",
+          "source": "current-module",
+          "moduleId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c",
+          "toolId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c",
+          "serverName": "module mcp"
+        },
+        "parameters": {
+          "event": "",
+          "data": "{\r\n  \"reqId\": \"{{flow.createRequisitionResponseDM.basicDetail.documentId}}\"\r\n}",
+          "additionalData": "{}"
+        }
+      },
+      "data": {},
+      "width": 350,
+      "height": 96,
+      "selected": false,
+      "positionAbsolute": {
+        "x": -438.80595382341573,
+        "y": 637.8842039500391
+      },
+      "dragging": false
+    },
+    {
+      "id": "787l4y6",
+      "type": "tool",
+      "name": "createrequisitionpv0012",
+      "description": "Description:\nPartial View to create requisition\n\nNotes:\nPartial View to create requisition",
+      "position": {
+        "x": 104.36841615839012,
+        "y": 628.3670954200593
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "enabled": true,
+        "toolId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c-createrequisitionpv0012-216",
+        "type": "mcp",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "preText": {
+              "description": "Optional Markdown shown immediately before this view. Use to introduce what it shows/why it matters or give brief instructions. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+              "type": "string"
+            },
+            "postText": {
+              "description": "Optional Markdown shown immediately after this view. Use for next steps, brief context/interpretation, or a transition to the next section/view. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+              "type": "string"
+            },
+            "createRequisitionResponseDM": {
+              "description": "Description:\n\n\nNotes:\n",
+              "type": "string"
+            }
+          },
+          "condition": "Description:\nPartial View to create requisition\n\nNotes:\nPartial View to create requisition"
+        },
+        "settings": {
+          "serverId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c"
+        },
+        "returnDirect": false,
+        "title": "createrequisitionpv0012",
+        "_meta": {
+          "uiView": "{\"RefId\":null,\"ViewUniqueId\":\"f90d972d-182c-4967-b144-3abf746d4cd5\",\"Version\":[0,0],\"Type\":\"partialView\",\"Name\":\"create_requisition_pv-0.0.12\",\"Icon\":null,\"Channel\":\"auto\",\"Description\":\"Partial View to create requisition\",\"Instruction\":\"Partial View to create requisition\",\"AppId\":null,\"ModuleId\":null,\"EnableContextSharing\":true,\"Overrides\":{\"createRequisitionResponseDM\":{\"Type\":\"data\",\"OverrideId\":\"createRequisitionResponseDM\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"createRequisitionResponseDM\",\"Description\":\"\",\"Instruction\":\"\",\"Value\":null,\"DataType\":\"object\",\"Source\":\"static\"}}}",
+          "type": "partial-view",
+          "source": "current-module",
+          "moduleId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c",
+          "toolId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c",
+          "serverName": "module mcp"
+        },
+        "parameters": {
+          "preText": "",
+          "postText": "",
+          "createRequisitionResponseDM": "{{flow.createRequisitionResponseDM}}"
+        }
+      },
+      "data": {},
+      "width": 350,
+      "height": 112,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 104.85505596948798,
+        "y": 628.3670954200593
+      },
+      "dragging": false
+    }
+  ],
+  "edges": [
+    {
+      "id": "reactflow__edge-eohz83u-output",
+      "source": "eohz83u",
+      "target": "output",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "variable",
+        "targetType": "output"
+      }
+    },
+    {
+      "id": "reactflow__edge-tmkq5pt-output",
+      "source": "tmkq5pt",
+      "target": "output",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "variable",
+        "targetType": "output"
+      }
+    },
+    {
+      "id": "reactflow__edge-dhxvxvhr-shop_more-eohz83u",
+      "source": "dhxvxvh",
+      "target": "eohz83u",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": "r-shop_more",
+      "targetHandle": null,
+      "data": {
+        "sourceType": "rule",
+        "targetType": "variable"
+      }
+    },
+    {
+      "id": "reactflow__edge-dhxvxvhr-couldnt_find_loaded-tmkq5pt",
+      "source": "dhxvxvh",
+      "target": "tmkq5pt",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": "r-couldnt_find_loaded",
+      "targetHandle": null,
+      "data": {
+        "sourceType": "rule",
+        "targetType": "variable"
+      }
+    },
+    {
+      "id": "reactflow__edge-dhxvxvhr-couldnt_find_empty-nns949i",
+      "source": "dhxvxvh",
+      "target": "nns949i",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": "r-couldnt_find_empty",
+      "targetHandle": null,
+      "data": {
+        "sourceType": "rule",
+        "targetType": "variable"
+      }
+    },
+    {
+      "id": "reactflow__edge-dhxvxvhr-proceed_empty-nns949i",
+      "source": "dhxvxvh",
+      "target": "nns949i",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": "r-proceed_empty",
+      "targetHandle": null,
+      "data": {
+        "sourceType": "rule",
+        "targetType": "variable"
+      }
+    },
+    {
+      "id": "reactflow__edge-dhxvxvhr-else-clrfy01",
+      "source": "dhxvxvh",
+      "target": "clrfy01",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": "r-else",
+      "targetHandle": null,
+      "data": {
+        "sourceType": "rule",
+        "targetType": "variable"
+      }
+    },
+    {
+      "id": "reactflow__edge-clrfy01-output",
+      "source": "clrfy01",
+      "target": "output",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "variable",
+        "targetType": "output"
+      },
+      "selected": false
+    },
+    {
+      "id": "reactflow__edge-ujm35ij-1cb89x7",
+      "source": "ujm35ij",
+      "target": "1cb89x7",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "agent",
+        "targetType": "script"
+      }
+    },
+    {
+      "id": "reactflow__edge-1cb89x7-dhxvxvh",
+      "source": "1cb89x7",
+      "target": "dhxvxvh",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "script",
+        "targetType": "rule"
+      }
+    },
+    {
+      "id": "reactflow__edge-nns949i-output",
+      "source": "nns949i",
+      "target": "output",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "variable",
+        "targetType": "output"
+      }
+    },
+    {
+      "id": "reactflow__edge-8iruk95-output",
+      "source": "8iruk95",
+      "target": "output",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "variable",
+        "targetType": "output"
+      }
+    },
+    {
+      "id": "reactflow__edge-start-k32me1v",
+      "source": "start",
+      "target": "k32me1v",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "start",
+        "targetType": "script"
+      }
+    },
+    {
+      "id": "reactflow__edge-k32me1v-ujm35ij",
+      "source": "k32me1v",
+      "target": "ujm35ij",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "script",
+        "targetType": "agent"
+      }
+    },
+    {
+      "id": "reactflow__edge-dhxvxvhr-proceed_loaded-nns949i",
+      "source": "dhxvxvh",
+      "target": "nns949i",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": "r-proceed_loaded",
+      "targetHandle": null,
+      "data": {
+        "sourceType": "rule",
+        "targetType": "variable"
+      }
+    },
+    {
+      "id": "reactflow__edge-vgjf3dr-90axykj",
+      "source": "vgjf3dr",
+      "target": "90axykj",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "script",
+        "targetType": "tool"
+      }
+    },
+    {
+      "id": "reactflow__edge-90axykj-8iruk95",
+      "source": "90axykj",
+      "target": "8iruk95",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "tool",
+        "targetType": "variable"
+      }
+    },
+    {
+      "id": "reactflow__edge-5tlfj95-vgjf3dr",
+      "source": "5tlfj95",
+      "target": "vgjf3dr",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "tool",
+        "targetType": "script"
+      }
+    },
+    {
+      "id": "reactflow__edge-dhxvxvhr-search-5tlfj95",
+      "source": "dhxvxvh",
+      "target": "5tlfj95",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": "r-search",
+      "targetHandle": null,
+      "data": {
+        "sourceType": "rule",
+        "targetType": "tool"
+      }
+    },
+    {
+      "id": "reactflow__edge-dhxvxvhr-wxl3so8p-043jesd",
+      "source": "dhxvxvh",
+      "target": "043jesd",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": "r-wxl3so8p",
+      "targetHandle": null,
+      "data": {
+        "sourceType": "rule",
+        "targetType": "tool"
+      }
+    },
+    {
+      "id": "reactflow__edge-043jesd-787l4y6",
+      "source": "043jesd",
+      "target": "787l4y6",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "tool",
+        "targetType": "tool"
+      }
+    },
+    {
+      "id": "reactflow__edge-787l4y6-output",
+      "source": "787l4y6",
+      "target": "output",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "tool",
+        "targetType": "output"
+      }
+    }
+  ],
+  "originalBpc": "20210511",
+  "originalEnvironment": "DEV",
+  "freezeRelease": false,
+  "overwriteOnNextRelease": false,
+  "fromModuleVersion": "v1781093875659812800",
+  "lastModifiedVersion": "v1781121601712159400",
+  "rebasedFromVersion": null,
+  "createdBy": "Chinmay.Patil@gep.com",
+  "createdOn": "2026-03-16T04:17:43.129Z",
+  "updatedBy": "Jitendra.Chanchlani@gep.com",
+  "updatedOn": "2026-06-09T15:30:59.202Z",
+  "environment": "DEV",
+  "appId": "e2c84064-171f-4f1a-a29a-19e0ac610935",
+  "moduleId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c",
+  "version": "v1781121601712159400"
+}

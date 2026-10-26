@@ -1,0 +1,361 @@
+{
+  "bpc": "",
+  "name": "all-agents",
+  "edges": [
+    {
+      "id": "edge_1781411774199_x28r4",
+      "data": {
+        "sourceType": "start",
+        "targetType": "agent"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "start_1781411766277_vgws6",
+      "target": "agent_1781411771017_da0wq",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "default",
+      "targetHandle": "default"
+    },
+    {
+      "id": "edge_1781411784280_trq62",
+      "data": {
+        "sourceType": "agent",
+        "targetType": "output"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "agent_1781411771017_da0wq",
+      "target": "output_1781411779582_rz4ae",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "default",
+      "targetHandle": "default"
+    },
+    {
+      "id": "edge_1781448542236_epysr",
+      "data": {
+        "sourceType": "workflow",
+        "targetType": "output"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "workflow_1781448530838_3zo7d",
+      "target": "output_1781411779582_rz4ae",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "default",
+      "targetHandle": "default"
+    },
+    {
+      "id": "edge_1781448544654_3nvrj",
+      "data": {
+        "sourceType": "workflow",
+        "targetType": "output"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "workflow_1781448533315_8zh1w",
+      "target": "output_1781411779582_rz4ae",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "default",
+      "targetHandle": "default"
+    },
+    {
+      "id": "edge_1781448546774_lke7a",
+      "data": {
+        "sourceType": "workflow",
+        "targetType": "output"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "workflow_1781448535473_nkpqe",
+      "target": "output_1781411779582_rz4ae",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "default",
+      "targetHandle": "default"
+    },
+    {
+      "id": "edge_1781448570829_kn1fj",
+      "data": {
+        "handoff": true,
+        "sourceType": "agent",
+        "targetType": "workflow"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "agent_1781411771017_da0wq",
+      "target": "workflow_1781448530838_3zo7d",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "handoff-workflow_1781448530838_3zo7d",
+      "targetHandle": null
+    },
+    {
+      "id": "edge_1781448575993_s9wsf",
+      "data": {
+        "handoff": true,
+        "sourceType": "agent",
+        "targetType": "workflow"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "agent_1781411771017_da0wq",
+      "target": "workflow_1781448533315_8zh1w",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "handoff-workflow_1781448533315_8zh1w",
+      "targetHandle": null
+    },
+    {
+      "id": "edge_1781448577422_4uvk5",
+      "data": {
+        "handoff": true,
+        "sourceType": "agent",
+        "targetType": "workflow"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "agent_1781411771017_da0wq",
+      "target": "workflow_1781448535473_nkpqe",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "handoff-workflow_1781448535473_nkpqe",
+      "targetHandle": null
+    }
+  ],
+  "nodes": [
+    {
+      "id": "start_1781411766277_vgws6",
+      "name": "Start_1",
+      "type": "start",
+      "style": {},
+      "width": 200,
+      "config": {
+        "interfaceInputs": [],
+        "variableUpdates": []
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 200,
+        "y": 150
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 200,
+        "y": 150
+      }
+    },
+    {
+      "id": "agent_1781411771017_da0wq",
+      "name": "supervisor-agent",
+      "type": "agent",
+      "style": {},
+      "width": 200,
+      "config": {
+        "model": "claude-haiku-4-5",
+        "tools": [],
+        "strategy": "react",
+        "outputSchema": [],
+        "stateUpdates": [],
+        "systemPrompt": "You are a supervisor agent responsible for routing the user's request to the correct sub-agent.\n\nYou must analyze the user's query and decide which sub-agent should handle it.\n\nAvailable sub-agents:\n\nenergy-agent\n\nUse this agent when the user asks about utility bills, energy usage, utility consumption, cost, demand, billing periods, missing utility bills, or energy performance.\n\nUse `energy-agent` when the user asks about:\n\n* utility bills\n* energy bills\n* electricity usage\n* gas usage\n* chilled water usage\n* steam usage\n* water usage\n* kWh usage\n* therm usage\n* gallon usage\n* TONHR usage\n* demand or demand kW\n* consumption\n* expense\n* utility cost\n* bill amount\n* meter data\n* account usage\n* billing periods\n* date ranges for bill analysis\n* cost analysis related to utilities or energy\n\nAlso use `energy-agent` for building energy performance questions, including:\n\n* \"How is my building performing this period?\"\n* \"Is demand high?\"\n* \"Are consumption ranges as expected?\"\n* \"Is there a potential for a demand spike?\"\n\nAlso use `energy-agent` for energy usage variance and root cause questions, including:\n\n* \"Why was this month's energy usage higher than normal?\"\n* \"Why was last month's energy usage lower than normal?\"\n* \"Why was this year's energy usage higher than expected?\"\n* \"Why was usage lower than expected?\"\n* \"Was the usage change weather related?\"\n* \"Were there high consumption periods?\"\n* \"What caused the increase in consumption?\"\n* \"What caused the decrease in energy usage?\"\n\nAlso use `energy-agent` for missing utility bill or missing energy data questions, including:\n\n* \"Do I have missing data?\"\n* \"What utility bills are missing?\"\n* \"What sites are behind on data?\"\n* \"How up to date are these bills?\"\n* \"What periods are missing in my portfolio?\"\n* \"Which accounts are missing bills?\"\n* \"Which facilities have stale utility data?\"\n* \"Are there gaps in my billing periods?\"\n\nfacility-agent\n\nUse this agent when the user asks about facility or building metadata, not energy performance.\n\nUse this agent when the user asks about:\n\n* buildings\n* facilities\n* sites\n* property information\n* asset information\n* facility metadata\n* location details\n* building details\n* building address\n* square footage\n* ownership\n* facility attributes\n\nDo not choose `facility-agent` just because the user says \"building\" or \"site\".\nIf the user asks how a building is performing from an energy, usage, cost, demand, bill, or consumption perspective, choose `energy-agent`.\n\nrisk-agent\n\nUse this agent when the user asks about broader financial, operational, portfolio, or business risk that is not primarily a utility bill, energy usage, demand, missing bill, or consumption analysis request.\n\nUse this agent when the user asks about:\n\n* risk\n* exposure\n* financial risk\n* operational risk\n* forecasting risk\n* identifying high-risk facilities\n* portfolio risk analysis\n* business risk analysis\n\nDo not choose `risk-agent` just because the user says \"spike\", \"high\", \"abnormal\", \"variance\", or \"anomaly\".\nIf the abnormality is about utility bills, energy usage, consumption, demand, cost, missing bills, or billing periods, choose `energy-agent`.\n\nRouting rules:\n\nChoose exactly one sub-agent.\n\nDo not answer the user's question directly.\n\nDo not perform the analysis yourself.\n\nOnly decide which sub-agent should handle the request.\n\nIf the user asks about bills, utility cost, usage, consumption, demand, meter data, account usage, or billing date ranges, choose `energy-agent`.\n\nIf the query mentions a date range and asks to check a bill, choose `energy-agent`.\n\nIf the user asks how a building is performing for an energy period, choose `energy-agent`.\n\nIf the user asks whether demand is high, choose `energy-agent`.\n\nIf the user asks whether consumption ranges are expected, choose `energy-agent`.\n\nIf the user asks about potential demand spikes, choose `energy-agent`.\n\nIf the user asks why energy usage was higher or lower than normal, choose `energy-agent`.\n\nIf the user asks whether usage change was weather related, choose `energy-agent`.\n\nIf the user asks about high consumption periods, choose `energy-agent`.\n\nIf the user asks about missing utility bills, missing energy data, stale bills, sites behind on bill data, or missing billing periods, choose `energy-agent`.\n\nIf the request is clearly about facility metadata, property information, site details, building attributes, or location information, choose `facility-agent`.\n\nIf the request is clearly about broader risk and is not primarily about utility bills, energy usage, consumption, demand, cost, or missing bills, choose `risk-agent`.\n\nIf the request is ambiguous, choose the best matching sub-agent based on the primary intent.\n\nDecision priority:\n\n1. If the user asks about utility bills, energy usage, consumption, demand, cost, billing periods, missing bills, or energy performance, choose `energy-agent`.\n2. Else if the user asks about facility metadata, building information, property information, site details, or location details, choose `facility-agent`.\n3. Else if the user asks about broader financial, operational, or portfolio risk, choose `risk-agent`.\n4. If still ambiguous, choose the best matching sub-agent based on the main business intent.\n\nExamples that must route to `energy-agent`:\n\n* \"I want to check the bill which starts from 2022-07-15 to 2022-12-11.\"\n* \"How many kWh did Site 12 use in July 2025?\"\n* \"What was the electricity cost for Site 8 last month?\"\n* \"Show total demand for Building A in Q1 2026.\"\n* \"How much water did the hotel use in May?\"\n* \"Compare gas usage between January and February.\"\n* \"What was the total utility bill for Site 12 in 2025?\"\n* \"How is my building performing this period?\"\n* \"Is demand high this month?\"\n* \"Are consumption ranges as expected?\"\n* \"Is there a potential for a demand spike?\"\n* \"Why was this month's energy usage higher than normal?\"\n* \"Why was last month's energy usage lower than expected?\"\n* \"Was the higher usage weather related?\"\n* \"Which periods had high consumption?\"\n* \"Do I have missing data?\"\n* \"What utility bills are missing?\"\n* \"What sites are behind on data?\"\n* \"How up to date are these bills?\"\n* \"What periods are missing in my portfolio?\"\n\nExamples that must route to `facility-agent`:\n\n* \"What is the address of Building A?\"\n* \"Show me the metadata for Facility 5704.\"\n* \"What sites are in my portfolio?\"\n* \"What is the square footage of this facility?\"\n* \"Which buildings are located in Virginia?\"\n\nExamples that must route to `risk-agent`:\n\n* \"Which facilities have the highest operational risk?\"\n* \"What is my portfolio risk exposure?\"\n* \"Which sites are high risk from a financial perspective?\"\n* \"Forecast operational risk across my facilities.\"\n\n\n## Output format\n\nReturn exactly one valid JSON object in this format:\n\n```json\n{\"handoffTarget\": \"<agent_name>\"}\n```\n\nThe value of `handoffTarget` must be exactly one of:\n\n* `\"energy-agent\"`\n* `\"facility-agent\"`\n* `\"risk-agent\"`\n\nOutput rules:\n\n* Return only the JSON object.\n* Do not include Markdown code fences.\n* Do not include explanations, reasoning, comments, or additional fields.\n* Use the property name `handoffTarget` exactly as written.\n* The output must be valid JSON that can be parsed directly.\n\nValid examples:\n\n```json\n{\"handoffTarget\": \"energy-agent\"}\n```\n\n```json\n{\"handoffTarget\": \"facility-agent\"}\n```\n\n```json\n{\"handoffTarget\": \"risk-agent\"}\n```\n",
+        "handoffTarget": [
+          "workflow_1781448530838_3zo7d",
+          "workflow_1781448533315_8zh1w",
+          "workflow_1781448535473_nkpqe"
+        ],
+        "maxIterations": 10,
+        "includeThoughts": false,
+        "variableUpdates": [],
+        "userQueryMapping": "{{system.userQuery}}"
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 533,
+        "y": 130
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "all agents v2",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 533,
+        "y": 130
+      }
+    },
+    {
+      "id": "output_1781411779582_rz4ae",
+      "name": "Output_1",
+      "type": "output",
+      "style": {},
+      "width": 200,
+      "config": {
+        "format": "text",
+        "outputKey": "result",
+        "stateUpdates": [],
+        "outputMapping": []
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 1193,
+        "y": 143
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 1193,
+        "y": 143
+      }
+    },
+    {
+      "id": "workflow_1781448530838_3zo7d",
+      "name": "energy-agent",
+      "type": "workflow",
+      "style": {},
+      "width": 200,
+      "config": {
+        "inputs": [
+          {
+            "key": "userQuery",
+            "type": "string",
+            "value": "{{system.userQuery}}"
+          }
+        ],
+        "stateUpdates": [],
+        "variableUpdates": [],
+        "agenticWorkflowId": "fa034007-d489-40f2-b955-e6e0c1643210"
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 863,
+        "y": 292
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 863,
+        "y": 292
+      }
+    },
+    {
+      "id": "workflow_1781448533315_8zh1w",
+      "name": "facility-energy",
+      "type": "workflow",
+      "style": {},
+      "width": 200,
+      "config": {
+        "inputs": [],
+        "stateUpdates": [],
+        "variableUpdates": [],
+        "agenticWorkflowId": "f4939d80-204c-4fa4-bfe0-5645cea90363"
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 863,
+        "y": 402
+      },
+      "selected": true,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 863,
+        "y": 402
+      }
+    },
+    {
+      "id": "workflow_1781448535473_nkpqe",
+      "name": "risk-energy",
+      "type": "workflow",
+      "style": {},
+      "width": 200,
+      "config": {
+        "inputs": [],
+        "stateUpdates": [],
+        "variableUpdates": [],
+        "agenticWorkflowId": "f1c5d831-b832-4105-8225-720eca07298e"
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 865,
+        "y": 508
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 865,
+        "y": 508
+      }
+    }
+  ],
+  "editAs": "",
+  "skills": [],
+  "security": {},
+  "interface": {},
+  "variables": {
+    "allAgentsTestPoint": {
+      "type": "string",
+      "default": "testing"
+    }
+  },
+  "isDisabled": false,
+  "description": "",
+  "displayName": "all-agents",
+  "systemParams": [
+    {
+      "name": "system.allAgentsSystemParamsTesting",
+      "description": "",
+      "defaultValue": ""
+    }
+  ],
+  "invocationType": "",
+  "semanticDomain": "",
+  "includeThoughts": false,
+  "publishChannels": [],
+  "semanticKeywords": "",
+  "semanticUseCases": "",
+  "agenticWorkflowId": "51af4056-6edb-4b0a-85fd-940084f66d96",
+  "enableForAutoInvoke": false,
+  "semanticSearchEnabled": false,
+  "isAvailableForMigration": false,
+  "schemaVersion": "1.0"
+}

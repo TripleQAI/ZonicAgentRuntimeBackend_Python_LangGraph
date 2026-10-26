@@ -1,0 +1,76 @@
+{
+  "schemaVersion": "2.0",
+  "agenticWorkflowId": "synthetic-subflow-chain-parent",
+  "name": "subflow-chain-parent",
+  "displayName": "Subflow Chain Parent",
+  "description": "Parent of a three-level sub-flow chain.",
+  "variables": {},
+  "systemParams": [],
+  "publishChannels": [],
+  "nodes": [
+    {
+      "id": "start_1",
+      "type": "start",
+      "name": "Start_1",
+      "description": "",
+      "config": {
+        "interfaceInputs": [],
+        "variableUpdates": []
+      }
+    },
+    {
+      "id": "sub_1",
+      "type": "workflow",
+      "name": "Child",
+      "description": "",
+      "config": {
+        "agenticWorkflowId": "synthetic-subflow-chain-child",
+        "inputs": [
+          {
+            "key": "userQuery",
+            "type": "string",
+            "value": "{{system.userQuery}}"
+          }
+        ],
+        "stateUpdates": [],
+        "variableUpdates": []
+      }
+    },
+    {
+      "id": "output_1",
+      "type": "output",
+      "name": "Output_1",
+      "description": "",
+      "config": {
+        "outputMapping": [
+          {
+            "target": "answer",
+            "source": "{{nodes.Child.output.result}}",
+            "type": "string"
+          }
+        ],
+        "variableUpdates": []
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e_start_1_default_sub_1",
+      "source": "start_1",
+      "target": "sub_1",
+      "sourceHandle": "default",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    },
+    {
+      "id": "e_sub_1_default_output_1",
+      "source": "sub_1",
+      "target": "output_1",
+      "sourceHandle": "default",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    }
+  ]
+}

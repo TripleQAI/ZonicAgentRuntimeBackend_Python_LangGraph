@@ -1,0 +1,156 @@
+{
+  "schemaVersion": "2.0",
+  "agenticWorkflowId": "synthetic-routing-rule-branches",
+  "name": "routing-rule-branches",
+  "displayName": "Routing Rule Branches",
+  "description": "A Rule with two conditional branches and an else branch, each to its own Output.",
+  "variables": {
+    "topic": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "systemParams": [],
+  "publishChannels": [],
+  "nodes": [
+    {
+      "id": "start_1",
+      "type": "start",
+      "name": "Start_1",
+      "description": "",
+      "config": {
+        "interfaceInputs": [],
+        "variableUpdates": []
+      }
+    },
+    {
+      "id": "rule_1",
+      "type": "rule",
+      "name": "Rule_1",
+      "description": "",
+      "config": {
+        "rules": [
+          {
+            "label": "Billing",
+            "ruleId": "r_billing",
+            "conditions": [
+              {
+                "op": "eq",
+                "field": "{{flow.topic}}",
+                "logic": "AND",
+                "value": "billing"
+              }
+            ],
+            "conditionLogic": "AND"
+          },
+          {
+            "label": "Outage",
+            "ruleId": "r_outage",
+            "conditions": [
+              {
+                "op": "contains",
+                "field": "{{flow.topic}}",
+                "logic": "AND",
+                "value": "outage"
+              }
+            ],
+            "conditionLogic": "AND"
+          },
+          {
+            "label": "Else",
+            "ruleId": "r_else",
+            "conditions": [],
+            "conditionLogic": "AND",
+            "isDefault": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "output_billing",
+      "type": "output",
+      "name": "Billing",
+      "description": "",
+      "config": {
+        "outputMapping": [
+          {
+            "target": "answer",
+            "source": "billing",
+            "type": "string"
+          }
+        ],
+        "variableUpdates": []
+      }
+    },
+    {
+      "id": "output_outage",
+      "type": "output",
+      "name": "Outage",
+      "description": "",
+      "config": {
+        "outputMapping": [
+          {
+            "target": "answer",
+            "source": "outage",
+            "type": "string"
+          }
+        ],
+        "variableUpdates": []
+      }
+    },
+    {
+      "id": "output_other",
+      "type": "output",
+      "name": "Other",
+      "description": "",
+      "config": {
+        "outputMapping": [
+          {
+            "target": "answer",
+            "source": "other",
+            "type": "string"
+          }
+        ],
+        "variableUpdates": []
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e_start_1_default_rule_1",
+      "source": "start_1",
+      "target": "rule_1",
+      "sourceHandle": "default",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    },
+    {
+      "id": "e_rule_1_r_billing_output_billing",
+      "source": "rule_1",
+      "target": "output_billing",
+      "sourceHandle": "r_billing",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    },
+    {
+      "id": "e_rule_1_r_outage_output_outage",
+      "source": "rule_1",
+      "target": "output_outage",
+      "sourceHandle": "r_outage",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    },
+    {
+      "id": "e_rule_1_r_else_output_other",
+      "source": "rule_1",
+      "target": "output_other",
+      "sourceHandle": "r_else",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    }
+  ]
+}

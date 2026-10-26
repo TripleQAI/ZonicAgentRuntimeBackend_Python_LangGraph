@@ -1,0 +1,473 @@
+{
+  "bpc": "",
+  "name": "fsh-facility-agent-v2",
+  "edges": [
+    {
+      "id": "edge_1785511255095_wqscr",
+      "data": {
+        "sourceType": "start",
+        "targetType": "llm"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "start_1785511197864_jvbmh",
+      "target": "llm_1785511238576_utnwf",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "default",
+      "targetHandle": "default"
+    },
+    {
+      "id": "edge_1785511257073_5voxq",
+      "data": {
+        "sourceType": "llm",
+        "targetType": "agent"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "llm_1785511238576_utnwf",
+      "target": "agent_1785511250074_xp7b6",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "default",
+      "targetHandle": "default"
+    },
+    {
+      "id": "edge_1785511280808_x4v8u",
+      "data": {
+        "sourceType": "agent",
+        "targetType": "output"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "agent_1785511250074_xp7b6",
+      "target": "output_1785511275818_6bl65",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "default",
+      "targetHandle": "default"
+    },
+    {
+      "id": "edge_1785511504304_sk5vl",
+      "data": {
+        "sourceType": "llm",
+        "targetType": "view"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "llm_1785511291123_pvzlk",
+      "target": "view_1785511492573_4qhdx",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "default",
+      "targetHandle": "default"
+    },
+    {
+      "id": "edge_1785511541338_vwb2n",
+      "data": {
+        "sourceType": "variable",
+        "targetType": "output"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "variable_1785511511620_aig39",
+      "target": "output_1785511275818_6bl65",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "default",
+      "targetHandle": "default"
+    },
+    {
+      "id": "edge_1785511543845_xv2b5",
+      "data": {
+        "sourceType": "view",
+        "targetType": "variable"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "view_1785511492573_4qhdx",
+      "target": "variable_1785511511620_aig39",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "default",
+      "targetHandle": "default"
+    },
+    {
+      "id": "edge_1785511545448_6c6zr",
+      "data": {
+        "sourceType": "view",
+        "targetType": "variable"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "view_1785511500675_nupj0",
+      "target": "variable_1785511511620_aig39",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "default",
+      "targetHandle": "default"
+    },
+    {
+      "id": "edge_1785511559115_7pwvr",
+      "data": {
+        "sourceType": "llm",
+        "targetType": "view"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "llm_1785511293299_zq6g4",
+      "target": "view_1785511500675_nupj0",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "default",
+      "targetHandle": "default"
+    },
+    {
+      "id": "edge_1785511585034_x0mr4",
+      "data": {
+        "handoff": true,
+        "sourceType": "agent",
+        "targetType": "llm"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "agent_1785511250074_xp7b6",
+      "target": "llm_1785511291123_pvzlk",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "handoff-llm_1785511291123_pvzlk",
+      "targetHandle": null
+    },
+    {
+      "id": "edge_1785511591288_dzn79",
+      "data": {
+        "handoff": true,
+        "sourceType": "agent",
+        "targetType": "llm"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "agent_1785511250074_xp7b6",
+      "target": "llm_1785511293299_zq6g4",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "handoff-llm_1785511293299_zq6g4",
+      "targetHandle": null
+    }
+  ],
+  "nodes": [
+    {
+      "id": "start_1785511197864_jvbmh",
+      "name": "Start_1",
+      "type": "start",
+      "style": {},
+      "width": 200,
+      "config": {
+        "interfaceInputs": [],
+        "variableUpdates": []
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 141,
+        "y": 147
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 141,
+        "y": 147
+      }
+    },
+    {
+      "id": "llm_1785511238576_utnwf",
+      "name": "keywords-extraction",
+      "type": "llm",
+      "style": {},
+      "width": 200,
+      "config": {
+        "model": "claude-sonnet-4-6",
+        "tools": [],
+        "messages": [],
+        "maxTokens": 1024,
+        "temperature": 0.7,
+        "outputSchema": [],
+        "stateUpdates": [],
+        "errorHandling": false,
+        "responseFormat": "text",
+        "variableUpdates": []
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 438,
+        "y": 134
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 438,
+        "y": 134
+      }
+    },
+    {
+      "id": "agent_1785511250074_xp7b6",
+      "name": "facility-agent",
+      "type": "agent",
+      "style": {},
+      "width": 200,
+      "config": {
+        "model": "claude-sonnet-4-6",
+        "tools": [],
+        "strategy": "react",
+        "outputSchema": [],
+        "stateUpdates": [],
+        "systemPrompt": "",
+        "handoffTarget": [
+          "llm_1785511291123_pvzlk",
+          "llm_1785511293299_zq6g4"
+        ],
+        "maxIterations": 10,
+        "includeThoughts": false,
+        "variableUpdates": []
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 759,
+        "y": 134
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 759,
+        "y": 134
+      }
+    },
+    {
+      "id": "output_1785511275818_6bl65",
+      "name": "Output_1",
+      "type": "output",
+      "style": {},
+      "width": 200,
+      "config": {
+        "variableUpdates": []
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 2002,
+        "y": 133
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 2002,
+        "y": 133
+      }
+    },
+    {
+      "id": "llm_1785511291123_pvzlk",
+      "name": "direct-answer",
+      "type": "llm",
+      "style": {},
+      "width": 200,
+      "config": {
+        "model": "claude-sonnet-4-6",
+        "tools": [],
+        "messages": [],
+        "maxTokens": 1024,
+        "temperature": 0.7,
+        "outputSchema": [],
+        "stateUpdates": [],
+        "errorHandling": false,
+        "responseFormat": "text",
+        "variableUpdates": []
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 1006,
+        "y": 284
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 1006,
+        "y": 284
+      }
+    },
+    {
+      "id": "llm_1785511293299_zq6g4",
+      "name": "data-processing",
+      "type": "llm",
+      "style": {},
+      "width": 200,
+      "config": {
+        "model": "claude-sonnet-4-6",
+        "tools": [],
+        "messages": [],
+        "maxTokens": 1024,
+        "temperature": 0.7,
+        "outputSchema": [],
+        "stateUpdates": [],
+        "errorHandling": false,
+        "responseFormat": "text",
+        "variableUpdates": []
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 1011,
+        "y": 459
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 1011,
+        "y": 459
+      }
+    },
+    {
+      "id": "view_1785511492573_4qhdx",
+      "name": "View_1",
+      "type": "view",
+      "style": {},
+      "width": 200,
+      "config": {
+        "viewMode": "html_template",
+        "htmlTemplate": "<div>\n  <!-- Reference variables with {{variable.path}} -->\n</div>",
+        "outputSchema": [],
+        "templateConfig": "{\n  \"data\": {},\n  \"html_template\": \"\",\n  \"attached_config\": {}\n}",
+        "variableUpdates": []
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 1450,
+        "y": 295
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 1450,
+        "y": 295
+      }
+    },
+    {
+      "id": "view_1785511500675_nupj0",
+      "name": "View_2",
+      "type": "view",
+      "style": {},
+      "width": 200,
+      "config": {
+        "viewMode": "html_template",
+        "htmlTemplate": "<div>\n  <!-- Reference variables with {{variable.path}} -->\n</div>",
+        "outputSchema": [],
+        "templateConfig": "{\n  \"data\": {},\n  \"html_template\": \"\",\n  \"attached_config\": {}\n}",
+        "variableUpdates": []
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 1447,
+        "y": 470
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 1447,
+        "y": 470
+      }
+    },
+    {
+      "id": "variable_1785511511620_aig39",
+      "name": "VarUpdate_1",
+      "type": "variable",
+      "style": {},
+      "width": 200,
+      "config": {
+        "updates": [],
+        "outputSchema": []
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 1738,
+        "y": 347
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 1738,
+        "y": 347
+      }
+    }
+  ],
+  "editAs": "",
+  "skills": [],
+  "security": {},
+  "interface": {},
+  "variables": {},
+  "isDisabled": false,
+  "description": "",
+  "displayName": "fsh-facility-agent-v2",
+  "systemParams": [],
+  "invocationType": "",
+  "semanticDomain": "",
+  "includeThoughts": false,
+  "publishChannels": [],
+  "semanticKeywords": "",
+  "semanticUseCases": "",
+  "agenticWorkflowId": "f4939d80-204c-4fa4-bfe0-5645cea90363",
+  "enableForAutoInvoke": false,
+  "semanticSearchEnabled": false,
+  "isAvailableForMigration": false
+}

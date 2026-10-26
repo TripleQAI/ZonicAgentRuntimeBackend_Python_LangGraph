@@ -1,0 +1,252 @@
+{
+  "schemaVersion": "2.0",
+  "agenticWorkflowId": "synthetic-nested-loops",
+  "name": "nested-loops",
+  "displayName": "Nested Loops",
+  "description": "An inner loop (refine until good) inside an outer loop (next section until done).",
+  "variables": {
+    "quality": {
+      "type": "number",
+      "default": 0
+    },
+    "done": {
+      "type": "boolean",
+      "default": false
+    },
+    "sections": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "systemParams": [],
+  "publishChannels": [],
+  "nodes": [
+    {
+      "id": "start_1",
+      "type": "start",
+      "name": "Start_1",
+      "description": "",
+      "config": {
+        "interfaceInputs": [],
+        "variableUpdates": []
+      }
+    },
+    {
+      "id": "outer_1",
+      "type": "llm",
+      "name": "Outer_1",
+      "description": "",
+      "config": {
+        "model": "claude-haiku-4-5",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Write the next section."
+          },
+          {
+            "role": "user",
+            "content": "{{system.userQuery}}"
+          }
+        ],
+        "tools": [],
+        "responseFormat": "text",
+        "temperature": 0.2,
+        "maxTokens": 512,
+        "outputSchema": [],
+        "stateUpdates": [],
+        "variableUpdates": []
+      }
+    },
+    {
+      "id": "inner_1",
+      "type": "llm",
+      "name": "Inner_1",
+      "description": "",
+      "config": {
+        "model": "claude-haiku-4-5",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Refine the section."
+          },
+          {
+            "role": "user",
+            "content": "{{system.userQuery}}"
+          }
+        ],
+        "tools": [],
+        "responseFormat": "text",
+        "temperature": 0.2,
+        "maxTokens": 512,
+        "outputSchema": [],
+        "stateUpdates": [],
+        "variableUpdates": []
+      }
+    },
+    {
+      "id": "inner_check",
+      "type": "rule",
+      "name": "Inner_check",
+      "description": "",
+      "config": {
+        "rules": [
+          {
+            "label": "Refine again",
+            "ruleId": "r_again",
+            "conditions": [
+              {
+                "op": "lt",
+                "field": "{{flow.quality}}",
+                "logic": "AND",
+                "value": 3
+              }
+            ],
+            "conditionLogic": "AND"
+          },
+          {
+            "label": "Good",
+            "ruleId": "r_else",
+            "conditions": [],
+            "conditionLogic": "AND",
+            "isDefault": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "count_1",
+      "type": "variable",
+      "name": "Count_1",
+      "description": "",
+      "config": {
+        "updates": [
+          {
+            "path": "flow.sections",
+            "op": "set",
+            "value": "{{flow.sections}}+1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "outer_check",
+      "type": "rule",
+      "name": "Outer_check",
+      "description": "",
+      "config": {
+        "rules": [
+          {
+            "label": "More sections",
+            "ruleId": "r_more",
+            "conditions": [
+              {
+                "op": "ne",
+                "field": "{{flow.done}}",
+                "logic": "AND",
+                "value": true
+              }
+            ],
+            "conditionLogic": "AND"
+          },
+          {
+            "label": "Done",
+            "ruleId": "r_else",
+            "conditions": [],
+            "conditionLogic": "AND",
+            "isDefault": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "output_1",
+      "type": "output",
+      "name": "Output_1",
+      "description": "",
+      "config": {
+        "outputMapping": [
+          {
+            "target": "answer",
+            "source": "{{nodes.Inner_1.output.result}}",
+            "type": "string"
+          }
+        ],
+        "variableUpdates": []
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e_start_1_default_outer_1",
+      "source": "start_1",
+      "target": "outer_1",
+      "sourceHandle": "default",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    },
+    {
+      "id": "e_outer_1_default_inner_1",
+      "source": "outer_1",
+      "target": "inner_1",
+      "sourceHandle": "default",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    },
+    {
+      "id": "e_inner_1_default_inner_check",
+      "source": "inner_1",
+      "target": "inner_check",
+      "sourceHandle": "default",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    },
+    {
+      "id": "e_inner_check_r_again_inner_1",
+      "source": "inner_check",
+      "target": "inner_1",
+      "sourceHandle": "r_again",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    },
+    {
+      "id": "e_inner_check_r_else_count_1",
+      "source": "inner_check",
+      "target": "count_1",
+      "sourceHandle": "r_else",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    },
+    {
+      "id": "e_count_1_default_outer_check",
+      "source": "count_1",
+      "target": "outer_check",
+      "sourceHandle": "default",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    },
+    {
+      "id": "e_outer_check_r_more_outer_1",
+      "source": "outer_check",
+      "target": "outer_1",
+      "sourceHandle": "r_more",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    },
+    {
+      "id": "e_outer_check_r_else_output_1",
+      "source": "outer_check",
+      "target": "output_1",
+      "sourceHandle": "r_else",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    }
+  ]
+}

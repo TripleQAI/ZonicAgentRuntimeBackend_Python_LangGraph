@@ -84,23 +84,50 @@ class RunStateMachine(ZonicResourceModel):
 
 
 class DialectMatch(ZonicResourceModel):
-    path: str  # selector path, e.g. 'nodes[type=rule].config.rules[*].conditions[*].operator'
-    equals: Any = None
-    in_: list[Any] | None = Field(default=None, alias="in")
-    exists: bool | None = None
+    """When a rule applies to an item (document, node or edge); every given test must hold."""
+
+    has: str | None = None  # the path exists
+    non_empty: str | None = None  # the path holds a non-empty list
+    equals: dict[str, Any] = Field(default_factory=dict)  # path -> value
+    type_of: dict[str, str] = Field(default_factory=dict)  # path -> JSON type name
 
 
 class DialectRule(ZonicResourceModel):
+    """One normalization rule (design 5.2): a generic operation with its arguments and note."""
+
     id: str
-    match: DialectMatch
-    set: dict[str, Any] = Field(default_factory=dict)
-    rename: dict[str, str] = Field(default_factory=dict)
-    remove: list[str] = Field(default_factory=list)
-    transform: str | None = None  # a named transform registered in the normalizer
+    rule_class: Literal["alias", "platform"] = Field(alias="class")
+    target: Literal["document", "node", "edge"]
+    op: str
+    args: dict[str, Any] = Field(default_factory=dict)
+    when: DialectMatch | None = None
     note: str
+    node_types: list[str] = Field(default_factory=list)  # empty with kinds empty: every node
+    kinds: list[str] = Field(default_factory=list)
 
 
 @exported("resources")
 class DialectRules(ZonicResourceModel):
+    """``dialects.json``: everything the normalizer knows about the two dialects."""
+
     schema_version: str
+    layout_keys: list[str] = Field(default_factory=list)
+    edge_layout_keys: list[str] = Field(default_factory=list)
+    ignored_document_fields: list[str] = Field(default_factory=list)
+    ignored_config_fields: dict[str, list[str]] = Field(default_factory=dict)  # node type -> config keys
+    canonical_operators: list[str] = Field(default_factory=list)
+    operator_aliases: dict[str, str] = Field(default_factory=dict)
+    default_rule_ids: list[str] = Field(default_factory=list)
+    agent_strategies: list[str] = Field(default_factory=list)
     rules: list[DialectRule]
+
+    @model_validator(mode="after")
+    def _consistent(self) -> DialectRules:
+        ids = [r.id for r in self.rules]
+        duplicates = sorted({i for i in ids if ids.count(i) > 1})
+        if duplicates:
+            raise ValueError(f"duplicate dialect rule IDs: {duplicates}")
+        unknown = sorted(set(self.operator_aliases.values()) - set(self.canonical_operators))
+        if unknown:
+            raise ValueError(f"operator aliases point at unknown operators: {unknown}")
+        return self

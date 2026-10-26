@@ -1,4 +1,725 @@
 {
   "schemaVersion": "1.0",
-  "rules": []
+  "layoutKeys": [
+    "position",
+    "positionAbsolute",
+    "width",
+    "height",
+    "style",
+    "selected",
+    "dragging",
+    "parentId",
+    "deletable",
+    "data.offset"
+  ],
+  "edgeLayoutKeys": [
+    "style",
+    "selected",
+    "deletable",
+    "animated",
+    "markerEnd",
+    "label"
+  ],
+  "ignoredDocumentFields": [
+    "bpc",
+    "editAs",
+    "invocationType",
+    "appId",
+    "moduleId",
+    "environment",
+    "version",
+    "isAvailableForMigration",
+    "enableForAutoInvoke",
+    "security",
+    "skills",
+    "semanticSearchEnabled",
+    "semanticDomain",
+    "semanticKeywords",
+    "semanticUseCases",
+    "originalBpc",
+    "originalEnvironment",
+    "freezeRelease",
+    "overwriteOnNextRelease",
+    "fromModuleVersion",
+    "lastModifiedVersion",
+    "rebasedFromVersion",
+    "createdBy",
+    "createdOn",
+    "updatedBy",
+    "updatedOn"
+  ],
+  "ignoredConfigFields": {
+    "agent": [
+      "resources",
+      "libraries",
+      "skills",
+      "connectors"
+    ],
+    "start": [
+      "label",
+      "nodeType"
+    ],
+    "tool": [
+      "_meta"
+    ],
+    "workflow": [
+      "agentInfo",
+      "appInfo",
+      "moduleInfo"
+    ]
+  },
+  "canonicalOperators": [
+    "eq",
+    "ne",
+    "gt",
+    "gte",
+    "lt",
+    "lte",
+    "contains",
+    "exists",
+    "not_exists",
+    "empty",
+    "not_empty",
+    "not_contains"
+  ],
+  "operatorAliases": {
+    "equals": "eq",
+    "==": "eq",
+    "!=": "ne",
+    "not equals": "ne",
+    ">": "gt",
+    ">=": "gte",
+    "<": "lt",
+    "<=": "lte",
+    "is empty": "empty",
+    "is not empty": "not_empty",
+    "not contains": "not_contains"
+  },
+  "defaultRuleIds": [
+    "r_else",
+    "r-else"
+  ],
+  "agentStrategies": [
+    "react"
+  ],
+  "rules": [
+    {
+      "id": "platform.variables-list",
+      "class": "platform",
+      "target": "document",
+      "when": {
+        "typeOf": {
+          "variables.flow": "array"
+        }
+      },
+      "op": "variablesFromList",
+      "args": {
+        "from": "variables.flow",
+        "to": "variables",
+        "nameField": "name",
+        "fields": [
+          "type",
+          "default",
+          "description",
+          "required"
+        ]
+      },
+      "note": "flow variables declared as a list became a map by name"
+    },
+    {
+      "id": "builder.empty-output-schema",
+      "class": "alias",
+      "target": "node",
+      "when": {
+        "has": "config.outputSchema"
+      },
+      "op": "deleteIfEmpty",
+      "args": {
+        "path": "config.outputSchema",
+        "empty": [
+          [],
+          {}
+        ]
+      },
+      "note": "an empty outputSchema means none"
+    },
+    {
+      "id": "builder.error-handling-switch",
+      "class": "alias",
+      "target": "node",
+      "when": {
+        "typeOf": {
+          "config.errorHandling": "boolean"
+        }
+      },
+      "op": "replaceValue",
+      "args": {
+        "path": "config.errorHandling",
+        "map": {
+          "false": null,
+          "true": {
+            "policy": "continue"
+          }
+        }
+      },
+      "note": "the Enable Error Handling switch became an error policy"
+    },
+    {
+      "id": "platform.node-updates",
+      "class": "platform",
+      "target": "node",
+      "when": {
+        "nonEmpty": "variableUpdates"
+      },
+      "op": "appendList",
+      "args": {
+        "from": "variableUpdates",
+        "to": "config.variableUpdates"
+      },
+      "note": "node-level variableUpdates moved into the configuration"
+    },
+    {
+      "id": "builder.empty-node-updates",
+      "class": "alias",
+      "target": "node",
+      "when": {
+        "has": "variableUpdates"
+      },
+      "op": "deleteIfEmpty",
+      "args": {
+        "path": "variableUpdates",
+        "empty": [
+          []
+        ],
+        "silent": true
+      },
+      "note": "an empty node-level variableUpdates list was removed"
+    },
+    {
+      "id": "builder.update-operation-key",
+      "class": "alias",
+      "target": "node",
+      "op": "renameKeysInList",
+      "args": {
+        "lists": [
+          "config.variableUpdates",
+          "config.stateUpdates",
+          "config.updates"
+        ],
+        "rename": {
+          "operation": "op"
+        }
+      },
+      "note": "update key operation read as op"
+    },
+    {
+      "id": "platform.update-field-name",
+      "class": "platform",
+      "target": "node",
+      "op": "renameKeysInList",
+      "args": {
+        "lists": [
+          "config.variableUpdates",
+          "config.stateUpdates",
+          "config.updates"
+        ],
+        "rename": {
+          "fieldName": "path"
+        }
+      },
+      "note": "update key fieldName read as path"
+    },
+    {
+      "id": "platform.update-conditions",
+      "class": "platform",
+      "target": "node",
+      "op": "conditionGroupsInList",
+      "args": {
+        "lists": [
+          "config.variableUpdates",
+          "config.stateUpdates",
+          "config.updates"
+        ],
+        "from": "rules",
+        "to": "when",
+        "logicKey": "logicType",
+        "operatorKey": "operator"
+      },
+      "note": "update rules became a condition"
+    },
+    {
+      "id": "builder.model-id",
+      "class": "alias",
+      "target": "node",
+      "when": {
+        "typeOf": {
+          "config.model": "string"
+        }
+      },
+      "op": "modelRef",
+      "args": {
+        "path": "config.model",
+        "emptyCode": "MODEL_DEFAULTED"
+      },
+      "note": "model ID {{modelId}} read as a model reference",
+      "kinds": [
+        "agent",
+        "llm"
+      ]
+    },
+    {
+      "id": "platform.model-object",
+      "class": "platform",
+      "target": "node",
+      "when": {
+        "typeOf": {
+          "config.model": "object"
+        }
+      },
+      "op": "modelRef",
+      "args": {
+        "path": "config.model",
+        "fields": {
+          "code": "modelId",
+          "provider": "provider",
+          "vendor": "vendor",
+          "name": "name",
+          "temperature": "temperature",
+          "topP": "topP",
+          "maxTokens": "maxTokens"
+        }
+      },
+      "note": "model object {{config.model.provider}}/{{config.model.code}} read as a model reference",
+      "kinds": [
+        "agent",
+        "llm"
+      ]
+    },
+    {
+      "id": "platform.prompt-template-agent",
+      "class": "platform",
+      "target": "node",
+      "when": {
+        "has": "config.promptTemplate"
+      },
+      "op": "promptTemplate",
+      "args": {
+        "from": "config.promptTemplate",
+        "systemTo": "config.systemPrompt",
+        "othersTo": "config.messages"
+      },
+      "note": "promptTemplate split into the system prompt and messages",
+      "kinds": [
+        "agent"
+      ]
+    },
+    {
+      "id": "platform.prompt-template-llm",
+      "class": "platform",
+      "target": "node",
+      "when": {
+        "has": "config.promptTemplate"
+      },
+      "op": "promptTemplate",
+      "args": {
+        "from": "config.promptTemplate",
+        "othersTo": "config.messages"
+      },
+      "note": "promptTemplate became the node's messages",
+      "kinds": [
+        "llm"
+      ]
+    },
+    {
+      "id": "platform.agent-strategy",
+      "class": "platform",
+      "target": "node",
+      "when": {
+        "has": "config.agentStrategy"
+      },
+      "op": "renameField",
+      "args": {
+        "from": "config.agentStrategy",
+        "to": "config.strategy"
+      },
+      "note": "agentStrategy read as strategy",
+      "kinds": [
+        "agent"
+      ]
+    },
+    {
+      "id": "builder.agent-strategy-supported",
+      "class": "alias",
+      "target": "node",
+      "kinds": [
+        "agent"
+      ],
+      "when": {
+        "has": "config.strategy"
+      },
+      "op": "allowedValues",
+      "args": {
+        "path": "config.strategy",
+        "allowedFrom": "agent_strategies",
+        "code": "DOCUMENT_INVALID"
+      },
+      "note": "agent strategy {{value}} is not supported (allowed: {{allowed}})"
+    },
+    {
+      "id": "platform.structured-output",
+      "class": "platform",
+      "target": "node",
+      "when": {
+        "has": "config.structuredOutput"
+      },
+      "op": "structuredOutput",
+      "args": {
+        "path": "config.structuredOutput",
+        "enableField": "enable"
+      },
+      "note": "structuredOutput applied when enabled",
+      "kinds": [
+        "agent",
+        "llm"
+      ]
+    },
+    {
+      "id": "platform.routing-tools",
+      "class": "platform",
+      "target": "node",
+      "when": {
+        "nonEmpty": "config.tools"
+      },
+      "op": "routingTools",
+      "args": {
+        "toolsPath": "config.tools",
+        "idField": "_id",
+        "edgeType": "handoff",
+        "edgeToolIdPath": "data.toolId",
+        "to": "config.routingTools",
+        "handlePrefix": "handoff-"
+      },
+      "note": "routing tool {{name}} hands off to {{target}}",
+      "kinds": [
+        "agent"
+      ]
+    },
+    {
+      "id": "platform.agent-tools",
+      "class": "platform",
+      "target": "node",
+      "when": {
+        "nonEmpty": "config.tools"
+      },
+      "op": "platformToolRefs",
+      "args": {
+        "toolsPath": "config.tools",
+        "idField": "_id",
+        "configKey": "config",
+        "typeKey": "type",
+        "serverIdPath": "settings.serverId"
+      },
+      "note": "platform tool {{name}} read as a tool reference",
+      "kinds": [
+        "agent",
+        "llm"
+      ]
+    },
+    {
+      "id": "builder.mcp-configured-tools",
+      "class": "alias",
+      "target": "node",
+      "when": {
+        "nonEmpty": "config.tools"
+      },
+      "op": "expandConfiguredTools",
+      "args": {
+        "toolsPath": "config.tools",
+        "containerKey": "mcp",
+        "listKey": "configuredTools",
+        "typeKey": "toolType"
+      },
+      "note": "MCP configured tool {{name}} read as a tool reference",
+      "kinds": [
+        "agent",
+        "llm"
+      ]
+    },
+    {
+      "id": "builder.typed-tools",
+      "class": "alias",
+      "target": "node",
+      "when": {
+        "nonEmpty": "config.tools"
+      },
+      "op": "typedToolRefs",
+      "args": {
+        "toolsPath": "config.tools",
+        "typeKey": "type",
+        "settingsKey": "config"
+      },
+      "note": "{{type}} tool {{name}} read as a tool reference",
+      "kinds": [
+        "agent",
+        "llm"
+      ]
+    },
+    {
+      "id": "builder.condition-logic",
+      "class": "alias",
+      "target": "node",
+      "nodeTypes": [
+        "rule"
+      ],
+      "when": {
+        "nonEmpty": "config.rules"
+      },
+      "op": "ruleBranches",
+      "args": {
+        "path": "config.rules",
+        "rename": {},
+        "dropConditionKeys": [
+          "logic"
+        ],
+        "operatorKey": "op"
+      },
+      "note": "per-condition logic keys of rule branches dropped (the branch's conditionLogic applies)"
+    },
+    {
+      "id": "platform.rule-branches",
+      "class": "platform",
+      "target": "node",
+      "nodeTypes": [
+        "rule"
+      ],
+      "when": {
+        "nonEmpty": "config.rules"
+      },
+      "op": "ruleBranches",
+      "args": {
+        "path": "config.rules",
+        "rename": {
+          "logicType": "conditionLogic",
+          "enable": "enabled"
+        },
+        "dropConditionKeys": [],
+        "operatorKey": "operator",
+        "logicKey": "logicType",
+        "defaultLogicValue": "default"
+      },
+      "note": "platform rule branches read with logicType, enable, operator aliases and the default marker"
+    },
+    {
+      "id": "builder.rule-expression",
+      "class": "alias",
+      "target": "node",
+      "kinds": [
+        "router"
+      ],
+      "when": {
+        "nonEmpty": "config.rules"
+      },
+      "op": "ruleExpressions",
+      "args": {
+        "path": "config.rules",
+        "unsupportedCode": "RULE_EXPRESSION_UNSUPPORTED"
+      },
+      "note": "rule {{ruleId}} expression {{expression}}"
+    },
+    {
+      "id": "builder.output-structure",
+      "class": "alias",
+      "target": "node",
+      "when": {
+        "nonEmpty": "config.outputStructure"
+      },
+      "op": "outputMapping",
+      "args": {
+        "path": "config.outputStructure",
+        "listShapes": [
+          {
+            "target": "key",
+            "value": "value"
+          }
+        ]
+      },
+      "note": "outputStructure entries read as output mapping entries"
+    },
+    {
+      "id": "builder.output-mapping-list",
+      "class": "alias",
+      "target": "node",
+      "nodeTypes": [
+        "output"
+      ],
+      "when": {
+        "typeOf": {
+          "config.outputMapping": "array"
+        }
+      },
+      "op": "outputMapping",
+      "args": {
+        "path": "config.outputMapping",
+        "listShapes": [
+          {
+            "target": "key",
+            "value": "value"
+          },
+          {
+            "target": "target",
+            "value": "source"
+          }
+        ]
+      },
+      "note": "outputMapping list entries read as output mapping entries"
+    },
+    {
+      "id": "platform.output-mapping-object",
+      "class": "platform",
+      "target": "node",
+      "nodeTypes": [
+        "output"
+      ],
+      "when": {
+        "typeOf": {
+          "config.outputMapping": "object"
+        }
+      },
+      "op": "outputMapping",
+      "args": {
+        "path": "config.outputMapping",
+        "objectShape": {
+          "value": "value",
+          "type": "type"
+        }
+      },
+      "note": "outputMapping object read as output mapping entries"
+    },
+    {
+      "id": "builder.output-key",
+      "class": "alias",
+      "target": "node",
+      "nodeTypes": [
+        "db_query",
+        "output"
+      ],
+      "when": {
+        "has": "config.outputKey"
+      },
+      "op": "renameField",
+      "args": {
+        "from": "config.outputKey",
+        "to": "config.writeTo"
+      },
+      "note": "outputKey {{config.outputKey}} read as the state path the output is written to"
+    },
+    {
+      "id": "builder.output-variable",
+      "class": "alias",
+      "target": "node",
+      "nodeTypes": [
+        "view"
+      ],
+      "when": {
+        "has": "config.outputVariable"
+      },
+      "op": "renameField",
+      "args": {
+        "from": "config.outputVariable",
+        "to": "config.writeTo"
+      },
+      "note": "outputVariable {{config.outputVariable}} read as the state path the output is written to"
+    },
+    {
+      "id": "platform.subflow-inputs",
+      "class": "platform",
+      "target": "node",
+      "nodeTypes": [
+        "workflow"
+      ],
+      "when": {
+        "typeOf": {
+          "config.inputs": "object"
+        }
+      },
+      "op": "mappingList",
+      "args": {
+        "path": "config.inputs"
+      },
+      "note": "sub-flow inputs object read as a mapping list"
+    },
+    {
+      "id": "platform.script-inputs",
+      "class": "platform",
+      "target": "node",
+      "nodeTypes": [
+        "script"
+      ],
+      "when": {
+        "typeOf": {
+          "config.inputs": "object"
+        }
+      },
+      "op": "scriptInputs",
+      "args": {
+        "path": "config.inputs",
+        "schemaKey": "schema",
+        "valuesKey": "values",
+        "schemaTo": "config.inputSchema"
+      },
+      "note": "script inputs {schema, values} read as a mapping list and an input schema"
+    },
+    {
+      "id": "platform.script-outputs",
+      "class": "platform",
+      "target": "node",
+      "nodeTypes": [
+        "script"
+      ],
+      "when": {
+        "has": "config.outputs.schema"
+      },
+      "op": "renameField",
+      "args": {
+        "from": "config.outputs.schema",
+        "to": "config.outputSchema",
+        "dropParent": true
+      },
+      "note": "script outputs schema read as the node's output schema"
+    },
+    {
+      "id": "platform.tool-node",
+      "class": "platform",
+      "target": "node",
+      "nodeTypes": [
+        "tool"
+      ],
+      "when": {
+        "has": "config.toolId"
+      },
+      "op": "renameFields",
+      "args": {
+        "fields": {
+          "config.type": "config.toolType",
+          "config.settings.serverId": "config.serverId"
+        }
+      },
+      "note": "platform tool node read with toolType and serverId"
+    },
+    {
+      "id": "builder.output-mapping-missing",
+      "class": "alias",
+      "target": "node",
+      "kinds": [
+        "output"
+      ],
+      "op": "requireField",
+      "args": {
+        "path": "config.outputMapping",
+        "code": "OUTPUT_MAPPING_MISSING",
+        "severity": "warning"
+      },
+      "note": "the Output node has no outputMapping; the result falls back to the last agent or LLM text"
+    }
+  ]
 }

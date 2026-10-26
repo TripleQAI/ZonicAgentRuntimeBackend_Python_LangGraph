@@ -148,3 +148,45 @@ The user approved M0 and decided that workflows live in `agent-build-langgraph`'
 5. **Runtime:** the SQL tests' builder fixture is now the Strands builder's 10 scripts (`scripts/sync_sql.py`, set `builder`). Every suite passes: offline, SQL (85), live (21 + 1 skipped). `v_agent_catalog` lists the 6 root workflows; none has a publish channel yet.
 
 Open: the 9 workflows are owned by `54488448-…`, the builder's earlier user pool, not the Docker builder's user. They are in the database but not listed in the builder until re-owned.
+
+## Phase 1
+
+| Task | Status | Sanity check |
+|---|---|---|
+| P1-01 Document models and fixtures | Done | M-04, F-01, F-02: 76 tests; `scripts.sync_builder --check` in CI |
+| P1-02 Node configuration, engine record and blueprint models | Done | M-05, M-08, M-04 (configuration half): 63 tests; all 397 fixture nodes convert with no unknown key |
+| P1-03 Dialect normalizer | Done | B-01 to B-11, B-14, B-15, D-12, D-13, F-16, F-02 (normalization parts): 287 tests in `tests/compat/`; all 45 fixture documents normalize with no unknown field |
+
+### P1-01 notes
+
+- **Models** (`models/document/`): `WorkflowDocument`, `WorkflowNode`, `WorkflowEdge`, `VariableDefinition`, `SystemParam`, `Point`, `WorkflowTemplate`. Unknown keys are kept and listed by `unknown_key_report()`; the canvas keys `selected`, `dragging` and `deletable` count as layout, not unknown. `variables` accepts both shapes (the builder's name map and the platform's `{flow: [...]}`). Node types are not enumerated in code: a test keeps `node-runtime.json` equal to the builder schema's `nodeType` enum.
+- **M-04** compares the models' JSON Schema with the vendored `workflow-document-v2.schema.json`: every builder field exists, types are equal or narrower, `minLength` and `pattern` are kept, and builder-required fields are required. A probe with a deliberately loose model confirmed the check reports it. Optional fields accept `null` as absent.
+- **Fixtures** (`tests/fixtures/workflows/`): 33 vendored files with `SOURCE.json` (`scripts/sync_builder.py`, Strands builder `90b5885`, Django runtime `cf55ca2`) and 12 synthetic 2.0 documents, each valid against the builder schema. Together they cover all 18 node types (test `test_F01_every_node_type_has_a_fixture`).
+- **F-01/F-02 split:** the parts that need later tasks were added to their Proves columns. F-01's "same blueprint" is now also proven by P1-05; F-02's "empty model resolves to the catalog default" by P1-03 and "template IDs never in the catalog" by P1-04.
+
+| Plan 20.1 says | Built | Why |
+|---|---|---|
+| `zonic-v2/`: the 7 exports with `schemaVersion: "2.0"` | `zonic-versioned/`: the builder now stamps them `"1.0"` | The builder changed these files after commit `24e29ee`. The test is that a missing version and an explicit `1.0` load to the same document. |
+| Open-data versions exported with the builder's `export-package` API | Exported from the product database's `v_agent_export` through the gateway (`scripts/export_workflows.py`, runtime caller) | The same documents, already in the database the runtime reads; no builder ID token needed |
+| Django workflows "only where they add a case" | `complex-agent.json` only | The others duplicate Zonic exports |
+
+### P1-02 notes
+
+- **Configuration models** (`models/nodes/`): `NodeConfigBase` and 17 per-kind models whose fields are what the builders write in both dialects, surveyed over all 45 fixture documents. Every one of the 397 nodes converts with no unknown key, and the Facility Operations Swarm's configurations round-trip exactly by alias.
+- **Kind names are not written in code.** A kind's model is found from its class name (`LlmNodeConfig` serves kind `llm`), so the manifest stays the only place kind names appear (design rule 1). The kind-derived names differ from the design's examples in two places: `RouterNodeConfig` for the design's `RuleNodeConfig` and `MultiAgentNodeConfig` for `SwarmNodeConfig`.
+- **M-08:** fields holding templates are marked `TemplateField`, and `marked_values()` returns only those, so the resolver (P1-06) never sees an unmarked field. `ExternalAgentNodeConfig.api_key` is a `SecretRef`: it accepts `secret:<name>` (the Node.js runtime's decision C-5), `{{secrets.<name>}}` (what the builder's form suggests) or nothing; any other value fails validation.
+- **Engine records** (`models/engine/`): `NodeOutcome`, `NodeRecord`, `StatePatch`, `StateUpdate`, `FlowPatch` (DR-1), `ThreadMessage`, `TimelineEntry`, `DatasetRef`, `Usage`, `InterruptRequest`. Value lists match the database's check constraints. The message role `tool` and the interrupt kind `approval` share a spelling with node types and carry documented rule-1 waivers.
+- **Blueprint models** (`models/blueprint/`): frozen `Blueprint`, `NodeSpec`, `EdgeIndex`, `JoinSpec`, `Component`, `BlueprintWarning`, holding no LangGraph objects. `NodeSpec.trace_metadata()` is the node metadata that decision 0001 (SP-4) types spans from.
+
+### P1-03 notes
+
+- **Ported, not rewritten.** `resources/dialects.json` and the operations in `workflow/loader/dialect_operations.py` are a port of the Node.js runtime's `dialects.json` and `dialect-operations.ts`. `DocumentNormalizer` removes layout keys, applies the rules in order, drops ignored config fields without a finding, and drops unknown fields with a `DOCUMENT_UNKNOWN_FIELD` warning. Every rule that fires adds a `DIALECT_RULE` finding (details `rule_id`, `class`, `path`). The stored document is never changed.
+- **Four rules added** to the 28 ported ones:
+  - `builder.agent-strategy-supported`: an agent strategy outside `agentStrategies` is a `DOCUMENT_INVALID` error.
+  - `builder.rule-expression`: a rule `expression` is a `RULE_EXPRESSION_UNSUPPORTED` error. With `rule_expression="parse_simple"`, `{{path}} <op> <literal>` becomes a condition; anything more complex is still an error (D-12).
+  - `builder.output-mapping-missing`: an Output node with no mapping is an `OUTPUT_MAPPING_MISSING` warning (D-13).
+  - `builder.model-id`: an empty model becomes the catalog default with a `MODEL_DEFAULTED` warning (F-02).
+- **Canonical forms** (`models/dialects/`): `ModelRef`, `ToolRef`, `RoutingToolRef`, `OutputMappingEntry`. `StateUpdate` is `path`, `op`, `value`, `role` and `when` (a `ConditionGroup`, now in `models/nodes/base.py`). The normalizer writes plain JSON; consumers validate what they read with these models.
+- **Bug fixed in the port, also present in Node.js:** `routingTools` dropped a handoff tool's preset `parameters` and its `title`. Five platform tools have non-empty parameters; one (`get_decision_points` in Intelligent Buying Orchestrator) carries three `{{flow.*}}` templates. `RoutingToolRef` now keeps `title`, `parameters` (a `TemplateField`), `enabled` and `returnDirect`. B-09 now asserts, for every fixture, that every `{{...}}` template in the stored document survives normalization. The Node.js runtime still has the bug.
+- **Findings on the real documents:** `MODEL_DEFAULTED` on the 4 templates, `OUTPUT_MAPPING_MISSING` on 9 Output nodes, `RULE_EXPRESSION_UNSUPPORTED` only on the synthetic rule-expression fixture. Builder documents fire alias-class rules only (B-14); every platform document fires platform rules, each listed (F-16).
+- **B-15:** `compat_problems()` in the test names any unknown field, unknown configuration key, invalid update or operator without an alias. It is empty for all 45 documents, and a negative test confirms it names all three kinds of problem.

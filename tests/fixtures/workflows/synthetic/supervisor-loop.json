@@ -1,0 +1,148 @@
+{
+  "schemaVersion": "2.0",
+  "agenticWorkflowId": "synthetic-supervisor-loop",
+  "name": "supervisor-loop",
+  "displayName": "Supervisor Loop",
+  "description": "A supervisor agent hands off to workers that return to it; it answers when done.",
+  "variables": {},
+  "systemParams": [],
+  "publishChannels": [],
+  "nodes": [
+    {
+      "id": "start_1",
+      "type": "start",
+      "name": "Start_1",
+      "description": "",
+      "config": {
+        "interfaceInputs": [],
+        "variableUpdates": []
+      }
+    },
+    {
+      "id": "supervisor_1",
+      "type": "agent",
+      "name": "Supervisor_1",
+      "description": "",
+      "config": {
+        "model": "claude-haiku-4-5",
+        "strategy": "react",
+        "systemPrompt": "Delegate, then answer.",
+        "tools": [],
+        "handoffTarget": [
+          "worker_a",
+          "worker_b"
+        ],
+        "maxIterations": 5,
+        "outputSchema": [],
+        "stateUpdates": [],
+        "variableUpdates": []
+      }
+    },
+    {
+      "id": "worker_a",
+      "type": "agent",
+      "name": "Worker_A",
+      "description": "",
+      "config": {
+        "model": "claude-haiku-4-5",
+        "strategy": "react",
+        "systemPrompt": "Research.",
+        "tools": [],
+        "handoffTarget": null,
+        "maxIterations": 5,
+        "outputSchema": [],
+        "stateUpdates": [],
+        "variableUpdates": []
+      }
+    },
+    {
+      "id": "worker_b",
+      "type": "agent",
+      "name": "Worker_B",
+      "description": "",
+      "config": {
+        "model": "claude-haiku-4-5",
+        "strategy": "react",
+        "systemPrompt": "Calculate.",
+        "tools": [],
+        "handoffTarget": null,
+        "maxIterations": 5,
+        "outputSchema": [],
+        "stateUpdates": [],
+        "variableUpdates": []
+      }
+    },
+    {
+      "id": "output_1",
+      "type": "output",
+      "name": "Output_1",
+      "description": "",
+      "config": {
+        "outputMapping": [
+          {
+            "target": "answer",
+            "source": "{{nodes.Supervisor_1.output.result}}",
+            "type": "string"
+          }
+        ],
+        "variableUpdates": []
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e_start_1_default_supervisor_1",
+      "source": "start_1",
+      "target": "supervisor_1",
+      "sourceHandle": "default",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    },
+    {
+      "id": "e_supervisor_1_default_output_1",
+      "source": "supervisor_1",
+      "target": "output_1",
+      "sourceHandle": "default",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    },
+    {
+      "id": "e_supervisor_1_handoff-worker_a_worker_a",
+      "source": "supervisor_1",
+      "target": "worker_a",
+      "sourceHandle": "handoff-worker_a",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    },
+    {
+      "id": "e_supervisor_1_handoff-worker_b_worker_b",
+      "source": "supervisor_1",
+      "target": "worker_b",
+      "sourceHandle": "handoff-worker_b",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    },
+    {
+      "id": "e_worker_a_default_supervisor_1",
+      "source": "worker_a",
+      "target": "supervisor_1",
+      "sourceHandle": "default",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    },
+    {
+      "id": "e_worker_b_default_supervisor_1",
+      "source": "worker_b",
+      "target": "supervisor_1",
+      "sourceHandle": "default",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    }
+  ]
+}

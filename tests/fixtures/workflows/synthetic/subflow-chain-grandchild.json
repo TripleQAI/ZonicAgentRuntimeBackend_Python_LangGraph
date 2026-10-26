@@ -1,0 +1,84 @@
+{
+  "schemaVersion": "2.0",
+  "agenticWorkflowId": "synthetic-subflow-chain-grandchild",
+  "name": "subflow-chain-grandchild",
+  "displayName": "Subflow Chain Grandchild",
+  "description": "Leaf of the chain: one LLM answer.",
+  "variables": {},
+  "systemParams": [],
+  "publishChannels": [],
+  "nodes": [
+    {
+      "id": "start_1",
+      "type": "start",
+      "name": "Start_1",
+      "description": "",
+      "config": {
+        "interfaceInputs": [],
+        "variableUpdates": []
+      }
+    },
+    {
+      "id": "llm_1",
+      "type": "llm",
+      "name": "LLM_1",
+      "description": "",
+      "config": {
+        "model": "claude-haiku-4-5",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Answer."
+          },
+          {
+            "role": "user",
+            "content": "{{system.userQuery}}"
+          }
+        ],
+        "tools": [],
+        "responseFormat": "text",
+        "temperature": 0.2,
+        "maxTokens": 512,
+        "outputSchema": [],
+        "stateUpdates": [],
+        "variableUpdates": []
+      }
+    },
+    {
+      "id": "output_1",
+      "type": "output",
+      "name": "Output_1",
+      "description": "",
+      "config": {
+        "outputMapping": [
+          {
+            "target": "answer",
+            "source": "{{nodes.LLM_1.output.result}}",
+            "type": "string"
+          }
+        ],
+        "variableUpdates": []
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e_start_1_default_llm_1",
+      "source": "start_1",
+      "target": "llm_1",
+      "sourceHandle": "default",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    },
+    {
+      "id": "e_llm_1_default_output_1",
+      "source": "llm_1",
+      "target": "output_1",
+      "sourceHandle": "default",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    }
+  ]
+}

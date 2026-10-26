@@ -1,0 +1,581 @@
+{
+  "bpc": "",
+  "name": "fsh-facility-agent",
+  "edges": [
+    {
+      "id": "edge_1781411399493_jvf2q",
+      "data": {
+        "sourceType": "start",
+        "targetType": "agent"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "start_1781399185229_ojarn",
+      "target": "agent_1781411386704_1bab6",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "default",
+      "targetHandle": "default"
+    },
+    {
+      "id": "edge_1781411401396_qny9x",
+      "data": {
+        "sourceType": "agent",
+        "targetType": "output"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "agent_1781411386704_1bab6",
+      "target": "output_1781411395307_68fja",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "default",
+      "targetHandle": "default"
+    },
+    {
+      "id": "edge_1781411438481_fm1a1",
+      "data": {
+        "sourceType": "http_request",
+        "targetType": "output"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "http_request_1781411419778_o4s99",
+      "target": "output_1781411395307_68fja",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "default",
+      "targetHandle": "default"
+    },
+    {
+      "id": "edge_1781411453043_a6y7k",
+      "data": {
+        "handoff": true,
+        "sourceType": "agent",
+        "targetType": "llm"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "agent_1781411386704_1bab6",
+      "target": "llm_1781411428279_slek0",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "handoff-llm_1781411428279_slek0",
+      "targetHandle": null
+    },
+    {
+      "id": "edge_1781411465377_3p28y",
+      "data": {
+        "offset": {
+          "x": 62,
+          "y": -12
+        },
+        "sourceType": "view",
+        "targetType": "output"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "view_1781411461424_lx9il",
+      "target": "output_1781411395307_68fja",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "default",
+      "targetHandle": "default"
+    },
+    {
+      "id": "edge_1781461852969_johs4",
+      "data": {
+        "sourceType": "llm",
+        "targetType": "view"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "llm_1781461849092_eqvjs",
+      "target": "view_1781411461424_lx9il",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "default",
+      "targetHandle": "default"
+    },
+    {
+      "id": "edge_1781461858468_bq3gk",
+      "data": {
+        "handoff": true,
+        "sourceType": "agent",
+        "targetType": "llm"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "agent_1781411386704_1bab6",
+      "target": "llm_1781461849092_eqvjs",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "handoff-llm_1781461849092_eqvjs",
+      "targetHandle": null
+    },
+    {
+      "id": "edge_1781463979521_64juk",
+      "data": {
+        "sourceType": "llm",
+        "targetType": "rule"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "llm_1781411428279_slek0",
+      "target": "rule_1781463975269_lk2qj",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "default",
+      "targetHandle": "default"
+    },
+    {
+      "id": "edge_1781463981594_97mfi",
+      "data": {
+        "sourceType": "rule",
+        "targetType": "db_query"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "rule_1781463975269_lk2qj",
+      "target": "db_query_1781463967486_pmfus",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "r_default",
+      "targetHandle": "default"
+    },
+    {
+      "id": "edge_1781463983397_fq9r9",
+      "data": {
+        "sourceType": "rule",
+        "targetType": "http_request"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "rule_1781463975269_lk2qj",
+      "target": "http_request_1781411419778_o4s99",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "r_else",
+      "targetHandle": "default"
+    },
+    {
+      "id": "edge_1781463988416_2hs1g",
+      "data": {
+        "sourceType": "db_query",
+        "targetType": "output"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "db_query_1781463967486_pmfus",
+      "target": "output_1781411395307_68fja",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "default",
+      "targetHandle": "default"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "start_1781399185229_ojarn",
+      "name": "Start_1",
+      "type": "start",
+      "style": {},
+      "width": 200,
+      "config": {
+        "interfaceInputs": [],
+        "variableUpdates": []
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 200,
+        "y": 150
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 200,
+        "y": 150
+      }
+    },
+    {
+      "id": "agent_1781411386704_1bab6",
+      "name": "facility-agent",
+      "type": "agent",
+      "style": {},
+      "width": 200,
+      "config": {
+        "model": "claude-sonnet-4-6",
+        "tools": [],
+        "strategy": "react",
+        "outputSchema": [],
+        "stateUpdates": [],
+        "systemPrompt": "",
+        "handoffTarget": [
+          "llm_1781411428279_slek0",
+          "llm_1781461849092_eqvjs"
+        ],
+        "maxIterations": 10,
+        "includeThoughts": false,
+        "variableUpdates": [],
+        "userQueryMapping": "{{system.userQuery}}"
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 559,
+        "y": 135
+      },
+      "selected": true,
+      "deletable": true,
+      "properties": {},
+      "description": "facility agent v2",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 559,
+        "y": 135
+      }
+    },
+    {
+      "id": "output_1781411395307_68fja",
+      "name": "Output_1",
+      "type": "output",
+      "style": {},
+      "width": 200,
+      "config": {
+        "format": "text",
+        "outputKey": "result",
+        "stateUpdates": [],
+        "outputMapping": [
+          {
+            "key": "messages",
+            "type": "string",
+            "value": "{{messages}}"
+          }
+        ]
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 1791,
+        "y": 149
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 1791,
+        "y": 149
+      }
+    },
+    {
+      "id": "http_request_1781411419778_o4s99",
+      "name": "facility-query",
+      "type": "http_request",
+      "style": {},
+      "width": 200,
+      "config": {
+        "url": "",
+        "body": "",
+        "method": "GET",
+        "headers": [],
+        "stateUpdates": [],
+        "timeoutSeconds": 30,
+        "variableUpdates": []
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 1344,
+        "y": 423
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 1344,
+        "y": 423
+      }
+    },
+    {
+      "id": "llm_1781411428279_slek0",
+      "name": "sql-query-generator",
+      "type": "llm",
+      "style": {},
+      "width": 200,
+      "config": {
+        "model": "claude-sonnet-4-6",
+        "messages": [],
+        "maxTokens": 1024,
+        "temperature": 0.7,
+        "outputSchema": [],
+        "stateUpdates": [],
+        "errorHandling": false,
+        "responseFormat": "text",
+        "variableUpdates": [
+          {
+            "path": "flow.sqlQuery",
+            "role": "assistant",
+            "value": "{{nodes.sql-query-generator.output}}",
+            "operation": "set"
+          },
+          {
+            "path": "messages",
+            "role": "assistant",
+            "value": "{{nodes.sql-query-generator.output}}",
+            "operation": "append"
+          }
+        ],
+        "userQueryMapping": "{{system.userQuery}}"
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 778,
+        "y": 341
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 778,
+        "y": 341
+      }
+    },
+    {
+      "id": "view_1781411461424_lx9il",
+      "name": "report",
+      "type": "view",
+      "style": {},
+      "width": 200,
+      "config": {
+        "htmlTemplate": "<div>\n  <!-- Reference variables with {{variable.path}} -->\n</div>",
+        "outputVariable": "view.html",
+        "variableUpdates": []
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 1349,
+        "y": 533
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 1349,
+        "y": 533
+      }
+    },
+    {
+      "id": "llm_1781461849092_eqvjs",
+      "name": "data-analysis",
+      "type": "llm",
+      "style": {},
+      "width": 200,
+      "config": {
+        "model": "claude-sonnet-4-6",
+        "messages": [],
+        "maxTokens": 1024,
+        "temperature": 0.7,
+        "outputSchema": [],
+        "stateUpdates": [],
+        "errorHandling": false,
+        "userQueryVars": [
+          {
+            "name": "queryResponse",
+            "type": "json",
+            "description": "",
+            "defaultValue": "{{flow.queryResponse}}"
+          }
+        ],
+        "responseFormat": "text",
+        "variableUpdates": [
+          {
+            "path": "flow.generatedHtml",
+            "role": "assistant",
+            "value": "{{nodes.data-analysis.output}}",
+            "operation": "set"
+          }
+        ],
+        "userQueryMapping": "{{system.userQuery}}"
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 771,
+        "y": 513
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 771,
+        "y": 513
+      }
+    },
+    {
+      "id": "db_query_1781463967486_pmfus",
+      "name": "query-analysis",
+      "type": "db_query",
+      "style": {},
+      "width": 200,
+      "config": {
+        "query": "select top 10 * from facility",
+        "maxRows": 1000,
+        "outputKey": "db.result",
+        "parameters": [
+          {
+            "key": "queryParameter",
+            "value": "{{flow.sqlQuery}}"
+          }
+        ],
+        "connectionId": "mssql_connection_id",
+        "databaseType": "mssql",
+        "outputSchema": {},
+        "timeoutSeconds": 30,
+        "variableUpdates": [
+          {
+            "path": "flow.queryResponse",
+            "role": "assistant",
+            "value": "{{nodes.query-analysis.output}}",
+            "operation": "set"
+          },
+          {
+            "path": "messages",
+            "role": "assistant",
+            "value": "{{nodes.query-analysis.output}}",
+            "operation": "append"
+          }
+        ]
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 1341,
+        "y": 302
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 1341,
+        "y": 302
+      }
+    },
+    {
+      "id": "rule_1781463975269_lk2qj",
+      "name": "Rule_1",
+      "type": "rule",
+      "style": {},
+      "width": 200,
+      "config": {
+        "rules": [
+          {
+            "label": "True",
+            "ruleId": "r_default",
+            "conditions": [
+              {
+                "op": "eq",
+                "field": "{{flow.useDBQuery}}",
+                "logic": "AND",
+                "value": "true"
+              }
+            ],
+            "conditionLogic": "AND"
+          },
+          {
+            "label": "Else",
+            "ruleId": "r_else",
+            "isDefault": true,
+            "conditions": [],
+            "conditionLogic": "AND"
+          }
+        ]
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 1038,
+        "y": 360
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 1038,
+        "y": 360
+      }
+    }
+  ],
+  "editAs": "",
+  "skills": [],
+  "security": {},
+  "interface": {},
+  "variables": {
+    "sqlQuery": {
+      "type": "string"
+    },
+    "useDBQuery": {
+      "type": "boolean"
+    },
+    "generatedHtml": {
+      "type": "string"
+    },
+    "queryResponse": {
+      "type": "json"
+    }
+  },
+  "isDisabled": false,
+  "description": "",
+  "displayName": "fsh-facility-agent",
+  "invocationType": "",
+  "semanticDomain": "facilities",
+  "includeThoughts": false,
+  "publishChannels": [],
+  "semanticKeywords": "•\tRegisters a query_intervals tool for high-volume sub-daily data, added as a second tool rather than a second Knowledge Base, since interval data is too granular to store as narratives.\n•\tAnswers demand-driver questions, for example “what drove the demand spike on the afternoon of August 3,” using granularity the Energy Agent does not have.\n•\tTies usage to equipment, for example “how much of last month's gas usage is attributable to the boiler,” when bills are paired with equipment lists and engineering ratios.\n•\tBenefits from weather-normalization data (NOAA / weather-station records) so trend answers adjust for cooling- and heating-degree-days rather than over- or understating usage.\n•\tStays on demand events that have already occurred and the systems that caused them; demand exposure that has not yet happened, and its financial consequence, routes to the Risk Agent.\n•\tInherits tenant isolation through the same five-layer enforcement: JWT claims, IAM, retrieval filter, row-level security, and S3 prefix scope.",
+  "semanticUseCases": "The Facilities Agent is the operational lane: it explains why a building is behaving as it is by reaching past bill-level data into the sub-daily detail InSite already holds. It pairs Building Automation System and interval data with equipment and asset records to answer anomaly-detection and demand-driver questions that monthly bills cannot.",
+  "agenticWorkflowId": "63d7922d-0946-46b2-ace1-987a848b1aa5",
+  "enableForAutoInvoke": false,
+  "semanticSearchEnabled": true,
+  "isAvailableForMigration": false
+}

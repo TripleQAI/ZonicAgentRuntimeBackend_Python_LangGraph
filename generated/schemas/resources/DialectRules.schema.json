@@ -2,81 +2,14 @@
   "$defs": {
     "DialectMatch": {
       "additionalProperties": false,
+      "description": "When a rule applies to an item (document, node or edge); every given test must hold.",
       "properties": {
         "equals": {
-          "default": null,
-          "title": "Equals"
-        },
-        "exists": {
-          "anyOf": [
-            {
-              "type": "boolean"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Exists"
-        },
-        "in": {
-          "anyOf": [
-            {
-              "items": {},
-              "type": "array"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "In"
-        },
-        "path": {
-          "title": "Path",
-          "type": "string"
-        }
-      },
-      "required": [
-        "path"
-      ],
-      "title": "DialectMatch",
-      "type": "object"
-    },
-    "DialectRule": {
-      "additionalProperties": false,
-      "properties": {
-        "id": {
-          "title": "Id",
-          "type": "string"
-        },
-        "match": {
-          "$ref": "#/$defs/DialectMatch"
-        },
-        "note": {
-          "title": "Note",
-          "type": "string"
-        },
-        "remove": {
-          "items": {
-            "type": "string"
-          },
-          "title": "Remove",
-          "type": "array"
-        },
-        "rename": {
-          "additionalProperties": {
-            "type": "string"
-          },
-          "title": "Rename",
-          "type": "object"
-        },
-        "set": {
           "additionalProperties": true,
-          "title": "Set",
+          "title": "Equals",
           "type": "object"
         },
-        "transform": {
+        "has": {
           "anyOf": [
             {
               "type": "string"
@@ -86,12 +19,100 @@
             }
           ],
           "default": null,
-          "title": "Transform"
+          "title": "Has"
+        },
+        "nonEmpty": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Nonempty"
+        },
+        "typeOf": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Typeof",
+          "type": "object"
+        }
+      },
+      "title": "DialectMatch",
+      "type": "object"
+    },
+    "DialectRule": {
+      "additionalProperties": false,
+      "description": "One normalization rule (design 5.2): a generic operation with its arguments and note.",
+      "properties": {
+        "args": {
+          "additionalProperties": true,
+          "title": "Args",
+          "type": "object"
+        },
+        "class": {
+          "enum": [
+            "alias",
+            "platform"
+          ],
+          "title": "Class",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "kinds": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Kinds",
+          "type": "array"
+        },
+        "nodeTypes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Nodetypes",
+          "type": "array"
+        },
+        "note": {
+          "title": "Note",
+          "type": "string"
+        },
+        "op": {
+          "title": "Op",
+          "type": "string"
+        },
+        "target": {
+          "enum": [
+            "document",
+            "node",
+            "edge"
+          ],
+          "title": "Target",
+          "type": "string"
+        },
+        "when": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DialectMatch"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
         }
       },
       "required": [
         "id",
-        "match",
+        "class",
+        "target",
+        "op",
         "note"
       ],
       "title": "DialectRule",
@@ -99,7 +120,67 @@
     }
   },
   "additionalProperties": false,
+  "description": "``dialects.json``: everything the normalizer knows about the two dialects.",
   "properties": {
+    "agentStrategies": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Agentstrategies",
+      "type": "array"
+    },
+    "canonicalOperators": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Canonicaloperators",
+      "type": "array"
+    },
+    "defaultRuleIds": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Defaultruleids",
+      "type": "array"
+    },
+    "edgeLayoutKeys": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Edgelayoutkeys",
+      "type": "array"
+    },
+    "ignoredConfigFields": {
+      "additionalProperties": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "title": "Ignoredconfigfields",
+      "type": "object"
+    },
+    "ignoredDocumentFields": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Ignoreddocumentfields",
+      "type": "array"
+    },
+    "layoutKeys": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Layoutkeys",
+      "type": "array"
+    },
+    "operatorAliases": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Operatoraliases",
+      "type": "object"
+    },
     "rules": {
       "items": {
         "$ref": "#/$defs/DialectRule"

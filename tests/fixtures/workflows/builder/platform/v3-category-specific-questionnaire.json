@@ -1,0 +1,1245 @@
+{
+  "agenticWorkflowId": "a2c39851-bcd9-43c8-82ef-f6108c7c7817",
+  "bpc": "20210511",
+  "name": "v3-category-specific-questionnaire",
+  "displayName": "v3 Category Specific Questionnaire",
+  "description": "Handles category specific questionnaire details",
+  "isDisabled": false,
+  "isAvailableForMigration": true,
+  "editAs": "canvas",
+  "enableForAutoInvoke": false,
+  "includeThoughts": false,
+  "invocationType": "API",
+  "publishChannels": [
+    {
+      "refId": "api",
+      "code": "api",
+      "name": "API",
+      "description": "Expose the agent as a REST API for system and app integrations"
+    },
+    {
+      "refId": "qi-ui",
+      "code": "qi-ui",
+      "name": "Qi UI",
+      "description": "Make your agent available in GEP's Qi interface"
+    }
+  ],
+  "security": {
+    "activities": [
+      {
+        "refId": "10100002",
+        "code": "10100002",
+        "name": "Home"
+      }
+    ]
+  },
+  "skills": [],
+  "variables": {
+    "flow": [
+      {
+        "refId": "category_specific_questionnaire",
+        "name": "category_specific_questionnaire",
+        "type": "string",
+        "id": "var-jicimx7jt",
+        "default": "",
+        "required": false
+      },
+      {
+        "refId": "current_state",
+        "name": "current_state",
+        "type": "string",
+        "id": "var-r0kg2o5py",
+        "description": "current state of the flow",
+        "default": "",
+        "required": false
+      },
+      {
+        "refId": "partial_view_data",
+        "name": "partial_view_data",
+        "type": "string",
+        "id": "var-3c3tzfjkr",
+        "description": "follow up partial_view_data",
+        "default": "",
+        "required": false
+      },
+      {
+        "refId": "questionnareResponses",
+        "name": "questionnareResponses",
+        "type": "object",
+        "id": "var-zam9ze1m2",
+        "default": {},
+        "required": false
+      },
+      {
+        "refId": "currentQuestionKey",
+        "name": "currentQuestionKey",
+        "type": "string",
+        "id": "var-ef5hhhs0b",
+        "default": "",
+        "required": false
+      },
+      {
+        "refId": "questionnaireForSummary",
+        "name": "questionnaireForSummary",
+        "type": "array",
+        "id": "var-1jx35b80c",
+        "default": [],
+        "required": false
+      },
+      {
+        "refId": "qa_master_data",
+        "name": "qa_master_data",
+        "type": "string",
+        "id": "var-9fv2bshnr",
+        "description": "Contains QA master data",
+        "default": "",
+        "required": false
+      },
+      {
+        "refId": "user_context",
+        "name": "user_context",
+        "type": "object",
+        "id": "var-2iqrh2anw",
+        "default": {},
+        "required": false
+      },
+      {
+        "refId": "user_decision_points",
+        "name": "user_decision_points",
+        "type": "object",
+        "id": "var-gndnofd77",
+        "default": {},
+        "required": false
+      }
+    ],
+    "system": []
+  },
+  "interface": {
+    "inputs": {
+      "query": {
+        "type": "string",
+        "description": "User query to process",
+        "required": true
+      }
+    },
+    "outputs": {
+      "response": {
+        "type": "string",
+        "description": "Final response to the user"
+      }
+    }
+  },
+  "nodes": [
+    {
+      "id": "start",
+      "type": "start",
+      "name": "start",
+      "description": "Starting point of the workflow",
+      "position": {
+        "x": 150,
+        "y": 83.5
+      },
+      "deletable": false,
+      "selected": false,
+      "dragging": false,
+      "data": {},
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "label": "start",
+        "nodeType": "start"
+      },
+      "variableUpdates": [
+        {
+          "fieldName": "flow.user_decision_points",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.user_decision_points}}"
+        },
+        {
+          "fieldName": "flow.user_context",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.user_context}}"
+        },
+        {
+          "fieldName": "flow.qa_master_data",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.qa_master_data}}",
+          "rules": {
+            "conditions": [
+              {
+                "field": "{{nodeOutput.interface.inputs.qa_master_data}}",
+                "operator": "is not empty",
+                "value": ""
+              }
+            ],
+            "logicType": "AND"
+          }
+        },
+        {
+          "fieldName": "thread.category_specific_questionnaire_messages",
+          "operation": "append",
+          "value": "{{nodeOutput.interface.inputs.message}}",
+          "role": "user"
+        },
+        {
+          "fieldName": "thread.category_specific_questionnaire_messages",
+          "operation": "append",
+          "value": "Partial View Data: {{nodeOutput.interface.inputs.partialViewData}}",
+          "role": "user",
+          "rules": {
+            "conditions": [
+              {
+                "field": "{{nodeOutput.interface.inputs.partialViewData}}",
+                "operator": "is not empty",
+                "value": ""
+              },
+              {
+                "field": "{{nodeOutput.interface.inputs.partialViewData}}",
+                "operator": "!=",
+                "value": "[]"
+              }
+            ],
+            "logicType": "AND"
+          }
+        },
+        {
+          "fieldName": "flow.current_state",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.current_state}}"
+        },
+        {
+          "fieldName": "thread.messages",
+          "operation": "append",
+          "value": "{{nodeOutput.interface.inputs.message}}",
+          "role": "user"
+        },
+        {
+          "fieldName": "system.userQuery",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.message}}"
+        },
+        {
+          "fieldName": "system.attachments",
+          "operation": "set",
+          "value": "{{nodeOutput.interface.inputs.attachments}}"
+        }
+      ],
+      "width": 250,
+      "height": 95,
+      "positionAbsolute": {
+        "x": -61.428571428571416,
+        "y": 132.85714285714286
+      }
+    },
+    {
+      "id": "output",
+      "type": "output",
+      "name": "output",
+      "description": "Final output of the workflow",
+      "position": {
+        "x": 2063.8120252200224,
+        "y": 83.5
+      },
+      "deletable": true,
+      "selected": false,
+      "dragging": false,
+      "data": {},
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "outputMapping": {
+          "messages": {
+            "type": "string",
+            "value": "{{thread.messages}}"
+          },
+          "selectedAgentId": {
+            "type": "string",
+            "value": "{{runtime.workflowMetaData.workflowId}}"
+          },
+          "selectedAgentName": {
+            "type": "string",
+            "value": "{{runtime.workflowMetaData.agentName}}"
+          },
+          "current_state": {
+            "type": "string",
+            "value": "{{flow.current_state}}"
+          },
+          "questionnaireResponse": {
+            "type": "string",
+            "value": "{{flow.questionnareResponses}}"
+          },
+          "questionnaireForSummary": {
+            "type": "array",
+            "value": "{{flow.questionnaireForSummary}}"
+          }
+        }
+      },
+      "width": 150,
+      "height": 95,
+      "positionAbsolute": {
+        "x": 2063.8120252200224,
+        "y": 86.34330565055846
+      }
+    },
+    {
+      "id": "q7wxylq",
+      "type": "agent",
+      "name": "category_specific_questionnaire",
+      "description": "category specific questionnaire age",
+      "position": {
+        "x": 1545.359409099659,
+        "y": 27
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "agentStrategy": "react",
+        "model": {
+          "vendor": "openai",
+          "provider": "azureopenai",
+          "code": "gpt-5.2",
+          "name": "OpenAI GPT-5.2",
+          "temperature": 1
+        },
+        "promptTemplate": [
+          {
+            "id": "63bcf8ae-0913-4c2e-b006-4919d0ac0770",
+            "role": "system",
+            "text": "You are a Questionnaire Agent that collects category-specific information through a sequential question flow. You perform exactly one action per turn.\n\n# Decision Logic (evaluate once per turn)\n\n1. **Answered set**: Collect all unique questionKeys from Current Responses.\n2. **Remaining questions**: Iterate the questionnaire in QuestionId order. For each question:\n   - If its questionKey is in the Answered set → skip.\n   - Evaluate PreCondition: \"None\" → include. SKIP condition TRUE → skip. FALSE or missing variable → include.\n   - Collect all included questions as the Remaining list.\n3. **Unsaved answer**: Check if the conversation contains a user-provided answer (text or Partial View Data) that maps to a questionKey NOT in the Answered set.\n\nThen take exactly ONE of these actions:\n\n| Condition | Action |\n|-----------|--------|\n| Remaining list is empty | Output \"Questionnaire completed.\" — no tool call. |\n| Unsaved answer exists for a remaining question | Call `update_questionnare_response` to save it. Set `questionnaireStatus` to `\"questionnaire_completed\"` if this answer fills the last remaining question; otherwise `\"category_specific_questionnaire\"`. |\n| Remaining questions exist, no unsaved answer | Call the appropriate render tool for the FIRST question in the Remaining list. |\n\nThese three conditions are mutually exclusive. Exactly one will match each turn.\n\n# ResponseType → Tool Mapping\n\n| ResponseType | Tool | Parameters |\n|-------------|------|------------|\n| `Date` | `render_date_input` | `date_label` = QuestionTitle |\n| `currencyBudget` | `render_currency_budget` | `label_datamodel` = QuestionTitle | <Optional, Skip if budget already available present from Quick Pay handoff i.e{{flow.user_decision_points.budget}}is not empty or not zero>\n| `Dropdown` | `render_dropdown` | `label_datamodel` = QuestionTitle, `buttons_datamodel` = Options transformed from [{name,code}] to [{label,value}] |\n\n# Precondition Evaluation\n- Use **PreCondition** or **Pre condition** (whichever key exists) and resolve variables from # Context (e.g. `category_specific_budget`; `category.id`;`user_decision_points.`).\n- Apply logical operators (AND, OR, ==, !=, in).\n- If a referenced variable is missing, treat the precondition as FALSE (present the question).\n- **\"SKIP when (A AND B)\"** means: exclude the question when both A and B are true. E.g. `category_specific_budget != \"NA\"` is true when Context has any value other than the literal \"NA\" (e.g. \"not_eligible\" or \"eligible\") then that part is satisfied; do not treat it as \"do not skip\".\n\n# update_questionnare_response Parameters\n\n- `questionKey`: from the questionnaire's questionKey field\n- `response`: the user's answer, If Partial View Data exists and not empty: native JSON for structured data (do NOT stringify). ALWAYS infer the schema from Partial View Data. If Partial View Data is empty and message is populated (Eg: Dropdown questions): ALWAYS save the user-selected **name** (display label) as a plain string. Never save the code/numeric value.\n- `QuestionTitle`: from the questionnaire's QuestionTitle field\n- `questionnaireStatus`: \"questionnaire_completed\" or \"category_specific_questionnaire\" per the decision logic above\n\n# Rules\n\n- Maximum one tool call per turn. Zero tool calls when the Remaining list is empty.\n- When calling a tool, output only the tool call. No natural language alongside it.\n- When the Remaining list is empty, output only the text \"Questionnaire completed.\" — this is a final answer, not a tool call.\n- Never save the same questionKey + value combination that already exists in Current Responses.\n- Do not stringify JSON payload objects.\n- Do not expose internal state unless the user explicitly asks.\n- Do not render the same partial views twice for any of the questions from questionnaire.\n\n# Context\n- category.id: `{{flow.user_decision_points.category.id}}`\n\n- Questionnaire: `{{flow.category_specific_questionnaire}}`\n\n- Current Responses: `{{flow.questionnaireForSummary}}`\n\n- Current State: `{{flow.current_state}}`\n\n- quick_pay_aggregated_response: `{{flow.user_decision_points.quick_pay_aggregated_response}}`\n- category_specific_budget: {{flow.user_decision_points.category_specific_budget}}\n\n- budget: {{flow.user_decision_points.budget}}"
+          }
+        ],
+        "tools": [
+          {
+            "_id": "c16f557f-5228-44fe-ac41-cfa8dede087b",
+            "name": "handoff_to_node",
+            "description": "Updates the in-progress questionnaire response object using the user's latest answer.\n\n- The tool MUST map the answer to the correct questionnaire field key by looking it up in the provided questionnaire list/table in the prompt (use ONLY those keys; never invent new keys).\n- The values for the keys will be part of the user message or the partial view data present in the conversation\n- Input `response` can be either:\n  - a primitive value (string/number/boolean) for simple questions, or\n  - a JSON object for structured questions (e.g., budget + currency, budgetStatus(contains code and name), ranges, attachments). \n  - Do not add any trailing braces, brackets, or punctuation after the JSON object\n  - Do not duplicate keys. Each key must appear at most once in the payload and in any nested object. Incase of duplicates, always pick the latest information\nReturn valid stringified JSON.\n- If the user provides JSON, pass it through as native JSON (do NOT stringify) and store it under the matching questionnaire key.\n- Only update the key(s) relevant to the current question; preserve all other previously captured questionnaire answers.",
+            "type": "tool",
+            "config": {
+              "enabled": true,
+              "toolId": "tool-handoff",
+              "type": "handoff",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "questionKey": {
+                    "type": "string",
+                    "description": "questionKey from the category specific questions list of questions"
+                  },
+                  "response": {
+                    "type": "string",
+                    "description": "Updates the in-progress questionnaire response object using the user's latest answer.\n\n- The tool MUST map the answer to the correct questionnaire field key by looking it up in the provided questionnaire list/table in the prompt (use ONLY those keys; never invent new keys).\n- Input `response` can be either:\n  - a primitive value (string/number/boolean) for simple questions, or\n  - a JSON object for structured questions (e.g., budget, ranges, attachments etc).\n- If the user provides JSON, pass it through as native JSON (do NOT stringify) and store it under the matching questionnaire key.\n- Only update the key(s) relevant to the current question; preserve all other previously captured questionnaire answers."
+                  },
+                  "QuestionTitle": {
+                    "type": "string",
+                    "description": "Current QuestionTitle from the category specific question list of questions"
+                  },
+                  "questionnaireStatus": {
+                    "type": "string",
+                    "description": "When all questions are done this value should be \"questionnaire_completed\" or else \"category_specific_questionnaire\" when user has not answered the last question yet"
+                  }
+                },
+                "required": [
+                  "questionKey",
+                  "response",
+                  "questionnaireStatus",
+                  "QuestionTitle"
+                ],
+                "additionalProperties": false
+              },
+              "settings": {
+                "nodeId": "fpwfsxd"
+              },
+              "returnDirect": false,
+              "parameters": {}
+            },
+            "alias": "update_questionnare_response"
+          },
+          {
+            "_id": "4362cd2b-3296-4262-9bc9-4859988b39f2",
+            "name": "handoff_to_node",
+            "description": "## WHAT IT DOES\nRenders a currency and budget input field for collecting monetary values from the user.\n\n## WHEN TO CALL\nCall this tool when the current question's ResponseType is 'currencyBudget'.\n\n## HOW TO CALL\nPass the question text as label_datamodel, currency budget default object as currencyBudget, and info banner details as infoBannerDetails.\n\n## AFTER RENDERING\nWait for user to provide the budget value, then proceed to the next question.",
+            "type": "tool",
+            "config": {
+              "enabled": true,
+              "toolId": "tool-handoff",
+              "type": "handoff",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "label_datamodel": {
+                    "type": "string",
+                    "description": "Set to the question text (QuestionTitle), e.g., 'What is the Estimated Cost'"
+                  },
+                  "currencyBudget": {
+                    "type": "string",
+                    "description": "Currency budget default object, e.g. {\"budget\":\"\",\"currency\":{\"code\":\"USD\",\"name\":\"USD\"}}"
+                  },
+                  "infoBannerDetails": {
+                    "type": "string",
+                    "description": "Info banner details object, e.g. {\"bannerId\":\"intake-label-info-banner\",\"message\":\"Enter the estimated fair price for this item or service.\"}"
+                  }
+                },
+                "required": [
+                  "label_datamodel"
+                ],
+                "additionalProperties": false
+              },
+              "settings": {
+                "nodeId": "rpml0mt"
+              },
+              "returnDirect": false,
+              "parameters": {}
+            },
+            "alias": "render_currency_budget"
+          },
+          {
+            "_id": "44d01ea0-0c48-446e-977b-b48d4c75dc1e",
+            "name": "handoff_to_node",
+            "description": "## WHAT IT DOES\nRenders a label with selectable button options for single-choice questions.\n\n## WHEN TO CALL\nCall this tool when the current question's ResponseType is 'Dropdown' or 'Yes/No'.\n\n## HOW TO CALL\nPass QuestionTitle as label_datamodel and Options (transformed to [{\"label\":\"...\",\"value\":\"...\"}] format) as buttons_datamodel.\n\n## AFTER RENDERING\nWait for user to select an option, then proceed to the next question.",
+            "type": "tool",
+            "config": {
+              "enabled": true,
+              "toolId": "tool-handoff",
+              "type": "handoff",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "label_datamodel": {
+                    "type": "string",
+                    "description": "Set to the question text (QuestionTitle)"
+                  },
+                  "buttons_datamodel": {
+                    "type": "string",
+                    "description": "JSON array of options with label/value pairs. Transform Options from [{\"name\":\"Draft\",\"code\":\"1\"}] to [{\"label\":\"Draft\",\"value\":\"1\"}]"
+                  }
+                },
+                "required": [
+                  "label_datamodel",
+                  "buttons_datamodel"
+                ],
+                "additionalProperties": false
+              },
+              "settings": {
+                "nodeId": "dd2pv3y"
+              },
+              "returnDirect": false,
+              "parameters": {}
+            },
+            "alias": "render_dropdown"
+          },
+          {
+            "_id": "296c1079-3c7d-4a79-a1cb-ce9890879d4e",
+            "name": "handoff_to_node",
+            "description": "## WHAT IT DOES\nRenders a date input field for collecting date values from the user.\n\n## WHEN TO CALL\nCall this tool when the current question's ResponseType is 'Date'.\n\n## HOW TO CALL\nPass the question text as date_label, date object as NewOverride_1753255242499, and context selection message.\n\n## AFTER RENDERING\nWait for user to select a date, then proceed to the next question.",
+            "type": "tool",
+            "config": {
+              "enabled": true,
+              "toolId": "tool-handoff",
+              "type": "handoff",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "date_label": {
+                    "type": "string",
+                    "description": "Set to the question text (QuestionTitle), e.g., 'Please provide Need by Date'"
+                  },
+                  "NewOverride_1753255242499": {
+                    "type": "string",
+                    "description": "Date object, e.g. {\"startDate\":\"\"}"
+                  },
+                  "contextSelectionMessage": {
+                    "type": "string",
+                    "description": "Set to 'Update the date based on selected value'"
+                  }
+                },
+                "required": [
+                  "date_label"
+                ],
+                "additionalProperties": false
+              },
+              "settings": {
+                "nodeId": "jurpqem"
+              },
+              "returnDirect": false,
+              "parameters": {}
+            },
+            "alias": "render_date_input"
+          }
+        ],
+        "resources": [],
+        "libraries": [],
+        "maxIterations": 5,
+        "structuredOutput": {
+          "enable": false,
+          "name": "",
+          "description": "",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "questionKey": {
+                "type": "string",
+                "description": "return Question key in the questionnaire list"
+              }
+            },
+            "required": [
+              "questionKey"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "includeThoughts": true
+      },
+      "data": {},
+      "variableUpdates": [
+        {
+          "fieldName": "thread.messages",
+          "operation": "append",
+          "value": "{{nodeOutput.text}}",
+          "role": "assistant"
+        }
+      ],
+      "width": 350,
+      "height": 209,
+      "selected": false,
+      "dragging": false,
+      "positionAbsolute": {
+        "x": 1545.359409099659,
+        "y": 24.516465052600324
+      }
+    },
+    {
+      "id": "i6qn10t",
+      "type": "tool",
+      "name": "getcategoryspecificquestionnaire",
+      "description": "Description:\n\n\nReturns:\n- \n\nFriendly Name: get_categorySpecific_questionnaire",
+      "position": {
+        "x": 945.7796550137439,
+        "y": 67.5
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "enabled": true,
+        "toolId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c-getcategorySpecificquestionnaire-40",
+        "type": "mcp",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "event": {
+              "description": "Event to execute DAC policy in server function.",
+              "type": "string"
+            },
+            "data": {
+              "description": "Payload used to execute the function.",
+              "type": "object"
+            },
+            "additionalData": {
+              "description": "Any additional data used by the function.",
+              "type": "object"
+            }
+          },
+          "required": [
+            "data"
+          ],
+          "condition": "Description:\n\n\nReturns:\n- \n\nFriendly Name: get_categorySpecific_questionnaire"
+        },
+        "settings": {
+          "serverId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c"
+        },
+        "returnDirect": false,
+        "_meta": {
+          "functionId": "bbfa555c-1a69-46d5-aa05-b9c8639dc7d7",
+          "type": "ssf-call",
+          "source": "current-module",
+          "moduleId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c",
+          "toolId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c",
+          "serverName": "module mcp"
+        },
+        "parameters": {
+          "event": "",
+          "data": {
+            "category": "{{flow.qa_master_data.category.id}}",
+            "BUCode": "{{flow.qa_master_data.headerOrg.entityDetailCode}}"
+          },
+          "additionalData": {}
+        }
+      },
+      "data": {},
+      "width": 350,
+      "height": 111,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 945.7796550137439,
+        "y": 67.05948712204227
+      },
+      "dragging": false,
+      "variableUpdates": [
+        {
+          "fieldName": "flow.category_specific_questionnaire",
+          "operation": "set",
+          "value": "{{nodeOutput.result.category_Specific_Question}}"
+        }
+      ]
+    },
+    {
+      "id": "roj93k7",
+      "type": "rule",
+      "name": "questionnaire_exists_check",
+      "description": "",
+      "position": {
+        "x": 491.55931002748787,
+        "y": 46.5
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "rules": [
+          {
+            "ruleId": "r-zfdxlfeu",
+            "enable": true,
+            "conditions": [
+              {
+                "field": "{{flow.category_specific_questionnaire}}",
+                "operator": "is empty",
+                "value": ""
+              }
+            ],
+            "logicType": "AND"
+          },
+          {
+            "ruleId": "r-else",
+            "enable": true,
+            "conditions": [],
+            "logicType": "default"
+          }
+        ]
+      },
+      "data": {},
+      "width": 350,
+      "height": 170,
+      "selected": false,
+      "dragging": false,
+      "positionAbsolute": {
+        "x": 491.55931002748787,
+        "y": 46.5
+      }
+    },
+    {
+      "id": "oo3ab53",
+      "type": "variable",
+      "name": "update_questionnare_responses",
+      "description": "",
+      "position": {
+        "x": 1750.187730346326,
+        "y": 586.0672996875053
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {},
+      "data": {},
+      "width": 350,
+      "height": 71,
+      "selected": false,
+      "dragging": false,
+      "variableUpdates": [
+        {
+          "fieldName": "flow.questionnaireForSummary",
+          "operation": "append",
+          "value": "{\"questionKey\":{{nodes.category_specific_questionnaire.toolResults.update_questionnare_response.questionKey}}, \"questionTitle\":{{nodes.category_specific_questionnaire.toolResults.update_questionnare_response.QuestionTitle}}, \"response\":{{nodes.category_specific_questionnaire.toolResults.update_questionnare_response.response}} }"
+        },
+        {
+          "fieldName": "flow.current_state",
+          "operation": "set",
+          "value": "{{nodes.category_specific_questionnaire.toolResults.update_questionnare_response.questionnaireStatus}}"
+        },
+        {
+          "fieldName": "thread.category_specific_questionnaire_messages",
+          "operation": "append",
+          "value": "Questionnare updated successfully. {{flow.questionnaireForSummary}}",
+          "role": "assistant"
+        },
+        {
+          "fieldName": "{{flow.questionnareResponses[flow.currentQuestionKey]}}",
+          "operation": "set",
+          "value": "{{nodes.category_specific_questionnaire.toolResults.update_questionnare_response.response}}"
+        }
+      ],
+      "positionAbsolute": {
+        "x": 1750.187730346326,
+        "y": 588.1312092001931
+      }
+    },
+    {
+      "id": "fpwfsxd",
+      "type": "variable",
+      "name": "update_question_key",
+      "description": "",
+      "position": {
+        "x": 1362.8808871869533,
+        "y": 586.0672996875053
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {},
+      "data": {},
+      "width": 309,
+      "height": 71,
+      "selected": false,
+      "dragging": false,
+      "variableUpdates": [
+        {
+          "fieldName": "flow.currentQuestionKey",
+          "operation": "set",
+          "value": "{{nodes.category_specific_questionnaire.toolResults.update_questionnare_response.questionKey}}"
+        }
+      ],
+      "positionAbsolute": {
+        "x": 1362.8808871869533,
+        "y": 586.0672996875053
+      }
+    },
+    {
+      "id": "dd2pv3y",
+      "type": "tool",
+      "name": "labelandbuttons",
+      "description": "Description:\nThis partial view is responsible for rendering the label and buttons/options.\n\nNotes:\nThis partial view is responsible for rendering the label and buttons/options.",
+      "position": {
+        "x": 909.7860143314708,
+        "y": 572.6188278442391
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "enabled": true,
+        "toolId": "a4deb011-ea94-418d-9912-822447e4ce1f-labelandbuttons1012-71",
+        "type": "mcp",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "preText": {
+              "description": "Optional Markdown shown immediately before this view. Use to introduce what it shows/why it matters or give brief instructions. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+              "type": "string"
+            },
+            "postText": {
+              "description": "Optional Markdown shown immediately after this view. Use for next steps, brief context/interpretation, or a transition to the next section/view. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+              "type": "string"
+            },
+            "label_datamodel": {
+              "description": "Description:\n**If data is not a valid html string then convert the value to string.  **Use `label_datamodel` override to pass data to form label.\n\nNotes:\n**If data is not a valid html string then convert the value to string.  **Use `label_datamodel` override to pass data to form label.",
+              "type": "string"
+            },
+            "buttons_datamodel": {
+              "description": "Description:\n\n\nNotes:\n",
+              "type": "string"
+            }
+          },
+          "condition": "Description:\nThis partial view is responsible for rendering the label and buttons/options.\n\nOutputs:\n- Returns an object containing:\n  - `RenderingId` (string): The unique identifier of the rendered template. Must be used in final response when referencing this template e.g. [partial_view: RenderingId]\n  - `ContentType` (string): Specifies what type of template this is (e.g. `partial_view`).\n  - `Template` (string): A string representing the UI View Template.\n  - `TemplateDescription` (string): A short description of what the template will present to the user.\n\nNotes:\nThis partial view is responsible for rendering the label and buttons/options."
+        },
+        "settings": {
+          "serverId": "a4deb011-ea94-418d-9912-822447e4ce1f",
+          "serverName": "Intake Agent - IntakeAgent BaseModule"
+        },
+        "returnDirect": false,
+        "_meta": {
+          "uiView": "{\"RefId\":null,\"ViewUniqueId\":\"e1a380cd-75d0-4534-ac80-aaa5301718ee\",\"Version\":[1,0],\"Type\":\"partialView\",\"Name\":\"label_and_buttons-1.0.12\",\"Icon\":null,\"Channel\":\"conversation\",\"Description\":\"This partial view is responsible for rendering the label and buttons/options.\",\"Instruction\":\"This partial view is responsible for rendering the label and buttons/options.\",\"AppId\":null,\"ModuleId\":null,\"EnableContextSharing\":true,\"Overrides\":{\"label_datamodel\":{\"Type\":\"data\",\"OverrideId\":\"label_datamodel\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"label_datamodel\",\"Description\":\"**If data is not a valid html string then convert the value to string.  **Use \\u0060label_datamodel\\u0060 override to pass data to form label.\",\"Instruction\":\"**If data is not a valid html string then convert the value to string.  **Use \\u0060label_datamodel\\u0060 override to pass data to form label.\",\"Value\":null,\"DataType\":\"string\",\"Source\":\"static\"},\"buttons_datamodel\":{\"Type\":\"data\",\"OverrideId\":\"buttons_datamodel\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"buttons_datamodel\",\"Description\":\"\",\"Instruction\":\"\",\"Value\":null,\"DataType\":\"array\",\"Source\":\"static\"}}}",
+          "type": "partial-view",
+          "source": "shared-module",
+          "serverName": "Intake Agent - IntakeAgent BaseModule"
+        },
+        "parameters": {
+          "preText": "",
+          "postText": "",
+          "label_datamodel": "{{nodes.category_specific_questionnaire.toolResults.render_dropdown.label_datamodel}}",
+          "buttons_datamodel": "{{nodes.category_specific_questionnaire.toolResults.render_dropdown.buttons_datamodel}}"
+        }
+      },
+      "data": {},
+      "width": 350,
+      "height": 111,
+      "selected": false,
+      "dragging": false,
+      "positionAbsolute": {
+        "x": 914.0063593177267,
+        "y": 572.6188278442391
+      },
+      "variableUpdates": [
+        {
+          "fieldName": "thread.category_specific_questionnaire_messages",
+          "operation": "append",
+          "value": "Label and buttons PV rendered for dropdown question",
+          "role": "assistant"
+        }
+      ]
+    },
+    {
+      "id": "em4ap5w",
+      "type": "variable",
+      "name": "empty_message_append",
+      "description": "",
+      "position": {
+        "x": 1593.1847512501859,
+        "y": 748.1305979544117
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {},
+      "data": {},
+      "width": 332,
+      "height": 71,
+      "selected": false,
+      "dragging": false,
+      "positionAbsolute": {
+        "x": 1593.1847512501859,
+        "y": 748.1305979544117
+      },
+      "variableUpdates": [
+        {
+          "fieldName": "thread.messages",
+          "operation": "append",
+          "value": " ",
+          "role": "assistant"
+        }
+      ]
+    },
+    {
+      "id": "rpml0mt",
+      "type": "tool",
+      "name": "currencybudget0023",
+      "description": "Description:\nshow\n\nNotes:\nThis partial view is to take user input for currency and budget.",
+      "position": {
+        "x": 909.7860143314708,
+        "y": 393.78731580557996
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "enabled": true,
+        "toolId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c-currencyBudget0023-140",
+        "type": "mcp",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "preText": {
+              "description": "Optional Markdown shown immediately before this view. Use to introduce what it shows/why it matters or give brief instructions. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+              "type": "string"
+            },
+            "postText": {
+              "description": "Optional Markdown shown immediately after this view. Use for next steps, brief context/interpretation, or a transition to the next section/view. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+              "type": "string"
+            },
+            "currencyBudget": {
+              "description": "Description:\n\n\nNotes:\n",
+              "type": "string"
+            },
+            "label_datamodel": {
+              "description": "Description:\n\n\nNotes:\n",
+              "type": "string"
+            },
+            "infoBannerDetails": {
+              "description": "Description:\n\n\nNotes:\n",
+              "type": "string"
+            }
+          },
+          "condition": "Description:\nshow\n\nNotes:\nThis partial view is to take user input for currency and budget."
+        },
+        "settings": {
+          "serverId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c"
+        },
+        "returnDirect": false,
+        "_meta": {
+          "uiView": "{\"RefId\":null,\"ViewUniqueId\":\"73fc9e0e-7df0-4444-89a6-243d6dda8c53\",\"Version\":[0,0],\"Type\":\"partialView\",\"Name\":\"currencyBudget-0.0.23\",\"Icon\":null,\"Channel\":\"conversation\",\"Description\":\"show\",\"Instruction\":\"This partial view is to take user input for currency and budget.\",\"AppId\":null,\"ModuleId\":null,\"EnableContextSharing\":true,\"Overrides\":{\"currencyBudget\":{\"Type\":\"data\",\"OverrideId\":\"currencyBudget\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"currencyBudget\",\"Description\":\"\",\"Instruction\":\"\",\"Value\":null,\"DataType\":\"object\",\"Source\":\"static\"},\"label_datamodel\":{\"Type\":\"data\",\"OverrideId\":\"label_datamodel\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"label_datamodel\",\"Description\":\"\",\"Instruction\":\"\",\"Value\":null,\"DataType\":\"string\",\"Source\":\"static\"},\"infoBannerDetails\":{\"Type\":\"data\",\"OverrideId\":\"infoBannerDetails\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"infoBannerDetails\",\"Description\":\"\",\"Instruction\":\"\",\"Value\":null,\"DataType\":\"object\",\"Source\":\"static\"}}}",
+          "type": "partial-view",
+          "source": "current-module",
+          "moduleId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c",
+          "toolId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c",
+          "serverName": "module mcp"
+        },
+        "parameters": {
+          "preText": "",
+          "postText": "",
+          "currencyBudget": "{\"budget\":\"\",\"currency\":{\"code\":  \"{{flow.user_context.user_currency_code}}\" ,\"name\":  \"{{flow.user_context.user_currency_code}}\" } }",
+          "label_datamodel": "{{nodes.category_specific_questionnaire.toolResults.render_currency_budget.label_datamodel}}",
+          "infoBannerDetails": "{{nodes.category_specific_questionnaire.toolResults.render_currency_budget.infoBannerDetails}}"
+        }
+      },
+      "data": {},
+      "width": 350,
+      "height": 111,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 906.8583026020102,
+        "y": 393.78731580557996
+      },
+      "dragging": false,
+      "variableUpdates": [
+        {
+          "fieldName": "{{thread.category_specific_questionnaire_messages}}",
+          "operation": "append",
+          "value": "Currency budget PV rendered",
+          "role": "assistant"
+        }
+      ]
+    },
+    {
+      "id": "jurpqem",
+      "type": "tool",
+      "name": "datepicker0022",
+      "description": "Description:\nThis view is responsible for showing the date.\n\nNotes:\nThis view is responsible for showing the date.",
+      "position": {
+        "x": 838.0645684280096,
+        "y": 728.1305979544117
+      },
+      "deletable": true,
+      "properties": {
+        "retryOnFailure": false,
+        "maxRetries": 6,
+        "retryInterval": 541,
+        "errorHandling": "none"
+      },
+      "config": {
+        "enabled": true,
+        "toolId": "mcp-a4deb011-ea94-418d-9912-822447e4ce1f-datePicker0022",
+        "type": "mcp",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "preText": {
+              "description": "Optional Markdown shown immediately before this view. Use to introduce what it shows/why it matters or give brief instructions. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+              "type": "string"
+            },
+            "postText": {
+              "description": "Optional Markdown shown immediately after this view. Use for next steps, brief context/interpretation, or a transition to the next section/view. Omit if unnecessary. Must be valid Markdown; UI preserves formatting and spacing.",
+              "type": "string"
+            },
+            "NewOverride_1753255242499": {
+              "description": "Description:\n\n\nNotes:\n",
+              "type": "string"
+            },
+            "date_label": {
+              "description": "Description:\n\n\nNotes:\n**If data is not a valid html string then convert the value to string.  **Use `date_label` override to pass data to form label.",
+              "type": "string"
+            },
+            "contextSelectionMessage": {
+              "description": "Description:\n\n\nNotes:\n**Set the value of `contextSelectionMessage` with `\"Update the date based on these value\"`.",
+              "type": "string"
+            }
+          },
+          "condition": "Description:\nThis view is responsible for showing the date.\n\nNotes:\nThis view is responsible for showing the date."
+        },
+        "settings": {
+          "serverId": "a4deb011-ea94-418d-9912-822447e4ce1f"
+        },
+        "returnDirect": false,
+        "title": "datePicker0022",
+        "_meta": {
+          "uiView": "{\"RefId\":null,\"ViewUniqueId\":\"2f63e623-08ed-4e9c-8dfb-10b310e83f87\",\"Version\":[0,0],\"Type\":\"partialView\",\"Name\":\"datePicker-0.0.22\",\"Icon\":null,\"Channel\":\"conversation\",\"Description\":\"This view is responsible for showing the date.\",\"Instruction\":\"This view is responsible for showing the date.\",\"AppId\":null,\"ModuleId\":null,\"EnableContextSharing\":true,\"Overrides\":{\"NewOverride_1753255242499\":{\"Type\":\"data\",\"OverrideId\":\"NewOverride_1753255242499\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"contractDurationDataModelId\",\"Description\":\"\",\"Instruction\":\"\",\"Value\":null,\"DataType\":\"object\",\"Source\":\"static\"},\"date_label\":{\"Type\":\"data\",\"OverrideId\":\"date_label\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"date_label\",\"Description\":\"\",\"Instruction\":\"**If data is not a valid html string then convert the value to string.  **Use \\u0060date_label\\u0060 override to pass data to form label.\",\"Value\":null,\"DataType\":\"string\",\"Source\":\"static\"},\"contextSelectionMessage\":{\"Type\":\"data\",\"OverrideId\":\"contextSelectionMessage\",\"IsMainDataSource\":null,\"ShareAsContext\":true,\"StoreId\":\"contextSelectionMessage\",\"Description\":\"\",\"Instruction\":\"**Set the value of \\u0060contextSelectionMessage\\u0060 with \\u0060\\u0022Update the date based on these value\\u0022\\u0060.\",\"Value\":null,\"DataType\":\"string\",\"Source\":\"static\"}}}",
+          "type": "partial-view"
+        },
+        "parameters": {
+          "preText": "",
+          "postText": "",
+          "NewOverride_1753255242499": "{{nodes.category_specific_questionnaire.toolResults.render_date_input.NewOverride_1753255242499}}",
+          "date_label": "{{nodes.category_specific_questionnaire.toolResults.render_date_input.date_label}}",
+          "contextSelectionMessage": "{{nodes.category_specific_questionnaire.toolResults.render_date_input.contextSelectionMessage}}"
+        }
+      },
+      "data": {},
+      "width": 350,
+      "height": 111,
+      "selected": true,
+      "positionAbsolute": {
+        "x": 838.0645684280096,
+        "y": 730.234165330007
+      },
+      "dragging": false,
+      "variableUpdates": [
+        {
+          "fieldName": "{{thread.category_specific_questionnaire_messages}}",
+          "operation": "append",
+          "value": "Date picker PV rendered",
+          "role": "assistant"
+        }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "reactflow__edge-i6qn10t-q7wxylq",
+      "source": "i6qn10t",
+      "target": "q7wxylq",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "tool",
+        "targetType": "agent"
+      },
+      "selected": false
+    },
+    {
+      "id": "reactflow__edge-start-roj93k7",
+      "source": "start",
+      "target": "roj93k7",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "start",
+        "targetType": "rule"
+      }
+    },
+    {
+      "id": "reactflow__edge-roj93k7r-zfdxlfeu-i6qn10t",
+      "source": "roj93k7",
+      "target": "i6qn10t",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": "r-zfdxlfeu",
+      "targetHandle": null,
+      "data": {
+        "sourceType": "rule",
+        "targetType": "tool"
+      }
+    },
+    {
+      "id": "reactflow__edge-roj93k7r-else-q7wxylq",
+      "source": "roj93k7",
+      "target": "q7wxylq",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": "r-else",
+      "targetHandle": null,
+      "data": {
+        "sourceType": "rule",
+        "targetType": "agent"
+      }
+    },
+    {
+      "id": "reactflow__edge-oo3ab53-q7wxylq",
+      "source": "oo3ab53",
+      "target": "q7wxylq",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "variable",
+        "targetType": "agent"
+      }
+    },
+    {
+      "id": "reactflow__edge-fpwfsxd-oo3ab53",
+      "source": "fpwfsxd",
+      "target": "oo3ab53",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "variable",
+        "targetType": "variable"
+      }
+    },
+    {
+      "id": "q7wxylq-handoff-c16f557f-5228-44fe-ac41-cfa8dede087b",
+      "source": "q7wxylq",
+      "target": "fpwfsxd",
+      "type": "handoff",
+      "sourceHandle": "handoff",
+      "targetHandle": null,
+      "deletable": false,
+      "data": {
+        "toolId": "c16f557f-5228-44fe-ac41-cfa8dede087b",
+        "isHandoff": true,
+        "sourceType": "agent",
+        "targetType": "variable"
+      }
+    },
+    {
+      "id": "reactflow__edge-q7wxylq-output",
+      "source": "q7wxylq",
+      "target": "output",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "agent",
+        "targetType": "output"
+      }
+    },
+    {
+      "id": "q7wxylq-handoff-44d01ea0-0c48-446e-977b-b48d4c75dc1e",
+      "source": "q7wxylq",
+      "target": "dd2pv3y",
+      "type": "handoff",
+      "sourceHandle": "handoff",
+      "targetHandle": null,
+      "deletable": false,
+      "data": {
+        "toolId": "44d01ea0-0c48-446e-977b-b48d4c75dc1e",
+        "isHandoff": true,
+        "sourceType": "agent",
+        "targetType": "tool"
+      }
+    },
+    {
+      "id": "reactflow__edge-dd2pv3y-em4ap5w",
+      "source": "dd2pv3y",
+      "target": "em4ap5w",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "tool",
+        "targetType": "variable"
+      }
+    },
+    {
+      "id": "reactflow__edge-em4ap5w-output",
+      "source": "em4ap5w",
+      "target": "output",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "variable",
+        "targetType": "output"
+      }
+    },
+    {
+      "id": "reactflow__edge-rpml0mt-em4ap5w",
+      "source": "rpml0mt",
+      "target": "em4ap5w",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "tool",
+        "targetType": "variable"
+      }
+    },
+    {
+      "id": "q7wxylq-handoff-4362cd2b-3296-4262-9bc9-4859988b39f2",
+      "source": "q7wxylq",
+      "target": "rpml0mt",
+      "type": "handoff",
+      "sourceHandle": "handoff",
+      "targetHandle": null,
+      "deletable": false,
+      "data": {
+        "toolId": "4362cd2b-3296-4262-9bc9-4859988b39f2",
+        "isHandoff": true,
+        "sourceType": "agent",
+        "targetType": "tool"
+      }
+    },
+    {
+      "id": "reactflow__edge-jurpqem-em4ap5w",
+      "source": "jurpqem",
+      "target": "em4ap5w",
+      "style": {
+        "strokeWidth": 3
+      },
+      "sourceHandle": null,
+      "targetHandle": null,
+      "data": {
+        "sourceType": "tool",
+        "targetType": "variable"
+      }
+    },
+    {
+      "id": "q7wxylq-handoff-296c1079-3c7d-4a79-a1cb-ce9890879d4e",
+      "source": "q7wxylq",
+      "target": "jurpqem",
+      "type": "handoff",
+      "sourceHandle": "handoff",
+      "targetHandle": null,
+      "deletable": false,
+      "data": {
+        "toolId": "296c1079-3c7d-4a79-a1cb-ce9890879d4e",
+        "isHandoff": true,
+        "sourceType": "agent",
+        "targetType": "tool"
+      }
+    }
+  ],
+  "originalBpc": "20210511",
+  "originalEnvironment": "DEV",
+  "freezeRelease": false,
+  "overwriteOnNextRelease": false,
+  "fromModuleVersion": "v1781093875659812800",
+  "lastModifiedVersion": "v1781121601712159400",
+  "rebasedFromVersion": null,
+  "createdBy": "akhil.maddala@gep.com",
+  "createdOn": "2026-02-13T17:58:19.849Z",
+  "updatedBy": "Ashok.Bhobhiya@gep.com",
+  "updatedOn": "2026-03-18T09:03:21.805Z",
+  "environment": "DEV",
+  "appId": "e2c84064-171f-4f1a-a29a-19e0ac610935",
+  "moduleId": "664683be-a9b9-4bd8-a9de-f7ce7a36161c",
+  "version": "v1781121601712159400"
+}

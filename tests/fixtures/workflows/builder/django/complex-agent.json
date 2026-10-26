@@ -1,0 +1,383 @@
+{
+  "bpc": "",
+  "name": "all-agents",
+  "edges": [
+    {
+      "id": "edge_1781411774199_x28r4",
+      "data": {
+        "sourceType": "start",
+        "targetType": "agent"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "start_1781411766277_vgws6",
+      "target": "agent_1781411771017_da0wq",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "default",
+      "targetHandle": "default"
+    },
+    {
+      "id": "edge_1781411784280_trq62",
+      "data": {
+        "sourceType": "agent",
+        "targetType": "output"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "agent_1781411771017_da0wq",
+      "target": "output_1781411779582_rz4ae",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "default",
+      "targetHandle": "default"
+    },
+    {
+      "id": "edge_1781448542236_epysr",
+      "data": {
+        "sourceType": "workflow",
+        "targetType": "output"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "workflow_1781448530838_3zo7d",
+      "target": "output_1781411779582_rz4ae",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "default",
+      "targetHandle": "default"
+    },
+    {
+      "id": "edge_1781448544654_3nvrj",
+      "data": {
+        "sourceType": "workflow",
+        "targetType": "output"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "workflow_1781448533315_8zh1w",
+      "target": "output_1781411779582_rz4ae",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "default",
+      "targetHandle": "default"
+    },
+    {
+      "id": "edge_1781448546774_lke7a",
+      "data": {
+        "sourceType": "workflow",
+        "targetType": "output"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "workflow_1781448535473_nkpqe",
+      "target": "output_1781411779582_rz4ae",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "default",
+      "targetHandle": "default"
+    },
+    {
+      "id": "edge_1781448570829_kn1fj",
+      "data": {
+        "handoff": true,
+        "sourceType": "agent",
+        "targetType": "workflow"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "agent_1781411771017_da0wq",
+      "target": "workflow_1781448530838_3zo7d",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "handoff-workflow_1781448530838_3zo7d",
+      "targetHandle": null
+    },
+    {
+      "id": "edge_1781448575993_s9wsf",
+      "data": {
+        "handoff": true,
+        "sourceType": "agent",
+        "targetType": "workflow"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "agent_1781411771017_da0wq",
+      "target": "workflow_1781448533315_8zh1w",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "handoff-workflow_1781448533315_8zh1w",
+      "targetHandle": null
+    },
+    {
+      "id": "edge_1781448577422_4uvk5",
+      "data": {
+        "handoff": true,
+        "sourceType": "agent",
+        "targetType": "workflow"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "agent_1781411771017_da0wq",
+      "target": "workflow_1781448535473_nkpqe",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "handoff-workflow_1781448535473_nkpqe",
+      "targetHandle": null
+    }
+  ],
+  "nodes": [
+    {
+      "id": "start_1781411766277_vgws6",
+      "data": {
+        "interfaceInputs": [],
+        "variableUpdates": []
+      },
+      "name": "Start_1",
+      "type": "start",
+      "style": {},
+      "width": 200,
+      "config": {
+        "interfaceInputs": [],
+        "variableUpdates": []
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 200,
+        "y": 150
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 200,
+        "y": 150
+      }
+    },
+    {
+      "id": "agent_1781411771017_da0wq",
+      "data": {
+        "model": "gpt-5-mini",
+        "tools": [],
+        "strategy": "react",
+        "outputSchema": [],
+        "stateUpdates": [],
+        "systemPrompt": "",
+        "handoffTarget": [],
+        "maxIterations": 10,
+        "includeThoughts": false,
+        "variableUpdates": [],
+        "userQueryMapping": "{{system.userQuery}}"
+      },
+      "name": "supervisor-agent",
+      "type": "agent",
+      "style": {},
+      "width": 200,
+      "config": {
+        "model": "claude-sonnet-4-6",
+        "tools": [],
+        "strategy": "react",
+        "outputSchema": [],
+        "stateUpdates": [],
+        "systemPrompt": "",
+        "handoffTarget": [
+          "workflow_1781448530838_3zo7d",
+          "workflow_1781448533315_8zh1w",
+          "workflow_1781448535473_nkpqe"
+        ],
+        "maxIterations": 10,
+        "includeThoughts": false,
+        "variableUpdates": [],
+        "userQueryMapping": "{{system.userQuery}}"
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 533,
+        "y": 130
+      },
+      "selected": true,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 533,
+        "y": 130
+      }
+    },
+    {
+      "id": "output_1781411779582_rz4ae",
+      "data": {
+        "format": "text",
+        "outputKey": "result",
+        "stateUpdates": [],
+        "outputMapping": []
+      },
+      "name": "Output_1",
+      "type": "output",
+      "style": {},
+      "width": 200,
+      "config": {
+        "format": "text",
+        "outputKey": "result",
+        "stateUpdates": [],
+        "outputMapping": []
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 1193,
+        "y": 143
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 1193,
+        "y": 143
+      }
+    },
+    {
+      "id": "workflow_1781448530838_3zo7d",
+      "data": {
+        "inputs": [],
+        "stateUpdates": [],
+        "variableUpdates": [],
+        "agenticWorkflowId": ""
+      },
+      "name": "energy-agent",
+      "type": "workflow",
+      "style": {},
+      "width": 200,
+      "config": {
+        "inputs": [],
+        "stateUpdates": [],
+        "variableUpdates": [],
+        "agenticWorkflowId": "fa034007-d489-40f2-b955-e6e0c1643210"
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 863,
+        "y": 292
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 863,
+        "y": 292
+      }
+    },
+    {
+      "id": "workflow_1781448533315_8zh1w",
+      "data": {
+        "inputs": [],
+        "stateUpdates": [],
+        "variableUpdates": [],
+        "agenticWorkflowId": ""
+      },
+      "name": "facility-energy",
+      "type": "workflow",
+      "style": {},
+      "width": 200,
+      "config": {
+        "inputs": [],
+        "stateUpdates": [],
+        "variableUpdates": [],
+        "agenticWorkflowId": "63d7922d-0946-46b2-ace1-987a848b1aa5"
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 863,
+        "y": 402
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 863,
+        "y": 402
+      }
+    },
+    {
+      "id": "workflow_1781448535473_nkpqe",
+      "data": {
+        "inputs": [],
+        "stateUpdates": [],
+        "variableUpdates": [],
+        "agenticWorkflowId": ""
+      },
+      "name": "risk-energy",
+      "type": "workflow",
+      "style": {},
+      "width": 200,
+      "config": {
+        "inputs": [],
+        "stateUpdates": [],
+        "variableUpdates": [],
+        "agenticWorkflowId": "f1c5d831-b832-4105-8225-720eca07298e"
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 865,
+        "y": 508
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 865,
+        "y": 508
+      }
+    }
+  ],
+  "editAs": "",
+  "skills": [],
+  "security": {},
+  "interface": {},
+  "variables": {},
+  "isDisabled": false,
+  "description": "",
+  "displayName": "all-agents",
+  "invocationType": "",
+  "semanticDomain": "",
+  "includeThoughts": false,
+  "publishChannels": [],
+  "semanticKeywords": "",
+  "semanticUseCases": "",
+  "agenticWorkflowId": "51af4056-6edb-4b0a-85fd-940084f66d96",
+  "enableForAutoInvoke": false,
+  "semanticSearchEnabled": false,
+  "isAvailableForMigration": false
+}

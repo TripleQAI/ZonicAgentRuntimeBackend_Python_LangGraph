@@ -1,0 +1,240 @@
+{
+  "bpc": "",
+  "name": "test-relationship",
+  "edges": [
+    {
+      "id": "edge_1781450364192_695sk",
+      "data": {
+        "sourceType": "start",
+        "targetType": "agent"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "start_1781450340413_ynl2z",
+      "target": "agent_1781450354685_1oj06",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "default",
+      "targetHandle": "default"
+    },
+    {
+      "id": "edge_1781450365740_fr25e",
+      "data": {
+        "sourceType": "agent",
+        "targetType": "output"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "agent_1781450354685_1oj06",
+      "target": "output_1781450358137_vdepr",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "default",
+      "targetHandle": "default"
+    },
+    {
+      "id": "edge_1781450380316_phfw4",
+      "data": {
+        "sourceType": "workflow",
+        "targetType": "output"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "workflow_1781450372188_ztcsq",
+      "target": "output_1781450358137_vdepr",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "default",
+      "targetHandle": "default"
+    },
+    {
+      "id": "edge_1781450390641_w1k48",
+      "data": {
+        "handoff": true,
+        "sourceType": "agent",
+        "targetType": "workflow"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "agent_1781450354685_1oj06",
+      "target": "workflow_1781450372188_ztcsq",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "handoff-workflow_1781450372188_ztcsq",
+      "targetHandle": null
+    }
+  ],
+  "nodes": [
+    {
+      "id": "start_1781450340413_ynl2z",
+      "data": {
+        "interfaceInputs": [],
+        "variableUpdates": []
+      },
+      "name": "Start_1",
+      "type": "start",
+      "style": {},
+      "width": 200,
+      "config": {
+        "interfaceInputs": [],
+        "variableUpdates": []
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 165,
+        "y": 152
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 165,
+        "y": 152
+      }
+    },
+    {
+      "id": "agent_1781450354685_1oj06",
+      "data": {
+        "model": "gpt-5-mini",
+        "tools": [],
+        "strategy": "react",
+        "outputSchema": [],
+        "stateUpdates": [],
+        "systemPrompt": "",
+        "handoffTarget": [],
+        "maxIterations": 10,
+        "includeThoughts": false,
+        "variableUpdates": [],
+        "userQueryMapping": "{{system.userQuery}}"
+      },
+      "name": "Agent_1",
+      "type": "agent",
+      "style": {},
+      "width": 200,
+      "config": {
+        "model": "gpt-5-mini",
+        "tools": [],
+        "strategy": "react",
+        "outputSchema": [],
+        "stateUpdates": [],
+        "systemPrompt": "",
+        "handoffTarget": [
+          "workflow_1781450372188_ztcsq"
+        ],
+        "maxIterations": 10,
+        "includeThoughts": false,
+        "variableUpdates": [],
+        "userQueryMapping": "{{system.userQuery}}"
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 488,
+        "y": 133
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 488,
+        "y": 133
+      }
+    },
+    {
+      "id": "output_1781450358137_vdepr",
+      "data": {
+        "format": "text",
+        "outputKey": "result",
+        "stateUpdates": [],
+        "outputMapping": []
+      },
+      "name": "Output_1",
+      "type": "output",
+      "style": {},
+      "width": 200,
+      "config": {
+        "format": "text",
+        "outputKey": "result",
+        "stateUpdates": [],
+        "outputMapping": []
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 1089,
+        "y": 153
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 1089,
+        "y": 153
+      }
+    },
+    {
+      "id": "workflow_1781450372188_ztcsq",
+      "data": {
+        "inputs": [],
+        "stateUpdates": [],
+        "variableUpdates": [],
+        "agenticWorkflowId": ""
+      },
+      "name": "energy-agent",
+      "type": "workflow",
+      "style": {},
+      "width": 200,
+      "config": {
+        "inputs": [],
+        "stateUpdates": [],
+        "variableUpdates": [],
+        "agenticWorkflowId": "fa034007-d489-40f2-b955-e6e0c1643210"
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 774,
+        "y": 327
+      },
+      "selected": true,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 774,
+        "y": 327
+      }
+    }
+  ],
+  "editAs": "",
+  "skills": [],
+  "security": {},
+  "interface": {},
+  "variables": {},
+  "isDisabled": false,
+  "description": "",
+  "displayName": "test-relationship",
+  "invocationType": "",
+  "includeThoughts": false,
+  "publishChannels": [],
+  "agenticWorkflowId": "c5f62a3d-958f-4122-a931-9c9628205a64",
+  "enableForAutoInvoke": false,
+  "isAvailableForMigration": false,
+  "schemaVersion": "1.0"
+}

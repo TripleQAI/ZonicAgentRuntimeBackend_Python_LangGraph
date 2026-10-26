@@ -1,0 +1,166 @@
+{
+  "schemaVersion": "2.0",
+  "agenticWorkflowId": "synthetic-routing-handoff",
+  "name": "routing-handoff",
+  "displayName": "Routing Handoff",
+  "description": "An agent that hands off to one of two LLM nodes through handoff edges; both join at Output.",
+  "variables": {},
+  "systemParams": [],
+  "publishChannels": [],
+  "nodes": [
+    {
+      "id": "start_1",
+      "type": "start",
+      "name": "Start_1",
+      "description": "",
+      "config": {
+        "interfaceInputs": [],
+        "variableUpdates": []
+      }
+    },
+    {
+      "id": "agent_1",
+      "type": "agent",
+      "name": "Agent_1",
+      "description": "",
+      "config": {
+        "model": "claude-haiku-4-5",
+        "strategy": "react",
+        "systemPrompt": "Route the question.",
+        "tools": [],
+        "handoffTarget": [
+          "llm_billing",
+          "llm_tech"
+        ],
+        "maxIterations": 5,
+        "outputSchema": [],
+        "stateUpdates": [],
+        "variableUpdates": []
+      }
+    },
+    {
+      "id": "llm_billing",
+      "type": "llm",
+      "name": "Billing",
+      "description": "",
+      "config": {
+        "model": "claude-haiku-4-5",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Answer billing questions."
+          },
+          {
+            "role": "user",
+            "content": "{{system.userQuery}}"
+          }
+        ],
+        "tools": [],
+        "responseFormat": "text",
+        "temperature": 0.2,
+        "maxTokens": 512,
+        "outputSchema": [],
+        "stateUpdates": [],
+        "variableUpdates": []
+      }
+    },
+    {
+      "id": "llm_tech",
+      "type": "llm",
+      "name": "Tech",
+      "description": "",
+      "config": {
+        "model": "claude-haiku-4-5",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Answer technical questions."
+          },
+          {
+            "role": "user",
+            "content": "{{system.userQuery}}"
+          }
+        ],
+        "tools": [],
+        "responseFormat": "text",
+        "temperature": 0.2,
+        "maxTokens": 512,
+        "outputSchema": [],
+        "stateUpdates": [],
+        "variableUpdates": []
+      }
+    },
+    {
+      "id": "output_1",
+      "type": "output",
+      "name": "Output_1",
+      "description": "",
+      "config": {
+        "outputMapping": [
+          {
+            "target": "answer",
+            "source": "{{nodes.Agent_1.output.result}}",
+            "type": "string"
+          }
+        ],
+        "variableUpdates": []
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e_start_1_default_agent_1",
+      "source": "start_1",
+      "target": "agent_1",
+      "sourceHandle": "default",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    },
+    {
+      "id": "e_agent_1_default_output_1",
+      "source": "agent_1",
+      "target": "output_1",
+      "sourceHandle": "default",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    },
+    {
+      "id": "e_agent_1_handoff-llm_billing_llm_billing",
+      "source": "agent_1",
+      "target": "llm_billing",
+      "sourceHandle": "handoff-llm_billing",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    },
+    {
+      "id": "e_agent_1_handoff-llm_tech_llm_tech",
+      "source": "agent_1",
+      "target": "llm_tech",
+      "sourceHandle": "handoff-llm_tech",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    },
+    {
+      "id": "e_llm_billing_default_output_1",
+      "source": "llm_billing",
+      "target": "output_1",
+      "sourceHandle": "default",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    },
+    {
+      "id": "e_llm_tech_default_output_1",
+      "source": "llm_tech",
+      "target": "output_1",
+      "sourceHandle": "default",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    }
+  ]
+}

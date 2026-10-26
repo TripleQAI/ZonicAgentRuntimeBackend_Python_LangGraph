@@ -1,0 +1,117 @@
+{
+  "schemaVersion": "2.0",
+  "agenticWorkflowId": "synthetic-approval-in-loop",
+  "name": "approval-in-loop",
+  "displayName": "Approval In Loop",
+  "description": "Draft, ask for approval, and redraft on rejection until approved.",
+  "variables": {},
+  "systemParams": [],
+  "publishChannels": [],
+  "nodes": [
+    {
+      "id": "start_1",
+      "type": "start",
+      "name": "Start_1",
+      "description": "",
+      "config": {
+        "interfaceInputs": [],
+        "variableUpdates": []
+      }
+    },
+    {
+      "id": "draft_1",
+      "type": "llm",
+      "name": "Draft_1",
+      "description": "",
+      "config": {
+        "model": "claude-haiku-4-5",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Draft, taking {{approval.response}} into account."
+          },
+          {
+            "role": "user",
+            "content": "{{system.userQuery}}"
+          }
+        ],
+        "tools": [],
+        "responseFormat": "text",
+        "temperature": 0.2,
+        "maxTokens": 512,
+        "outputSchema": [],
+        "stateUpdates": [],
+        "variableUpdates": []
+      }
+    },
+    {
+      "id": "approval_1",
+      "type": "approval",
+      "name": "Approval_1",
+      "description": "",
+      "config": {
+        "message": "Approve {{nodes.Draft_1.output.result}}?",
+        "approvers": [],
+        "timeoutHours": 24,
+        "responseVariable": "approval.response",
+        "outputSchema": [],
+        "stateUpdates": [],
+        "variableUpdates": []
+      }
+    },
+    {
+      "id": "output_1",
+      "type": "output",
+      "name": "Output_1",
+      "description": "",
+      "config": {
+        "outputMapping": [
+          {
+            "target": "answer",
+            "source": "{{nodes.Draft_1.output.result}}",
+            "type": "string"
+          }
+        ],
+        "variableUpdates": []
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e_start_1_default_draft_1",
+      "source": "start_1",
+      "target": "draft_1",
+      "sourceHandle": "default",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    },
+    {
+      "id": "e_draft_1_default_approval_1",
+      "source": "draft_1",
+      "target": "approval_1",
+      "sourceHandle": "default",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    },
+    {
+      "id": "e_approval_1_approved_output_1",
+      "source": "approval_1",
+      "target": "output_1",
+      "sourceHandle": "approved",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    },
+    {
+      "id": "e_approval_1_rejected_draft_1",
+      "source": "approval_1",
+      "target": "draft_1",
+      "sourceHandle": "rejected",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    }
+  ]
+}

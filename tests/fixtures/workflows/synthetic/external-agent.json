@@ -1,0 +1,79 @@
+{
+  "schemaVersion": "2.0",
+  "agenticWorkflowId": "synthetic-external-agent",
+  "name": "external-agent",
+  "displayName": "External Agent",
+  "description": "Start, an external agent called over HTTP, Output.",
+  "variables": {},
+  "systemParams": [],
+  "publishChannels": [],
+  "nodes": [
+    {
+      "id": "start_1",
+      "type": "start",
+      "name": "Start_1",
+      "description": "",
+      "config": {
+        "interfaceInputs": [],
+        "variableUpdates": []
+      }
+    },
+    {
+      "id": "external_1",
+      "type": "external_agent",
+      "name": "External_1",
+      "description": "",
+      "config": {
+        "endpoint": "{{env.EXTERNAL_AGENT_URL}}",
+        "authType": "bearer",
+        "apiKey": "{{secrets.externalAgentToken}}",
+        "inputMapping": [
+          {
+            "key": "question",
+            "value": "{{system.userQuery}}",
+            "type": "string"
+          }
+        ],
+        "outputSchema": [],
+        "stateUpdates": [],
+        "variableUpdates": []
+      }
+    },
+    {
+      "id": "output_1",
+      "type": "output",
+      "name": "Output_1",
+      "description": "",
+      "config": {
+        "outputMapping": [
+          {
+            "target": "answer",
+            "source": "{{nodes.External_1.output.result}}",
+            "type": "string"
+          }
+        ],
+        "variableUpdates": []
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e_start_1_default_external_1",
+      "source": "start_1",
+      "target": "external_1",
+      "sourceHandle": "default",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    },
+    {
+      "id": "e_external_1_default_output_1",
+      "source": "external_1",
+      "target": "output_1",
+      "sourceHandle": "default",
+      "targetHandle": "default",
+      "type": "default",
+      "data": {}
+    }
+  ]
+}
