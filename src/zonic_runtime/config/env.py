@@ -1,7 +1,9 @@
 """The process environment, validated once. The only module that reads ``os.environ`` (rule 4).
 
 Endpoints, credentials and the environment name come from here; every tunable
-value comes from ``resources/settings*.json`` instead.
+value comes from ``resources/settings*.json`` instead. ``ZONIC_*`` variables are read
+from the process environment, then from the repository's git-ignored ``.env`` (see
+``.env.example``); a variable set in the process wins, so deployments set them directly.
 """
 
 from __future__ import annotations
@@ -18,7 +20,13 @@ _REPO_ROOT = Path(__file__).resolve().parents[3]
 
 
 class EnvironmentModel(BaseSettings):
-    model_config = SettingsConfigDict(env_prefix="ZONIC_", env_file=None, extra="ignore", frozen=True)
+    model_config = SettingsConfigDict(
+        env_prefix="ZONIC_",
+        env_file=_REPO_ROOT / ".env",
+        env_file_encoding="utf-8",
+        extra="ignore",
+        frozen=True,
+    )
 
     env: Literal["dev", "test", "prod"] = "dev"
     resources_dir: Path = _REPO_ROOT / "resources"

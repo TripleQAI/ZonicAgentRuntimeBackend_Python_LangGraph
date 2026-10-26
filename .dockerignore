@@ -1,0 +1,12 @@
+# Keep secrets and local state out of the build context. Deployments set ZONIC_* in the
+# container's environment; .env is for local runs only.
+.env
+.env.*
+!.env.example
+.venv
+.git
+.mypy_cache
+.ruff_cache
+.pytest_cache
+**/__pycache__
+spikes
