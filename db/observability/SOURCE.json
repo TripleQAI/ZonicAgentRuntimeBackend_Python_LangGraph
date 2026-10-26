@@ -1,0 +1,11 @@
+{
+  "source": "ZonicAgentRuntimeServer_Nodejs/db/observability",
+  "commit": "70d21be053da421dbe925b0dc10b91dd55bd2468",
+  "files": {
+    "001_schema_create.sql": "9d7a5f4c7d43ebc03d296a862b2fc4bb5da493d0539f6213da7380f8f376b528",
+    "002_functions.sql": "df9c4d44580e158c9c22264c87c2ac8638b4d733c9d7f8ecccbf07c3ea17b5b3",
+    "003_indexes.sql": "376981353b4e7eea6cebeea8fedc476ffcc127736a0aba08f35b1aba4d38ebda",
+    "004_views.sql": "ef83c3c74750d3f55d302094799050f5acc32c567e80936bf2ef893470ad5e89",
+    "005_procedures.sql": "cd92f74b0f1885e7f7fb134e3456676e62a63e15775a115b2c521ab7bd4fc2bf"
+  }
+}

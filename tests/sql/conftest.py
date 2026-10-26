@@ -91,14 +91,15 @@ RUNTIME_FILES = (
 CHECK_SETUP = r"""
 CREATE TEMP TABLE _check (name text PRIMARY KEY, ok boolean NOT NULL) ON COMMIT DROP;
 
--- Runs one statement and records whether it failed with the expected SQLSTATE and reason token.
+-- Runs one statement and records whether it failed with the expected SQLSTATE and, unless
+-- p_reason is NULL, the expected message (the reason token for the procedures).
 CREATE FUNCTION pg_temp.expect_error(p_name text, p_sql text, p_sqlstate text, p_reason text)
 RETURNS void LANGUAGE plpgsql AS $$
 BEGIN
     BEGIN
         EXECUTE p_sql;
     EXCEPTION WHEN OTHERS THEN
-        INSERT INTO _check VALUES (p_name, SQLSTATE = p_sqlstate AND SQLERRM = p_reason);
+        INSERT INTO _check VALUES (p_name, SQLSTATE = p_sqlstate AND (p_reason IS NULL OR SQLERRM = p_reason));
         RETURN;
     END;
     INSERT INTO _check VALUES (p_name, false);
@@ -118,10 +119,16 @@ def runtime_schema() -> str:
     return "\n".join((DB / "runtime" / name).read_text(encoding="utf-8") for name in RUNTIME_FILES)
 
 
-def run_checks(psql: Psql, checks: str, *, runtime_times: int = 1) -> Rows:
-    """Install both schemas, run ``checks``, print ``_check`` and roll everything back."""
+def observability_schema() -> str:
+    """agent_observability 001 to 005, in run_all.sql order."""
+    files = sorted((DB / "observability").glob("00[1-5]_*.sql"))
+    return "\n".join(path.read_text(encoding="utf-8") for path in files)
+
+
+def run_checks(psql: Psql, checks: str, install: str) -> Rows:
+    """Run ``install``, then ``checks``, print ``_check`` and roll everything back."""
     report = "SELECT 'check|' || name || '|' || ok FROM _check ORDER BY name;"
-    parts = ["BEGIN;", builder_schema(), *[runtime_schema()] * runtime_times, CHECK_SETUP, checks, report]
+    parts = ["BEGIN;", install, CHECK_SETUP, checks, report]
     rows: Rows = defaultdict(list)
     for line in psql("\n".join([*parts, "ROLLBACK;"])).splitlines():
         kind, _, rest = line.partition("|")

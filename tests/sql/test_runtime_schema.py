@@ -11,7 +11,7 @@ import json
 
 import pytest
 
-from tests.sql.conftest import ROOT, Psql, Rows, passed, run_checks
+from tests.sql.conftest import ROOT, Psql, Rows, builder_schema, passed, run_checks, runtime_schema
 
 pytestmark = pytest.mark.sql
 
@@ -140,7 +140,7 @@ EXPECTED = {
 
 @pytest.fixture(scope="module")
 def results(psql: Psql) -> Rows:
-    return run_checks(psql, CHECKS, runtime_times=2)
+    return run_checks(psql, CHECKS, "\n".join([builder_schema(), runtime_schema(), runtime_schema()]))
 
 
 def test_P15_scripts_apply_twice_and_every_check_runs(results: Rows) -> None:

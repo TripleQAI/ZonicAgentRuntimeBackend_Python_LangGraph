@@ -29,7 +29,7 @@ ban-relative-imports = "parents"
 [lint.per-file-ignores]
 "src/zonic_runtime/observability/logging_policy.py" = ["TID251"]
 "tests/**" = ["T20", "E501", "BLE001"]
-"spikes/**" = ["T20", "E501", "BLE001", "TID251"]
+"spikes/**" = ["T20", "E501", "BLE001", "TID251", "ASYNC", "F841", "RUF005", "RUF007", "RUF059", "SIM105"]  # measurement code, deleted after M0
 "scripts/**" = ["T20"]
 
 [format]

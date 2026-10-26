@@ -151,7 +151,7 @@
     "workers": 2
   },
   "models": {
-    "executorThreads": 32,
+    "executorThreads": 160,
     "maxRetries": 2,
     "requestTimeoutSeconds": 120
   },

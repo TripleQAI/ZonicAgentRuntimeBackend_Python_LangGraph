@@ -1,11 +1,14 @@
 """Vendor SQL scripts owned by sibling repositories, byte for byte, with a ``SOURCE.json``.
 
-Two sets:
+Three sets:
 
 * ``runtime``: the ``agent_runtime`` tables, functions, indexes and procedures from
   ``ZonicAgentRuntimeServer_Nodejs/db/runtime`` into ``db/runtime/``. Both runtimes use
   one ``agent_runtime`` schema; ``004_views.sql``, ``006_grants.sql``, ``run_all.sql``
   and ``999_drop_all.sql`` stay this project's own.
+* ``observability``: ``agent_observability`` 001 to 005 from
+  ``ZonicAgentRuntimeServer_Nodejs/db/observability`` into ``db/observability/``;
+  ``006_grants.sql``, ``run_all.sql`` and ``999_drop_all.sql`` stay this project's own.
 * ``builder``: the ``agent_builder`` DDL from ``ZonicAgentBuilderServer_FastAPI/db`` into
   ``tests/fixtures/builder_db/``; the SQL tests install it first, inside the
   rolled-back transaction.
@@ -56,6 +59,19 @@ SETS = (
         source="db/runtime",
         target=ROOT / "db" / "runtime",
         files=("001_schema.sql", "002_functions_triggers.sql", "003_indexes.sql", "005_procedures.sql"),
+    ),
+    VendoredSet(
+        name="observability",
+        repo="ZonicAgentRuntimeServer_Nodejs",
+        source="db/observability",
+        target=ROOT / "db" / "observability",
+        files=(
+            "001_schema_create.sql",
+            "002_functions.sql",
+            "003_indexes.sql",
+            "004_views.sql",
+            "005_procedures.sql",
+        ),
     ),
     VendoredSet(
         name="builder",

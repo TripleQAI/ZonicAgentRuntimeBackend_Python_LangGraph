@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import pytest
 
-from tests.sql.conftest import Psql, Rows, passed, run_checks
+from tests.sql.conftest import Psql, Rows, builder_schema, passed, run_checks, runtime_schema
 
 pytestmark = pytest.mark.sql
 
@@ -245,7 +245,7 @@ P15 = {
 
 @pytest.fixture(scope="module")
 def results(psql: Psql) -> Rows:
-    return run_checks(psql, CHECKS)
+    return run_checks(psql, CHECKS, "\n".join([builder_schema(), runtime_schema()]))
 
 
 def test_P15_every_procedure_check_runs(results: Rows) -> None:
