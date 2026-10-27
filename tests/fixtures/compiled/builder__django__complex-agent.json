@@ -1,0 +1,72 @@
+{
+  "entry": "start_1781411766277_vgws6",
+  "nodes": {
+    "agent_1781411771017_da0wq": {
+      "defer": false,
+      "destinations": {
+        "output_1781411779582_rz4ae": "default",
+        "workflow_1781448530838_3zo7d": "handoff-workflow_1781448530838_3zo7d",
+        "workflow_1781448533315_8zh1w": "handoff-workflow_1781448533315_8zh1w",
+        "workflow_1781448535473_nkpqe": "handoff-workflow_1781448535473_nkpqe"
+      },
+      "kind": "agent",
+      "loopId": null,
+      "nodeId": "agent_1781411771017_da0wq",
+      "retryAttempts": null,
+      "timeoutSeconds": 300.0
+    },
+    "output_1781411779582_rz4ae": {
+      "defer": false,
+      "destinations": [],
+      "kind": "output",
+      "loopId": null,
+      "nodeId": "output_1781411779582_rz4ae",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "start_1781411766277_vgws6": {
+      "defer": false,
+      "destinations": {
+        "agent_1781411771017_da0wq": "default"
+      },
+      "kind": "entry",
+      "loopId": null,
+      "nodeId": "start_1781411766277_vgws6",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "workflow_1781448530838_3zo7d": {
+      "defer": false,
+      "destinations": {
+        "output_1781411779582_rz4ae": "default"
+      },
+      "kind": "subflow",
+      "loopId": null,
+      "nodeId": "workflow_1781448530838_3zo7d",
+      "retryAttempts": null,
+      "timeoutSeconds": 600.0
+    },
+    "workflow_1781448533315_8zh1w": {
+      "defer": false,
+      "destinations": {
+        "output_1781411779582_rz4ae": "default"
+      },
+      "kind": "subflow",
+      "loopId": null,
+      "nodeId": "workflow_1781448533315_8zh1w",
+      "retryAttempts": null,
+      "timeoutSeconds": 600.0
+    },
+    "workflow_1781448535473_nkpqe": {
+      "defer": false,
+      "destinations": {
+        "output_1781411779582_rz4ae": "default"
+      },
+      "kind": "subflow",
+      "loopId": null,
+      "nodeId": "workflow_1781448535473_nkpqe",
+      "retryAttempts": null,
+      "timeoutSeconds": 600.0
+    }
+  }
+}

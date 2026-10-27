@@ -1,0 +1,60 @@
+{
+  "entry": "start_1",
+  "nodes": {
+    "agent_1": {
+      "defer": false,
+      "destinations": {
+        "llm_billing": "handoff-llm_billing",
+        "llm_tech": "handoff-llm_tech",
+        "output_1": "default"
+      },
+      "kind": "agent",
+      "loopId": null,
+      "nodeId": "agent_1",
+      "retryAttempts": null,
+      "timeoutSeconds": 300.0
+    },
+    "llm_billing": {
+      "defer": false,
+      "destinations": {
+        "output_1": "default"
+      },
+      "kind": "llm",
+      "loopId": null,
+      "nodeId": "llm_billing",
+      "retryAttempts": 3,
+      "timeoutSeconds": 120.0
+    },
+    "llm_tech": {
+      "defer": false,
+      "destinations": {
+        "output_1": "default"
+      },
+      "kind": "llm",
+      "loopId": null,
+      "nodeId": "llm_tech",
+      "retryAttempts": 3,
+      "timeoutSeconds": 120.0
+    },
+    "output_1": {
+      "defer": false,
+      "destinations": [],
+      "kind": "output",
+      "loopId": null,
+      "nodeId": "output_1",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "start_1": {
+      "defer": false,
+      "destinations": {
+        "agent_1": "default"
+      },
+      "kind": "entry",
+      "loopId": null,
+      "nodeId": "start_1",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    }
+  }
+}

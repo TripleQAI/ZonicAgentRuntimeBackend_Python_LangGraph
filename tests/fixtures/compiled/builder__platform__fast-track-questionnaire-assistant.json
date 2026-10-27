@@ -1,0 +1,271 @@
+{
+  "entry": "start",
+  "nodes": {
+    "1ucvadx": {
+      "defer": false,
+      "destinations": {
+        "et08y2v": "r-1ixq0ec6",
+        "x2a9kq1": "r-else"
+      },
+      "kind": "router",
+      "loopId": null,
+      "nodeId": "1ucvadx",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "1ugwfv9": {
+      "defer": false,
+      "destinations": {
+        "5zbaoe3": "default"
+      },
+      "kind": "tool",
+      "loopId": null,
+      "nodeId": "1ugwfv9",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "5zbaoe3": {
+      "defer": false,
+      "destinations": {
+        "output": "default"
+      },
+      "kind": "variable",
+      "loopId": null,
+      "nodeId": "5zbaoe3",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "ahqn6pv": {
+      "defer": false,
+      "destinations": {
+        "1ugwfv9": "handoff-1ugwfv9",
+        "cqykarm": "handoff-cqykarm",
+        "eul6ht5": "handoff-eul6ht5",
+        "g8en6vy": "handoff-g8en6vy",
+        "output": "default",
+        "p576jbh": "handoff-p576jbh",
+        "rzf5ysk": "handoff-rzf5ysk",
+        "set_completion_var": "handoff-set_completion_var",
+        "t1ijnry": "handoff-t1ijnry",
+        "uysgskt": "handoff-uysgskt",
+        "w7yxrcf": "handoff-w7yxrcf"
+      },
+      "kind": "agent",
+      "loopId": "loop:ahqn6pv",
+      "nodeId": "ahqn6pv",
+      "retryAttempts": null,
+      "timeoutSeconds": 300.0
+    },
+    "cpb9koe": {
+      "defer": false,
+      "destinations": {
+        "5zbaoe3": "default"
+      },
+      "kind": "tool",
+      "loopId": null,
+      "nodeId": "cpb9koe",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "cqykarm": {
+      "defer": false,
+      "destinations": {
+        "5zbaoe3": "default"
+      },
+      "kind": "tool",
+      "loopId": null,
+      "nodeId": "cqykarm",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "et08y2v": {
+      "defer": false,
+      "destinations": {
+        "ahqn6pv": "default"
+      },
+      "kind": "agent",
+      "loopId": null,
+      "nodeId": "et08y2v",
+      "retryAttempts": null,
+      "timeoutSeconds": 300.0
+    },
+    "eul6ht5": {
+      "defer": false,
+      "destinations": {
+        "5zbaoe3": "default"
+      },
+      "kind": "tool",
+      "loopId": null,
+      "nodeId": "eul6ht5",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "g8en6vy": {
+      "defer": false,
+      "destinations": {
+        "5zbaoe3": "default"
+      },
+      "kind": "tool",
+      "loopId": null,
+      "nodeId": "g8en6vy",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "ibszd4q": {
+      "defer": false,
+      "destinations": {
+        "5zbaoe3": "default"
+      },
+      "kind": "tool",
+      "loopId": null,
+      "nodeId": "ibszd4q",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "output": {
+      "defer": false,
+      "destinations": [],
+      "kind": "output",
+      "loopId": null,
+      "nodeId": "output",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "p576jbh": {
+      "defer": false,
+      "destinations": {
+        "5zbaoe3": "default"
+      },
+      "kind": "tool",
+      "loopId": null,
+      "nodeId": "p576jbh",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "pre_route": {
+      "defer": false,
+      "destinations": {
+        "ahqn6pv": "r-completed",
+        "summarizer_agent": "r-else"
+      },
+      "kind": "router",
+      "loopId": null,
+      "nodeId": "pre_route",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "rzf5ysk": {
+      "defer": false,
+      "destinations": {
+        "5zbaoe3": "default"
+      },
+      "kind": "tool",
+      "loopId": null,
+      "nodeId": "rzf5ysk",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "set_completion_var": {
+      "defer": false,
+      "destinations": {
+        "summarizer_agent": "default"
+      },
+      "kind": "variable",
+      "loopId": null,
+      "nodeId": "set_completion_var",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "start": {
+      "defer": false,
+      "destinations": {
+        "1ucvadx": "default"
+      },
+      "kind": "entry",
+      "loopId": null,
+      "nodeId": "start",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "summarizer_agent": {
+      "defer": false,
+      "destinations": {
+        "cpb9koe": "handoff-cpb9koe",
+        "ibszd4q": "handoff-ibszd4q",
+        "output": "default",
+        "vwa9fns": "handoff-vwa9fns"
+      },
+      "kind": "agent",
+      "loopId": null,
+      "nodeId": "summarizer_agent",
+      "retryAttempts": null,
+      "timeoutSeconds": 300.0
+    },
+    "t1ijnry": {
+      "defer": false,
+      "destinations": {
+        "ahqn6pv": "default"
+      },
+      "kind": "variable",
+      "loopId": "loop:ahqn6pv",
+      "nodeId": "t1ijnry",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "uysgskt": {
+      "defer": false,
+      "destinations": {
+        "5zbaoe3": "default"
+      },
+      "kind": "tool",
+      "loopId": null,
+      "nodeId": "uysgskt",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "vwa9fns": {
+      "defer": false,
+      "destinations": {
+        "zm132ro": "default"
+      },
+      "kind": "tool",
+      "loopId": null,
+      "nodeId": "vwa9fns",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "w7yxrcf": {
+      "defer": false,
+      "destinations": {
+        "5zbaoe3": "default"
+      },
+      "kind": "tool",
+      "loopId": null,
+      "nodeId": "w7yxrcf",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "x2a9kq1": {
+      "defer": false,
+      "destinations": {
+        "pre_route": "default"
+      },
+      "kind": "variable",
+      "loopId": null,
+      "nodeId": "x2a9kq1",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "zm132ro": {
+      "defer": false,
+      "destinations": {
+        "5zbaoe3": "default"
+      },
+      "kind": "tool",
+      "loopId": null,
+      "nodeId": "zm132ro",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    }
+  }
+}

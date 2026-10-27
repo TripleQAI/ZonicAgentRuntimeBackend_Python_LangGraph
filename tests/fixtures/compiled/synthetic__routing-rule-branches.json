@@ -1,0 +1,56 @@
+{
+  "entry": "start_1",
+  "nodes": {
+    "output_billing": {
+      "defer": false,
+      "destinations": [],
+      "kind": "output",
+      "loopId": null,
+      "nodeId": "output_billing",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "output_other": {
+      "defer": false,
+      "destinations": [],
+      "kind": "output",
+      "loopId": null,
+      "nodeId": "output_other",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "output_outage": {
+      "defer": false,
+      "destinations": [],
+      "kind": "output",
+      "loopId": null,
+      "nodeId": "output_outage",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "rule_1": {
+      "defer": false,
+      "destinations": {
+        "output_billing": "r_billing",
+        "output_other": "r_else",
+        "output_outage": "r_outage"
+      },
+      "kind": "router",
+      "loopId": null,
+      "nodeId": "rule_1",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "start_1": {
+      "defer": false,
+      "destinations": {
+        "rule_1": "default"
+      },
+      "kind": "entry",
+      "loopId": null,
+      "nodeId": "start_1",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    }
+  }
+}

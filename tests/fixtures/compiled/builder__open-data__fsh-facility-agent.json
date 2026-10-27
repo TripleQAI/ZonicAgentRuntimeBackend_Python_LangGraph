@@ -1,0 +1,105 @@
+{
+  "entry": "start_1781399185229_ojarn",
+  "nodes": {
+    "agent_1781411386704_1bab6": {
+      "defer": false,
+      "destinations": {
+        "llm_1781411428279_slek0": "handoff-llm_1781411428279_slek0",
+        "llm_1781461849092_eqvjs": "handoff-llm_1781461849092_eqvjs",
+        "output_1781411395307_68fja": "default"
+      },
+      "kind": "agent",
+      "loopId": null,
+      "nodeId": "agent_1781411386704_1bab6",
+      "retryAttempts": null,
+      "timeoutSeconds": 300.0
+    },
+    "db_query_1781463967486_pmfus": {
+      "defer": false,
+      "destinations": {
+        "output_1781411395307_68fja": "default"
+      },
+      "kind": "mcp_execute",
+      "loopId": null,
+      "nodeId": "db_query_1781463967486_pmfus",
+      "retryAttempts": 2,
+      "timeoutSeconds": 30.0
+    },
+    "http_request_1781411419778_o4s99": {
+      "defer": false,
+      "destinations": {
+        "output_1781411395307_68fja": "default"
+      },
+      "kind": "http",
+      "loopId": null,
+      "nodeId": "http_request_1781411419778_o4s99",
+      "retryAttempts": 2,
+      "timeoutSeconds": 30.0
+    },
+    "llm_1781411428279_slek0": {
+      "defer": false,
+      "destinations": {
+        "rule_1781463975269_lk2qj": "default"
+      },
+      "kind": "llm",
+      "loopId": null,
+      "nodeId": "llm_1781411428279_slek0",
+      "retryAttempts": 3,
+      "timeoutSeconds": 120.0
+    },
+    "llm_1781461849092_eqvjs": {
+      "defer": false,
+      "destinations": {
+        "view_1781411461424_lx9il": "default"
+      },
+      "kind": "llm",
+      "loopId": null,
+      "nodeId": "llm_1781461849092_eqvjs",
+      "retryAttempts": 3,
+      "timeoutSeconds": 120.0
+    },
+    "output_1781411395307_68fja": {
+      "defer": false,
+      "destinations": [],
+      "kind": "output",
+      "loopId": null,
+      "nodeId": "output_1781411395307_68fja",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "rule_1781463975269_lk2qj": {
+      "defer": false,
+      "destinations": {
+        "db_query_1781463967486_pmfus": "r_default",
+        "http_request_1781411419778_o4s99": "r_else"
+      },
+      "kind": "router",
+      "loopId": null,
+      "nodeId": "rule_1781463975269_lk2qj",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "start_1781399185229_ojarn": {
+      "defer": false,
+      "destinations": {
+        "agent_1781411386704_1bab6": "default"
+      },
+      "kind": "entry",
+      "loopId": null,
+      "nodeId": "start_1781399185229_ojarn",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "view_1781411461424_lx9il": {
+      "defer": false,
+      "destinations": {
+        "output_1781411395307_68fja": "default"
+      },
+      "kind": "view",
+      "loopId": null,
+      "nodeId": "view_1781411461424_lx9il",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    }
+  }
+}

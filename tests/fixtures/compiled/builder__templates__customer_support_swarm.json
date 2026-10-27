@@ -1,0 +1,36 @@
+{
+  "entry": "start_1",
+  "nodes": {
+    "output_1": {
+      "defer": false,
+      "destinations": [],
+      "kind": "output",
+      "loopId": null,
+      "nodeId": "output_1",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "start_1": {
+      "defer": false,
+      "destinations": {
+        "swarm_1": "default"
+      },
+      "kind": "entry",
+      "loopId": null,
+      "nodeId": "start_1",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "swarm_1": {
+      "defer": false,
+      "destinations": {
+        "output_1": "default"
+      },
+      "kind": "multi_agent",
+      "loopId": null,
+      "nodeId": "swarm_1",
+      "retryAttempts": null,
+      "timeoutSeconds": 600.0
+    }
+  }
+}

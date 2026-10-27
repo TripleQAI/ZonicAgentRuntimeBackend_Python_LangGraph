@@ -1,4 +1,4 @@
-"""Dotted paths into plain JSON objects (``config.settings.serverId``), for the dialect rules."""
+"""Dotted paths into plain JSON objects (``config.settings.serverId``), shared by every layer."""
 
 from __future__ import annotations
 

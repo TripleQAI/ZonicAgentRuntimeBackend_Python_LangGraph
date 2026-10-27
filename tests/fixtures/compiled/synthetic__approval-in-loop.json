@@ -1,0 +1,48 @@
+{
+  "entry": "start_1",
+  "nodes": {
+    "approval_1": {
+      "defer": false,
+      "destinations": {
+        "draft_1": "rejected",
+        "output_1": "approved"
+      },
+      "kind": "interrupt",
+      "loopId": "loop:draft_1",
+      "nodeId": "approval_1",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "draft_1": {
+      "defer": false,
+      "destinations": {
+        "approval_1": "default"
+      },
+      "kind": "llm",
+      "loopId": "loop:draft_1",
+      "nodeId": "draft_1",
+      "retryAttempts": 3,
+      "timeoutSeconds": 120.0
+    },
+    "output_1": {
+      "defer": false,
+      "destinations": [],
+      "kind": "output",
+      "loopId": null,
+      "nodeId": "output_1",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "start_1": {
+      "defer": false,
+      "destinations": {
+        "draft_1": "default"
+      },
+      "kind": "entry",
+      "loopId": null,
+      "nodeId": "start_1",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "entry": "start_1781386328321_q6vy9",
+  "nodes": {
+    "agent_1781386678857_qu9vs": {
+      "defer": false,
+      "destinations": {
+        "output_1781386683842_9iyu6": "default"
+      },
+      "kind": "agent",
+      "loopId": null,
+      "nodeId": "agent_1781386678857_qu9vs",
+      "retryAttempts": null,
+      "timeoutSeconds": 300.0
+    },
+    "output_1781386683842_9iyu6": {
+      "defer": false,
+      "destinations": [],
+      "kind": "output",
+      "loopId": null,
+      "nodeId": "output_1781386683842_9iyu6",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "start_1781386328321_q6vy9": {
+      "defer": false,
+      "destinations": {
+        "agent_1781386678857_qu9vs": "default"
+      },
+      "kind": "entry",
+      "loopId": null,
+      "nodeId": "start_1781386328321_q6vy9",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    }
+  }
+}

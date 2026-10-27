@@ -1,0 +1,622 @@
+{
+  "schemaVersion": "1.0",
+  "builderCommit": "0b9306f8393dc8c10b40c3244389a97677090ef3",
+  "semantics": {
+    "childReference": {
+      "workflow": "config.agenticWorkflowId"
+    },
+    "handoffTargets": {
+      "agent": "config.handoffTarget"
+    },
+    "branches": {
+      "rule": {
+        "path": "config.rules",
+        "idField": "ruleId"
+      }
+    },
+    "entry": {
+      "start": true
+    },
+    "swarms": {
+      "swarm": {
+        "membersPath": "config.members",
+        "entryPointPath": "config.entryPoint",
+        "memberTypes": [
+          "agent",
+          "llm"
+        ]
+      }
+    }
+  },
+  "conditionOperators": [
+    "eq",
+    "ne",
+    "gt",
+    "gte",
+    "lt",
+    "lte",
+    "contains",
+    "exists",
+    "not_exists"
+  ],
+  "conditionLogic": [
+    "AND",
+    "OR"
+  ],
+  "stateOps": [
+    "set",
+    "append",
+    "extend",
+    "merge",
+    "increment",
+    "remove",
+    "clear"
+  ],
+  "mappingTypes": [
+    "string",
+    "number",
+    "boolean",
+    "array",
+    "object",
+    "variable"
+  ],
+  "validationRules": {
+    "swarm": [
+      {
+        "id": "SW-1",
+        "rule": "non_empty_list",
+        "path": "config.members",
+        "severity": "error",
+        "message": "Swarm node {label}: add at least one member agent"
+      },
+      {
+        "id": "SW-2",
+        "rule": "refs_exist",
+        "path": "config.members",
+        "allowedTypesFrom": "swarms.memberTypes",
+        "severity": "error",
+        "message": "Swarm node {label}: member {ref} is not an Agent or LLM node"
+      },
+      {
+        "id": "SW-3",
+        "rule": "unique_by",
+        "path": "config.members",
+        "field": "name",
+        "severity": "error",
+        "message": "Swarm node {label}: two members are named {value}; Strands requires unique agent names"
+      },
+      {
+        "id": "SW-4",
+        "rule": "one_of_refs",
+        "path": "config.entryPoint",
+        "refsPath": "config.members",
+        "severity": "error",
+        "message": "Swarm node {label}: the entry point is not a member"
+      },
+      {
+        "id": "SW-5",
+        "rule": "exclusive_refs",
+        "path": "config.members",
+        "severity": "error",
+        "message": "Node {refLabel} is a member of more than one swarm"
+      },
+      {
+        "id": "SW-6",
+        "rule": "no_edges_to_refs",
+        "path": "config.members",
+        "severity": "error",
+        "message": "Edge {edgeId} connects to swarm member {refLabel}; members hand off to each other at run time"
+      },
+      {
+        "id": "SW-7",
+        "rule": "each_ref",
+        "path": "config.members",
+        "check": {
+          "rule": "forbidden",
+          "path": "config.handoffTarget"
+        },
+        "severity": "error",
+        "message": "Swarm member {refLabel} must not define handoff targets"
+      },
+      {
+        "id": "SW-8",
+        "rule": "compare",
+        "left": [
+          "config.maxHandoffs",
+          "config.maxIterations"
+        ],
+        "op": ">=",
+        "right": 1,
+        "severity": "error",
+        "message": "Swarm node {label}: max handoffs and max iterations must be at least 1"
+      },
+      {
+        "id": "SW-9",
+        "rule": "each_ref",
+        "path": "config.members",
+        "check": {
+          "rule": "required",
+          "path": "description"
+        },
+        "severity": "warning",
+        "message": "Swarm member {refLabel} has no description; descriptions guide handoff decisions"
+      },
+      {
+        "id": "SW-10",
+        "rule": "compare",
+        "left": "count(config.members)",
+        "op": ">=",
+        "right": 2,
+        "when": {
+          "left": "count(config.members)",
+          "op": ">",
+          "right": 0
+        },
+        "severity": "warning",
+        "message": "Swarm node {label} has one member, so no handoff can happen"
+      },
+      {
+        "id": "SW-11",
+        "rule": "compare",
+        "left": "config.repetitiveHandoffMinUniqueAgents",
+        "op": "between",
+        "right": [
+          1,
+          "count(config.members)"
+        ],
+        "when": {
+          "left": "config.repetitiveHandoffDetectionWindow",
+          "op": ">",
+          "right": 0
+        },
+        "severity": "warning",
+        "message": "Swarm node {label}: repetitive handoff detection is only partly configured"
+      },
+      {
+        "id": "SW-12",
+        "rule": "compare",
+        "left": "config.nodeTimeoutSeconds",
+        "op": "<=",
+        "right": "config.executionTimeoutSeconds",
+        "severity": "warning",
+        "message": "Swarm node {label}: the agent timeout is longer than the swarm timeout"
+      }
+    ]
+  },
+  "nodeTypes": {
+    "agent": {
+      "sourceHandles": [
+        "default"
+      ],
+      "targetHandles": [
+        "default"
+      ],
+      "outputSchema": {
+        "type": "object"
+      },
+      "defaultConfig": {
+        "model": "",
+        "strategy": "react",
+        "systemPrompt": "",
+        "tools": [],
+        "maxIterations": 10,
+        "includeThoughts": false,
+        "stateUpdates": [],
+        "outputSchema": [],
+        "handoffTarget": [],
+        "variableUpdates": []
+      }
+    },
+    "approval": {
+      "sourceHandles": [
+        "approved",
+        "rejected"
+      ],
+      "targetHandles": [
+        "default"
+      ],
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "approved": {
+            "type": "boolean"
+          }
+        }
+      },
+      "defaultConfig": {
+        "message": "",
+        "approvers": [],
+        "timeoutHours": 24,
+        "responseVariable": "approval.response",
+        "outputSchema": [],
+        "stateUpdates": [],
+        "variableUpdates": []
+      }
+    },
+    "db_query": {
+      "sourceHandles": [
+        "default"
+      ],
+      "targetHandles": [
+        "default"
+      ],
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "rows": {
+            "type": "array",
+            "description": "Array of result rows (SELECT)."
+          },
+          "rowCount": {
+            "type": "number",
+            "description": "Number of rows affected or returned."
+          }
+        }
+      },
+      "defaultConfig": {
+        "connectionId": "",
+        "databaseType": "postgresql",
+        "query": "",
+        "parameters": [],
+        "maxRows": 1000,
+        "timeoutSeconds": 30,
+        "outputSchema": [],
+        "rowSchema": {},
+        "variableUpdates": []
+      }
+    },
+    "external_agent": {
+      "sourceHandles": [
+        "default"
+      ],
+      "targetHandles": [
+        "default"
+      ],
+      "outputSchema": {
+        "type": "object"
+      },
+      "defaultConfig": {
+        "endpoint": "",
+        "authType": "none",
+        "apiKey": "",
+        "inputMapping": [],
+        "outputSchema": [],
+        "timeoutSeconds": 30,
+        "retries": 0,
+        "stateUpdates": [],
+        "variableUpdates": []
+      }
+    },
+    "guardrail": {
+      "sourceHandles": [
+        "pass",
+        "fail"
+      ],
+      "targetHandles": [
+        "default"
+      ],
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "passed": {
+            "type": "boolean"
+          }
+        }
+      },
+      "defaultConfig": {
+        "inputMapping": [],
+        "policy": "",
+        "action": "block",
+        "outputSchema": [],
+        "stateUpdates": [],
+        "variableUpdates": []
+      }
+    },
+    "http_request": {
+      "sourceHandles": [
+        "default"
+      ],
+      "targetHandles": [
+        "default"
+      ],
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer"
+          },
+          "body": {
+            "type": "string"
+          }
+        }
+      },
+      "defaultConfig": {
+        "method": "GET",
+        "url": "",
+        "headers": [],
+        "body": "",
+        "outputSchema": [],
+        "timeoutSeconds": 30,
+        "stateUpdates": [],
+        "variableUpdates": []
+      }
+    },
+    "human_input": {
+      "sourceHandles": [
+        "default"
+      ],
+      "targetHandles": [
+        "default"
+      ],
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string"
+          }
+        }
+      },
+      "defaultConfig": {
+        "prompt": "",
+        "inputType": "text",
+        "required": true,
+        "responseVariable": "human.response",
+        "outputSchema": [],
+        "stateUpdates": []
+      }
+    },
+    "llm": {
+      "sourceHandles": [
+        "default"
+      ],
+      "targetHandles": [
+        "default"
+      ],
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string"
+          }
+        }
+      },
+      "defaultConfig": {
+        "model": "",
+        "messages": [],
+        "tools": [],
+        "responseFormat": "text",
+        "temperature": 0.7,
+        "maxTokens": 1024,
+        "errorHandling": false,
+        "stateUpdates": [],
+        "outputSchema": [],
+        "variableUpdates": []
+      }
+    },
+    "note": {
+      "sourceHandles": [],
+      "targetHandles": [],
+      "outputSchema": {},
+      "defaultConfig": {
+        "text": "",
+        "color": "#6b7280"
+      }
+    },
+    "output": {
+      "sourceHandles": [],
+      "targetHandles": [
+        "default"
+      ],
+      "outputSchema": {},
+      "defaultConfig": {
+        "variableUpdates": []
+      }
+    },
+    "rule": {
+      "sourceHandles": [
+        "r_default",
+        "r_else"
+      ],
+      "targetHandles": [
+        "default"
+      ],
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "matchedRule": {
+            "type": "string"
+          }
+        }
+      },
+      "defaultConfig": {
+        "rules": [
+          {
+            "ruleId": "r_default",
+            "label": "True",
+            "conditions": [],
+            "conditionLogic": "AND"
+          },
+          {
+            "ruleId": "r_else",
+            "label": "Else",
+            "isDefault": true,
+            "conditions": [],
+            "conditionLogic": "AND"
+          }
+        ],
+        "outputSchema": []
+      }
+    },
+    "script": {
+      "sourceHandles": [
+        "default"
+      ],
+      "targetHandles": [
+        "default"
+      ],
+      "outputSchema": {
+        "type": "object"
+      },
+      "defaultConfig": {
+        "language": "javascript",
+        "code": "/**\n * Example Script\n *\n * Inputs are available on the `input` object.\n * Example: `input.score` (from Input Variables section).\n *\n * Return an object that matches the Output schema.\n * - In this node, you can read it as `nodeOutput.result`.\n * - In other nodes, use: `nodes.<nodeName>.result.<field>`\n */\n\nreturn {};\n",
+        "inputs": [],
+        "outputSchema": [],
+        "variableUpdates": []
+      }
+    },
+    "start": {
+      "sourceHandles": [
+        "default"
+      ],
+      "targetHandles": [],
+      "outputSchema": {},
+      "defaultConfig": {
+        "interfaceInputs": [],
+        "variableUpdates": []
+      }
+    },
+    "swarm": {
+      "sourceHandles": [
+        "default"
+      ],
+      "targetHandles": [
+        "default"
+      ],
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "finalAgent": {
+            "type": "string"
+          },
+          "nodeHistory": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "executionTimeMs": {
+            "type": "integer"
+          }
+        }
+      },
+      "defaultConfig": {
+        "members": [],
+        "entryPoint": "",
+        "taskMapping": "{{system.userQuery}}",
+        "maxHandoffs": 20,
+        "maxIterations": 20,
+        "executionTimeoutSeconds": 900,
+        "nodeTimeoutSeconds": 300,
+        "repetitiveHandoffDetectionWindow": 0,
+        "repetitiveHandoffMinUniqueAgents": 0,
+        "outputStructure": [],
+        "variableUpdates": []
+      }
+    },
+    "tool": {
+      "sourceHandles": [
+        "default"
+      ],
+      "targetHandles": [
+        "default"
+      ],
+      "outputSchema": {
+        "type": "object"
+      },
+      "defaultConfig": {
+        "toolName": "",
+        "toolType": "function",
+        "inputs": [],
+        "outputSchema": [],
+        "handoffTarget": "",
+        "schema": {},
+        "stateUpdates": [],
+        "variableUpdates": []
+      }
+    },
+    "variable": {
+      "sourceHandles": [
+        "default"
+      ],
+      "targetHandles": [
+        "default"
+      ],
+      "outputSchema": {},
+      "defaultConfig": {
+        "updates": [],
+        "outputSchema": []
+      }
+    },
+    "view": {
+      "sourceHandles": [
+        "default"
+      ],
+      "targetHandles": [
+        "default"
+      ],
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "html": {
+            "type": "string"
+          }
+        }
+      },
+      "defaultConfig": {
+        "viewMode": "html_template",
+        "htmlTemplate": "<div>\n  <!-- Reference variables with {{variable.path}} -->\n</div>",
+        "templateConfig": "{\n  \"data\": {},\n  \"html_template\": \"\",\n  \"attached_config\": {}\n}",
+        "outputSchema": [],
+        "variableUpdates": []
+      }
+    },
+    "workflow": {
+      "sourceHandles": [
+        "default"
+      ],
+      "targetHandles": [
+        "default"
+      ],
+      "outputSchema": {
+        "type": "object"
+      },
+      "defaultConfig": {
+        "agenticWorkflowId": "",
+        "inputs": [],
+        "outputSchema": [],
+        "stateUpdates": [],
+        "variableUpdates": []
+      }
+    }
+  },
+  "sources": {
+    "backend/workflow/resources/node_semantics.json": "7b3755c052c952006c0970ba6b8b718ecd4357396e32fd58c965d2edfb4d3613",
+    "backend/workflow/resources/node_types/agent.json": "fd31817e6e82751b3bba6739143f5b1a849a0b9002fa946a33d7ef0377db3f9a",
+    "backend/workflow/resources/node_types/approval.json": "f5aab47db5e9d65e9fb00bf66942b8980b232c15b2fc3ed0a6f95bc24285e1cf",
+    "backend/workflow/resources/node_types/db_query.json": "46cd43e807e92572ca98f2da1c3266a9c903a261ee1c32683dfe89a7dc7094c3",
+    "backend/workflow/resources/node_types/external_agent.json": "2d2dbc71c9fa092e627c7de2298105a656deb6254addacc3749b2c7fe1b72024",
+    "backend/workflow/resources/node_types/guardrail.json": "c43423e27136e0849ee882874b4e92417245074bf974ed97d8999400139347dc",
+    "backend/workflow/resources/node_types/http_request.json": "5708077e20d2f49eb6a38125cd921b8f29953202db1895bc8bd370faff26c6df",
+    "backend/workflow/resources/node_types/human_input.json": "0c1352fe5254d05e259fceed60449f8ab59238e5c77f2a63e4e0541fc80ad44c",
+    "backend/workflow/resources/node_types/llm.json": "e271acb97f2b823c3e584cfab1514b422972fd727254e51c2b9c6608653b5d39",
+    "backend/workflow/resources/node_types/note.json": "9064053aeb19c5ce97c7c3fb9488db09459462c97e64f10413382deac6a6be96",
+    "backend/workflow/resources/node_types/output.json": "0b81379402f6a6f7c014455d30aff0a2f0061d65c7667c1adb12655392b5418e",
+    "backend/workflow/resources/node_types/rule.json": "1129bce290e1979ab54f3bab2dad2873b16dfd19f78977ddffa6bf26ce8300ab",
+    "backend/workflow/resources/node_types/script.json": "2592740eabb7a4f50e867f2ae2af757ddf30c7d486db9088fc18a7b675e41ef3",
+    "backend/workflow/resources/node_types/start.json": "234420bb88255e1379d1a434250e9fc0595629b179dc252daf189ea3141369c6",
+    "backend/workflow/resources/node_types/swarm.json": "96946561890016b6af17ef6d3eae897524ee64077fa9999fec19fcda2fb40513",
+    "backend/workflow/resources/node_types/tool.json": "dd672008ae5bcaccd82cd63035cfa807fc36afce5c5f884e75c476b254a4cda5",
+    "backend/workflow/resources/node_types/variable.json": "7af45f11957a637cbc0238c04d512c1c1c2be9d6c040433fac0e9e1f7709f6a4",
+    "backend/workflow/resources/node_types/view.json": "0beb56fc50bee9bc6a4cffb340eacb94bb8aa22ec86fc071489462cbb2975915",
+    "backend/workflow/resources/node_types/workflow.json": "d0a9ba630b531a5fff18af91af1f581398251fe8728a9237d9f29b6f598e8c70",
+    "backend/workflow/resources/option_sets.json": "8c944ea68ef7294e8e1e85599bd5b179e26a30f733c82286f96d5c67dc98c209",
+    "backend/workflow/resources/validation_rules.json": "d7819e43260ad785156b3227c7fcb3536f19e9aa44495e0ab04851fb8a3b999e"
+  }
+}

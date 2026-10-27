@@ -12,8 +12,9 @@ from typing import Any, Literal
 from pydantic import ConfigDict, Field, SerializeAsAny
 
 from zonic_runtime.models.base import ZonicModel
+from zonic_runtime.models.io.ports import NodeIoSpec
 from zonic_runtime.models.nodes.base import NodeConfigBase
-from zonic_runtime.models.resources.manifest import ErrorPolicy, JoinPolicy, RetrySpec
+from zonic_runtime.models.resources.manifest import ErrorPolicy, JoinPolicy, ObservationSpec, RetrySpec
 
 #: Kind of the nodes that are never compiled (notes).
 IGNORED_KIND = "ignore"
@@ -39,6 +40,13 @@ class JoinSpec(_Frozen):
     policy: JoinPolicy = "auto"
     barrier: bool = False
     sources: list[str] = Field(default_factory=list)
+
+
+class RunLimits(_Frozen):
+    """Visit and step limits of a run of this document: the document's own, capped (design 6.4)."""
+
+    max_visits_per_node: int = Field(gt=0)
+    max_steps: int = Field(gt=0)
 
 
 class Component(_Frozen):
@@ -89,6 +97,12 @@ class NodeSpec(_Frozen):
     loop_id: str | None = None
     container: str | None = None
     terminal: bool = False
+    #: The type's ports and output (manifest ``io``).
+    io: NodeIoSpec | None = None
+    #: The effective output schema: ``allOf(payload, extensions, node outputSchema)`` (design 8.2).
+    output_schema: dict[str, Any] | None = None
+    #: Langfuse observation type and capture (manifest defaults, then the type's entry).
+    observation: ObservationSpec | None = None
 
     @property
     def compiled(self) -> bool:
@@ -104,6 +118,8 @@ class NodeSpec(_Frozen):
         }
         if self.loop_id:
             meta["zonic_loop_id"] = self.loop_id
+        if self.observation is not None:
+            meta["zonic_observation_type"] = self.observation.type
         return meta
 
 
@@ -115,6 +131,7 @@ class Blueprint(_Frozen):
     entry: str
     nodes: dict[str, NodeSpec]
     edge_index: EdgeIndex
+    limits: RunLimits
     components: list[Component] = Field(default_factory=list)
     name_index: dict[str, str] = Field(default_factory=dict)
     children: list[str] = Field(default_factory=list)
@@ -131,6 +148,10 @@ class Blueprint(_Frozen):
         """``{{nodes.<name or id>}}`` -> the node, through the name index (design 5.3)."""
         node_id = self.name_index.get(name_or_id, name_or_id)
         return self.nodes.get(node_id)
+
+    def loop_entry(self, node_id: str) -> Component | None:
+        """The loop this node enters, when it is one of the loop's entry nodes."""
+        return next((c for c in self.components if node_id in c.entries), None)
 
     def by_graph_name(self, graph_name: str) -> NodeSpec | None:
         return next((s for s in self.nodes.values() if s.graph_name == graph_name), None)

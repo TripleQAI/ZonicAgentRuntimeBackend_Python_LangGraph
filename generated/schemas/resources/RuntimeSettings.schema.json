@@ -169,6 +169,13 @@
           "title": "Cacheseconds",
           "type": "number"
         },
+        "excludedIdPrefixes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Excludedidprefixes",
+          "type": "array"
+        },
         "includeUnpublished": {
           "title": "Includeunpublished",
           "type": "boolean"
@@ -184,6 +191,7 @@
       "required": [
         "runtimeChannels",
         "includeUnpublished",
+        "excludedIdPrefixes",
         "cacheSeconds"
       ],
       "title": "CatalogSettings",

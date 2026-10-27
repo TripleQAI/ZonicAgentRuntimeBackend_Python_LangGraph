@@ -1452,7 +1452,7 @@ flowchart TB
 <p>This section is the Strands design's Section 5, which this design keeps; it is summarized here with the additions found in this review.</p>
 <h3>5.1 Loading and validating</h3>
 <ol>
-<li>Resolve the workflow through <code>agent_runtime.v_agent_catalog</code> (visibility: enabled, root, published to the runtime channel, allowed for the caller's groups). Otherwise <code>WORKFLOW_NOT_FOUND</code>.</li>
+<li>Resolve the workflow through <code>agent_runtime.v_agent_catalog</code> (visibility: enabled, root, published to the runtime channel; access control is the Cognito token alone, decision 0004). Otherwise <code>WORKFLOW_NOT_FOUND</code>.</li>
 <li>Read <code>export_json</code> from <code>agent_builder.v_agent_export</code>; sub-flow documents are loaded on demand with an <code>in</code> filter.</li>
 <li>Check <code>schemaVersion</code> (missing means 1.0, as written by <code>ZonicAgentBuilderServer_FastAPI</code> and the Django builder; 2.0 by <code>Strands-visual-builder</code>); accepted major versions come from <code>settings.documentVersions</code>, else <code>DOCUMENT_VERSION_UNSUPPORTED</code>.</li>
 <li>Normalize the dialect with <code>DocumentNormalizer</code> (<code>resources/dialects.json</code>), convert to the <code>WorkflowDocument</code> model and validate it, including each node's configuration model. A CI contract test keeps the models aligned with <code>workflow-document-v2.schema.json</code>.</li>
@@ -1594,7 +1594,7 @@ flowchart TB
 </tr>
 <tr>
 <td>Fan-in analysis</td>
-<td>Nodes reachable from one fan-out node (a node that activates <code>*</code> with two or more distinct targets, or <code>Send</code>) along two or more paths that do not pass an exclusive branch point between the fan-out and the node</td>
+<td>Nodes with two or more predecessors reached along paths that diverge at one parallel fan-out (one <code>(node, handle)</code> with two or more targets, or <code>Send</code>). An exclusive branch further down one path keeps the barrier, because that branch may be taken (decision 0003)</td>
 <td>Barrier selection (Section 6.5)</td>
 </tr>
 <tr>
@@ -1656,7 +1656,7 @@ class WorkflowCompiler:
 <ol>
 <li>A node kind returns <code>NodeOutcome.activate</code>: a list of handle IDs, or <code>["*"]</code> for every outgoing edge.</li>
 <li>The template looks up <code>edge_index[(node, handle)]</code> for each activated handle and returns <code>Command(update=patch, goto=targets)</code>.</li>
-<li>A handle with no edge is valid when the manifest marks it optional; otherwise it is a blueprint error. An empty <code>goto</code> ends that path; the run ends when no task is pending.</li>
+<li>A handle with no edge is the blueprint warning <code>HANDLE_NO_EDGE</code>, not an error. Taking it ends the path when the manifest marks the handle optional or the node has no outgoing edges (a sink); otherwise the run fails with <code>ROUTE_UNRESOLVED</code> (decision 0003). An empty <code>goto</code> ends that path; the run ends when no task is pending.</li>
 <li>Visit limits: a node executes at most <code>settings.engine.maxVisitsPerNode</code> times per run (default 10) and a run at most <code>settings.engine.maxSteps</code> node executions (default 200), the builder mock run's values; exceeding either fails with <code>LOOP_LIMIT_EXCEEDED</code>. A document may raise its own limits up to <code>settings.engine.maxLimits</code>.</li>
 </ol>
 <div class="table-wrap">
@@ -1739,7 +1739,7 @@ flowchart LR
 <tr>
 <td>Parallel branches of equal length meet</td>
 <td>Both branches finish in the same superstep; the join is triggered once</td>
-<td>Runs once and sees both outputs</td>
+<td>Runs once and sees both outputs; the blueprint marks it a barrier anyway, which changes nothing and needs no proof of equal arrival (decision 0003)</td>
 </tr>
 <tr>
 <td>Parallel branches of different lengths meet, join not deferred</td>
@@ -1856,7 +1856,7 @@ flowchart TB
 <h3>7.1 <code>RunState</code></h3>
 <pre><code class="language-python"># src/zonic_runtime/engine/state.py (illustrative)
 class RunState(TypedDict, total=False):
-    system:   Annotated[dict[str, Any], merge_writable_system]     # read-only except settings.templates.writableSystemKeys
+    system:   Annotated[dict[str, Any], merge_keyed]     # keyed like flow (decision 0003); read-only except settings.templates.writableSystemKeys
     flow:     Annotated[dict[str, Any], merge_flow]                # deep merge per key; same-key writes in one step -&gt; warning
     input:    dict[str, Any]                                       # sub-flow inputs, written once
     history:  dict[str, list[ThreadMessageDict]]                   # read at turn start, by thread; read-only
@@ -2102,7 +2102,7 @@ class WorkflowNodeRunner:
 </table>
 </div>
 <ul>
-<li><strong>Schema registry.</strong> Payload models decorated with <code>@payload("zonic.text", 1)</code> (<code>zonic.text</code>, <code>zonic.chat-messages</code>, <code>zonic.rows</code>, <code>zonic.http-request</code>, <code>zonic.http-response</code>, <code>zonic.agent-result</code>, <code>zonic.swarm-result</code>, <code>zonic.decision</code>, <code>zonic.approval</code>, <code>zonic.value</code>, <code>zonic.mapping</code>, <code>zonic.run-result</code>), the builder's vendored <code>outputSchema</code> per type, manifest <code>schemaExtensions</code>, and each node's own <code>outputSchema</code>. The effective output schema is <code>allOf</code> of all four, compiled once per node by the blueprint and used three times: output validation (<code>OUTPUT_SCHEMA_INVALID</code>), the static check of every <code>{{nodes.X.output.path}}</code> (<code>TEMPLATE_PATH_UNKNOWN</code>), and <code>GET /v1/meta/node-types</code>.</li>
+<li><strong>Schema registry.</strong> Payload models decorated with <code>@payload("zonic.text", 1)</code> (<code>zonic.text</code>, <code>zonic.chat-messages</code>, <code>zonic.rows</code>, <code>zonic.http-request</code>, <code>zonic.http-response</code>, <code>zonic.agent-result</code>, <code>zonic.swarm-result</code>, <code>zonic.decision</code>, <code>zonic.approval</code>, <code>zonic.value</code>, <code>zonic.mapping</code>, <code>zonic.run-result</code>), the builder's vendored <code>outputSchema</code> per type, manifest <code>schemaExtensions</code>, and each node's own <code>outputSchema</code>. The effective output schema is <code>allOf</code> of the payload, the <code>schemaExtensions</code> and the node's own <code>outputSchema</code>; the builder's vendored <code>outputSchema</code> is held by contract test I-02 instead, because composing it would narrow fields the builder types loosely (decision 0003). It is compiled once per node by the blueprint and used three times: output validation (<code>OUTPUT_SCHEMA_INVALID</code>), the static check of every <code>{{nodes.X.output.path}}</code> (<code>TEMPLATE_PATH_UNKNOWN</code>), and <code>GET /v1/meta/node-types</code>.</li>
 <li><strong>Ports per node type</strong> are the defaults of the Strands design's table (start <code>query</code> and <code>interfaceInputs</code>; llm <code>messages</code> and <code>history</code>; agent <code>prompt</code> and <code>history</code>; swarm <code>task</code>; rule <code>facts</code>; guardrail <code>content</code>; human_input <code>prompt</code>; approval <code>message</code>; workflow <code>inputs</code>; variable <code>updates</code>; db_query <code>query</code> and <code>parameters</code>; http_request <code>url</code>, <code>headers</code>, <code>body</code>; tool <code>parameters</code>; external_agent <code>input</code>; script <code>inputs</code>; view <code>data</code>; output <code>mapping</code>).</li>
 <li><strong>Extending.</strong> A new output field is one <code>output.map</code> line plus a <code>schemaExtensions</code> entry; a new port is one <code>PortSpec</code>; a new payload is one model; none needs code in the compiler or the template.</li>
 </ul>
@@ -3191,7 +3191,7 @@ sequenceDiagram
 </tr>
 <tr>
 <td>Catalog visibility</td>
-<td><code>v_agent_catalog</code> filters by channel and group claims</td>
+<td><code>v_agent_catalog</code> filters by channel; the Cognito token is the only access control, and the document's <code>security</code> is not enforced (decision 0004)</td>
 </tr>
 <tr>
 <td>Owner-bound ports</td>
@@ -3846,7 +3846,7 @@ Dockerfile                  python:3.13-slim, uv, one uvicorn worker
 <tr>
 <td>A-01</td>
 <td><code>GET /v1/catalog/agents</code> with a valid token</td>
-<td>Only visible, enabled, root workflows for the caller's groups</td>
+<td>Only visible, enabled, root workflows; the same list for every authenticated caller</td>
 </tr>
 <tr>
 <td>A-02</td>

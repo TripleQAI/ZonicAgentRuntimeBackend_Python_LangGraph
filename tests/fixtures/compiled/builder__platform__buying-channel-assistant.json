@@ -1,0 +1,95 @@
+{
+  "entry": "start",
+  "nodes": {
+    "csu70pr": {
+      "defer": false,
+      "destinations": {
+        "output": "default"
+      },
+      "kind": "variable",
+      "loopId": null,
+      "nodeId": "csu70pr",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "jh7bne4": {
+      "defer": false,
+      "destinations": {
+        "pnew0ty": "default"
+      },
+      "kind": "tool",
+      "loopId": "loop:pnew0ty",
+      "nodeId": "jh7bne4",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "output": {
+      "defer": false,
+      "destinations": [],
+      "kind": "output",
+      "loopId": null,
+      "nodeId": "output",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "pnew0ty": {
+      "defer": false,
+      "destinations": {
+        "jh7bne4": "handoff-jh7bne4",
+        "output": "default",
+        "qy2wpl8": "handoff-qy2wpl8",
+        "xbghe21": "handoff-xbghe21",
+        "yy67g38": "handoff-yy67g38"
+      },
+      "kind": "agent",
+      "loopId": "loop:pnew0ty",
+      "nodeId": "pnew0ty",
+      "retryAttempts": null,
+      "timeoutSeconds": 300.0
+    },
+    "qy2wpl8": {
+      "defer": false,
+      "destinations": {
+        "csu70pr": "default"
+      },
+      "kind": "tool",
+      "loopId": null,
+      "nodeId": "qy2wpl8",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "start": {
+      "defer": false,
+      "destinations": {
+        "pnew0ty": "default"
+      },
+      "kind": "entry",
+      "loopId": null,
+      "nodeId": "start",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "xbghe21": {
+      "defer": false,
+      "destinations": {
+        "pnew0ty": "default"
+      },
+      "kind": "tool",
+      "loopId": "loop:pnew0ty",
+      "nodeId": "xbghe21",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "yy67g38": {
+      "defer": false,
+      "destinations": {
+        "csu70pr": "default"
+      },
+      "kind": "tool",
+      "loopId": null,
+      "nodeId": "yy67g38",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    }
+  }
+}

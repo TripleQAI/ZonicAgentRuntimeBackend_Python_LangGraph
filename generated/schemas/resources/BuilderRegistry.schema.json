@@ -1,0 +1,426 @@
+{
+  "$defs": {
+    "BranchSemantics": {
+      "additionalProperties": false,
+      "properties": {
+        "idField": {
+          "title": "Idfield",
+          "type": "string"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "idField"
+      ],
+      "title": "BranchSemantics",
+      "type": "object"
+    },
+    "BuilderNodeType": {
+      "additionalProperties": false,
+      "properties": {
+        "defaultConfig": {
+          "additionalProperties": true,
+          "title": "Defaultconfig",
+          "type": "object"
+        },
+        "outputSchema": {
+          "additionalProperties": true,
+          "title": "Outputschema",
+          "type": "object"
+        },
+        "sourceHandles": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Sourcehandles",
+          "type": "array"
+        },
+        "targetHandles": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Targethandles",
+          "type": "array"
+        }
+      },
+      "title": "BuilderNodeType",
+      "type": "object"
+    },
+    "BuilderRule": {
+      "additionalProperties": false,
+      "description": "One builder validation rule with an ID; messages use the builder's wording.",
+      "properties": {
+        "allowedTypesFrom": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Allowedtypesfrom"
+        },
+        "check": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RuleCheck"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "field": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Field"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "left": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Left"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "op": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Op"
+        },
+        "path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Path"
+        },
+        "refsPath": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Refspath"
+        },
+        "right": {
+          "default": null,
+          "title": "Right"
+        },
+        "rule": {
+          "enum": [
+            "non_empty_list",
+            "required",
+            "forbidden",
+            "refs_exist",
+            "unique_by",
+            "one_of_refs",
+            "exclusive_refs",
+            "no_edges_to_refs",
+            "each_ref",
+            "compare"
+          ],
+          "title": "Rule",
+          "type": "string"
+        },
+        "severity": {
+          "enum": [
+            "error",
+            "warning"
+          ],
+          "title": "Severity",
+          "type": "string"
+        },
+        "when": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RuleCompare"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "id",
+        "rule",
+        "severity",
+        "message"
+      ],
+      "title": "BuilderRule",
+      "type": "object"
+    },
+    "NodeSemantics": {
+      "additionalProperties": false,
+      "description": "Structural roles by node type; paths are dot paths from the node root.",
+      "properties": {
+        "branches": {
+          "additionalProperties": {
+            "$ref": "#/$defs/BranchSemantics"
+          },
+          "title": "Branches",
+          "type": "object"
+        },
+        "childReference": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Childreference",
+          "type": "object"
+        },
+        "entry": {
+          "additionalProperties": {
+            "type": "boolean"
+          },
+          "title": "Entry",
+          "type": "object"
+        },
+        "handoffTargets": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Handofftargets",
+          "type": "object"
+        },
+        "swarms": {
+          "additionalProperties": {
+            "$ref": "#/$defs/SwarmSemantics"
+          },
+          "title": "Swarms",
+          "type": "object"
+        }
+      },
+      "title": "NodeSemantics",
+      "type": "object"
+    },
+    "RuleCheck": {
+      "additionalProperties": false,
+      "description": "The nested check of an ``each_ref`` rule, run on every node the list names.",
+      "properties": {
+        "path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Path"
+        },
+        "rule": {
+          "enum": [
+            "non_empty_list",
+            "required",
+            "forbidden",
+            "refs_exist",
+            "unique_by",
+            "one_of_refs",
+            "exclusive_refs",
+            "no_edges_to_refs",
+            "each_ref",
+            "compare"
+          ],
+          "title": "Rule",
+          "type": "string"
+        }
+      },
+      "required": [
+        "rule"
+      ],
+      "title": "RuleCheck",
+      "type": "object"
+    },
+    "RuleCompare": {
+      "additionalProperties": false,
+      "properties": {
+        "left": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          ],
+          "title": "Left"
+        },
+        "op": {
+          "title": "Op",
+          "type": "string"
+        },
+        "right": {
+          "default": null,
+          "title": "Right"
+        }
+      },
+      "required": [
+        "left",
+        "op"
+      ],
+      "title": "RuleCompare",
+      "type": "object"
+    },
+    "SwarmSemantics": {
+      "additionalProperties": false,
+      "properties": {
+        "entryPointPath": {
+          "title": "Entrypointpath",
+          "type": "string"
+        },
+        "memberTypes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Membertypes",
+          "type": "array"
+        },
+        "membersPath": {
+          "title": "Memberspath",
+          "type": "string"
+        }
+      },
+      "required": [
+        "membersPath",
+        "entryPointPath",
+        "memberTypes"
+      ],
+      "title": "SwarmSemantics",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "builderCommit": {
+      "title": "Buildercommit",
+      "type": "string"
+    },
+    "conditionLogic": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Conditionlogic",
+      "type": "array"
+    },
+    "conditionOperators": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Conditionoperators",
+      "type": "array"
+    },
+    "mappingTypes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Mappingtypes",
+      "type": "array"
+    },
+    "nodeTypes": {
+      "additionalProperties": {
+        "$ref": "#/$defs/BuilderNodeType"
+      },
+      "title": "Nodetypes",
+      "type": "object"
+    },
+    "schemaVersion": {
+      "title": "Schemaversion",
+      "type": "string"
+    },
+    "semantics": {
+      "$ref": "#/$defs/NodeSemantics"
+    },
+    "sources": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Sources",
+      "type": "object"
+    },
+    "stateOps": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Stateops",
+      "type": "array"
+    },
+    "validationRules": {
+      "additionalProperties": {
+        "items": {
+          "$ref": "#/$defs/BuilderRule"
+        },
+        "type": "array"
+      },
+      "title": "Validationrules",
+      "type": "object"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "builderCommit",
+    "semantics",
+    "conditionOperators",
+    "conditionLogic",
+    "stateOps",
+    "mappingTypes",
+    "validationRules",
+    "nodeTypes",
+    "sources"
+  ],
+  "title": "BuilderRegistry",
+  "type": "object"
+}

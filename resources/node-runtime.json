@@ -5,17 +5,22 @@
     "errorPolicy": "fail_run",
     "joinPolicy": "auto",
     "defaultHandle": "default",
+    "errorHandle": "error",
+    "handoffHandlePrefix": "handoff-",
     "retry": { "maxAttempts": 1 },
     "observation": { "type": "span", "captureInput": "summary", "captureOutput": "summary" }
   },
   "onUnknownType": "fail_plan",
+  "schemaExtensions": {"port.text@1": {"type": "string"}, "port.value@1": {}, "port.messages@1": {"type": "array", "items": {"type": "object", "required": ["role"], "properties": {"role": {"type": "string"}}}}, "port.mapping-list@1": {"type": "array", "items": {"type": "object", "required": ["key"], "properties": {"key": {"type": "string"}}}}, "port.output-mapping@1": {"type": "array", "items": {"type": "object", "required": ["target"], "properties": {"target": {"type": "string"}, "type": {"type": "string"}}}}, "ext.view.html@1": {"type": "object", "properties": {"html": {"type": "string"}}}},
   "nodeTypes": {
     "start": {
       "kind": "entry",
+      "io": {"inputs": [{"name": "query", "schema": {"ref": "port.text@1"}, "required": false, "binding": {"template": "{{system.userQuery}}"}}, {"name": "interfaceInputs", "schema": {"ref": "port.value@1"}, "required": false, "binding": {"configPath": "config.interfaceInputs"}}], "output": {"schema": {"ref": "zonic.mapping@1"}, "map": {"...": "$"}}},
       "observation": { "type": "span", "captureInput": "summary", "captureOutput": "summary" }
     },
     "llm": {
       "kind": "llm",
+      "io": {"inputs": [{"name": "messages", "schema": {"ref": "port.messages@1"}, "required": true, "binding": {"configPath": "config.messages"}}, {"name": "prompt", "schema": {"ref": "port.text@1"}, "required": false, "binding": {"configPath": "config.userQueryMapping", "template": "{{system.userQuery}}"}}, {"name": "history", "schema": {"ref": "port.messages@1"}, "required": false, "binding": {"statePath": "history"}}], "output": {"schema": {"ref": "zonic.text@1"}, "map": {"text": "$.text", "result": "$.result", "finishReason": "$.stopReason", "structuredOutput": "$.structuredOutput", "...": "$.fields"}, "aliases": {"result": "text"}}},
       "streamTokens": true,
       "optionalHandles": ["error"],
       "retry": { "maxAttempts": 3, "initialIntervalSeconds": 0.5, "backoffFactor": 2.0, "maxIntervalSeconds": 8, "jitter": true, "on": ["MODEL_UNAVAILABLE", "MODEL_BUSY", "TIMEOUT"] },
@@ -23,6 +28,7 @@
     },
     "agent": {
       "kind": "agent",
+      "io": {"inputs": [{"name": "prompt", "schema": {"ref": "port.text@1"}, "required": true, "binding": {"configPath": "config.userQueryMapping", "template": "{{system.userQuery}}"}}, {"name": "messages", "schema": {"ref": "port.messages@1"}, "required": false, "binding": {"configPath": "config.messages"}}, {"name": "history", "schema": {"ref": "port.messages@1"}, "required": false, "binding": {"statePath": "history"}}], "output": {"schema": {"ref": "zonic.agent-result@1"}, "map": {"text": "$.text", "result": "$.result", "structuredOutput": "$.structuredOutput", "stopReason": "$.stopReason", "toolCalls": "$.toolCalls", "toolResults": "$.toolResults", "handoff": "$.handoff", "...": "$.fields"}}},
       "streamTokens": true,
       "timeoutSeconds": 300,
       "optionalHandles": ["error"],
@@ -30,6 +36,7 @@
     },
     "swarm": {
       "kind": "multi_agent",
+      "io": {"inputs": [{"name": "task", "schema": {"ref": "port.text@1"}, "required": true, "binding": {"configPath": "config.taskMapping", "template": "{{system.userQuery}}"}}], "output": {"schema": {"ref": "zonic.swarm-result@1"}, "map": {"status": "$.status", "text": "$.text", "finalAgent": "$.finalAgent", "nodeHistory": "$.nodeHistory", "executionTimeMs": "$.executionTimeMs"}}},
       "options": { "pattern": "swarm" },
       "timeoutSecondsFrom": "config.executionTimeoutSeconds",
       "optionalHandles": ["error"],
@@ -37,37 +44,44 @@
     },
     "rule": {
       "kind": "router",
+      "io": {"output": {"schema": {"ref": "zonic.decision@1"}, "map": {"handle": "$.handle", "matchedRule": "$.matchedRule"}}},
       "options": { "semantics": "branches" },
       "observation": { "type": "span", "captureInput": "summary", "captureOutput": "full" }
     },
     "guardrail": {
       "kind": "guardrail",
+      "io": {"inputs": [{"name": "content", "schema": {"ref": "port.mapping-list@1"}, "required": false, "binding": {"configPath": "config.inputMapping"}}], "output": {"schema": {"ref": "zonic.decision@1"}, "map": {"handle": "$.handle", "passed": "$.passed", "findings": "$.findings"}}},
       "handles": { "pass": "pass", "fail": "fail" },
       "observation": { "type": "guardrail", "captureInput": "summary", "captureOutput": "full" }
     },
     "approval": {
       "kind": "interrupt",
+      "io": {"inputs": [{"name": "message", "schema": {"ref": "port.text@1"}, "required": false, "binding": {"configPath": "config.message"}}], "output": {"schema": {"ref": "zonic.approval@1"}, "map": {"approved": "$.approved", "comment": "$.comment", "decidedBy": "$.decidedBy"}}},
       "options": { "form": "approval" },
       "handles": { "yes": "approved", "no": "rejected" },
       "observation": { "type": "span", "captureInput": "summary", "captureOutput": "none" }
     },
     "human_input": {
       "kind": "interrupt",
+      "io": {"inputs": [{"name": "prompt", "schema": {"ref": "port.text@1"}, "required": false, "binding": {"configPath": "config.prompt"}}], "output": {"schema": {"ref": "zonic.value@1"}, "map": {"value": "$.value"}}},
       "options": { "form": "input" },
       "observation": { "type": "span", "captureInput": "summary", "captureOutput": "none" }
     },
     "workflow": {
       "kind": "subflow",
+      "io": {"inputs": [{"name": "inputs", "schema": {"ref": "port.mapping-list@1"}, "required": false, "binding": {"configPath": "config.inputs"}}], "output": {"schema": {"ref": "zonic.run-result@1"}, "map": {"...": "$.result"}}},
       "timeoutSeconds": 600,
       "optionalHandles": ["error"],
       "observation": { "type": "chain", "captureInput": "summary", "captureOutput": "summary" }
     },
     "variable": {
       "kind": "variable",
+      "io": {"output": {"schema": {"ref": "zonic.mapping@1"}, "map": {"...": "$.changed"}}},
       "observation": { "type": "span", "captureInput": "summary", "captureOutput": "summary" }
     },
     "db_query": {
       "kind": "mcp_execute",
+      "io": {"inputs": [{"name": "query", "schema": {"ref": "port.text@1"}, "required": true, "binding": {"configPath": "config.query"}}, {"name": "parameters", "schema": {"ref": "port.mapping-list@1"}, "required": false, "binding": {"configPath": "config.parameters"}}], "output": {"schema": {"ref": "zonic.rows@1"}, "map": {"rows": "$.rows", "rowCount": "$.rowCount", "columns": "$.columns", "datasetRef": "$.datasetRef"}}},
       "options": { "toolType": "database" },
       "optionalHandles": ["error"],
       "retry": { "maxAttempts": 2, "initialIntervalSeconds": 0.5, "on": ["TOOL_UNAVAILABLE", "TIMEOUT"] },
@@ -75,33 +89,39 @@
     },
     "http_request": {
       "kind": "http",
+      "io": {"inputs": [{"name": "url", "schema": {"ref": "port.text@1"}, "required": false, "binding": {"configPath": "config.url"}}, {"name": "headers", "schema": {"ref": "port.mapping-list@1"}, "required": false, "binding": {"configPath": "config.headers"}}, {"name": "body", "schema": {"ref": "port.value@1"}, "required": false, "binding": {"configPath": "config.body"}}], "output": {"schema": {"ref": "zonic.http-response@1"}, "map": {"status": "$.status", "headers": "$.headers", "body": "$.body", "json": "$.json", "datasetRef": "$.datasetRef"}}},
       "optionalHandles": ["error"],
       "retry": { "maxAttempts": 2, "initialIntervalSeconds": 0.5, "on": ["TIMEOUT", "UPSTREAM_5XX"], "methods": ["GET", "HEAD"] },
       "observation": { "type": "tool", "captureInput": "summary", "captureOutput": "summary" }
     },
     "tool": {
       "kind": "tool",
+      "io": {"inputs": [{"name": "parameters", "schema": {"ref": "port.value@1"}, "required": false, "binding": {"configPath": "config.parameters"}}, {"name": "inputs", "schema": {"ref": "port.mapping-list@1"}, "required": false, "binding": {"configPath": "config.inputs"}}], "output": {"schema": {"ref": "zonic.mapping@1"}, "map": {"...": "$.result"}}},
       "handles": { "pass": "pass", "fail": "fail" },
       "optionalHandles": ["pass", "fail", "error"],
       "observation": { "type": "tool", "captureInput": "summary", "captureOutput": "summary" }
     },
     "external_agent": {
       "kind": "external_agent",
+      "io": {"inputs": [{"name": "input", "schema": {"ref": "port.mapping-list@1"}, "required": false, "binding": {"configPath": "config.inputMapping"}}], "output": {"schema": {"ref": "zonic.agent-result@1"}, "map": {"text": "$.text", "result": "$.result", "...": "$.fields"}}},
       "optionalHandles": ["error"],
       "observation": { "type": "agent", "captureInput": "summary", "captureOutput": "full" }
     },
     "script": {
       "kind": "sandbox",
+      "io": {"inputs": [{"name": "inputs", "schema": {"ref": "port.mapping-list@1"}, "required": false, "binding": {"configPath": "config.inputs"}}], "output": {"schema": {"ref": "zonic.mapping@1"}, "map": {"...": "$.result"}}},
       "enabledBy": "scriptNode",
       "optionalHandles": ["error"],
       "observation": { "type": "tool", "captureInput": "summary", "captureOutput": "summary" }
     },
     "view": {
       "kind": "view",
+      "io": {"inputs": [{"name": "data", "schema": {"ref": "port.value@1"}, "required": false, "binding": {"configPath": "config.templateConfig"}}, {"name": "html", "schema": {"ref": "port.text@1"}, "required": false, "binding": {"configPath": "config.htmlTemplate"}}], "output": {"schema": {"ref": "zonic.mapping@1"}, "extensions": ["ext.view.html@1"], "map": {"html": "$.html", "...": "$.fields"}}},
       "observation": { "type": "span", "captureInput": "summary", "captureOutput": "summary" }
     },
     "output": {
       "kind": "output",
+      "io": {"inputs": [{"name": "mapping", "schema": {"ref": "port.output-mapping@1"}, "required": false, "binding": {"configPath": "config.outputMapping"}}], "output": {"schema": {"ref": "zonic.run-result@1"}, "map": {"...": "$.result"}}},
       "terminal": true,
       "observation": { "type": "span", "captureInput": "summary", "captureOutput": "full" }
     },

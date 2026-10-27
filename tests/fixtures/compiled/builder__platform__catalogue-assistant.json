@@ -1,0 +1,184 @@
+{
+  "entry": "start",
+  "nodes": {
+    "043jesd": {
+      "defer": false,
+      "destinations": {
+        "787l4y6": "default"
+      },
+      "kind": "tool",
+      "loopId": null,
+      "nodeId": "043jesd",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "1cb89x7": {
+      "defer": false,
+      "destinations": {
+        "dhxvxvh": "default"
+      },
+      "kind": "sandbox",
+      "loopId": null,
+      "nodeId": "1cb89x7",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "5tlfj95": {
+      "defer": false,
+      "destinations": {
+        "vgjf3dr": "default"
+      },
+      "kind": "tool",
+      "loopId": null,
+      "nodeId": "5tlfj95",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "787l4y6": {
+      "defer": false,
+      "destinations": {
+        "output": "default"
+      },
+      "kind": "tool",
+      "loopId": null,
+      "nodeId": "787l4y6",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "8iruk95": {
+      "defer": false,
+      "destinations": {
+        "output": "default"
+      },
+      "kind": "variable",
+      "loopId": null,
+      "nodeId": "8iruk95",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "90axykj": {
+      "defer": false,
+      "destinations": {
+        "8iruk95": "default"
+      },
+      "kind": "tool",
+      "loopId": null,
+      "nodeId": "90axykj",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "clrfy01": {
+      "defer": false,
+      "destinations": {
+        "output": "default"
+      },
+      "kind": "variable",
+      "loopId": null,
+      "nodeId": "clrfy01",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "dhxvxvh": {
+      "defer": false,
+      "destinations": {
+        "043jesd": "r-wxl3so8p",
+        "5tlfj95": "r-search",
+        "clrfy01": "r-else",
+        "eohz83u": "r-shop_more",
+        "nns949i": "r-couldnt_find_empty, r-proceed_empty, r-proceed_loaded",
+        "tmkq5pt": "r-couldnt_find_loaded"
+      },
+      "kind": "router",
+      "loopId": null,
+      "nodeId": "dhxvxvh",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "eohz83u": {
+      "defer": false,
+      "destinations": {
+        "output": "default"
+      },
+      "kind": "variable",
+      "loopId": null,
+      "nodeId": "eohz83u",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "k32me1v": {
+      "defer": false,
+      "destinations": {
+        "ujm35ij": "default"
+      },
+      "kind": "sandbox",
+      "loopId": null,
+      "nodeId": "k32me1v",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "nns949i": {
+      "defer": false,
+      "destinations": {
+        "output": "default"
+      },
+      "kind": "variable",
+      "loopId": null,
+      "nodeId": "nns949i",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "output": {
+      "defer": false,
+      "destinations": [],
+      "kind": "output",
+      "loopId": null,
+      "nodeId": "output",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "start": {
+      "defer": false,
+      "destinations": {
+        "k32me1v": "default"
+      },
+      "kind": "entry",
+      "loopId": null,
+      "nodeId": "start",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "tmkq5pt": {
+      "defer": false,
+      "destinations": {
+        "output": "default"
+      },
+      "kind": "variable",
+      "loopId": null,
+      "nodeId": "tmkq5pt",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "ujm35ij": {
+      "defer": false,
+      "destinations": {
+        "1cb89x7": "default"
+      },
+      "kind": "agent",
+      "loopId": null,
+      "nodeId": "ujm35ij",
+      "retryAttempts": null,
+      "timeoutSeconds": 300.0
+    },
+    "vgjf3dr": {
+      "defer": false,
+      "destinations": {
+        "90axykj": "default"
+      },
+      "kind": "sandbox",
+      "loopId": null,
+      "nodeId": "vgjf3dr",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    }
+  }
+}

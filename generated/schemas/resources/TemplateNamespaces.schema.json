@@ -23,19 +23,34 @@
       "title": "Namespaces",
       "type": "array"
     },
+    "nodePathAliases": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Nodepathaliases",
+      "type": "object"
+    },
     "special": {
       "additionalProperties": {
         "type": "string"
       },
       "title": "Special",
       "type": "object"
+    },
+    "writable": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Writable",
+      "type": "array"
     }
   },
   "required": [
     "namespaces",
     "aliases",
     "special",
-    "bareNames"
+    "bareNames",
+    "writable"
   ],
   "title": "TemplateNamespaces",
   "type": "object"

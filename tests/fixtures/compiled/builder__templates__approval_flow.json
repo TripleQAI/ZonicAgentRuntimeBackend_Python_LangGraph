@@ -1,0 +1,57 @@
+{
+  "entry": "start_1",
+  "nodes": {
+    "approval_1": {
+      "defer": false,
+      "destinations": {
+        "output_approved": "approved",
+        "output_rejected": "rejected"
+      },
+      "kind": "interrupt",
+      "loopId": null,
+      "nodeId": "approval_1",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "llm_1": {
+      "defer": false,
+      "destinations": {
+        "approval_1": "default"
+      },
+      "kind": "llm",
+      "loopId": null,
+      "nodeId": "llm_1",
+      "retryAttempts": 3,
+      "timeoutSeconds": 120.0
+    },
+    "output_approved": {
+      "defer": false,
+      "destinations": [],
+      "kind": "output",
+      "loopId": null,
+      "nodeId": "output_approved",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "output_rejected": {
+      "defer": false,
+      "destinations": [],
+      "kind": "output",
+      "loopId": null,
+      "nodeId": "output_rejected",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "start_1": {
+      "defer": false,
+      "destinations": {
+        "llm_1": "default"
+      },
+      "kind": "entry",
+      "loopId": null,
+      "nodeId": "start_1",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    }
+  }
+}

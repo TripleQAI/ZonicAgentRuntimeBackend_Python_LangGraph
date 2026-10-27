@@ -8,6 +8,7 @@ from zonic_runtime.models.blueprint.blueprint import (
     EdgeIndex,
     JoinSpec,
     NodeSpec,
+    RunLimits,
 )
 
 __all__ = [
@@ -18,4 +19,5 @@ __all__ = [
     "EdgeIndex",
     "JoinSpec",
     "NodeSpec",
+    "RunLimits",
 ]

@@ -63,6 +63,9 @@ class TemplateNamespaces(ZonicResourceModel):
     aliases: dict[str, str]  # alias namespace -> namespace (node -> nodes, variable -> flow)
     special: dict[str, str]  # special roots (nodeOutput, runtime.workflowMetaData, ...) -> resolver key
     bare_names: Literal["flow", "error"]  # how a bare {{name}} resolves
+    writable: list[str]  # namespaces updates may write; system keys come from settings.templates
+    #: First path segments after a node that mean the node's whole output (script ``result``).
+    node_path_aliases: dict[str, str] = Field(default_factory=dict)
 
 
 @exported("resources")

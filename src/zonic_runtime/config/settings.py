@@ -9,6 +9,7 @@ from pydantic import BaseModel
 
 from zonic_runtime.models.hooks.binding import HookBindings
 from zonic_runtime.models.resources import (
+    BuilderRegistry,
     DialectRules,
     EgressPolicy,
     ErrorCatalog,
@@ -57,6 +58,7 @@ class RuntimeResources:
     templates: TemplateNamespaces
     run_states: RunStateMachine
     dialects: DialectRules
+    builder: BuilderRegistry
 
 
 def load_resources(env: EnvironmentModel) -> RuntimeResources:
@@ -73,4 +75,5 @@ def load_resources(env: EnvironmentModel) -> RuntimeResources:
         templates=load_with_overlay(d, "templates.json", e, TemplateNamespaces),
         run_states=load_with_overlay(d, "run-states.json", e, RunStateMachine),
         dialects=load_with_overlay(d, "dialects.json", e, DialectRules),
+        builder=load_with_overlay(d, "builder-registry.json", e, BuilderRegistry),
     )

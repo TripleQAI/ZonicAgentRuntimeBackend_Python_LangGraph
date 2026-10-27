@@ -18,13 +18,13 @@ from typing import Any
 from zonic_runtime.models.blueprint import BlueprintWarning
 from zonic_runtime.models.document import WorkflowDocument, WorkflowEdge, WorkflowNode
 from zonic_runtime.models.resources.misc import DialectMatch, DialectRule, DialectRules
+from zonic_runtime.runtime.paths import JsonObject, delete_path, get_path, has_path, type_at
 from zonic_runtime.workflow.loader.dialect_operations import (
     OPERATIONS,
     Firing,
     OperationContext,
     RuleExpressionMode,
 )
-from zonic_runtime.workflow.loader.paths import JsonObject, delete_path, get_path, has_path, type_at
 
 #: Finding codes the normalizer itself writes.
 RULE_FIRED = "DIALECT_RULE"
@@ -36,6 +36,8 @@ _NOTE_TOKEN = re.compile(r"\{\{\s*([\w.]+)\s*\}\}")
 class NormalizedDocument:
     document: WorkflowDocument
     findings: list[BlueprintWarning]
+    #: The canonical JSON the model was validated from; the revision hash is taken over it.
+    canonical: JsonObject
 
     @property
     def fired_rules(self) -> list[str]:
@@ -136,7 +138,7 @@ class DocumentNormalizer:
             self._drop(node, _NODE_FIELDS, [], f"nodes[{node.get('id')}]", findings, str(node.get("id")))
         for edge in edges:
             self._drop(edge, _EDGE_FIELDS, [], f"edges[{edge.get('id', '')}]", findings, None)
-        return NormalizedDocument(WorkflowDocument.model_validate(document), findings)
+        return NormalizedDocument(WorkflowDocument.model_validate(document), findings, document)
 
     def _applies(self, rule: DialectRule, node_type: str) -> bool:
         if not rule.node_types and not rule.kinds:

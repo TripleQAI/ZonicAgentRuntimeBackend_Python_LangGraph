@@ -1,0 +1,81 @@
+{
+  "entry": "start_1",
+  "nodes": {
+    "a_1": {
+      "defer": false,
+      "destinations": {
+        "join_1": "default"
+      },
+      "kind": "llm",
+      "loopId": null,
+      "nodeId": "a_1",
+      "retryAttempts": 3,
+      "timeoutSeconds": 120.0
+    },
+    "b_1": {
+      "defer": false,
+      "destinations": {
+        "b_2": "default"
+      },
+      "kind": "llm",
+      "loopId": null,
+      "nodeId": "b_1",
+      "retryAttempts": 3,
+      "timeoutSeconds": 120.0
+    },
+    "b_2": {
+      "defer": false,
+      "destinations": {
+        "b_3": "default"
+      },
+      "kind": "llm",
+      "loopId": null,
+      "nodeId": "b_2",
+      "retryAttempts": 3,
+      "timeoutSeconds": 120.0
+    },
+    "b_3": {
+      "defer": false,
+      "destinations": {
+        "join_1": "default"
+      },
+      "kind": "llm",
+      "loopId": null,
+      "nodeId": "b_3",
+      "retryAttempts": 3,
+      "timeoutSeconds": 120.0
+    },
+    "join_1": {
+      "defer": true,
+      "destinations": {
+        "output_1": "default"
+      },
+      "kind": "llm",
+      "loopId": null,
+      "nodeId": "join_1",
+      "retryAttempts": 3,
+      "timeoutSeconds": 120.0
+    },
+    "output_1": {
+      "defer": false,
+      "destinations": [],
+      "kind": "output",
+      "loopId": null,
+      "nodeId": "output_1",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "start_1": {
+      "defer": false,
+      "destinations": {
+        "a_1": "default",
+        "b_1": "default"
+      },
+      "kind": "entry",
+      "loopId": null,
+      "nodeId": "start_1",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    }
+  }
+}

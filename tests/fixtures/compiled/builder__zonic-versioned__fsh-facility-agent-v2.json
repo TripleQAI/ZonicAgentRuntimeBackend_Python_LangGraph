@@ -1,0 +1,104 @@
+{
+  "entry": "start_1785511197864_jvbmh",
+  "nodes": {
+    "agent_1785511250074_xp7b6": {
+      "defer": false,
+      "destinations": {
+        "llm_1785511291123_pvzlk": "handoff-llm_1785511291123_pvzlk",
+        "llm_1785511293299_zq6g4": "handoff-llm_1785511293299_zq6g4",
+        "output_1785511275818_6bl65": "default"
+      },
+      "kind": "agent",
+      "loopId": null,
+      "nodeId": "agent_1785511250074_xp7b6",
+      "retryAttempts": null,
+      "timeoutSeconds": 300.0
+    },
+    "llm_1785511238576_utnwf": {
+      "defer": false,
+      "destinations": {
+        "agent_1785511250074_xp7b6": "default"
+      },
+      "kind": "llm",
+      "loopId": null,
+      "nodeId": "llm_1785511238576_utnwf",
+      "retryAttempts": 3,
+      "timeoutSeconds": 120.0
+    },
+    "llm_1785511291123_pvzlk": {
+      "defer": false,
+      "destinations": {
+        "view_1785511492573_4qhdx": "default"
+      },
+      "kind": "llm",
+      "loopId": null,
+      "nodeId": "llm_1785511291123_pvzlk",
+      "retryAttempts": 3,
+      "timeoutSeconds": 120.0
+    },
+    "llm_1785511293299_zq6g4": {
+      "defer": false,
+      "destinations": {
+        "view_1785511500675_nupj0": "default"
+      },
+      "kind": "llm",
+      "loopId": null,
+      "nodeId": "llm_1785511293299_zq6g4",
+      "retryAttempts": 3,
+      "timeoutSeconds": 120.0
+    },
+    "output_1785511275818_6bl65": {
+      "defer": false,
+      "destinations": [],
+      "kind": "output",
+      "loopId": null,
+      "nodeId": "output_1785511275818_6bl65",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "start_1785511197864_jvbmh": {
+      "defer": false,
+      "destinations": {
+        "llm_1785511238576_utnwf": "default"
+      },
+      "kind": "entry",
+      "loopId": null,
+      "nodeId": "start_1785511197864_jvbmh",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "variable_1785511511620_aig39": {
+      "defer": false,
+      "destinations": {
+        "output_1785511275818_6bl65": "default"
+      },
+      "kind": "variable",
+      "loopId": null,
+      "nodeId": "variable_1785511511620_aig39",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "view_1785511492573_4qhdx": {
+      "defer": false,
+      "destinations": {
+        "variable_1785511511620_aig39": "default"
+      },
+      "kind": "view",
+      "loopId": null,
+      "nodeId": "view_1785511492573_4qhdx",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "view_1785511500675_nupj0": {
+      "defer": false,
+      "destinations": {
+        "variable_1785511511620_aig39": "default"
+      },
+      "kind": "view",
+      "loopId": null,
+      "nodeId": "view_1785511500675_nupj0",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    }
+  }
+}
