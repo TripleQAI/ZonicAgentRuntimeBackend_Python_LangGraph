@@ -238,7 +238,12 @@ class AppDeps:
         verifier = TokenVerifier(keys, settings.auth, issuer=env.oidc_issuer, audience=env.oidc_audience)
         gateway = HttpGateway(settings.gateway, env)
         bedrock = BedrockClients(settings.models)
-        agents = AgentServices.from_resources(resources, environment=env, bedrock=bedrock)
+        agents = AgentServices.from_resources(
+            resources,
+            environment=env,
+            bedrock=bedrock,
+            http=lambda upstream: pools.get(upstream, httpx.AsyncClient),
+        )
         region = settings.guardrails.bedrock_region
         guardrails = BedrockGuardrails(region, bedrock) if region else None
         key = env.checkpoint_aes_key if settings.state.encryption.enabled else None
@@ -383,6 +388,7 @@ def _gauges(
             lambda: pressure.percentile(0.99),
         ),
         Gauge("overloaded", "1 while new runs get 503 OVERLOADED", lambda: float(pressure.overloaded())),
+        Gauge("resident_memory_megabytes", "Resident memory of the process", pressure.rss_megabytes),
         Gauge(
             "model_queue_depth",
             "Model calls waiting for a governor permit",

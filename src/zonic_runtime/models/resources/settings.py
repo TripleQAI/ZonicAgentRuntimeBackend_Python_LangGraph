@@ -237,6 +237,8 @@ class GatewaySettings(ZonicResourceModel):
     timeout_milliseconds: int = Field(gt=0)
     connect_timeout_milliseconds: int = Field(gt=0)
     read_retries: int = Field(ge=0)
+    #: Retries of a throttled (429) call, writes included: the gateway did not run it.
+    throttle_retries: int = Field(ge=0)
     retry_backoff_milliseconds: int = Field(gt=0)
     max_view_rows: int = Field(gt=0)
 
@@ -312,6 +314,8 @@ class ApiSettings(ZonicResourceModel):
     #: How other instances reach this one's internal port (its run events, P4-05); empty is
     #: ``http://<host name>:<internalPort>``.
     internal_address: str
+    #: Headers on every public response (P5-01): content sniffing, framing, referrers, HSTS.
+    response_headers: dict[str, str]
     default_page_size: int = Field(gt=0)
     max_page_size: int = Field(gt=0)
     #: A new session's title: the start of its first message.

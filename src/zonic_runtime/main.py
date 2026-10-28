@@ -26,6 +26,7 @@ from zonic_runtime.observability import logging_policy
 TITLE = "Zonic Agent Runtime"
 VERSION = "0.1.0"
 _V1 = "/v1"
+_DOCS = "/docs"
 
 
 def create_app(deps: AppDeps | None = None, *, resources: RuntimeResources | None = None) -> FastAPI:
@@ -46,7 +47,7 @@ def create_app(deps: AppDeps | None = None, *, resources: RuntimeResources | Non
         title=TITLE,
         version=VERSION,
         lifespan=lifespan,
-        docs_url="/docs" if docs else None,
+        docs_url=_DOCS if docs else None,
         redoc_url=None,
         openapi_url="/openapi.json" if docs else None,
     )
@@ -66,7 +67,13 @@ def create_app(deps: AppDeps | None = None, *, resources: RuntimeResources | Non
             ],
             expose_headers=["etag", "retry-after", "x-request-id", "x-run-id", "x-session-id"],
         )
-    app.add_middleware(errors.RequestContext, catalog=resources.errors, max_body_bytes=api.max_body_bytes)
+    app.add_middleware(
+        errors.RequestContext,
+        catalog=resources.errors,
+        max_body_bytes=api.max_body_bytes,
+        response_headers=api.response_headers,
+        docs_path=_DOCS if docs else None,
+    )
     app.include_router(health.router)
     for router in (catalog.router, sessions.router, runs.router, datasets.router, observability.router):
         app.include_router(router, prefix=_V1)

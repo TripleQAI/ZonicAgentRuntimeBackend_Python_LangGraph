@@ -34,9 +34,9 @@ CREATE TABLE IF NOT EXISTS agent_observability.obs_trace (
     status              varchar(20),
     start_time          timestamptz   NOT NULL,
     end_time            timestamptz,
-    latency_ms          integer GENERATED ALWAYS AS
+    latency_ms          bigint GENERATED ALWAYS AS
                           (CASE WHEN end_time IS NULL THEN NULL
-                                ELSE (EXTRACT(EPOCH FROM end_time - start_time) * 1000)::integer END) STORED,
+                                ELSE (EXTRACT(EPOCH FROM end_time - start_time) * 1000)::bigint END) STORED,
     observation_count   integer       NOT NULL DEFAULT 0,
     error_count         integer       NOT NULL DEFAULT 0,
     input_tokens        bigint        NOT NULL DEFAULT 0,
@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS agent_observability.obs_observation (
     start_time            timestamptz   NOT NULL,
     end_time              timestamptz,
     completion_start_time timestamptz,
-    latency_ms            integer,
+    latency_ms            bigint,
     input                 jsonb,
     output                jsonb,
     metadata              jsonb         NOT NULL DEFAULT '{}'::jsonb,
@@ -125,5 +125,33 @@ ALTER TABLE agent_observability.obs_trace ALTER COLUMN metadata SET COMPRESSION 
 ALTER TABLE agent_observability.obs_observation ALTER COLUMN input SET COMPRESSION lz4;
 ALTER TABLE agent_observability.obs_observation ALTER COLUMN output SET COMPRESSION lz4;
 ALTER TABLE agent_observability.obs_observation ALTER COLUMN metadata SET COMPRESSION lz4;
+
+-- latency_ms was integer, which overflows for a trace longer than 24.8 days (a run paused that long,
+-- decision record 0005 F-13). An existing install is widened once: the views and rollups that read
+-- the column are dropped here and recreated by 004_views.sql; run 006_grants.sql again afterwards.
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.columns
+                WHERE table_schema = 'agent_observability' AND column_name = 'latency_ms'
+                  AND table_name IN ('obs_trace', 'obs_observation') AND data_type = 'integer') THEN
+        DROP VIEW IF EXISTS agent_observability.v_obs_trace, agent_observability.v_obs_trace_list,
+                            agent_observability.v_obs_observation, agent_observability.v_obs_node_stats_daily,
+                            agent_observability.v_obs_model_usage_daily;
+        DROP MATERIALIZED VIEW IF EXISTS agent_observability.mv_obs_node_stats_daily,
+                                         agent_observability.mv_obs_model_usage_daily;
+        IF EXISTS (SELECT 1 FROM information_schema.columns
+                    WHERE table_schema = 'agent_observability' AND table_name = 'obs_trace'
+                      AND column_name = 'latency_ms' AND data_type = 'integer') THEN
+            ALTER TABLE agent_observability.obs_trace DROP COLUMN latency_ms;
+            ALTER TABLE agent_observability.obs_trace ADD COLUMN latency_ms bigint GENERATED ALWAYS AS
+                (CASE WHEN end_time IS NULL THEN NULL
+                      ELSE (EXTRACT(EPOCH FROM end_time - start_time) * 1000)::bigint END) STORED;
+        END IF;
+        ALTER TABLE agent_observability.obs_observation ALTER COLUMN latency_ms TYPE bigint;
+        INSERT INTO agent_observability.schema_migrations (version) VALUES ('001_latency_bigint')
+            ON CONFLICT (version) DO NOTHING;
+    END IF;
+END;
+$$;
 
 INSERT INTO agent_observability.schema_migrations (version) VALUES ('001_schema_create') ON CONFLICT (version) DO NOTHING;

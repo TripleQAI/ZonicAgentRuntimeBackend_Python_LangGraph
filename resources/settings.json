@@ -111,7 +111,8 @@
       "mask",
       "retry",
       "fallback",
-      "annotate"
+      "annotate",
+      "approval"
     ],
     "maxRetriesPerNode": 3,
     "defaultTimeoutMilliseconds": 5000,
@@ -178,6 +179,7 @@
     "timeoutMilliseconds": 15000,
     "connectTimeoutMilliseconds": 2000,
     "readRetries": 2,
+    "throttleRetries": 4,
     "retryBackoffMilliseconds": 50,
     "maxViewRows": 10000
   },
@@ -247,6 +249,14 @@
     "maxBodyBytes": 1048576,
     "internalPort": 9000,
     "internalAddress": "",
+    "responseHeaders": {
+      "X-Content-Type-Options": "nosniff",
+      "X-Frame-Options": "DENY",
+      "Referrer-Policy": "no-referrer",
+      "Content-Security-Policy": "default-src 'none'; frame-ancestors 'none'",
+      "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+      "Cross-Origin-Resource-Policy": "same-origin"
+    },
     "defaultPageSize": 20,
     "maxPageSize": 100,
     "sessionTitleChars": 80

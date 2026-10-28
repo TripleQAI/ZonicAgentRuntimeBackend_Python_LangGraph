@@ -1,0 +1,15 @@
+{
+  "additionalProperties": false,
+  "description": "The published shape of a Human Input node's answer. Each interrupt's ``answerSchema`` narrows\n``value`` to the node's input type (``InterruptKind.answer_model``).",
+  "properties": {
+    "value": {
+      "description": "The answer, of the type the interrupt's answerSchema names",
+      "title": "Value"
+    }
+  },
+  "required": [
+    "value"
+  ],
+  "title": "InputAnswer",
+  "type": "object"
+}

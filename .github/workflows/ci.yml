@@ -39,6 +39,10 @@ jobs:
         run: uv run python -m scripts.sync_recordings --check
       - name: Catalog coverage
         run: uv run python -m scripts.catalog_check
+      - name: Dependency audit
+        run: |
+          uv export --frozen --no-hashes --no-emit-project > requirements-audit.txt
+          uv run pip-audit -r requirements-audit.txt --disable-pip --no-deps --progress-spinner off
       - name: Tests with coverage
         run: uv run pytest --cov --cov-report=xml
 

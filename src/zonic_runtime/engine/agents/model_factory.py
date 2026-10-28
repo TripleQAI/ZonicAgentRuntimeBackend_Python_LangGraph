@@ -16,6 +16,7 @@ Models are built by a ``ModelBuilder`` per provider; tests pass scripted builder
 from __future__ import annotations
 
 from collections.abc import Callable, Mapping
+from types import MappingProxyType
 from typing import Any
 
 from langchain.chat_models import init_chat_model
@@ -34,36 +35,59 @@ ModelBuilder = Callable[[ModelEntry, dict[str, Any]], BaseChatModel]
 EnvironmentReader = Callable[[str], str | None]
 #: The shared Bedrock runtime client of a region (``integrations/http/pools.py``).
 BedrockClient = Callable[[str | None], Any]
+#: The shared ``httpx.AsyncClient`` of an upstream key (``HttpPools.get``), for the OpenAI SDKs.
+HttpClient = Callable[[str], Any]
+#: Providers whose SDK takes an ``http_async_client``.
+_HTTPX_PROVIDERS = frozenset({"openai", "azure_openai"})
+
+
+#: The environment field holding each key-based provider's API key (``ZONIC_<FIELD>``); Bedrock
+#: uses the process's AWS credentials instead.
+_API_KEYS = MappingProxyType(
+    {"azure_openai": "azure_openai_api_key", "openai": "openai_api_key", "anthropic": "anthropic_api_key"}
+)
 
 
 def _provider_arguments(entry: ModelEntry, environment: EnvironmentReader) -> dict[str, Any]:
+    endpoint = environment(entry.endpoint_env) if entry.endpoint_env else None
+    key = environment(_API_KEYS[entry.provider]) if entry.provider in _API_KEYS else None
     match entry.provider:
         case "bedrock_converse":
             return {"region_name": entry.region} if entry.region else {}
         case "azure_openai":
-            endpoint = environment(entry.endpoint_env) if entry.endpoint_env else None
             found = {
                 "azure_deployment": entry.deployment,
                 "api_version": entry.api_version,
                 "azure_endpoint": endpoint,
+                "api_key": key,
             }
-            return {k: v for k, v in found.items() if v is not None}
+        case "openai":  # endpointEnv: an OpenAI-compatible endpoint
+            found = {"base_url": endpoint, "api_key": key}
         case _:
-            return {}
+            found = {"api_key": key}
+    return {k: v for k, v in found.items() if v is not None}
 
 
 def provider_builders(
-    environment: EnvironmentReader, bedrock: BedrockClient | None = None
+    environment: EnvironmentReader, bedrock: BedrockClient | None = None, http: HttpClient | None = None
 ) -> Mapping[str, ModelBuilder]:
     """``init_chat_model`` per provider. Bedrock models share one client per region (sized to
     ``models.executorThreads``, SP-5) and take no client timeout or retry count, which botocore's
-    configuration sets."""
+    configuration sets. OpenAI and Azure OpenAI models share one ``httpx.AsyncClient`` per endpoint
+    from the process's pools (design 11.3), not the SDK's process-wide default client, which stays
+    bound to the first event loop that used it."""
 
     def build(entry: ModelEntry, arguments: dict[str, Any]) -> BaseChatModel:
         if entry.provider == "bedrock_converse":
             arguments = {k: v for k, v in arguments.items() if k not in ("timeout", "max_retries")}
             if bedrock is not None:
                 arguments["client"] = bedrock(entry.region)
+        if entry.provider in _HTTPX_PROVIDERS and http is not None:
+            endpoint = environment(entry.endpoint_env) if entry.endpoint_env else None
+            client = http(f"model:{entry.provider}:{endpoint or ''}")
+            # With its own client the SDK no longer streams usage by default: the trace's usage
+            # (and the run's cost) need it.
+            arguments = {**arguments, "http_async_client": client, "stream_usage": True}
         model = init_chat_model(
             entry.model_id,
             model_provider=entry.provider,
@@ -108,6 +132,7 @@ class ModelFactory:
             code = next((c for c, e in models.items() if e.model_id == wanted), None)
         if code is None:
             raise ZonicError("MODEL_NOT_ALLOWED", model=wanted, reason="not in models.json")
+        code = self._catalog.substitutes.get(code, code)  # a stand-in serves it (models.json)
         if not models[code].enabled:
             raise ZonicError("MODEL_NOT_ALLOWED", model=wanted, reason="disabled")
         return code

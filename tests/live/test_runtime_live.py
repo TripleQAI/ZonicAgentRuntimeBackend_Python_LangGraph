@@ -10,8 +10,9 @@ tenant ``live-test``.
 from __future__ import annotations
 
 import contextlib
-from collections.abc import AsyncIterator
+from collections.abc import AsyncIterator, Callable
 from dataclasses import dataclass, replace
+from pathlib import Path
 from typing import Any
 
 import httpx
@@ -21,6 +22,7 @@ from tests.api.app import auth, fake_verifier, sse_events
 from tests.fakes.scripted_chat_model import ScriptedChatModel, Turn
 from tests.kinds.agents import ScriptedModels
 from tests.live.conftest import live_environment
+from tests.workflow_fixtures import read_json
 from zonic_runtime.api.deps import AppDeps
 from zonic_runtime.config.settings import RuntimeResources, load_resources
 from zonic_runtime.engine.agents.agent_factory import AgentServices
@@ -36,6 +38,10 @@ pytestmark = pytest.mark.live
 
 ENV = live_environment()
 OWNER, TENANT = "live-langgraph-verify", "live-test"
+#: The AWS deployment's model stand-ins (Claude codes served by OpenAI until Bedrock is available).
+STANDINS = read_json(
+    Path(__file__).resolve().parents[2] / "deploy" / "aws" / "resources" / "models.dev.json"
+)["substitutes"]
 WORKFLOW = "test-agent-workflow"
 
 
@@ -70,12 +76,15 @@ async def open_live(
     aliases: dict[str, str] | None = None,
     sections: dict[str, dict[str, Any]] | None = None,
     durable: bool = False,
+    agents: Callable[[RuntimeResources], AgentServices] | None = None,
+    substitutes: bool = False,
     **features: bool,
 ) -> AsyncIterator[LiveApp]:
     """``ports``: local stand-ins for the services this machine has no access to (the sandbox,
     the MCP server); the gateway and the database are always the deployed ones. ``aliases``: model
     IDs a live document names that the catalog lacks, mapped to a catalog code (the scripted model
-    answers for all of them)."""
+    answers for all of them). ``agents``: real model services instead of ``script`` (P5-03);
+    ``substitutes``: the AWS deployment's model stand-ins (``deploy/aws/resources/models.dev.json``)."""
     found = resources()
     for name, update in (sections or {}).items():  # settings sections changed for the test
         section = getattr(found.settings, name).model_copy(update=update)
@@ -83,6 +92,8 @@ async def open_live(
     if aliases:
         models = found.models.model_copy(update={"aliases": {**found.models.aliases, **aliases}})
         found = replace(found, models=models)
+    if substitutes:
+        found = replace(found, models=found.models.model_copy(update={"substitutes": STANDINS}))
     if features:
         settings = found.settings
         found = replace(
@@ -93,14 +104,18 @@ async def open_live(
     if not await gateway.ready():
         await gateway.aclose()
         pytest.skip(f"no gateway ready at {ENV.gateway_base_url}")
-    agents = AgentServices.from_resources(
-        found, builders=ScriptedModels(ScriptedChatModel(script=script)).builders()
+    services = (
+        agents(found)
+        if agents is not None
+        else AgentServices.from_resources(
+            found, builders=ScriptedModels(ScriptedChatModel(script=script)).builders()
+        )
     )
     deps = AppDeps.build(
         found,
         gateway,
         fake_verifier(found),
-        agents=agents,
+        agents=services,
         tracing=GatewayTracing.create(found, gateway),
         ports=ports(found) if callable(ports) else ports,
         durable=durable,
@@ -296,11 +311,7 @@ def open_facility(script: list[Any], **sections: dict[str, Any]) -> Any:
             mcp=McpService(FakeMcpServer().pool()),
         )
 
-    # The live document names Sonnet 4.5, which resources/models.json does not list.
-    sonnet = {"us.anthropic.claude-sonnet-4-5-20250929-v1:0": "claude-sonnet-4-6"}
-    return open_live(
-        script, "facility-operations", ports=ports, aliases=sonnet, sections=sections, script_node=True
-    )
+    return open_live(script, "facility-operations", ports=ports, sections=sections, script_node=True)
 
 
 def facility_turns(*members: Turn) -> list[Turn]:
@@ -325,7 +336,7 @@ async def live_facility() -> AsyncIterator[LiveApp]:
         yield app
 
 
-async def test_live_a_swarm_run_pauses_for_approval_and_resumes_on_the_deployed_gateway(
+async def test_V03_a_swarm_run_pauses_for_approval_and_resumes_on_the_deployed_gateway(
     live_facility: LiveApp,
 ) -> None:
     """P4-01 and P4-02 on the deployed gateway: the Swarm hands off and its report pauses the run at

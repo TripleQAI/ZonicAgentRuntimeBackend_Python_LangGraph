@@ -58,6 +58,47 @@ async def test_Q02_a_200_node_linear_workflow_calls_the_database_only_at_start_a
     ]
 
 
+# --- R-01 --------------------------------------------------------------------------------------
+
+
+def _stall() -> Turn:
+    """A stream that stops after two chunks until botocore's read timeout (the Bedrock client's
+    ``read_timeout`` is ``models.requestTimeoutSeconds``: the longest gap between bytes)."""
+    from botocore.exceptions import ReadTimeoutError
+
+    return Turn.say(
+        "partial answer then silence",
+        error=ReadTimeoutError(endpoint_url="https://bedrock-runtime.us-east-1.amazonaws.com"),
+        error_after_chunks=2,
+    )
+
+
+async def test_R01_a_stalled_model_stream_is_retried_and_the_turn_completes() -> None:
+    from tests.conformance.test_kinds import fast_retry
+
+    app = make_app([_stall(), Turn.say("Recovered answer.")], resources=fast_retry())
+    async with app.client() as client:
+        response = await client.post("/v1/runs", json=start(), headers=auth())
+    events = sse_events(response.text)
+    assert events[-1]["type"] == "run.completed", events[-1]
+    assert events[-1]["data"]["result"] == {"answer": "Recovered answer."}
+    assert len(app.models.model.requests) == 2
+
+
+async def test_R01_a_model_that_keeps_stalling_fails_the_run_with_model_unavailable() -> None:
+    from tests.conformance.test_kinds import fast_retry
+
+    resources = fast_retry()
+    retry = resources.manifest.node_types["llm"].retry
+    assert retry is not None
+    app = make_app([_stall()] * retry.max_attempts, resources=resources)
+    async with app.client() as client:
+        response = await client.post("/v1/runs", json=start(), headers=auth())
+    events = sse_events(response.text)
+    assert events[-1]["type"] == "run.failed" and events[-1]["data"]["code"] == "MODEL_UNAVAILABLE"
+    assert len(app.models.model.requests) == retry.max_attempts
+
+
 # --- Q-05 --------------------------------------------------------------------------------------
 
 
@@ -185,6 +226,7 @@ async def test_metrics_on_the_internal_app_report_runs_permits_lag_and_model_gov
         "zonic_node_permits_in_use 0.0",
         "zonic_event_loop_lag_milliseconds",
         "zonic_overloaded 0.0",
+        "zonic_resident_memory_megabytes",
     ):
         assert gauge in text
     model = app.deps.resources.models.default_model

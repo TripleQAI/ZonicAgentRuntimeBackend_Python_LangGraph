@@ -66,6 +66,8 @@ class EnvironmentModel(BaseSettings):
 
     # MCP server and cache service
     mcp_base_url: str | None = None
+    #: The MCP server's bearer token (its ``MCP_AUTH_TOKEN``); ``mcp-servers.json`` names it.
+    mcp_auth_token: SecretStr | None = None
     cache_api_url: str | None = None
 
     # the Script node's sandbox (a Piston API); unset: Script nodes are FEATURE_DISABLED

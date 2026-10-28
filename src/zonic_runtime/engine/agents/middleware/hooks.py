@@ -23,7 +23,8 @@ from langchain.agents.middleware import AgentMiddleware, ModelRequest, ModelResp
 from langchain_core.messages import AIMessage, BaseMessage, ToolMessage
 from langgraph.types import Command, interrupt
 
-from zonic_runtime.engine.approvals import TOOL_KEY, ApprovalAnswer, answer_value, approval_request
+from zonic_runtime.engine.approvals import TOOL_KEY, answer_value, approval_request
+from zonic_runtime.models.api.answers import ApprovalAnswer
 from zonic_runtime.models.blueprint import Blueprint, NodeSpec
 from zonic_runtime.models.nodes.base import ConditionGroup
 

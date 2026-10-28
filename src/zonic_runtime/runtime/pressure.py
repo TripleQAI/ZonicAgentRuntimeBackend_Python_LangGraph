@@ -57,6 +57,10 @@ class PressureMonitor:
         self._lags: deque[float] = deque(maxlen=_SAMPLES)
         self._task: asyncio.Task[None] | None = None
 
+    def rss_megabytes(self) -> float:
+        """Resident memory now, as the RSS threshold reads it."""
+        return self._rss()
+
     @property
     def lag_milliseconds(self) -> float:
         return self._lags[-1] if self._lags else 0.0

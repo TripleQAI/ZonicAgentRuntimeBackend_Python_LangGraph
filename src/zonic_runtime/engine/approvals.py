@@ -12,9 +12,9 @@ from collections.abc import Mapping
 from datetime import datetime, timedelta
 from typing import Any
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
-from zonic_runtime.models.base import ZonicModel
+from zonic_runtime.models.api.answers import ApprovalAnswer
 from zonic_runtime.models.engine import InterruptRequest
 from zonic_runtime.models.hooks.result import ApprovalHookConfig
 
@@ -22,15 +22,6 @@ APPROVAL_KIND = "approval"  # principle: allow rule-1-node-type interrupt-kind-o
 #: The prompt member naming a tool call's tool (tool approvals, ``approval`` hooks on a tool call).
 TOOL_KEY = "tool"  # principle: allow rule-1-node-type approval-prompt-key
 _TEXT = "text"
-
-
-class ApprovalAnswer(ZonicModel):
-    """The decision on an Approval. The runtime sets decidedBy (who answered) and expired."""
-
-    approved: bool = Field(description="true approves, false rejects")
-    comment: str | None = Field(default=None, max_length=2000)
-    decided_by: str | None = Field(default=None, json_schema_extra={"readOnly": True})
-    expired: bool = Field(default=False, json_schema_extra={"readOnly": True})
 
 
 def answer_value(answer: Any) -> Any:

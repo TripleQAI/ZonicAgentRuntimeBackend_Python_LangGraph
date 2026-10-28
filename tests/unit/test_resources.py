@@ -125,3 +125,30 @@ def test_M01_retry_codes_exist_in_the_error_catalog() -> None:
         assert set(retry.on) <= codes, retry.on
     for code in (c for e in entries for c in e.on):
         assert resources.errors.errors[code].retryable, code
+
+
+def test_the_aws_overlays_keep_the_dev_overlays_and_validate() -> None:
+    """``deploy/aws/resources/`` replaces files of ``resources/`` in the AWS image: its
+    ``settings.dev.json`` must keep every setting of the repository's own, and both validate."""
+    import json
+    import shutil
+    import tempfile
+    from pathlib import Path
+
+    from zonic_runtime.config.env import EnvironmentModel
+    from zonic_runtime.config.settings import load_resources
+
+    root = Path(__file__).resolve().parents[2]
+    aws = root / "deploy" / "aws" / "resources"
+    ours = json.loads((root / "resources" / "settings.dev.json").read_text(encoding="utf-8"))
+    theirs = json.loads((aws / "settings.dev.json").read_text(encoding="utf-8"))
+    assert {k: v for k, v in theirs.items() if k != "datasets"} == ours
+    assert theirs["datasets"] == {"store": "database"}  # no cache service on AWS
+    with tempfile.TemporaryDirectory() as folder:
+        image = Path(folder) / "resources"
+        shutil.copytree(root / "resources", image)
+        for file in aws.glob("*.json"):
+            shutil.copy(file, image / file.name)
+        found = load_resources(EnvironmentModel(env="dev", resources_dir=image))
+    assert found.settings.datasets.store == "database"
+    assert found.models.substitutes["claude-sonnet-4-6"] == "openai-gpt-4.1"

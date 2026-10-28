@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -17,6 +18,7 @@ from tests.api.app import CHAT, auth, make_app, sse_events, token
 from tests.fakes.clock import FakeClock
 from tests.fakes.scripted_chat_model import Turn
 from zonic_runtime.api.sse import sse_frames
+from zonic_runtime.errors import ZonicError
 from zonic_runtime.main import create_openapi
 from zonic_runtime.models.events import RunEvent
 
@@ -82,6 +84,24 @@ async def test_A02_a_token_with_a_wrong_audience_issuer_signature_or_expiry_is_i
         garbage = await client.get("/v1/catalog/agents", headers={"Authorization": "Bearer not-a-jwt"})
     assert response.status_code == 401 and response.json()["error"]["code"] == "AUTH_INVALID"
     assert garbage.status_code == 401 and garbage.json()["error"]["code"] == "AUTH_INVALID"
+
+
+async def test_A02_any_client_of_a_comma_separated_audience_is_accepted() -> None:
+    from tests.api.app import _KEY, ISSUER, KID
+    from tests.api.app import DEV as RESOURCES
+    from zonic_runtime.api.auth import StaticKeys, TokenVerifier
+
+    verifier = TokenVerifier(
+        StaticKeys({KID: _KEY.public_key()}),
+        RESOURCES.settings.auth,
+        issuer=ISSUER,
+        audience="ui, test-client",
+    )
+    for client in ("ui", "test-client"):
+        assert (await verifier.verify(token("ada", audience=client))).subject == "ada"
+    with pytest.raises(ZonicError) as caught:
+        await verifier.verify(token("ada", audience="client-1"))
+    assert caught.value.code == "AUTH_INVALID"
 
 
 # --- A-03, A-04 --------------------------------------------------------------------------------
@@ -174,6 +194,19 @@ async def test_A06_a_repeated_idempotency_key_returns_the_same_run_with_one_row(
         again = (await client.post("/v1/runs", json=start(mode="sync"), headers=headers)).json()
     assert first == again and first["status"] == "succeeded"
     assert len(app.schema.t("runtime_run")) == 1 and len(app.models.model.requests) == 1
+
+
+async def test_A06_an_idempotency_key_older_than_its_ttl_starts_a_new_run() -> None:
+    app = make_app([Turn.say("First."), Turn.say("Second.")])
+    async with app.client() as client:
+        headers = {**auth(), "Idempotency-Key": "key-ttl"}
+        first = (await client.post("/v1/runs", json=start(mode="sync"), headers=headers)).json()
+        ttl = app.deps.resources.settings.runs.idempotency_ttl_seconds
+        [row] = app.schema.t("runtime_run")
+        row["created_at"] = (datetime.now(UTC) - timedelta(seconds=ttl + 1)).isoformat()
+        again = (await client.post("/v1/runs", json=start(mode="sync"), headers=headers)).json()
+    assert again["runId"] != first["runId"] and again["result"] == {"answer": "Second."}
+    assert [r["idempotency_key"] for r in app.schema.t("runtime_run")].count("key-ttl") == 1
 
 
 async def test_A07_a_second_run_on_a_session_with_an_active_run_is_run_in_progress() -> None:
@@ -296,6 +329,49 @@ async def test_A15_the_test_client_lists_starts_streams_and_continues_a_session(
         "Hi, I am Ada",
         "Are you there?",
     ]
+
+
+async def test_A15_the_test_client_answers_an_interrupt_and_the_run_completes() -> None:
+    from tests.api.test_interrupts import APPROVAL, DRAFT, FLOW
+
+    app = make_app([Turn.say(DRAFT)], workflows={FLOW: APPROVAL})
+    asked: list[dict[str, Any]] = []
+    async with app.client() as http:
+        client = RuntimeClient(http, token("ada"))
+        paused = await client.run("refund order 1042", workflow_id=FLOW)
+        assert paused.waiting
+        done = await client.resume(paused, lambda i: asked.append(i) or {"approved": True})
+    assert [i["kind"] for i in asked] == ["approval"] and asked[0]["answerSchema"]
+    assert done.final is not None and done.final["type"] == "run.completed", done.final
+    assert done.run_id == paused.run_id and not done.waiting
+
+
+async def test_A15_the_test_client_leaves_a_run_waiting_without_an_answer() -> None:
+    from tests.api.test_interrupts import APPROVAL, DRAFT, FLOW
+
+    app = make_app([Turn.say(DRAFT)], workflows={FLOW: APPROVAL})
+    async with app.client() as http:
+        client = RuntimeClient(http, token("ada"))
+        paused = await client.run("refund order 1042", workflow_id=FLOW)
+        left = await client.resume(paused, lambda _: None)
+        pending = await client.interrupts(paused.run_id)
+    assert left.waiting and len(pending) == 1
+
+
+async def test_A15_the_test_client_pages_a_dataset_the_run_names() -> None:
+    from tests.fakes.mcp_server import FakeMcpServer, ok
+    from tests.unit.test_datasets import app_with, rows
+
+    app = app_with(FakeMcpServer(answers={"q": ok(None, rows(30))}), "database")
+    async with app.client() as http:
+        client = RuntimeClient(http, auth()["Authorization"].removeprefix("Bearer "))
+        run = await client.run("Show the sites", workflow_id="wf-db")
+        [dataset_id] = run.dataset_ids
+        page = await client.dataset(
+            dataset_id, page=2, page_size=10, sort="kwh:desc", filter={"borough": "queens"}
+        )
+    assert page["total"] == 15 and page["page"] == 2 and len(page["rows"]) == 5
+    assert [r["kwh"] for r in page["rows"]] == [80, 60, 40, 20, 0]
 
 
 # --- S-01, S-06, S-07, S-08, S-10, M-06 --------------------------------------------------------

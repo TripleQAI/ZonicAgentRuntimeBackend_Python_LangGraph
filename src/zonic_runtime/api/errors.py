@@ -119,11 +119,24 @@ def install(app: FastAPI, catalog: ErrorCatalog) -> None:
 
 class RequestContext:
     """Pure ASGI middleware (it never buffers a streamed response): the request ID from
-    ``X-Request-ID`` or a new one, echoed on the response; bodies above ``maxBodyBytes`` are
-    ``INPUT_TOO_LARGE`` before the route reads them."""
+    ``X-Request-ID`` or a new one, echoed on the response, with ``api.responseHeaders`` (P5-01; not
+    on the interactive docs page, whose scripts they would block). A body above ``maxBodyBytes``
+    is ``INPUT_TOO_LARGE`` (``413``) before the route reads it: by its ``Content-Length``, or, sent
+    in chunks without one, once the chunks pass the limit (case X-07)."""
 
-    def __init__(self, app: ASGIApp, catalog: ErrorCatalog, max_body_bytes: int) -> None:
+    def __init__(
+        self,
+        app: ASGIApp,
+        catalog: ErrorCatalog,
+        max_body_bytes: int,
+        response_headers: Mapping[str, str] | None = None,
+        docs_path: str | None = None,
+    ) -> None:
         self.app, self.catalog, self.max_body_bytes = app, catalog, max_body_bytes
+        self.extra = [
+            (k.lower().encode("latin-1"), v.encode("latin-1")) for k, v in (response_headers or {}).items()
+        ]
+        self.docs_path = docs_path
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
         if scope["type"] != "http":
@@ -132,18 +145,45 @@ class RequestContext:
         headers = {k.decode("latin-1").lower(): v.decode("latin-1") for k, v in scope.get("headers", [])}
         rid = headers.get(REQUEST_ID) or str(uuid.uuid4())
         scope.setdefault("state", {})["request_id"] = rid
-        length = headers.get("content-length")
-        if length is not None and length.isdigit() and int(length) > self.max_body_bytes:
-            response = error_response(self.catalog, "INPUT_TOO_LARGE", rid, headers={REQUEST_ID: rid})
-            await response(scope, receive, send)
-            return
+        extra = [] if self.docs_path and scope.get("path") == self.docs_path else self.extra
 
         async def tagged(message: Message) -> None:
             if message["type"] == "http.response.start":
-                message.setdefault("headers", []).append((REQUEST_ID.encode(), rid.encode()))
+                found = message.setdefault("headers", [])
+                names = {name.lower() for name, _ in found}
+                found.append((REQUEST_ID.encode(), rid.encode()))
+                found.extend((name, value) for name, value in extra if name not in names)
             await send(message)
 
+        length = headers.get("content-length")
+        if length is not None and length.isdigit() and int(length) > self.max_body_bytes:
+            await self._too_large(rid, scope, receive, tagged)
+            return
+        if length is None and "chunked" in headers.get("transfer-encoding", ""):
+            chunks, size = [], 0
+            while True:  # a body without a length: read it up to the limit, then hand it on
+                message = await receive()
+                if message["type"] != "http.request":
+                    break
+                chunks.append(message.get("body", b""))
+                size += len(chunks[-1])
+                if size > self.max_body_bytes:
+                    await self._too_large(rid, scope, receive, tagged)
+                    return
+                if not message.get("more_body", False):
+                    break
+            replay = [{"type": "http.request", "body": b"".join(chunks), "more_body": False}]
+
+            async def buffered() -> Message:
+                return replay.pop() if replay else await receive()
+
+            await self.app(scope, buffered, tagged)
+            return
         await self.app(scope, receive, tagged)
+
+    async def _too_large(self, rid: str, scope: Scope, receive: Receive, send: Send) -> None:
+        response = error_response(self.catalog, "INPUT_TOO_LARGE", rid)
+        await response(scope, receive, send)
 
 
 ExceptionHandler = Callable[[Request, Exception], Awaitable[JSONResponse]]

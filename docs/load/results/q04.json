@@ -1,0 +1,66 @@
+{
+  "users": 5,
+  "runs_per_user": 4,
+  "tenants": 1,
+  "wall_seconds": 7.34,
+  "runs": 20,
+  "statuses": {
+    "200 run.completed": 20
+  },
+  "crossed_runs": 0,
+  "run_started_ms": {
+    "p50": 91.79,
+    "p95": 276.75,
+    "p99": 276.75,
+    "max": 276.75,
+    "mean": 124.29
+  },
+  "first_token_ms": {
+    "p50": 417.19,
+    "p95": 589.44,
+    "p99": 589.44,
+    "max": 589.44,
+    "mean": 439.36
+  },
+  "total_ms": {
+    "p50": 1667.51,
+    "p95": 2486.8,
+    "p99": 2486.8,
+    "max": 2486.8,
+    "mean": 1723.86
+  },
+  "frames_per_run": {
+    "p50": 67.0,
+    "p95": 68.0,
+    "p99": 68.0,
+    "max": 68.0,
+    "mean": 66.85
+  },
+  "token_added_ms": {
+    "p50": 5.11,
+    "p95": 6.54,
+    "p99": 10.38,
+    "max": 22.6,
+    "mean": 4.98
+  },
+  "peak_active_runs": 5.0,
+  "event_loop_lag_p99_ms": {
+    "p50": 11.99,
+    "p95": 11.99,
+    "p99": 11.99,
+    "max": 11.99,
+    "mean": 11.99
+  },
+  "event_loop_lag_ms": {
+    "p50": 0.16,
+    "p95": 0.77,
+    "p99": 0.77,
+    "max": 0.77,
+    "mean": 0.26
+  },
+  "rss_baseline_mb": 223.265625,
+  "rss_peak_mb": 235.94140625,
+  "rss_per_active_run_mb": 2.535,
+  "overloaded_samples": 0,
+  "errors": []
+}

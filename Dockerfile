@@ -9,11 +9,14 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 COPY --from=ghcr.io/astral-sh/uv:0.11 /uv /usr/local/bin/uv
 
 WORKDIR /app
-COPY pyproject.toml uv.lock ./
+COPY pyproject.toml uv.lock README.md ./
 RUN uv sync --frozen --no-dev --no-group test --no-install-project
 
 COPY src ./src
 COPY resources ./resources
+# The AWS deployment's overlays (models.dev.json: OpenAI stand-ins for the Bedrock models until
+# Bedrock is available); local runs and the tests read resources/ alone.
+COPY deploy/aws/resources/ ./resources/
 COPY generated ./generated
 RUN uv sync --frozen --no-dev --no-group test
 

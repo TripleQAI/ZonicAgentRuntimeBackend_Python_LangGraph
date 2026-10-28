@@ -20,6 +20,7 @@ from langchain.agents import create_agent
 from langchain.agents.middleware import AgentMiddleware
 from langchain_core.language_models import BaseChatModel
 from langchain_core.tools import BaseTool
+from pydantic import SecretStr
 
 from zonic_runtime.config.env import EnvironmentModel
 from zonic_runtime.config.settings import RuntimeResources
@@ -30,6 +31,7 @@ from zonic_runtime.engine.agents.middleware.governor import GovernorMiddleware, 
 from zonic_runtime.engine.agents.middleware.hooks import HookMiddleware
 from zonic_runtime.engine.agents.model_factory import (
     BedrockClient,
+    HttpClient,
     ModelBuilder,
     ModelFactory,
     provider_builders,
@@ -117,12 +119,15 @@ class AgentServices:
         tools: ToolProvider | None = None,
         environment: EnvironmentModel | None = None,
         bedrock: BedrockClient | None = None,
+        http: HttpClient | None = None,
     ) -> AgentServices:
         def read(field: str) -> str | None:
             value = getattr(environment, field, None) if environment is not None else None
+            if isinstance(value, SecretStr):  # str() would give the masked value
+                return value.get_secret_value()
             return str(value) if value is not None else None
 
-        found: Mapping[str, ModelBuilder] = builders or provider_builders(read, bedrock)
+        found: Mapping[str, ModelBuilder] = builders or provider_builders(read, bedrock, http)
         models = ModelFactory(resources.models, resources.settings.models, found)
         settings = resources.settings
         factory = AgentFactory(settings.tools.require_approval, settings.interrupts.default_expiry_hours)

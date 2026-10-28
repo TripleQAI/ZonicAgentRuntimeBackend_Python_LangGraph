@@ -51,7 +51,10 @@ BEGIN
             v_trace->>'tenantId', (v_trace->>'agenticWorkflowId')::uuid,
             COALESCE(ARRAY(SELECT jsonb_array_elements_text(COALESCE(v_trace->'tags', '[]'::jsonb))), '{}'),
             COALESCE(v_trace->'metadata', '{}'::jsonb), v_trace->'input', v_trace->'output', v_trace->>'status',
-            COALESCE((v_trace->>'startTime')::timestamptz, now()), (v_trace->>'endTime')::timestamptz)
+            -- A header without a start (an update that only ends the run) must not start at now(): its
+            -- end may be weeks earlier, which would give a negative latency; it falls back to the end.
+            COALESCE((v_trace->>'startTime')::timestamptz, (v_trace->>'endTime')::timestamptz, now()),
+            (v_trace->>'endTime')::timestamptz)
         ON CONFLICT (trace_id) DO UPDATE SET
             name                = CASE WHEN EXCLUDED.name <> '' THEN EXCLUDED.name ELSE tr.name END,
             environment         = CASE WHEN v_trace ? 'environment' THEN EXCLUDED.environment ELSE tr.environment END,
@@ -93,9 +96,9 @@ BEGIN
         COALESCE(o->>'level', 'DEFAULT'), left(o->>'statusMessage', 500), COALESCE(o->>'environment', 'default'),
         o->>'version', (o->>'startTime')::timestamptz, (o->>'endTime')::timestamptz,
         (o->>'completionStartTime')::timestamptz,
-        COALESCE((o->>'latencyMs')::integer,
+        COALESCE((o->>'latencyMs')::bigint,
                  CASE WHEN o->>'endTime' IS NOT NULL
-                      THEN (EXTRACT(EPOCH FROM (o->>'endTime')::timestamptz - (o->>'startTime')::timestamptz) * 1000)::integer
+                      THEN (EXTRACT(EPOCH FROM (o->>'endTime')::timestamptz - (o->>'startTime')::timestamptz) * 1000)::bigint
                  END),
         o->'input', o->'output', COALESCE(o->'metadata', '{}'::jsonb), o->>'model', o->'modelParameters',
         o->'usageDetails',

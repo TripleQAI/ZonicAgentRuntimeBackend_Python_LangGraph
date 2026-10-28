@@ -94,6 +94,13 @@
         "type": "object"
       }
     },
+    "runtimeHooks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/hookBinding"
+      },
+      "description": "Version 2.1: the workflow's runtime hook bindings (agent runtime design Section 11)"
+    },
     "nodes": {
       "type": "array",
       "items": {
@@ -166,7 +173,24 @@
           "type": "object"
         },
         "properties": {
-          "type": "object"
+          "type": "object",
+          "properties": {
+            "hooks": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/hookBinding"
+              },
+              "description": "Version 2.1: hook bindings of this node only (no match)"
+            },
+            "disabledHooks": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "description": "Version 2.1: IDs of overridable workflow or runtime bindings to turn off for this node"
+            }
+          }
         },
         "variableUpdates": {
           "type": "array"
@@ -538,6 +562,106 @@
           }
         }
       ]
+    },
+    "hookBinding": {
+      "type": "object",
+      "description": "A runtime hook binding. Hook types, points, modes and failure policies are the builder's hook option sets; config is validated by the runtime per hook type.",
+      "required": [
+        "id",
+        "hook",
+        "on"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.:-]+$"
+        },
+        "hook": {
+          "type": "string",
+          "minLength": 1
+        },
+        "on": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "match": {
+          "type": "object",
+          "properties": {
+            "nodeKinds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "nodeTypes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "nodeNames": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "workflowIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "tags": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "when": {
+          "type": "object",
+          "properties": {
+            "conditionLogic": {
+              "type": "string"
+            },
+            "conditions": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "order": {
+          "type": "integer"
+        },
+        "mode": {
+          "type": "string"
+        },
+        "timeoutMs": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "failurePolicy": {
+          "type": "string"
+        },
+        "canRoute": {
+          "type": "boolean"
+        },
+        "overridable": {
+          "type": "boolean"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "config": {
+          "type": "object"
+        }
+      }
     },
     "edge": {
       "type": "object",

@@ -1,0 +1,48 @@
+{
+  "additionalProperties": false,
+  "description": "The decision on an Approval. The runtime sets decidedBy (who answered) and expired.",
+  "properties": {
+    "approved": {
+      "description": "true approves, false rejects",
+      "title": "Approved",
+      "type": "boolean"
+    },
+    "comment": {
+      "anyOf": [
+        {
+          "maxLength": 2000,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Comment"
+    },
+    "decidedBy": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "readOnly": true,
+      "title": "Decidedby"
+    },
+    "expired": {
+      "default": false,
+      "readOnly": true,
+      "title": "Expired",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "approved"
+  ],
+  "title": "ApprovalAnswer",
+  "type": "object"
+}

@@ -114,12 +114,15 @@ class Enricher:
 
     def patch(self, span: Any) -> OtelSpanPatch | None:
         attrs = span.attributes or {}
-        node_type = meta(span, "zonic_node_type")
-        if node_type is None:
-            return None
-        node_span = bool(meta(span, NODE_SPAN))
         set_attributes: dict[str, Any] = {}
         delete: tuple[str, ...] = ()
+        status = attrs.get(STATUS)
+        if isinstance(status, str) and self._masker.text(status) != status:  # an error's text (X-05)
+            set_attributes[STATUS] = self._masker.text(status)
+        node_type = meta(span, "zonic_node_type")
+        if node_type is None:
+            return OtelSpanPatch(set_attributes=set_attributes) if set_attributes else None
+        node_span = bool(meta(span, NODE_SPAN))
         if node_span:
             set_attributes[TYPE] = meta(span, "zonic_observation_type") or "span"
             output = _json(attrs.get(OUTPUT))

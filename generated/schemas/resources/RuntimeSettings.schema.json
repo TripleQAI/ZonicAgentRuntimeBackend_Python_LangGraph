@@ -39,6 +39,13 @@
           "title": "Maxpagesize",
           "type": "integer"
         },
+        "responseHeaders": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Responseheaders",
+          "type": "object"
+        },
         "sessionTitleChars": {
           "exclusiveMinimum": 0,
           "title": "Sessiontitlechars",
@@ -51,6 +58,7 @@
         "maxBodyBytes",
         "internalPort",
         "internalAddress",
+        "responseHeaders",
         "defaultPageSize",
         "maxPageSize",
         "sessionTitleChars"
@@ -619,6 +627,11 @@
         "schemas": {
           "$ref": "#/$defs/GatewaySchemas"
         },
+        "throttleRetries": {
+          "minimum": 0,
+          "title": "Throttleretries",
+          "type": "integer"
+        },
         "timeoutMilliseconds": {
           "exclusiveMinimum": 0,
           "title": "Timeoutmilliseconds",
@@ -632,6 +645,7 @@
         "timeoutMilliseconds",
         "connectTimeoutMilliseconds",
         "readRetries",
+        "throttleRetries",
         "retryBackoffMilliseconds",
         "maxViewRows"
       ],

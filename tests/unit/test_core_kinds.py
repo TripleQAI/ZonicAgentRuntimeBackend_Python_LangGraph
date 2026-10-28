@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import itertools
 from dataclasses import replace
+from pathlib import Path
 from typing import Any
 
 import pytest
@@ -370,6 +371,33 @@ async def test_B04_routing_tools_keep_their_names_and_schemas_and_record_tool_re
 # --- N-08, B-02 --------------------------------------------------------------------------------
 
 
+def test_B02_a_substituted_model_is_served_by_its_stand_in_even_when_disabled() -> None:
+    import json
+
+    from tests.workflow_fixtures import read_json
+    from zonic_runtime.models.resources.catalogs import ModelCatalog
+
+    overlay = read_json(
+        Path(__file__).resolve().parents[2] / "deploy" / "aws" / "resources" / "models.dev.json"
+    )
+    catalog = DEV.models.model_copy(update={"substitutes": overlay["substitutes"]})
+    factory = ModelFactory(catalog, DEV.settings.models, {})
+    assert factory.code(ModelRef(model_id="claude-sonnet-4-6")) == "openai-gpt-4.1"
+    assert (
+        factory.code(ModelRef(model_id="anthropic.claude-haiku-4-5-20251001-v1:0")) == "openai-gpt-4.1-mini"
+    )
+    assert not DEV.models.models["claude-opus-4-8"].enabled
+    assert factory.code(ModelRef(model_id="claude-opus-4-8")) == "openai-gpt-4.1"  # disabled, substituted
+    assert factory.code(None) == "openai-gpt-4.1"  # the default model is substituted too
+    with pytest.raises(ValueError, match="substitutes name unknown"):
+        ModelCatalog.model_validate(
+            {
+                **json.loads(DEV.models.model_dump_json(by_alias=True)),
+                "substitutes": {"claude-sonnet-4-6": "nope"},
+            }
+        )
+
+
 def test_B02_model_strings_aliases_provider_ids_and_empty_models_resolve() -> None:
     factory = ModelFactory(DEV.models, DEV.settings.models, {})
     default = DEV.models.default_model
@@ -377,9 +405,16 @@ def test_B02_model_strings_aliases_provider_ids_and_empty_models_resolve() -> No
     for code in DEV.models.models:
         if DEV.models.models[code].enabled:
             assert factory.code(ModelRef(model_id=code)) == code
-            assert factory.code(ModelRef(model_id=DEV.models.models[code].model_id)) == code
+            model_id = DEV.models.models[code].model_id
+            if model_id not in DEV.models.models:  # a code wins over another entry's model ID
+                assert factory.code(ModelRef(model_id=model_id)) == code
     for alias, code in DEV.models.aliases.items():
-        assert factory.code(ModelRef(model_id=alias)) == code
+        if DEV.models.models[code].enabled:
+            assert factory.code(ModelRef(model_id=alias)) == code
+        else:  # an alias of a disabled model is refused like the model itself
+            with pytest.raises(ZonicError) as caught:
+                factory.code(ModelRef(model_id=alias))
+            assert caught.value.code == "MODEL_NOT_ALLOWED"
 
 
 def test_B02_the_platforms_azure_model_object_builds_an_azure_openai_model() -> None:
@@ -396,6 +431,51 @@ def test_B02_the_platforms_azure_model_object_builds_an_azure_openai_model() -> 
         "api_version": entry.api_version,
         "azure_endpoint": "https://example.invalid/",
     }
+
+
+def test_B02_key_based_providers_get_their_key_and_endpoint_from_the_environment() -> None:
+    from pydantic import SecretStr
+
+    from zonic_runtime.config.env import EnvironmentModel
+    from zonic_runtime.engine.agents.agent_factory import AgentServices
+
+    env = EnvironmentModel(
+        azure_openai_endpoint="https://example.invalid/",
+        azure_openai_api_key=SecretStr("azure-key"),
+        openai_api_key=SecretStr("openai-key"),
+    )
+    captured: dict[str, dict[str, Any]] = {}
+    resources = enabled(DEV, "gpt-5.2")
+    agents = AgentServices.from_resources(resources, environment=env)
+    entry = agents.models.entry(ModelRef(model_id="gpt-5.2"))
+    read = lambda field: (  # noqa: E731
+        v.get_secret_value() if isinstance(v := getattr(env, field, None), SecretStr) else v
+    )
+    captured["azure"] = _provider_arguments(entry, read)
+    openai = entry.model_copy(update={"provider": "openai", "endpoint_env": "azure_openai_endpoint"})
+    captured["openai"] = _provider_arguments(openai, read)
+    assert captured["azure"]["api_key"] == "azure-key" and captured["azure"]["azure_endpoint"]
+    assert captured["openai"] == {"base_url": "https://example.invalid/", "api_key": "openai-key"}
+    assert "api_key" not in _provider_arguments(DEV.models.models["claude-sonnet-4-6"], read)
+
+
+def test_B02_openai_models_share_the_pooled_client_and_stream_their_usage() -> None:
+    import httpx
+    from pydantic import SecretStr
+
+    from zonic_runtime.config.env import EnvironmentModel
+    from zonic_runtime.engine.agents.agent_factory import AgentServices
+    from zonic_runtime.integrations.http.pools import HttpPools
+
+    pools = HttpPools()
+    env = EnvironmentModel(openai_api_key=SecretStr("openai-key"))
+    agents = AgentServices.from_resources(
+        DEV, environment=env, http=lambda upstream: pools.get(upstream, httpx.AsyncClient)
+    )
+    first = agents.models.create(ModelRef(model_id="openai-gpt-4.1"))
+    second = agents.models.create(ModelRef(model_id="openai-gpt-4.1-mini"))
+    assert pools.upstreams == ["model:openai:"]
+    assert getattr(first, "stream_usage", None) is True and getattr(second, "stream_usage", None) is True
 
 
 @pytest.mark.parametrize("model", ["us.anthropic.claude-3-7-sonnet-20250219-v1:0", "gpt-5.2"])

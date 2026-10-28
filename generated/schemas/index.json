@@ -1,4 +1,8 @@
 {
+  "answers": [
+    "ApprovalAnswer",
+    "InputAnswer"
+  ],
   "content": [
     "CardPart",
     "ChartPart",

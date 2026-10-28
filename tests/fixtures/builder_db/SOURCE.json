@@ -1,6 +1,6 @@
 {
   "source": "Strands-visual-builder/backend/db",
-  "commit": "9aad111636b442a1fda3aff004cd6013ed0e9bf2",
+  "commit": "b25bcfcd46ab397ad4f40294a10bbb06fe7f1f35",
   "files": {
     "001_extensions.sql": "de61d3f088cc04ac3b271610914ed8f685c861e321a6bda7c54d5a1301a04a56",
     "002_schema.sql": "0546b86544e52f6c2dd4015bfb6732f0f9daf66c8db4fa85d40574a1247b0581",

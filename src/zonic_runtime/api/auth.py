@@ -3,7 +3,8 @@
 * No token: ``AUTH_REQUIRED``; a bad signature, issuer, audience or an expired token:
   ``AUTH_INVALID`` (case A-02).
 * The audience is the app client: an ID token's ``aud``, or an access token's ``client_id``
-  (Cognito access tokens carry no ``aud``).
+  (Cognito access tokens carry no ``aud``). ``OIDC_AUDIENCE`` may list several clients of the
+  pool, comma-separated (the UI's and a test client's); a token of any of them is accepted.
 * Keys come from the JWKS URL through ``httpx`` (PyJWT's own client blocks the event loop) and
   are cached for ``auth.jwksCacheSeconds``; an unknown ``kid`` refreshes them once.
 * Claim names come from ``settings.auth.claims``.
@@ -92,7 +93,7 @@ class TokenVerifier:
         self._keys = keys
         self._settings = settings
         self._issuer = issuer
-        self._audience = audience
+        self._audiences = frozenset(a.strip() for a in (audience or "").split(",") if a.strip())
 
     async def verify(self, token: str) -> Caller:
         try:
@@ -108,10 +109,10 @@ class TokenVerifier:
             )
         except jwt.PyJWTError as exc:
             raise ZonicError("AUTH_INVALID", reason=type(exc).__name__) from exc
-        if self._audience is not None:
+        if self._audiences:
             audience = claims.get("aud", claims.get("client_id"))
             accepted = audience if isinstance(audience, list) else [audience]
-            if self._audience not in accepted:
+            if self._audiences.isdisjoint(accepted):
                 raise ZonicError("AUTH_INVALID", reason="audience")
         names = self._settings.claims
         subject = claims.get(names.subject)

@@ -24,7 +24,7 @@ from langgraph.types import Command, interrupt
 
 from zonic_runtime.config.settings import RuntimeResources
 from zonic_runtime.engine.agents.agent_factory import AgentServices
-from zonic_runtime.engine.approvals import ApprovalAnswer, answer_value
+from zonic_runtime.engine.approvals import answer_value
 from zonic_runtime.engine.context import RunContext, RunDocuments
 from zonic_runtime.engine.kinds.base import NodeKind
 from zonic_runtime.engine.patches import flow_patch, to_update, update_messages
@@ -36,6 +36,7 @@ from zonic_runtime.io.encoders import Encoder
 from zonic_runtime.io.output_mapper import OutputMapper
 from zonic_runtime.io.port_binder import PortBinder
 from zonic_runtime.io.schema_registry import SchemaRegistry
+from zonic_runtime.models.api.answers import ApprovalAnswer
 from zonic_runtime.models.blueprint import Blueprint, NodeSpec
 from zonic_runtime.models.engine import (
     NodeOutcome,

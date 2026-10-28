@@ -26,10 +26,11 @@ from typing import Any, ClassVar
 
 from pydantic import BaseModel, Field, create_model
 
-from zonic_runtime.engine.approvals import ApprovalAnswer, answer_value
+from zonic_runtime.engine.approvals import answer_value
 from zonic_runtime.engine.kinds.base import BaseKind
 from zonic_runtime.engine.node_template import NodeContext
 from zonic_runtime.errors import ZonicError
+from zonic_runtime.models.api.answers import ApprovalAnswer
 from zonic_runtime.models.base import ZonicModel
 from zonic_runtime.models.blueprint import Blueprint, NodeSpec
 from zonic_runtime.models.engine import InterruptRequest, NodeOutcome, StateUpdate

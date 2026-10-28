@@ -245,6 +245,8 @@ class TurnStateStore:
         ):
             if turn.get(name) is not None:
                 run[key] = turn[name]
+        if "idempotencyKey" in run:  # an older run gives its key up (sp_run_start)
+            run["idempotencyTtlSeconds"] = runs.idempotency_ttl_seconds
         if turn.get("lease") and not queued:
             run.update(turn["lease"])
         return RunStartArgs(run=run, user_message=user_message(turn["text"]))

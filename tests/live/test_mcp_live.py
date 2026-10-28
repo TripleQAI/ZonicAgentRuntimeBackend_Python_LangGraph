@@ -10,6 +10,7 @@ from __future__ import annotations
 from collections.abc import AsyncIterator
 
 import pytest
+from pydantic import SecretStr
 
 from tests.live.conftest import live_environment
 from zonic_runtime.config.settings import load_resources
@@ -33,7 +34,12 @@ MEAN = McpExecuteTool(
 async def service() -> AsyncIterator[McpService]:
     if not ENV.mcp_base_url:
         pytest.skip("ZONIC_MCP_BASE_URL is not set")
-    found = McpService(McpPool(load_resources(ENV).mcp_servers, lambda field: getattr(ENV, field, None)))
+
+    def read(field: str) -> str | None:
+        value = getattr(ENV, field, None)
+        return value.get_secret_value() if isinstance(value, SecretStr) else value
+
+    found = McpService(McpPool(load_resources(ENV).mcp_servers, read))
     yield found
     await found.aclose()
 

@@ -309,7 +309,15 @@ class RuntimeSchema:
             existing = next(
                 (r for r in self.t(RUNS) if r["owner_sub"] == owner and r.get("idempotency_key") == key), None
             )
-            if existing is not None:
+            ttl = run.get("idempotencyTtlSeconds")
+            if (
+                existing is not None
+                and ttl is not None
+                and datetime.fromisoformat(existing["created_at"])
+                < datetime.now(UTC) - timedelta(seconds=ttl)
+            ):
+                existing["idempotency_key"] = None
+            elif existing is not None:
                 first = sorted(
                     (
                         m
@@ -372,6 +380,7 @@ class RuntimeSchema:
                 "usage": {},
                 "node_timeline": [],
                 "idempotency_key": key,
+                "created_at": stamp,
                 "queued_at": stamp,
                 "started_at": stamp if status == "running" else None,
                 "finished_at": None,

@@ -1,9 +1,9 @@
 {
   "repos": {
-    "Strands-visual-builder": "0b9306f8393dc8c10b40c3244389a97677090ef3",
+    "Strands-visual-builder": "b25bcfcd46ab397ad4f40294a10bbb06fe7f1f35",
     "ZonicAgentRuntimeBackend_DjangoApp": "cf55ca2c263e803902f042866fc3baaa06f37718"
   },
-  "registry": "06b32053bad4b147c34a4177c4b5d6e0c1b0f4ea413544c78c11b00b126d285b",
+  "registry": "74ad92dbe56d12357cf7c536a4d97e6bd75a8b1f9c3fffe920dacfd1bb1bda7f",
   "files": {
     "django/complex-agent.json": {
       "source": "ZonicAgentRuntimeBackend_DjangoApp/airuntimebackendmodule/code/aiplatform/tests_all/tests/test_data/workflows/complex-agent.json",
@@ -63,7 +63,7 @@
     },
     "schema/workflow-document-v2.schema.json": {
       "source": "Strands-visual-builder/backend/workflow/resources/schemas/workflow-document-v2.schema.json",
-      "sha256": "87b67c74df785c9dfb98b4ce61fa7b92a4dcf6e5d9a63b7f151a2a78baa8679a"
+      "sha256": "13c0f2c708b146f65d14b63c74b93cdd6f09491022b3a7a0227cacd5b2b124c8"
     },
     "templates/approval_flow.json": {
       "source": "Strands-visual-builder/backend/workflow/resources/templates/approval_flow.json",

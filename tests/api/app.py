@@ -310,17 +310,20 @@ def make_app(
     ports: Any = None,
     hook_types: Sequence[Any] = (),
     durable: bool = False,
+    aes_key: bytes | None = None,
+    agents: AgentServices | None = None,
     **settings: Any,
 ) -> FakeApp:
     """``tracing``: the production tracer, exporting through the fake gateway's ``sp_obs_ingest``
-    (``ObsStore``); the test calls ``deps.tracing.start()`` in its loop and ``aclose()`` at the end."""
+    (``ObsStore``); the test calls ``deps.tracing.start()`` in its loop and ``aclose()`` at the end.
+    ``agents``: other model services (the live suite's real Bedrock models) instead of ``script``."""
     if settings:
         updates = {k: getattr(resources.settings, k).model_copy(update=v) for k, v in settings.items()}
         resources = replace(resources, settings=resources.settings.model_copy(update=updates))
     gateway = InMemoryGateway()
     schema = RuntimeSchema(gateway)
     models = ScriptedModels(ScriptedChatModel(script=list(script)))
-    agents = AgentServices.from_resources(resources, builders=models.builders())
+    agents = agents or AgentServices.from_resources(resources, builders=models.builders())
     verifier = fake_verifier(resources)
     clock = FakeClock()
     obs = ObsStore() if tracing else None
@@ -342,6 +345,7 @@ def make_app(
         ports=ports,
         hook_types=hook_types,
         durable=durable,
+        aes_key=aes_key,
     )
     app = FakeApp(deps=deps, gateway=gateway, schema=schema, models=models, clock=clock, obs=obs)
     for workflow_id, document in (workflows if workflows is not None else {"wf-chat": CHAT}).items():

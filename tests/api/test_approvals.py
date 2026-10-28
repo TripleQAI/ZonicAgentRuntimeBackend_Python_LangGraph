@@ -158,6 +158,29 @@ async def test_K11_an_approval_hook_before_a_node_waits_then_runs_it() -> None:
     assert done["status"] == "succeeded" and done["result"] == {"answer": "Done."}
 
 
+async def test_K11_a_documents_own_approval_binding_waits_then_runs_the_node() -> None:
+    """``approval`` is a document hook type (builder document 2.1, as in the Node.js runtime)."""
+    import copy
+
+    document = copy.deepcopy(AGENT)
+    [agent] = [n for n in document["nodes"] if n["name"] == "ag"]
+    own = {k: v for k, v in BEFORE_NODE.items() if k != "match"}
+    agent.setdefault("properties", {})["hooks"] = [own]
+    app = make_app(SCRIPT, workflows={FLOW: document})
+    async with app.client() as client:
+        body = {"agenticWorkflowId": FLOW, "input": {"text": "what is 2+2?"}, "mode": "stream"}
+        response = await client.post("/v1/runs", json=body, headers=auth())
+        events = sse_events(response.text)
+        run_id = response.headers["x-run-id"]
+        [pending] = (await client.get(f"/v1/runs/{run_id}/interrupts", headers=auth())).json()["items"]
+        answer = {"answer": {"approved": True}, "mode": "sync"}
+        done = await client.post(
+            f"/v1/runs/{run_id}/interrupts/{pending['interruptId']}", json=answer, headers=auth()
+        )
+    assert events[-1]["type"] == "run.waiting" and pending["kind"] == "approval"
+    assert done.json()["status"] == "succeeded" and done.json()["result"] == {"answer": "Done."}
+
+
 async def test_K11_a_rejected_node_approval_follows_the_configured_output_and_handle() -> None:
     app, _, done = await run_with(hooks(BEFORE_NODE), {"approved": False}, SCRIPT)
     assert done["status"] == "succeeded" and done["result"] == {"answer": "Not approved."}

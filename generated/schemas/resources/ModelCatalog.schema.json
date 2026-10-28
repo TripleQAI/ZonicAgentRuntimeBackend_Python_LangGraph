@@ -165,6 +165,13 @@
       },
       "title": "Models",
       "type": "object"
+    },
+    "substitutes": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Substitutes",
+      "type": "object"
     }
   },
   "required": [

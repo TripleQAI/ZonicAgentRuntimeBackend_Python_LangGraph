@@ -41,6 +41,9 @@ class ModelEntry(ZonicResourceModel):
 class ModelCatalog(ZonicResourceModel):
     default_model: str
     aliases: dict[str, str] = Field(default_factory=dict)  # document model string -> catalog code
+    #: Catalog code -> the code that serves it meanwhile: a stand-in while its provider is not
+    #: available (the AWS deployment's OpenAI models while Bedrock waits). Documents keep their model.
+    substitutes: dict[str, str] = Field(default_factory=dict)
     models: dict[str, ModelEntry]
 
     @model_validator(mode="after")
@@ -50,6 +53,9 @@ class ModelCatalog(ZonicResourceModel):
         dangling = sorted(a for a, code in self.aliases.items() if code not in self.models)
         if dangling:
             raise ValueError(f"aliases point at unknown catalog codes: {dangling}")
+        unknown = sorted(c for pair in self.substitutes.items() for c in pair if c not in self.models)
+        if unknown:
+            raise ValueError(f"substitutes name unknown catalog codes: {unknown}")
         return self
 
 

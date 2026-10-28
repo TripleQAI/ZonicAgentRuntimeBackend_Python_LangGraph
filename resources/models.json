@@ -3,12 +3,17 @@
   "aliases": {
     "anthropic.claude-sonnet-4-6": "claude-sonnet-4-6",
     "anthropic.claude-opus-4-8": "claude-opus-4-8",
-    "anthropic.claude-haiku-4-5-20251001-v1:0": "claude-haiku-4-5"
+    "anthropic.claude-haiku-4-5-20251001-v1:0": "claude-haiku-4-5",
+    "anthropic.claude-sonnet-4-5-20250929-v1:0": "claude-sonnet-4-5",
+    "us.anthropic.claude-sonnet-4-6": "claude-sonnet-4-6",
+    "us.anthropic.claude-opus-4-8": "claude-opus-4-8",
+    "us.anthropic.claude-haiku-4-5-20251001-v1:0": "claude-haiku-4-5",
+    "us.anthropic.claude-sonnet-4-5-20250929-v1:0": "claude-sonnet-4-5"
   },
   "models": {
     "claude-sonnet-4-6": {
       "provider": "bedrock_converse",
-      "modelId": "anthropic.claude-sonnet-4-6",
+      "modelId": "us.anthropic.claude-sonnet-4-6",
       "enabled": true,
       "region": "us-east-1",
       "supportsNativeStructuredOutput": false,
@@ -17,8 +22,8 @@
     },
     "claude-opus-4-8": {
       "provider": "bedrock_converse",
-      "modelId": "anthropic.claude-opus-4-8",
-      "enabled": true,
+      "modelId": "us.anthropic.claude-opus-4-8",
+      "enabled": false,
       "region": "us-east-1",
       "supportsNativeStructuredOutput": false,
       "parameters": { "maxTemperature": 1.0, "maxTokens": 16000 },
@@ -26,12 +31,21 @@
     },
     "claude-haiku-4-5": {
       "provider": "bedrock_converse",
-      "modelId": "anthropic.claude-haiku-4-5-20251001-v1:0",
+      "modelId": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
       "enabled": true,
       "region": "us-east-1",
       "supportsNativeStructuredOutput": false,
       "parameters": { "maxTemperature": 1.0, "maxTokens": 8192 },
       "quota": { "maxInFlight": 30, "requestsPerMinute": 400, "tokensPerMinute": 800000, "maxQueueWaitMilliseconds": 15000 }
+    },
+    "claude-sonnet-4-5": {
+      "provider": "bedrock_converse",
+      "modelId": "us.anthropic.claude-sonnet-4-5-20250929-v1:0",
+      "enabled": true,
+      "region": "us-east-1",
+      "supportsNativeStructuredOutput": false,
+      "parameters": { "maxTemperature": 1.0, "maxTokens": 16000 },
+      "quota": { "maxInFlight": 20, "requestsPerMinute": 200, "tokensPerMinute": 400000, "maxQueueWaitMilliseconds": 20000 }
     },
     "gpt-5.2": {
       "provider": "azure_openai",
@@ -54,6 +68,22 @@
       "supportsNativeStructuredOutput": true,
       "parameters": { "maxTemperature": 2.0, "maxTokens": 16000 },
       "quota": { "maxInFlight": 20, "requestsPerMinute": 200, "tokensPerMinute": 400000, "maxQueueWaitMilliseconds": 20000 }
+    },
+    "openai-gpt-4.1": {
+      "provider": "openai",
+      "modelId": "gpt-4.1",
+      "enabled": true,
+      "supportsNativeStructuredOutput": true,
+      "parameters": { "maxTemperature": 2.0, "maxTokens": 16000 },
+      "quota": { "maxInFlight": 20, "requestsPerMinute": 200, "tokensPerMinute": 400000, "maxQueueWaitMilliseconds": 20000 }
+    },
+    "openai-gpt-4.1-mini": {
+      "provider": "openai",
+      "modelId": "gpt-4.1-mini",
+      "enabled": true,
+      "supportsNativeStructuredOutput": true,
+      "parameters": { "maxTemperature": 2.0, "maxTokens": 16000 },
+      "quota": { "maxInFlight": 30, "requestsPerMinute": 400, "tokensPerMinute": 800000, "maxQueueWaitMilliseconds": 15000 }
     },
     "gpt-5-mini": {
       "provider": "openai",

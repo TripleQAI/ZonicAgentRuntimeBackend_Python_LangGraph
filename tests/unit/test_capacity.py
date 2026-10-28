@@ -79,14 +79,15 @@ def fan(node_ids: list[str], kind: str, **config: Any) -> dict[str, Any]:
 # --- Q-03 --------------------------------------------------------------------------------------
 
 
-async def test_Q03_a_rule_with_50_branches_runs_only_the_taken_branch() -> None:
+def fifty_branches() -> dict[str, Any]:
+    """Start, a Rule with 49 conditions and a default, and one Variable node per branch."""
     rules = [
         {"ruleId": f"r_{i}", "conditions": [{"field": "{{flow.n}}", "op": "eq", "value": i}]}
         for i in range(49)
     ]
     rules.append({"ruleId": "r_else", "isDefault": True, "conditions": []})
     branches = [f"b{i}" for i in range(49)] + ["b_else"]
-    document = {
+    return {
         "schemaVersion": "2.0",
         "nodes": [
             {"id": "start", "type": "start", "config": {}},
@@ -109,6 +110,11 @@ async def test_Q03_a_rule_with_50_branches_runs_only_the_taken_branch() -> None:
             ),
         ],
     }
+
+
+async def test_Q03_a_rule_with_50_branches_runs_only_the_taken_branch() -> None:
+    document = fifty_branches()
+    branches = [f"b{i}" for i in range(49)] + ["b_else"]
     h, _ = agent_harness([], DEV)
     inputs = {**DEFAULT_INPUT, "flow": {"values": {"n": 37}, "provenance": {}, "conflicts": []}}
     final, *_ = await h.run(document, inputs)

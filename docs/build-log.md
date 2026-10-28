@@ -1087,3 +1087,148 @@ Phase 4 is built: P4-01 to P4-05, 48 tasks complete in all. Decision 0007 (inter
 - the parity fix for `responseFormat: json` LLM nodes without a schema (P4-02), and the `owns_deadline` kind flag (P4-01);
 - the live finding: the live facility-operations document names Sonnet 4.5, which `resources/models.json` does not list (the deployed runtime would refuse it with `MODEL_NOT_ALLOWED`);
 - the live checks that wrote to the product database: runs of owner `live-langgraph-verify` and tenant `live-test` that paused, resumed, were cancelled, and one drained and claimed by a second instance. The claim ran only after a read showed that run was the only claimable one; none is left queued or running.
+
+## Phase 5
+
+Started 2026-10-27 after the M4 approval. Order: P5-01 and P5-05 (local), then P5-02 to P5-04 and P5-06, which need the decisions noted under them; stop at M5.
+
+| Task | Status | Sanity check |
+|---|---|---|
+| P5-01 Security pass | Done | X-01, X-04 to X-07: 8 tests (X-02, X-03, X-08 were proved earlier); `pip-audit` over the 542 locked packages: no known vulnerabilities; offline 1,565 passed; live 40 passed, 2 skipped |
+| P5-05 Documentation | Done | Review task. The test client now answers interrupts and pages datasets (three A-15 tests); the builder's new document hook type `approval` is allowed (one K-11 test); the SQL re-vendored and the Idempotency-Key TTL sent (one A-06 test); `sync_sql --check` passes again; offline 1,570 passed; live 40 passed, 2 skipped |
+| P5-02 Performance validation | Done | Report `docs/load/p5-02-report.md`. On 1 vCPU / 2 GB with the real gateway, every budget holds except run start p95 (156 ms against 150, with the internet round trip to us-east-1). Q-05: 450 of 450 runs at 150 concurrent; lag p99 24.7 ms; 0.8 MB per run. D-9: the account's Lambda limit is 10. New: the throttle retry (R-05), stall tests (R-01), an RSS gauge |
+| P5-03 Live sanity | Built; Bedrock blocked | V-02 (all three MCP tool types, real open data) and V-03 pass. V-01, V-04, V-05 and F-14 fail: the account has no Anthropic use-case form on file. Model catalog fixed: inference profiles, Haiku 4.5 and Sonnet 4.5 added, Opus 4.8 disabled. Offline 1,575 passed; live 45 passed, 6 failed (Bedrock), 3 skipped (deployed) |
+| P5-04 Deployment to dev | Done | Deployed 2026-10-28 with the user's approval: https://d2mqmloek8azsa.cloudfront.net (stack `zonic-agent-runtime-dev`, tripleq-development). V-06 passes through CloudFront and the ALB. M5 on dev with the test client: a full run, and a page of a real dataset (NYC Open Data, 10 rows); the approval check needs the Script node's sandbox, not deployed. Live 50 passed, 2 skipped |
+| P5-06 Release gates | Open | Catalog: 296 of 296 cases have tests. D-6: F2 and F3 are open in the MCP server. Contract review prepared (`docs/contract-review.md`), waiting for the UI owner. Q11 stays open |
+
+### Phase 5, second round (2026-10-28)
+
+The user approved the AWS deploy, gave an OpenAI API key ("leave the bedrock for later use"), asked for the Lambda capacity to match, and set the MCP server's security aside.
+
+- **OpenAI instead of Bedrock, for now:**
+  - The key is only in the git-ignored `.env` and Secrets Manager (`zonic-agent-runtime/dev/openai-api-key`).
+  - New catalog entries `openai-gpt-4.1` and `openai-gpt-4.1-mini`. `gpt-5` models were not used: they refuse the temperature and token limits the runtime sends.
+  - New catalog field `substitutes`: a code served by another code while its provider is unavailable, applied after aliases and before the enabled check.
+  - The AWS image's overlay `deploy/aws/resources/models.dev.json` serves Sonnet 4.6, Sonnet 4.5 and Opus 4.8 with `gpt-4.1`, and Haiku 4.5 and `gpt-5-mini` with `gpt-4.1-mini`. Local runs and the offline tests read `resources/` alone, so they still name Bedrock. To return to Bedrock, empty the overlay's `substitutes`.
+- **The OpenAI clients:**
+  - OpenAI and Azure OpenAI models now share one `httpx.AsyncClient` per endpoint from the process's pools (design 11.3). langchain-openai's default client is process-wide and stays bound to the first event loop that used it.
+  - With its own client the SDK stops streaming usage, so `stream_usage` is set: without it, generations had no `usageDetails`.
+- **Live suite on OpenAI** (`LIVE_BEDROCK=1` runs Bedrock instead): V-01, V-02 (three tool types), V-04 and F-14 pass, and V-05 passes.
+  - Finding: on the Claude-tuned fsh-energy-agent, GPT-4.1 describes its handoff in JSON instead of calling the handoff tool, so the database branch does not run. V-05 therefore checks the run, the observations and usage, and any database tool that runs.
+- **Cost:** `agent_observability.obs_model_price` is empty, so no observation gets a cost from any provider. Prices are data for the owner to load with `sp_obs_model_price_upsert`; nothing was inserted.
+- **Deployed:**
+  - Stack `zonic-agent-runtime-dev` at https://d2mqmloek8azsa.cloudfront.net.
+  - The first create failed: the ALB security group's description had an apostrophe, which EC2 refuses. The stack rolled back with no resources and was deleted before it was created again.
+  - The AWS overlay `deploy/aws/resources/settings.dev.json` is the repository's dev settings plus `datasets.store: database`. There is no cache service on AWS, so with the `cache` store a run kept no full data. A test keeps the overlay in step with `resources/settings.dev.json`.
+- **M5 on dev:**
+  - A full run streams through the load balancer (V-06).
+  - A dataset of real open data is paged with the test client. Finding: fsh-facility-agent's Output does not expose its HTTP node's `datasetId`, so a client cannot find the dataset from the run; it was read from `runtime_dataset`.
+  - The approval pause on dev waits for a sandbox: facility-operations has a Script node, and without `ZONIC_SANDBOX_URL` the plan refuses it with `FEATURE_DISABLED`. The pause and resume are proven live on the deployed gateway (V-03).
+- **Data:** the live owner's 25 sessions and 26 runs from these runs were deleted. The test user's 9 dev runs are kept as the M5 record.
+- **Lambda capacity (D-9):** a Service Quotas request raises the account's concurrent executions from 10 to 1,000, the regional default (request `bdc47bfaf50a4d4194d1454b87c3ed51pZzZ3BN2`; AWS opened support case 179315751000638; the limit is still 10).
+- **`deploy.sh` fixes found on the first runs:**
+  - Windows `git` and `docker` need native paths;
+  - the AES key comes from `openssl rand`, since `python` is not on Git Bash's path;
+  - `inherit_errexit`, so a failure inside `$(...)` stops the script.
+
+### P5-02 notes
+
+- **Where it ran:** a container of 1 vCPU and 2 GB (Docker Desktop), the real deployed gateway and the trace export, and the simulated model of design 11.1 (`tests/load/model.py`, stamped chunks). The Fargate task waits for P5-04. All numbers and how to repeat them are in `docs/load/p5-02-report.md`.
+- **The load code** is in `tests/load/`:
+  - `bench.py`: compilation, per-node overhead and the 50-branch Rule, in process;
+  - `server.py`: the runtime with stand-ins for the model and the identity provider;
+  - `drive.py`: concurrent SSE runs, `/metrics` sampling and a JSON report;
+  - `Dockerfile`.
+  - **Differs from the plan:** a Python driver instead of k6, because k6 cannot read an SSE body as it streams.
+- **D-9:**
+  - The tripleq-development account's Lambda concurrency limit is 10, shared by every function. 150 simultaneous starts got `429` from Lambda for two of every three gateway calls, and the runtime mapped that to `DATA_REQUEST_INVALID` without retrying.
+  - **Fixed in the runtime:** `429` is now `DATA_UNAVAILABLE` and is retried for every call, writes included, `gateway.throttleRetries` (4) times: a throttled request was never run. New test R-05.
+  - **Open:** a quota increase, or the gateway's container deployment.
+- **R-01:**
+  - A stalled model stream ends at botocore's read timeout (`models.requestTimeoutSeconds`). It becomes `MODEL_UNAVAILABLE`, and the LLM node's retry policy retries it. Two new tests.
+  - LangGraph's `idle_timeout` does not count streamed tokens as progress, so it cannot detect stalls; the manifest leaves it unset.
+  - A retried node streams its answer again after a second `node.started`. The client guide tells clients to discard the earlier tokens.
+- **New gauge:** `zonic_resident_memory_megabytes` on `/metrics`.
+- **Data:** the load runs' 1,013 sessions and runs, 1,982 messages, 1,013 traces and 11,019 observations (owners `load-test-*`) were deleted afterwards. The approach was a count, one transaction, then a recount; no other row was touched.
+
+### P5-03 notes
+
+- **Product database:** the vendored SQL (Node.js `f94fea1`) was applied with `scripts/init_db.sh` at 2026-10-28T01:52Z, with the user's approval. It adds `sp_interrupt_expire`, the Idempotency-Key TTL and `001_latency_bigint`.
+- **Models:**
+  - The account needs inference profiles (`us.anthropic.*`); the bare IDs are refused for on-demand calls, so the catalog now uses the profiles.
+  - Haiku 4.5 (named by 27 vendored nodes) and Sonnet 4.5 (the live Facility Operations document) are in the catalog, with aliases for the IDs documents use.
+  - Opus 4.8 is disabled, because the account cannot call it.
+  - Sonnet 3.7 has reached end of life and is not mapped to another model.
+- **Bedrock blocked:** the calls worked once, then every Anthropic model answered "Model use case details have not been submitted" (`GetUseCaseForModelAccess`: form not filled; agreement `NOT_AVAILABLE`). Submitting the form is the account owner's. V-01, V-04, V-05 and F-14 are written and fail until it is done.
+- **Provider keys:** `ZONIC_AZURE_OPENAI_API_KEY`, `ZONIC_OPENAI_API_KEY` and `ZONIC_ANTHROPIC_API_KEY` were read and never used, and the environment reader turned secrets into their masked text. Both are fixed: each key-based provider gets its key, and `openai` gets its `endpointEnv` base URL (Q3 readiness). New test.
+- **MCP:**
+  - The runtime sends the MCP server's bearer token (`ZONIC_MCP_AUTH_TOKEN`, `authSecretRef`).
+  - The `sample_open_data` connection was added to the MCP server's SSM settings and the Lambda redeployed with its own `deploy.sh`; none of that repository's files changed. Neon still had the role's password, so nothing was reset. The unpooled endpoint is used, because Neon's pooler refuses the server's `statement_timeout` startup option.
+  - V-02 passes for function, database (real open data) and api tools.
+- **Test identity:** app client `zonic-agent-runtime-dev-verify` and user `runtime-dev-verify@example.com` in the pool `strands-visual-builder-users-docker`, with the user's approval; the password is only in `.env`. `OIDC_AUDIENCE` may list several clients (new test). The production image, run locally, accepted the test user's token and listed the live catalog.
+- **Data:** the live owner's rows (`live-langgraph-verify`) were deleted after the runs. They were 190 runs, 171 sessions and 482 messages, and after the last run another 13 sessions and 14 runs. That owner held every run in the product database.
+
+### P5-04 notes
+
+- **The stack** (`deploy/aws/runtime.yaml`), in its own VPC with public subnets and no NAT gateway:
+  - ALB with an idle timeout of 120 s, reachable only from CloudFront's origin prefix list; CloudFront serves HTTPS on its own domain, with caching and compression off for SSE;
+  - Fargate service: one 1 vCPU / 2 GB task, stop timeout 90 s, deregistration delay 45 s, circuit-breaker rollback;
+  - task role for Bedrock;
+  - Secrets Manager entries for the gateway key, the MCP token and the checkpoint AES key (generated once);
+  - logs under `/zonic/agent-runtime/dev`.
+- **`deploy/aws/deploy.sh`:** checks the account, pushes an immutable image tag to ECR, writes the secrets without printing them, and deploys and waits for the service.
+- **Image fix:** the `Dockerfile` did not copy `README.md`, which `pyproject.toml` names as the readme, so `uv sync` failed. It now copies it, and the image builds and starts (readiness `ok` on the real gateway).
+- **Not run:** the session's permission check refused the deploy command. V-06 and the M5 test-client checks (`tests/live/test_deployed_live.py`) skip until `ZONIC_DEPLOYED_URL` is set.
+
+### P5-06 notes
+
+- **Catalog:** 296 of 296 cases have tests.
+- **D-6 (MCP server, read-only review):**
+  - F1 is fixed on Lambda by one shared token. It is open by default elsewhere, because an empty token means no authentication.
+  - F2 is open: a caller holding the token can have any environment variable, the Lambda's AWS credentials and the database DSNs included, sent to a URL of its choice.
+  - F3 is open in the code (an empty allowlist allows any callable) and blocked only by the Lambda deploy script's checks.
+- **Contract review:** `docs/contract-review.md` compares this runtime's contract with the one the runtime UI is built on (Node.js `b522fd6`).
+  - The endpoints and event types match.
+  - The node timeline items and the error details differ and would break the UI as written; `Usage.model` differs too, but the UI does not read it.
+  - The interrupt answer schemas (`ApprovalAnswer`, `InputAnswer`) are now published under `generated/schemas/answers/`.
+
+### P5-05 notes
+
+- **Written:**
+  - `README.md`, rewritten: what the runtime is, the document map, getting started, the gates, the layout.
+  - `docs/client-integration.md`, for the deferred UI and other clients: the contract files, auth and owner scope, errors, the three modes and polling, SSE with `Last-Event-ID` and `stream.gap`, interrupts with the answer shapes and errors, content parts and dataset paging, sessions.
+  - `docs/extending.md`, the recipes of design 17: path A (manifest only), B (new kind, with its configuration model, kind class, registry and conformance entry), C (a new multi-agent pattern) and a new hook type.
+  - `docs/runbooks/`: deploy, rotate keys, add a node type, add a hook type, add a model, upgrade LangGraph with waiting runs, the test client.
+  - `docs/decisions/README.md`, an index of 0001 to 0007.
+- **Test client** (`scripts/run_client.py`):
+  - It answers a paused run's interrupts, with `--answer` JSON or the answer typed at the terminal, until the run ends. Without either, it leaves the run waiting.
+  - It pages a dataset (`--dataset`, `--page`, `--page-size`, `--sort`, `--filter`) and lists the dataset IDs a run's events name.
+  - Three new A-15 tests: an answered approval completes; with no answer the run stays waiting; a database node's dataset is paged with sort and filter.
+- **Builder re-vendored:** the builder's commit `b25bcfc` (2026-10-27) adds document version 2.1 hook bindings (`runtimeHooks`, `properties.hooks`, `disabledHooks`) and the hook types its editor offers. `sync_builder --check` failed on it; re-vendored.
+  - All eight of the builder's `configTemplate`s validate against the runtime's hook configuration models.
+  - The builder offers `approval`, which `hooks.documentAllowedTypes` did not allow. The Node.js runtime allows it, so it is now allowed here too.
+  - New test: a node's own approval binding pauses and resumes (K-11).
+- **SQL re-vendored:** the Node.js repository committed its SQL changes (`f94fea1`, 2026-10-27), so `scripts.sync_sql` vendored them, and `sync_sql --check` passes for the first time since Phase 3. The changes, all in procedure bodies or comments, with no new tables, views or columns:
+  - `sp_run_start` gives up an Idempotency-Key older than `idempotencyTtlSeconds` when the caller sends it. The runtime never sent it, so a key never expired despite `runs.idempotencyTtlSeconds`. It now sends the TTL with every key, as the Node.js runtime does, and the fake schema honors it (the fake's runs gained `created_at`).
+  - New `sp_interrupt_expire`: answers an expired, still pending interrupt.
+  - The observability procedures: a trace header with only an end time no longer starts at `now()`, and latencies are `bigint`.
+- **Not applied to any database.** The product database (Neon `agent-build-langgraph`) still has the earlier procedures. The runtime's calls work on both: an older `sp_run_start` ignores the TTL field.
+- **Decision 0007, for review:** one of its three reasons, that no `sp_interrupt_expire` exists, no longer holds. Expiry still goes through `sp_run_transition`. Moving it to `sp_interrupt_expire` waits for the new SQL to be applied to the database.
+- **Found while writing the runbooks (not changed):**
+  - The checkpoint key cannot be rotated while checkpoints are outstanding. LangGraph's `EncryptedSerializer` takes one key, so a paused or queued run written under the old key cannot be read under the new one. The runbook waits for the checkpoints to clear; reading with a second, old key would need a small serializer change.
+  - No old-version checkpoint fixture exists yet for the LangGraph upgrade check (design risk table). The upgrade runbook has the first upgrade capture one.
+  - `ZONIC_INTERNAL_ADDRESS` (`EnvironmentModel.internal_address`) is read by nothing; instances use `api.internalAddress` or their host name.
+  - The tool-approval answer uses LangChain's snake-case `edited_action`, unlike the rest of the camelCase contract. The client guide documents it.
+
+### P5-01 notes
+
+- **X-01:** a second user gets the same 404 as for a missing ID on every user-scoped endpoint, and alice's run is unchanged. The endpoints are the session read, rename and messages; the run, its events, nodes, cancel, interrupts and the answer; the trace; feedback; a dataset; and a start on alice's session.
+- **X-04:** an injected prompt that names another session reaches nothing of it. The MCP call carries the run owner's identity and session whatever the tool arguments say, and the other session's conversation is not in the history.
+- **X-05:** a provider error reaches the client as the catalog message only.
+  - **Defect fixed:** the error's text reached the observation's `statusMessage` unmasked (for example `Bearer sk-...`). The span `Enricher` now masks every span's status message with the trace masker's patterns.
+- **X-06:** with `state.encryption` and a key, the checkpoint's serialized blobs are `+aes` and hold no plaintext. Without the key, the same blobs do hold it. The encrypted run still resumes with its key.
+- **X-07, response hardening:**
+  - CORS answers only `api.corsOrigins`: a preflight from another origin is 400 and no response carries `Access-Control-Allow-Origin` for it.
+  - A body above `api.maxBodyBytes` is 413 `INPUT_TOO_LARGE`, by `Content-Length` and now also when sent in chunks without one: those are read up to the limit, then handed on.
+  - Every public response carries `api.responseHeaders` (new setting: `nosniff`, `DENY` framing, `no-referrer`, a `default-src 'none'` CSP, HSTS, same-origin resources). The interactive docs page, on in dev only, is left without them because its scripts would be blocked. A route's own header (`Cache-Control` on streams) is kept.
+- **CI:** a dependency audit step (`uv export` then `pip-audit`, no pip, no dependency resolution).
