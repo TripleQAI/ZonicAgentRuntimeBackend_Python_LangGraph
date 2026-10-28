@@ -1291,14 +1291,14 @@
 <tr>
 <td>P2-09</td>
 <td>Builder scenarios</td>
-<td><code>tests/scenarios/builder/</code>: one scenario per vendored workflow in both dialects (Section 20.4) with a <code>ScriptedChatModel</code> script per turn, fake tool, MCP and HTTP responses, and a golden event stream (syrupy; volatile fields removed); multi-turn scenarios for <code>agent.json</code> and the sub-agents' loops; a coverage test that fails when a vendored workflow has no scenario or a node type no fixture; Swarm and interrupt scenarios added by P4-01 and P4-02</td>
+<td><code>tests/scenarios/builder/</code>: one scenario per vendored workflow in both dialects (Section 20.4) with a <code>ScriptedChatModel</code> script per turn, fake tool, MCP and HTTP responses, and a golden event stream (syrupy; volatile fields removed); multi-turn scenarios for <code>agent.json</code> and the sub-agents' loops; a coverage test that fails when a vendored workflow has no scenario or a node type no fixture; Swarm and interrupt scenarios added by P4-01 and P4-02 Scenarios of workflows whose node kinds come later join with the tasks that build them (decision 0005).</td>
 <td>P1-03, P1-11, P2-02, P2-03</td>
-<td>F-07, F-08, F-10, F-17, F-18, B-12, B-13</td>
+<td>F-07</td>
 </tr>
 </tbody>
 </table>
 </div>
-<p><strong>Checkpoint M2.</strong> Every builder fixture without tools runs in stream and sync modes against the scripted model (F-07, F-08); the platform workflows run their multi-turn scripts (F-17, F-18); a turn makes two gateway calls and <code>TurnSaver</code> none (P-05); <code>TurnSaver</code> passes the conformance suite (P-07); each run's trace appears in <code>agent_observability</code> on the test branch; group Q mechanisms pass with fakes; <code>scripts/run_client.py</code> streams a builder fixture end to end against the app (A-15); the UI owner's first review of <code>generated/</code> is done (Section 13).</p>
+<p><strong>Checkpoint M2.</strong> Every builder fixture whose node kinds exist runs in stream and sync modes against the scripted model (F-07), and the scenario coverage gate passes (decision 0005); a turn makes two gateway calls and <code>TurnSaver</code> none (P-05); <code>TurnSaver</code> passes the conformance suite (P-07); each run's trace appears in <code>agent_observability</code> on the test branch; group Q mechanisms pass with fakes; <code>scripts/run_client.py</code> streams a builder fixture end to end against the app (A-15); the UI owner's first review of <code>generated/</code> is done (Section 13).</p>
 
     </section>
     <section id="phase-3-integrations-and-data">
@@ -1335,14 +1335,14 @@
 <td>Egress guard and HTTP node</td>
 <td><code>integrations/egress/</code> (scheme, host and port allow list; private, loopback and link-local blocking after DNS resolution; redirects off; URL encoding of templated values); kind <code>http</code> (list headers, body, timeout, manifest retry for allowed methods)</td>
 <td>P1-10</td>
-<td>N-14, X-02, X-03</td>
+<td>N-14, X-02, X-03, F-08</td>
 </tr>
 <tr>
 <td>P3-04</td>
 <td>Database node</td>
 <td>Kind <code>mcp_execute</code> for <code>databaseType</code> <code>mssql</code> and <code>postgresql</code> (connection name passed, never a connection string, D-7); <code>DatasetRef</code> bound to session and owner; route <code>/v1/datasets/{ref}</code> with paging, sorting, filters</td>
 <td>P3-02</td>
-<td>N-13, X-01 (datasets part)</td>
+<td>N-13, X-01 (datasets part), F-08</td>
 </tr>
 <tr>
 <td>P3-05</td>
@@ -1356,28 +1356,28 @@
 <td>Tool, external agent and guardrail kinds</td>
 <td>Kinds <code>tool</code> (direct invocation, <code>pass</code> and <code>fail</code>), <code>external_agent</code> (A2A client or HTTP through egress), <code>guardrail</code> (Bedrock Guardrails or a policy model; <code>pass</code>, <code>fail</code>, <code>warn</code>)</td>
 <td>P3-02, P3-03</td>
-<td>N-10, N-15, N-16</td>
+<td>N-10, N-15, N-16, F-17, F-18, B-12, B-13</td>
 </tr>
 <tr>
 <td>P3-07</td>
 <td>Script node</td>
 <td><code>ports/sandbox.py</code>; Piston and disabled adapters; kind <code>sandbox</code> behind <code>features.scriptNode</code></td>
 <td>P1-10</td>
-<td>N-17</td>
+<td>N-17, F-17, B-12</td>
 </tr>
 <tr>
 <td>P3-08</td>
 <td>View node and content parts</td>
 <td><code>models/content/</code> (discriminated <code>ContentPart</code> subclasses); kind <code>view</code> (grid, chart, table from <code>templateConfig</code> with <code>cacheDataKey</code>; ECharts option allow list; the <code>html</code> part with escaped values and server-side sanitizing)</td>
 <td>P1-10</td>
-<td>N-18, M-06, B-11</td>
+<td>N-18, M-06, B-11, F-08</td>
 </tr>
 <tr>
 <td>P3-09</td>
 <td>Sub-flows</td>
 <td>Kind <code>subflow</code>: child document through the loader and blueprint cache, child graph from the cache in the <code>child</code> role (DR-3), invoked through <code>invoke_child</code> (DR-6); <code>input</code> mapping, <code>inheritFlow</code> policy, output and variable mapping, visibility, depth, <code>SUBFLOW_CYCLE</code>; nested <code>path</code> on events and observations</td>
 <td>P2-02</td>
-<td>N-11, G-05, S-04, L-06 (sub-flow part)</td>
+<td>N-11, G-05, S-04, L-06 (sub-flow part), F-10, F-17, B-12</td>
 </tr>
 <tr>
 <td>P3-10</td>
@@ -1403,7 +1403,7 @@
 </tbody>
 </table>
 </div>
-<p><strong>Checkpoint M3.</strong> All builder fixtures, including tools and sub-flows, run against the fakes with recorded responses (F-09, F-10); database and HTTP results are kept in full in both stores (P-12); one open-data fixture runs against the real MCP server locally once D-7 is settled.</p>
+<p><strong>Checkpoint M3.</strong> All builder fixtures, including tools and sub-flows, run against the fakes with recorded responses (F-08, F-09, F-10); the platform workflows run their multi-turn scripts (F-17, F-18); database and HTTP results are kept in full in both stores (P-12); one open-data fixture runs against the real MCP server locally once D-7 is settled.</p>
 
     </section>
     <section id="phase-4-swarm-interrupts-and-durable-asynchronous-runs">

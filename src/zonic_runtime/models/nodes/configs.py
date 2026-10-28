@@ -80,7 +80,11 @@ class RouterNodeConfig(NodeConfigBase):
 class GuardrailNodeConfig(NodeConfigBase):
     input_mapping: Annotated[list[Any] | None, TemplateField()] = None
     policy: str | None = None
+    #: ``warn``: flagged content passes with a ``guardrail.flagged`` warning.
     action: str | None = None
+    #: A provisioned Bedrock guardrail checks the content instead of the policy model (P3-06).
+    guardrail_id: str | None = None
+    guardrail_version: str | None = None
 
 
 class InterruptNodeConfig(NodeConfigBase):
@@ -154,6 +158,8 @@ class ExternalAgentNodeConfig(NodeConfigBase):
     input_mapping: Annotated[list[Any] | None, TemplateField()] = None
     timeout_seconds: float | None = None
     retries: int | None = None
+    #: ``a2a`` (``message/send`` over JSON-RPC, the default) or ``http`` (the input posted as JSON).
+    protocol: str | None = None
 
 
 class SandboxNodeConfig(NodeConfigBase):

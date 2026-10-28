@@ -99,10 +99,6 @@ async def test_idempotent_write(gateway: HttpGateway) -> None:
     assert result.rows and result.rows[0]["o_created"] == 0
 
 
-@pytest.mark.skip(
-    reason="the gateway authorizes /v1/batch as one 'batch' resource with no per-item datasource "
-    "check, so zonic-agent-runtime is not granted it (docs/build-log.md)"
-)
 async def test_transactional_batch(gateway: HttpGateway) -> None:
     item = {"schema": "observability", "name": "sp_obs_partition_ensure", "args": [2, None]}
     batch = await gateway.batch(
@@ -110,3 +106,20 @@ async def test_transactional_batch(gateway: HttpGateway) -> None:
         mode="transactional",
     )
     assert batch.ok_count == 2
+
+
+async def test_a_batch_item_outside_the_callers_datasources_is_refused(gateway: HttpGateway) -> None:
+    """``batch`` admits the request; every item must still pass its own route's rule."""
+    # The wire body, since ``HttpGateway.batch`` only names this caller's own datasources:
+    # neondb_dev is a real datasource of the gateway that zonic-agent-runtime is not granted.
+    item = {
+        "id": "x",
+        "datasource": "neondb_dev",
+        "op": "view",
+        "payload": {"name": "v_run", "schema": "agent_runtime", "limit": 1},
+    }
+    with pytest.raises(ZonicError) as info:
+        await gateway._post(
+            "/v1/batch", {"mode": "sequential", "items": [item]}, retry=False, request_id=None
+        )
+    assert info.value.details.get("gateway_status") == 403

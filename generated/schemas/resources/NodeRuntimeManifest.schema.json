@@ -388,6 +388,22 @@
           "default": null,
           "title": "Configpath"
         },
+        "encode": {
+          "anyOf": [
+            {
+              "enum": [
+                "uriComponent",
+                "html"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Encode"
+        },
         "statePath": {
           "anyOf": [
             {

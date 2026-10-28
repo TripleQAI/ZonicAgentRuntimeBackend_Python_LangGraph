@@ -1,0 +1,933 @@
+[
+  [
+    {
+      "data": {
+        "agenticWorkflowId": "<uuid>",
+        "sessionId": "<uuid>",
+        "title": "Was electricity use at Main higher than last year in Q1?"
+      },
+      "seq": 1,
+      "type": "run.started"
+    },
+    {
+      "data": {
+        "nodeName": "Start_1",
+        "nodeType": "start",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "start_1781450340413_ynl2z",
+      "seq": 2,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 229,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "start_1781450340413_ynl2z",
+      "seq": 3,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "Agent_1",
+        "nodeType": "agent",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "agent_1781450354685_1oj06",
+      "seq": 4,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "inputSummary": {
+          "bytes": 25,
+          "fields": 1,
+          "type": "object"
+        },
+        "toolName": "handoff_to",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "agent_1781450354685_1oj06",
+      "seq": 5,
+      "type": "tool.started"
+    },
+    {
+      "data": {
+        "status": "success",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "agent_1781450354685_1oj06",
+      "seq": 6,
+      "type": "tool.finished"
+    },
+    {
+      "data": {
+        "handles": [
+          "handoff-workflow_1781450372188_ztcsq"
+        ],
+        "outputSummary": {
+          "bytes": 218,
+          "fields": 5,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 11,
+          "modelCalls": 1,
+          "outputTokens": 2,
+          "totalTokens": 13
+        }
+      },
+      "nodeId": "agent_1781450354685_1oj06",
+      "seq": 7,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "energy-agent",
+        "nodeType": "workflow",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "workflow_1781450372188_ztcsq",
+      "seq": 8,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "nodeName": "Start_1",
+        "nodeType": "start",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "start_1781397881238_6xn68",
+      "path": "workflow_1781450372188_ztcsq",
+      "seq": 9,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 94,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "start_1781397881238_6xn68",
+      "path": "workflow_1781450372188_ztcsq",
+      "seq": 10,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "keywords-extraction",
+        "nodeType": "llm",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "llm_1782398709633_eb8bo",
+      "path": "workflow_1781450372188_ztcsq",
+      "seq": 11,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "text": "{\"newPeriodStart\": "
+      },
+      "nodeId": "llm_1782398709633_eb8bo",
+      "path": "workflow_1781450372188_ztcsq",
+      "seq": 12,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "text": "\"2026-01-01\", \"newPeriodEnd\": \"2026-03-31\", \"historicalReferencePeriodStart\": \"2025-01-01\", \"historicalReferencePeriodEnd\": \"2025-03-31\"}"
+      },
+      "nodeId": "llm_1782398709633_eb8bo",
+      "path": "workflow_1781450372188_ztcsq",
+      "seq": 13,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "keys": [
+          "account",
+          "facilityName",
+          "historicalReferencePeriodEnd",
+          "historicalReferencePeriodStart",
+          "newPeriodEnd",
+          "newPeriodStart",
+          "subRegion",
+          "utilityBillsGridTitleSummary",
+          "utilityType"
+        ]
+      },
+      "nodeId": "llm_1782398709633_eb8bo",
+      "path": "workflow_1781450372188_ztcsq",
+      "seq": 14,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "flow.newPeriodEnd",
+            "flow.newPeriodStart",
+            "nodes.keywords-extraction.output.account",
+            "nodes.keywords-extraction.output.facilityName",
+            "nodes.keywords-extraction.output.region",
+            "nodes.keywords-extraction.output.subRegion",
+            "nodes.keywords-extraction.output.utilityBillsGridTitleSummary",
+            "nodes.keywords-extraction.output.utilityType"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "llm_1782398709633_eb8bo",
+      "path": "workflow_1781450372188_ztcsq",
+      "seq": 15,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 440,
+          "fields": 11,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 8287,
+          "modelCalls": 1,
+          "outputTokens": 8,
+          "totalTokens": 8295
+        }
+      },
+      "nodeId": "llm_1782398709633_eb8bo",
+      "path": "workflow_1781450372188_ztcsq",
+      "seq": 16,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "energy-agent",
+        "nodeType": "agent",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "agent_1781397954641_geg1e",
+      "path": "workflow_1781450372188_ztcsq",
+      "seq": 17,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "text": "{\"analysisType\": "
+      },
+      "nodeId": "agent_1781397954641_geg1e",
+      "path": "workflow_1781450372188_ztcsq",
+      "seq": 18,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "text": "\"usage_variance_higher_lower\", \"analysisLevel\": \"site\", \"aggregationOption\": \"monthly\"}"
+      },
+      "nodeId": "agent_1781397954641_geg1e",
+      "path": "workflow_1781450372188_ztcsq",
+      "seq": 19,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "inputSummary": {
+          "bytes": 85,
+          "fields": 2,
+          "type": "object"
+        },
+        "toolName": "handoff_to",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "agent_1781397954641_geg1e",
+      "path": "workflow_1781450372188_ztcsq",
+      "seq": 20,
+      "type": "tool.started"
+    },
+    {
+      "data": {
+        "status": "success",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "agent_1781397954641_geg1e",
+      "path": "workflow_1781450372188_ztcsq",
+      "seq": 21,
+      "type": "tool.finished"
+    },
+    {
+      "data": {
+        "keys": [
+          "aggregationOption",
+          "analysisLevel",
+          "analysisType"
+        ]
+      },
+      "nodeId": "agent_1781397954641_geg1e",
+      "path": "workflow_1781450372188_ztcsq",
+      "seq": 22,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "nodes.energy-agent.output.aggregationOption",
+            "nodes.energy-agent.output.analysisLevel",
+            "nodes.energy-agent.output.analysisType"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "agent_1781397954641_geg1e",
+      "path": "workflow_1781450372188_ztcsq",
+      "seq": 23,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "handoff-llm_1783647948890_oroz3"
+        ],
+        "outputSummary": {
+          "bytes": 633,
+          "fields": 8,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 1916,
+          "modelCalls": 1,
+          "outputTokens": 13,
+          "totalTokens": 1929
+        }
+      },
+      "nodeId": "agent_1781397954641_geg1e",
+      "path": "workflow_1781450372188_ztcsq",
+      "seq": 24,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "get-historical-data-with-reference",
+        "nodeType": "llm",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "llm_1783647948890_oroz3",
+      "path": "workflow_1781450372188_ztcsq",
+      "seq": 25,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "inputSummary": {
+          "bytes": 38,
+          "fields": 2,
+          "type": "object"
+        },
+        "toolName": "analyse_energy_performance",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "llm_1783647948890_oroz3",
+      "path": "workflow_1781450372188_ztcsq",
+      "seq": 26,
+      "type": "tool.started"
+    },
+    {
+      "data": {
+        "status": "success",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "llm_1783647948890_oroz3",
+      "path": "workflow_1781450372188_ztcsq",
+      "seq": 27,
+      "type": "tool.finished"
+    },
+    {
+      "data": {
+        "text": "The "
+      },
+      "nodeId": "llm_1783647948890_oroz3",
+      "path": "workflow_1781450372188_ztcsq",
+      "seq": 28,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "text": "analysis is ready."
+      },
+      "nodeId": "llm_1783647948890_oroz3",
+      "path": "workflow_1781450372188_ztcsq",
+      "seq": 29,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "keys": [
+          "energyPerformanceAnalysisResult"
+        ]
+      },
+      "nodeId": "llm_1783647948890_oroz3",
+      "path": "workflow_1781450372188_ztcsq",
+      "seq": 30,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "flow.userId"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "llm_1783647948890_oroz3",
+      "path": "workflow_1781450372188_ztcsq",
+      "seq": 31,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 33,
+          "fields": 1,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 2327,
+          "modelCalls": 2,
+          "outputTokens": 8,
+          "totalTokens": 2335
+        }
+      },
+      "nodeId": "llm_1783647948890_oroz3",
+      "path": "workflow_1781450372188_ztcsq",
+      "seq": 32,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "Rule_1",
+        "nodeType": "rule",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "rule_1783746264100_ljsfg",
+      "path": "workflow_1781450372188_ztcsq",
+      "seq": 33,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "r_elgn8m"
+        ],
+        "outputSummary": {
+          "bytes": 60,
+          "fields": 3,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "rule_1783746264100_ljsfg",
+      "path": "workflow_1781450372188_ztcsq",
+      "seq": 34,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "usage-consumption-analysis",
+        "nodeType": "llm",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "llm_1783746322334_uqllv",
+      "path": "workflow_1781450372188_ztcsq",
+      "seq": 35,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "text": "{\"dataAnalysisResult\": "
+      },
+      "nodeId": "llm_1783746322334_uqllv",
+      "path": "workflow_1781450372188_ztcsq",
+      "seq": 36,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "text": "\"<p>Use was <b>12.4%</b> higher than in Q1 2025.</p>\"}"
+      },
+      "nodeId": "llm_1783746322334_uqllv",
+      "path": "workflow_1781450372188_ztcsq",
+      "seq": 37,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "keys": [
+          "dataAnalysisResult"
+        ]
+      },
+      "nodeId": "llm_1783746322334_uqllv",
+      "path": "workflow_1781450372188_ztcsq",
+      "seq": 38,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 167,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 1983,
+          "modelCalls": 1,
+          "outputTokens": 9,
+          "totalTokens": 1992
+        }
+      },
+      "nodeId": "llm_1783746322334_uqllv",
+      "path": "workflow_1781450372188_ztcsq",
+      "seq": 39,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "utility-analysis",
+        "nodeType": "view",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "view_1783023686612_2lr8k",
+      "path": "workflow_1781450372188_ztcsq",
+      "seq": 40,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "part": {
+          "library": "echarts",
+          "option": {
+            "series": [
+              {
+                "data": [
+                  410,
+                  455,
+                  470
+                ],
+                "type": "bar"
+              }
+            ],
+            "title": {
+              "text": "Electricity use"
+            },
+            "xAxis": {
+              "data": [
+                "Jan",
+                "Feb",
+                "Mar"
+              ],
+              "type": "category"
+            },
+            "yAxis": {
+              "type": "value"
+            }
+          },
+          "type": "chart"
+        },
+        "type": "chart"
+      },
+      "nodeId": "view_1783023686612_2lr8k",
+      "path": "workflow_1781450372188_ztcsq",
+      "seq": 41,
+      "type": "content.part"
+    },
+    {
+      "data": {
+        "part": {
+          "datasetRefs": [],
+          "html": "<p>Use was <b>12.4%</b> higher than in Q1 2025.</p>",
+          "type": "html"
+        },
+        "type": "html"
+      },
+      "nodeId": "view_1783023686612_2lr8k",
+      "path": "workflow_1781450372188_ztcsq",
+      "seq": 42,
+      "type": "content.part"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 81,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "view_1783023686612_2lr8k",
+      "path": "workflow_1781450372188_ztcsq",
+      "seq": 43,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "utility-bills-variable-update",
+        "nodeType": "variable",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "variable_1783387115349_esyg3",
+      "path": "workflow_1781450372188_ztcsq",
+      "seq": 44,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "account",
+          "facilityName",
+          "region",
+          "subRegion",
+          "utilityType"
+        ]
+      },
+      "nodeId": "variable_1783387115349_esyg3",
+      "path": "workflow_1781450372188_ztcsq",
+      "seq": 45,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 76,
+          "fields": 5,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "variable_1783387115349_esyg3",
+      "path": "workflow_1781450372188_ztcsq",
+      "seq": 46,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "Output_1",
+        "nodeType": "output",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "output_1781397965377_sz6ig",
+      "path": "workflow_1781450372188_ztcsq",
+      "seq": 47,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "result"
+        ]
+      },
+      "nodeId": "output_1781397965377_sz6ig",
+      "path": "workflow_1781450372188_ztcsq",
+      "seq": 48,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 1376,
+          "fields": 1,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "output_1781397965377_sz6ig",
+      "path": "workflow_1781450372188_ztcsq",
+      "seq": 49,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 1502,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 14513,
+          "modelCalls": 5,
+          "outputTokens": 38,
+          "totalTokens": 14551
+        }
+      },
+      "nodeId": "workflow_1781450372188_ztcsq",
+      "seq": 50,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "Output_1",
+        "nodeType": "output",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "output_1781450358137_vdepr",
+      "seq": 51,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "result"
+        ]
+      },
+      "nodeId": "output_1781450358137_vdepr",
+      "seq": 52,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "code": "OUTPUT_MAPPING_MISSING",
+        "details": {},
+        "message": "The output step has no mapping; the last answer was used."
+      },
+      "nodeId": "output_1781450358137_vdepr",
+      "seq": 53,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 2,
+          "fields": 0,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "output_1781450358137_vdepr",
+      "seq": 54,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "result": {
+          "text": "{\"analysisType\": \"usage_variance_higher_lower\", \"analysisLevel\": \"site\", \"aggregationOption\": \"monthly\"}"
+        },
+        "usage": {
+          "inputTokens": 14524,
+          "modelCalls": 6,
+          "outputTokens": 40,
+          "totalTokens": 14564
+        }
+      },
+      "seq": 55,
+      "type": "run.completed"
+    }
+  ],
+  [
+    {
+      "data": {
+        "agenticWorkflowId": "<uuid>",
+        "sessionId": "<uuid>"
+      },
+      "seq": 1,
+      "type": "run.started"
+    },
+    {
+      "data": {
+        "nodeName": "Start_1",
+        "nodeType": "start",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "start_1781450340413_ynl2z",
+      "seq": 2,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 121,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "start_1781450340413_ynl2z",
+      "seq": 3,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "Agent_1",
+        "nodeType": "agent",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "agent_1781450354685_1oj06",
+      "seq": 4,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "text": "You "
+      },
+      "nodeId": "agent_1781450354685_1oj06",
+      "seq": 5,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "text": "are welcome."
+      },
+      "nodeId": "agent_1781450354685_1oj06",
+      "seq": 6,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 87,
+          "fields": 4,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 21,
+          "modelCalls": 1,
+          "outputTokens": 3,
+          "totalTokens": 24
+        }
+      },
+      "nodeId": "agent_1781450354685_1oj06",
+      "seq": 7,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "Output_1",
+        "nodeType": "output",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "output_1781450358137_vdepr",
+      "seq": 8,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "result"
+        ]
+      },
+      "nodeId": "output_1781450358137_vdepr",
+      "seq": 9,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "code": "OUTPUT_MAPPING_MISSING",
+        "details": {},
+        "message": "The output step has no mapping; the last answer was used."
+      },
+      "nodeId": "output_1781450358137_vdepr",
+      "seq": 10,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 2,
+          "fields": 0,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "output_1781450358137_vdepr",
+      "seq": 11,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "result": {
+          "text": "You are welcome."
+        },
+        "usage": {
+          "inputTokens": 21,
+          "modelCalls": 1,
+          "outputTokens": 3,
+          "totalTokens": 24
+        }
+      },
+      "seq": 12,
+      "type": "run.completed"
+    }
+  ]
+]

@@ -68,11 +68,12 @@ class OutputMapper:
         parts: Sequence[dict[str, Any]] = (),
         usage: Usage | None = None,
         refs: Sequence[DatasetRef] = (),
+        validation: str | None = None,
     ) -> tuple[NodeOutput, list[SchemaIssue]]:
         """Validates ``data`` against the node's effective schema; returns the envelope and the
-        issues kept under ``warn``."""
+        issues kept under ``warn`` (``validation``: the node's own override)."""
         issues = self._schemas.validate(schema, data, OUTPUT_PATH) if schema else []
-        if issues and self._validation == "strict":
+        if issues and (validation or self._validation) == "strict":
             raise ZonicError(
                 "OUTPUT_SCHEMA_INVALID",
                 node_id=node_id,

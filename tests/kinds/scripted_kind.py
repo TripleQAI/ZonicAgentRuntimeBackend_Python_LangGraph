@@ -87,5 +87,5 @@ def run_context(blueprint: Blueprint, resources: RuntimeResources, run_id: str =
         deadline=Deadline.after(engine.run_timeout_seconds),
         blueprint=blueprint,
         settings=resources.settings,
-        permits=RunPermits(engine.max_concurrency_per_run),
+        permits=RunPermits(engine.max_concurrency_per_run, resources.settings.tools.max_concurrent_per_turn),
     )

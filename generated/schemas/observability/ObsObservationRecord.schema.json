@@ -1,0 +1,322 @@
+{
+  "additionalProperties": false,
+  "description": "One node visit, model call, tool call, hook execution or event; inserted once (O-02).",
+  "properties": {
+    "completionStartTime": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Completionstarttime"
+    },
+    "costDetails": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Costdetails"
+    },
+    "endTime": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Endtime"
+    },
+    "environment": {
+      "anyOf": [
+        {
+          "maxLength": 50,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Environment"
+    },
+    "hookBindingId": {
+      "anyOf": [
+        {
+          "maxLength": 100,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Hookbindingid"
+    },
+    "input": {
+      "default": null,
+      "title": "Input"
+    },
+    "latencyMs": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Latencyms"
+    },
+    "level": {
+      "default": "DEFAULT",
+      "enum": [
+        "DEBUG",
+        "DEFAULT",
+        "WARNING",
+        "ERROR"
+      ],
+      "title": "Level",
+      "type": "string"
+    },
+    "metadata": {
+      "additionalProperties": true,
+      "title": "Metadata",
+      "type": "object"
+    },
+    "model": {
+      "anyOf": [
+        {
+          "maxLength": 200,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Model"
+    },
+    "modelParameters": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Modelparameters"
+    },
+    "name": {
+      "maxLength": 200,
+      "title": "Name",
+      "type": "string"
+    },
+    "nodeId": {
+      "anyOf": [
+        {
+          "maxLength": 100,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Nodeid"
+    },
+    "nodeKind": {
+      "anyOf": [
+        {
+          "maxLength": 50,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Nodekind"
+    },
+    "nodeName": {
+      "anyOf": [
+        {
+          "maxLength": 200,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Nodename"
+    },
+    "nodeType": {
+      "anyOf": [
+        {
+          "maxLength": 50,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Nodetype"
+    },
+    "observationId": {
+      "pattern": "^[0-9a-f]{16}$",
+      "title": "Observationid",
+      "type": "string"
+    },
+    "output": {
+      "default": null,
+      "title": "Output"
+    },
+    "parentObservationId": {
+      "anyOf": [
+        {
+          "pattern": "^[0-9a-f]{16}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Parentobservationid"
+    },
+    "path": {
+      "anyOf": [
+        {
+          "maxLength": 500,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Path"
+    },
+    "startTime": {
+      "format": "date-time",
+      "title": "Starttime",
+      "type": "string"
+    },
+    "statusMessage": {
+      "anyOf": [
+        {
+          "maxLength": 500,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Statusmessage"
+    },
+    "totalCost": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Totalcost"
+    },
+    "traceId": {
+      "pattern": "^[0-9a-f]{32}$",
+      "title": "Traceid",
+      "type": "string"
+    },
+    "type": {
+      "enum": [
+        "span",
+        "generation",
+        "event",
+        "agent",
+        "tool",
+        "chain",
+        "retriever",
+        "evaluator",
+        "embedding",
+        "guardrail"
+      ],
+      "title": "Type",
+      "type": "string"
+    },
+    "usageDetails": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Usagedetails"
+    },
+    "version": {
+      "anyOf": [
+        {
+          "maxLength": 64,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Version"
+    },
+    "visit": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Visit"
+    }
+  },
+  "required": [
+    "observationId",
+    "traceId",
+    "type",
+    "name",
+    "startTime"
+  ],
+  "title": "ObsObservationRecord",
+  "type": "object"
+}

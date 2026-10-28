@@ -1,0 +1,780 @@
+{
+  "$defs": {
+    "CardAction": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Action"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "payload": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Payload"
+        }
+      },
+      "required": [
+        "label"
+      ],
+      "title": "CardAction",
+      "type": "object"
+    },
+    "CardField": {
+      "additionalProperties": false,
+      "properties": {
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "value": {
+          "default": null,
+          "title": "Value"
+        }
+      },
+      "required": [
+        "label"
+      ],
+      "title": "CardField",
+      "type": "object"
+    },
+    "CardPart": {
+      "additionalProperties": false,
+      "properties": {
+        "actions": {
+          "items": {
+            "$ref": "#/$defs/CardAction"
+          },
+          "title": "Actions",
+          "type": "array"
+        },
+        "body": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Body"
+        },
+        "fields": {
+          "items": {
+            "$ref": "#/$defs/CardField"
+          },
+          "title": "Fields",
+          "type": "array"
+        },
+        "title": {
+          "default": "",
+          "title": "Title",
+          "type": "string"
+        },
+        "type": {
+          "const": "card",
+          "default": "card",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "title": "CardPart",
+      "type": "object"
+    },
+    "ChartPart": {
+      "additionalProperties": false,
+      "description": "An ECharts option: data only, top-level keys on ``content.chartOptionKeys``, no functions.",
+      "properties": {
+        "datasetRef": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DatasetRef"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "library": {
+          "const": "echarts",
+          "default": "echarts",
+          "title": "Library",
+          "type": "string"
+        },
+        "option": {
+          "additionalProperties": true,
+          "title": "Option",
+          "type": "object"
+        },
+        "type": {
+          "const": "chart",
+          "default": "chart",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "title": "ChartPart",
+      "type": "object"
+    },
+    "CitationPart": {
+      "additionalProperties": false,
+      "properties": {
+        "snippet": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Snippet"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "type": {
+          "const": "citation",
+          "default": "citation",
+          "title": "Type",
+          "type": "string"
+        },
+        "url": {
+          "title": "Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "url"
+      ],
+      "title": "CitationPart",
+      "type": "object"
+    },
+    "ContentPartData": {
+      "additionalProperties": false,
+      "description": "One content part a node produced (views), also kept in the turn's answer message.",
+      "properties": {
+        "part": {
+          "discriminator": {
+            "mapping": {
+              "card": "#/$defs/CardPart",
+              "chart": "#/$defs/ChartPart",
+              "citation": "#/$defs/CitationPart",
+              "error": "#/$defs/ErrorPart",
+              "file": "#/$defs/FilePart",
+              "form": "#/$defs/FormPart",
+              "grid": "#/$defs/GridPart",
+              "html": "#/$defs/HtmlPart",
+              "json": "#/$defs/JsonPart",
+              "markdown": "#/$defs/MarkdownPart",
+              "table": "#/$defs/TablePart"
+            },
+            "propertyName": "type"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/MarkdownPart"
+            },
+            {
+              "$ref": "#/$defs/TablePart"
+            },
+            {
+              "$ref": "#/$defs/GridPart"
+            },
+            {
+              "$ref": "#/$defs/ChartPart"
+            },
+            {
+              "$ref": "#/$defs/CardPart"
+            },
+            {
+              "$ref": "#/$defs/JsonPart"
+            },
+            {
+              "$ref": "#/$defs/FilePart"
+            },
+            {
+              "$ref": "#/$defs/HtmlPart"
+            },
+            {
+              "$ref": "#/$defs/CitationPart"
+            },
+            {
+              "$ref": "#/$defs/ErrorPart"
+            },
+            {
+              "$ref": "#/$defs/FormPart"
+            }
+          ],
+          "title": "Part"
+        },
+        "type": {
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "part"
+      ],
+      "title": "ContentPartData",
+      "type": "object"
+    },
+    "DatasetRef": {
+      "additionalProperties": false,
+      "description": "Full data of a database, HTTP or tool result, kept outside state (design 9.3). The wire\nshape is the Node.js runtime's (content parts carry it); ``node_id``, ``visit`` and\n``preview`` are this runtime's provenance and inline rows.",
+      "properties": {
+        "columns": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Columns",
+          "type": "array"
+        },
+        "contentType": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Contenttype"
+        },
+        "datasetId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Datasetid"
+        },
+        "expiresAt": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expiresat"
+        },
+        "key": {
+          "title": "Key",
+          "type": "string"
+        },
+        "kind": {
+          "default": "rows",
+          "enum": [
+            "rows",
+            "http_response",
+            "tool_result"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "nodeId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Nodeid"
+        },
+        "preview": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Preview",
+          "type": "array"
+        },
+        "rowCount": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rowcount"
+        },
+        "sha256": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sha256"
+        },
+        "sizeBytes": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sizebytes"
+        },
+        "store": {
+          "enum": [
+            "cache",
+            "database"
+          ],
+          "title": "Store",
+          "type": "string"
+        },
+        "visit": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Visit"
+        }
+      },
+      "required": [
+        "store",
+        "key"
+      ],
+      "title": "DatasetRef",
+      "type": "object"
+    },
+    "ErrorPart": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "title": "Code",
+          "type": "string"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "type": {
+          "const": "error",
+          "default": "error",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "title": "ErrorPart",
+      "type": "object"
+    },
+    "FilePart": {
+      "additionalProperties": false,
+      "properties": {
+        "downloadRef": {
+          "title": "Downloadref",
+          "type": "string"
+        },
+        "mediaType": {
+          "title": "Mediatype",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "type": {
+          "const": "file",
+          "default": "file",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "mediaType",
+        "downloadRef"
+      ],
+      "title": "FilePart",
+      "type": "object"
+    },
+    "FormPart": {
+      "additionalProperties": false,
+      "description": "A schema-driven form answering an interrupt (design 9.4).",
+      "properties": {
+        "interruptId": {
+          "title": "Interruptid",
+          "type": "string"
+        },
+        "schema": {
+          "additionalProperties": true,
+          "title": "Schema",
+          "type": "object"
+        },
+        "type": {
+          "const": "form",
+          "default": "form",
+          "title": "Type",
+          "type": "string"
+        },
+        "uiSchema": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Uischema"
+        }
+      },
+      "required": [
+        "interruptId"
+      ],
+      "title": "FormPart",
+      "type": "object"
+    },
+    "GridPart": {
+      "additionalProperties": false,
+      "description": "A server-mode grid paging through ``GET /v1/datasets/{datasetId}``.",
+      "properties": {
+        "columns": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Columns",
+          "type": "array"
+        },
+        "datasetRef": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DatasetRef"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "features": {
+          "additionalProperties": true,
+          "title": "Features",
+          "type": "object"
+        },
+        "pageSize": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pagesize"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Title"
+        },
+        "type": {
+          "const": "grid",
+          "default": "grid",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "title": "GridPart",
+      "type": "object"
+    },
+    "HtmlPart": {
+      "additionalProperties": false,
+      "description": "A builder ``htmlTemplate`` view, sanitized on the server; shown in a sandboxed ``iframe``.",
+      "properties": {
+        "datasetRefs": {
+          "items": {
+            "$ref": "#/$defs/DatasetRef"
+          },
+          "title": "Datasetrefs",
+          "type": "array"
+        },
+        "html": {
+          "default": "",
+          "title": "Html",
+          "type": "string"
+        },
+        "type": {
+          "const": "html",
+          "default": "html",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "title": "HtmlPart",
+      "type": "object"
+    },
+    "JsonPart": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "json",
+          "default": "json",
+          "title": "Type",
+          "type": "string"
+        },
+        "value": {
+          "default": null,
+          "title": "Value"
+        }
+      },
+      "title": "JsonPart",
+      "type": "object"
+    },
+    "MarkdownPart": {
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "default": "",
+          "title": "Text",
+          "type": "string"
+        },
+        "type": {
+          "const": "markdown",
+          "default": "markdown",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "title": "MarkdownPart",
+      "type": "object"
+    },
+    "TableColumn": {
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "title": "Key",
+          "type": "string"
+        },
+        "label": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Label"
+        },
+        "type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Type"
+        }
+      },
+      "required": [
+        "key"
+      ],
+      "title": "TableColumn",
+      "type": "object"
+    },
+    "TablePart": {
+      "additionalProperties": false,
+      "description": "Rows inline, at most ``content.inlineRowLimit``.",
+      "properties": {
+        "columns": {
+          "items": {
+            "$ref": "#/$defs/TableColumn"
+          },
+          "title": "Columns",
+          "type": "array"
+        },
+        "datasetRef": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DatasetRef"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "rows": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Rows",
+          "type": "array"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Title"
+        },
+        "type": {
+          "const": "table",
+          "default": "table",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "title": "TablePart",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "data": {
+      "$ref": "#/$defs/ContentPartData"
+    },
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "nodeId": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Nodeid"
+    },
+    "path": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Path"
+    },
+    "runId": {
+      "title": "Runid",
+      "type": "string"
+    },
+    "seq": {
+      "minimum": 1,
+      "title": "Seq",
+      "type": "integer"
+    },
+    "truncated": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Truncated"
+    },
+    "ts": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+      "title": "Ts",
+      "type": "string"
+    },
+    "type": {
+      "const": "content.part",
+      "title": "Type",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "runId",
+    "seq",
+    "ts",
+    "type",
+    "data"
+  ],
+  "title": "ContentPartEvent",
+  "type": "object"
+}

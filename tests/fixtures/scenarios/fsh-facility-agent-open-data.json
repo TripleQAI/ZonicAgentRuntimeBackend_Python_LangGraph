@@ -1,0 +1,551 @@
+[
+  [
+    {
+      "data": {
+        "agenticWorkflowId": "<uuid>",
+        "sessionId": "<uuid>",
+        "title": "Which facilities are over budget?"
+      },
+      "seq": 1,
+      "type": "run.started"
+    },
+    {
+      "data": {
+        "nodeName": "Start_1",
+        "nodeType": "start",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "start_1781399185229_ojarn",
+      "seq": 2,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 160,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "start_1781399185229_ojarn",
+      "seq": 3,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "facility-agent",
+        "nodeType": "agent",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "agent_1781411386704_1bab6",
+      "seq": 4,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "text": "Analysing."
+      },
+      "nodeId": "agent_1781411386704_1bab6",
+      "seq": 5,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "inputSummary": {
+          "bytes": 52,
+          "fields": 2,
+          "type": "object"
+        },
+        "toolName": "handoff_to",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "agent_1781411386704_1bab6",
+      "seq": 6,
+      "type": "tool.started"
+    },
+    {
+      "data": {
+        "status": "success",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "agent_1781411386704_1bab6",
+      "seq": 7,
+      "type": "tool.finished"
+    },
+    {
+      "data": {
+        "handles": [
+          "handoff-llm_1781461849092_eqvjs"
+        ],
+        "outputSummary": {
+          "bytes": 267,
+          "fields": 5,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 5,
+          "modelCalls": 1,
+          "outputTokens": 6,
+          "totalTokens": 11
+        }
+      },
+      "nodeId": "agent_1781411386704_1bab6",
+      "seq": 8,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "data-analysis",
+        "nodeType": "llm",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "llm_1781461849092_eqvjs",
+      "seq": 9,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "text": "Three "
+      },
+      "nodeId": "llm_1781461849092_eqvjs",
+      "seq": 10,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "text": "facilities exceed their budget."
+      },
+      "nodeId": "llm_1781461849092_eqvjs",
+      "seq": 11,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "keys": [
+          "generatedHtml"
+        ]
+      },
+      "nodeId": "llm_1781461849092_eqvjs",
+      "seq": 12,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 48,
+          "fields": 1,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 5,
+          "modelCalls": 1,
+          "outputTokens": 5,
+          "totalTokens": 10
+        }
+      },
+      "nodeId": "llm_1781461849092_eqvjs",
+      "seq": 13,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "report",
+        "nodeType": "view",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "view_1781411461424_lx9il",
+      "seq": 14,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "part": {
+          "datasetRefs": [],
+          "html": "<div>\n  \n</div>",
+          "type": "html"
+        },
+        "type": "html"
+      },
+      "nodeId": "view_1781411461424_lx9il",
+      "seq": 15,
+      "type": "content.part"
+    },
+    {
+      "data": {
+        "keys": [
+          "view"
+        ]
+      },
+      "nodeId": "view_1781411461424_lx9il",
+      "seq": 16,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "variable.path"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "view_1781411461424_lx9il",
+      "seq": 17,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 28,
+          "fields": 1,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "view_1781411461424_lx9il",
+      "seq": 18,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "Output_1",
+        "nodeType": "output",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "output_1781411395307_68fja",
+      "seq": 19,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "result"
+        ]
+      },
+      "nodeId": "output_1781411395307_68fja",
+      "seq": 20,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 538,
+          "fields": 1,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "output_1781411395307_68fja",
+      "seq": 21,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "result": {
+          "messages": "[{\"role\": \"assistant\", \"content\": [{\"name\": \"handoff_to\", \"args\": {\"target\": \"data-analysis\", \"reason\": \"needs analysis\"}, \"id\": \"call_0\", \"type\": \"tool_call\"}], \"thread\": \"messages\", \"nodeId\": \"agent_1781411386704_1bab6\"}, {\"role\": \"tool\", \"content\": \"Handing off to data-analysis.\", \"thread\": \"messages\", \"nodeId\": \"agent_1781411386704_1bab6\"}, {\"role\": \"assistant\", \"content\": \"Analysing.\", \"thread\": \"messages\", \"nodeId\": \"agent_1781411386704_1bab6\"}]"
+        },
+        "usage": {
+          "inputTokens": 10,
+          "modelCalls": 2,
+          "outputTokens": 11,
+          "totalTokens": 21
+        }
+      },
+      "seq": 22,
+      "type": "run.completed"
+    }
+  ],
+  [
+    {
+      "data": {
+        "agenticWorkflowId": "<uuid>",
+        "sessionId": "<uuid>"
+      },
+      "seq": 1,
+      "type": "run.started"
+    },
+    {
+      "data": {
+        "nodeName": "Start_1",
+        "nodeType": "start",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "start_1781399185229_ojarn",
+      "seq": 2,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 154,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "start_1781399185229_ojarn",
+      "seq": 3,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "facility-agent",
+        "nodeType": "agent",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "agent_1781411386704_1bab6",
+      "seq": 4,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "inputSummary": {
+          "bytes": 57,
+          "fields": 2,
+          "type": "object"
+        },
+        "toolName": "handoff_to",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "agent_1781411386704_1bab6",
+      "seq": 5,
+      "type": "tool.started"
+    },
+    {
+      "data": {
+        "status": "success",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "agent_1781411386704_1bab6",
+      "seq": 6,
+      "type": "tool.finished"
+    },
+    {
+      "data": {
+        "handles": [
+          "handoff-llm_1781411428279_slek0"
+        ],
+        "outputSummary": {
+          "bytes": 264,
+          "fields": 5,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 30,
+          "modelCalls": 1,
+          "outputTokens": 6,
+          "totalTokens": 36
+        }
+      },
+      "nodeId": "agent_1781411386704_1bab6",
+      "seq": 7,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "sql-query-generator",
+        "nodeType": "llm",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "llm_1781411428279_slek0",
+      "seq": 8,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "text": "SELECT "
+      },
+      "nodeId": "llm_1781411428279_slek0",
+      "seq": 9,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "text": "* FROM sample_open_data.facility LIMIT 10"
+      },
+      "nodeId": "llm_1781411428279_slek0",
+      "seq": 10,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "keys": [
+          "sqlQuery"
+        ]
+      },
+      "nodeId": "llm_1781411428279_slek0",
+      "seq": 11,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 59,
+          "fields": 1,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 155,
+          "modelCalls": 1,
+          "outputTokens": 6,
+          "totalTokens": 161
+        }
+      },
+      "nodeId": "llm_1781411428279_slek0",
+      "seq": 12,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "Rule_1",
+        "nodeType": "rule",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "rule_1781463975269_lk2qj",
+      "seq": 13,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "flow.useDBQuery"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "rule_1781463975269_lk2qj",
+      "seq": 14,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "r_else"
+        ],
+        "outputSummary": {
+          "bytes": 33,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "rule_1781463975269_lk2qj",
+      "seq": 15,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "facility-query",
+        "nodeType": "http_request",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "http_request_1781411419778_o4s99",
+      "seq": 16,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 2710,
+          "fields": 5,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "http_request_1781411419778_o4s99",
+      "seq": 17,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "Output_1",
+        "nodeType": "output",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "output_1781411395307_68fja",
+      "seq": 18,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "result"
+        ]
+      },
+      "nodeId": "output_1781411395307_68fja",
+      "seq": 19,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 1199,
+          "fields": 1,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "output_1781411395307_68fja",
+      "seq": 20,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "result": {
+          "messages": "[{\"role\": \"user\", \"content\": \"Which facilities are over budget?\", \"thread\": \"messages\"}, {\"role\": \"assistant\", \"content\": \"Analysing.\", \"nodeId\": \"agent_1781411386704_1bab6\", \"thread\": \"messages\"}, {\"role\": \"assistant\", \"content\": \"[{\\\"role\\\": \\\"assistant\\\", \\\"content\\\": [{\\\"name\\\": \\\"handoff_to\\\", \\\"args\\\": {\\\"target\\\": \\\"data-analysis\\\", \\\"reason\\\": \\\"needs analysis\\\"}, \\\"id\\\": \\\"call_0\\\", \\\"type\\\": \\\"tool_call\\\"}], \\\"thread\\\": \\\"messages\\\", \\\"nodeId\\\": \\\"agent\", \"thread\": \"messages\"}, {\"role\": \"assistant\", \"content\": [{\"name\": \"handoff_to\", \"args\": {\"target\": \"sql-query-generator\", \"reason\": \"needs a query\"}, \"id\": \"call_0\", \"type\": \"tool_call\"}], \"thread\": \"messages\", \"nodeId\": \"agent_1781411386704_1bab6\"}, {\"role\": \"tool\", \"content\": \"Handing off to sql-query-generator.\", \"thread\": \"messages\", \"nodeId\": \"agent_1781411386704_1bab6\"}, {\"role\": \"assistant\", \"content\": {\"text\": \"SELECT * FROM sample_open_data.facility LIMIT 10\"}, \"thread\": \"messages\", \"nodeId\": \"llm_1781411428279_slek0\"}]"
+        },
+        "usage": {
+          "inputTokens": 185,
+          "modelCalls": 2,
+          "outputTokens": 12,
+          "totalTokens": 197
+        }
+      },
+      "seq": 21,
+      "type": "run.completed"
+    }
+  ]
+]

@@ -1,0 +1,56 @@
+{
+  "description": "The flow values each workflow's tools are recorded with (plan Sections 19.4 and 19.6): user 1809, 1 January to 31 March 2024, facility red hook, reference periods Q1 2023 (and Q1 2022), month 2024-01. A scenario that sets the same flow values is answered by these recordings (case F-09). `npm run record:fixtures` reads this file.",
+  "workflows": {
+    "fsh-energy-agent": [
+      {
+        "label": "Q1 2024, every facility, electricity, against Q1 2023 and Q1 2022",
+        "flow": {
+          "newPeriodStart": "2024-01-01",
+          "newPeriodEnd": "2024-03-31",
+          "utilityType": "Electricity",
+          "historicalReferencePeriodStart": "2023-01-01,2022-01-01",
+          "historicalReferencePeriodEnd": "2023-03-31,2022-03-31"
+        }
+      },
+      {
+        "label": "Q1 2024, red hook, against Q1 2023",
+        "flow": {
+          "newPeriodStart": "2024-01-01",
+          "newPeriodEnd": "2024-03-31",
+          "facilityName": "red hook",
+          "historicalReferencePeriodStart": "2023-01-01",
+          "historicalReferencePeriodEnd": "2023-03-31"
+        }
+      },
+      {
+        "label": "no user: the tools' validation error",
+        "flow": { "userId": "", "newPeriodStart": "2024-01-01", "newPeriodEnd": "2024-03-31" }
+      },
+      {
+        "label": "four reference periods: the historical tool's validation error",
+        "flow": {
+          "newPeriodStart": "2024-01-01",
+          "newPeriodEnd": "2024-03-31",
+          "historicalReferencePeriodStart": "2023-01-01,2022-01-01,2021-01-01,2020-01-01",
+          "historicalReferencePeriodEnd": "2023-03-31,2022-03-31,2021-03-31,2020-03-31"
+        }
+      }
+    ],
+    "fsh-facility-agent": [{ "label": "the static facility query and the NYC Open Data call", "flow": {} }],
+    "fsh-risk-agent": [{ "label": "the static disaster query and the OpenFEMA call", "flow": {} }],
+    "facility_operations_swarm": [
+      {
+        "label": "red hook, electricity, Q1 2024 against Q1 2023",
+        "flow": {
+          "facilityName": "red hook",
+          "utilityType": "Electricity",
+          "periodStart": "2024-01-01",
+          "periodEnd": "2024-03-31",
+          "periodStartMonth": "2024-01",
+          "referencePeriodStart": "2023-01-01",
+          "referencePeriodEnd": "2023-03-31"
+        }
+      }
+    ]
+  }
+}

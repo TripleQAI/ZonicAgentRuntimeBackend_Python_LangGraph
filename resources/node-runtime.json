@@ -39,6 +39,7 @@
       "io": {"inputs": [{"name": "task", "schema": {"ref": "port.text@1"}, "required": true, "binding": {"configPath": "config.taskMapping", "template": "{{system.userQuery}}"}}], "output": {"schema": {"ref": "zonic.swarm-result@1"}, "map": {"status": "$.status", "text": "$.text", "finalAgent": "$.finalAgent", "nodeHistory": "$.nodeHistory", "executionTimeMs": "$.executionTimeMs"}}},
       "options": { "pattern": "swarm" },
       "timeoutSecondsFrom": "config.executionTimeoutSeconds",
+      "timeoutSeconds": 900,
       "optionalHandles": ["error"],
       "observation": { "type": "agent", "captureInput": "full", "captureOutput": "full" }
     },
@@ -64,7 +65,16 @@
     "human_input": {
       "kind": "interrupt",
       "io": {"inputs": [{"name": "prompt", "schema": {"ref": "port.text@1"}, "required": false, "binding": {"configPath": "config.prompt"}}], "output": {"schema": {"ref": "zonic.value@1"}, "map": {"value": "$.value"}}},
-      "options": { "form": "input" },
+      "options": {
+        "form": "input",
+        "valueSchemas": {
+          "text": { "type": "string" },
+          "number": { "type": "number" },
+          "file": { "type": "string", "description": "A reference to an uploaded file" },
+          "choice": { "type": "string" }
+        },
+        "defaultInputType": "text"
+      },
       "observation": { "type": "span", "captureInput": "summary", "captureOutput": "none" }
     },
     "workflow": {
@@ -89,7 +99,7 @@
     },
     "http_request": {
       "kind": "http",
-      "io": {"inputs": [{"name": "url", "schema": {"ref": "port.text@1"}, "required": false, "binding": {"configPath": "config.url"}}, {"name": "headers", "schema": {"ref": "port.mapping-list@1"}, "required": false, "binding": {"configPath": "config.headers"}}, {"name": "body", "schema": {"ref": "port.value@1"}, "required": false, "binding": {"configPath": "config.body"}}], "output": {"schema": {"ref": "zonic.http-response@1"}, "map": {"status": "$.status", "headers": "$.headers", "body": "$.body", "json": "$.json", "datasetRef": "$.datasetRef"}}},
+      "io": {"inputs": [{"name": "url", "schema": {"ref": "port.text@1"}, "required": false, "binding": {"configPath": "config.url", "encode": "uriComponent"}}, {"name": "headers", "schema": {"ref": "port.mapping-list@1"}, "required": false, "binding": {"configPath": "config.headers"}}, {"name": "body", "schema": {"ref": "port.value@1"}, "required": false, "binding": {"configPath": "config.body"}}], "output": {"schema": {"ref": "zonic.http-response@1"}, "map": {"status": "$.status", "headers": "$.headers", "body": "$.body", "json": "$.json", "datasetRef": "$.datasetRef"}}},
       "optionalHandles": ["error"],
       "retry": { "maxAttempts": 2, "initialIntervalSeconds": 0.5, "on": ["TIMEOUT", "UPSTREAM_5XX"], "methods": ["GET", "HEAD"] },
       "observation": { "type": "tool", "captureInput": "summary", "captureOutput": "summary" }
@@ -116,7 +126,7 @@
     },
     "view": {
       "kind": "view",
-      "io": {"inputs": [{"name": "data", "schema": {"ref": "port.value@1"}, "required": false, "binding": {"configPath": "config.templateConfig"}}, {"name": "html", "schema": {"ref": "port.text@1"}, "required": false, "binding": {"configPath": "config.htmlTemplate"}}], "output": {"schema": {"ref": "zonic.mapping@1"}, "extensions": ["ext.view.html@1"], "map": {"html": "$.html", "...": "$.fields"}}},
+      "io": {"inputs": [{"name": "data", "schema": {"ref": "port.value@1"}, "required": false, "binding": {"configPath": "config.templateConfig"}}, {"name": "html", "schema": {"ref": "port.text@1"}, "required": false, "binding": {"configPath": "config.htmlTemplate", "encode": "html"}}], "output": {"schema": {"ref": "zonic.mapping@1"}, "extensions": ["ext.view.html@1"], "map": {"html": "$.html", "...": "$.fields"}}},
       "observation": { "type": "span", "captureInput": "summary", "captureOutput": "summary" }
     },
     "output": {

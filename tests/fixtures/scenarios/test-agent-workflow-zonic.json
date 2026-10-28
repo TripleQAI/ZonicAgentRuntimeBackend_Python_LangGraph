@@ -1,0 +1,299 @@
+[
+  [
+    {
+      "data": {
+        "agenticWorkflowId": "<uuid>",
+        "sessionId": "<uuid>",
+        "title": "Hello there"
+      },
+      "seq": 1,
+      "type": "run.started"
+    },
+    {
+      "data": {
+        "nodeName": "Start_1",
+        "nodeType": "start",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "start_1781386328321_q6vy9",
+      "seq": 2,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 94,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "start_1781386328321_q6vy9",
+      "seq": 3,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "Agent_1",
+        "nodeType": "agent",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "agent_1781386678857_qu9vs",
+      "seq": 4,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "text": "Hello! "
+      },
+      "nodeId": "agent_1781386678857_qu9vs",
+      "seq": 5,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "text": "How can I help?"
+      },
+      "nodeId": "agent_1781386678857_qu9vs",
+      "seq": 6,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 99,
+          "fields": 4,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 2,
+          "modelCalls": 1,
+          "outputTokens": 5,
+          "totalTokens": 7
+        }
+      },
+      "nodeId": "agent_1781386678857_qu9vs",
+      "seq": 7,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "Output_1",
+        "nodeType": "output",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "output_1781386683842_9iyu6",
+      "seq": 8,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "result"
+        ]
+      },
+      "nodeId": "output_1781386683842_9iyu6",
+      "seq": 9,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "code": "OUTPUT_MAPPING_MISSING",
+        "details": {},
+        "message": "The output step has no mapping; the last answer was used."
+      },
+      "nodeId": "output_1781386683842_9iyu6",
+      "seq": 10,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 2,
+          "fields": 0,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "output_1781386683842_9iyu6",
+      "seq": 11,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "result": {
+          "text": "Hello! How can I help?"
+        },
+        "usage": {
+          "inputTokens": 2,
+          "modelCalls": 1,
+          "outputTokens": 5,
+          "totalTokens": 7
+        }
+      },
+      "seq": 12,
+      "type": "run.completed"
+    }
+  ],
+  [
+    {
+      "data": {
+        "agenticWorkflowId": "<uuid>",
+        "sessionId": "<uuid>"
+      },
+      "seq": 1,
+      "type": "run.started"
+    },
+    {
+      "data": {
+        "nodeName": "Start_1",
+        "nodeType": "start",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "start_1781386328321_q6vy9",
+      "seq": 2,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 88,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "start_1781386328321_q6vy9",
+      "seq": 3,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "Agent_1",
+        "nodeType": "agent",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "agent_1781386678857_qu9vs",
+      "seq": 4,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "text": "Still "
+      },
+      "nodeId": "agent_1781386678857_qu9vs",
+      "seq": 5,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "text": "here."
+      },
+      "nodeId": "agent_1781386678857_qu9vs",
+      "seq": 6,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 77,
+          "fields": 4,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 9,
+          "modelCalls": 1,
+          "outputTokens": 2,
+          "totalTokens": 11
+        }
+      },
+      "nodeId": "agent_1781386678857_qu9vs",
+      "seq": 7,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "Output_1",
+        "nodeType": "output",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "output_1781386683842_9iyu6",
+      "seq": 8,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "result"
+        ]
+      },
+      "nodeId": "output_1781386683842_9iyu6",
+      "seq": 9,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "code": "OUTPUT_MAPPING_MISSING",
+        "details": {},
+        "message": "The output step has no mapping; the last answer was used."
+      },
+      "nodeId": "output_1781386683842_9iyu6",
+      "seq": 10,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 2,
+          "fields": 0,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "output_1781386683842_9iyu6",
+      "seq": 11,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "result": {
+          "text": "Still here."
+        },
+        "usage": {
+          "inputTokens": 9,
+          "modelCalls": 1,
+          "outputTokens": 2,
+          "totalTokens": 11
+        }
+      },
+      "seq": 12,
+      "type": "run.completed"
+    }
+  ]
+]

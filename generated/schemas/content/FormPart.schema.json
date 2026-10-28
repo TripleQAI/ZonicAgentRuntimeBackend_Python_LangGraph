@@ -1,0 +1,39 @@
+{
+  "additionalProperties": false,
+  "description": "A schema-driven form answering an interrupt (design 9.4).",
+  "properties": {
+    "interruptId": {
+      "title": "Interruptid",
+      "type": "string"
+    },
+    "schema": {
+      "additionalProperties": true,
+      "title": "Schema",
+      "type": "object"
+    },
+    "type": {
+      "const": "form",
+      "default": "form",
+      "title": "Type",
+      "type": "string"
+    },
+    "uiSchema": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Uischema"
+    }
+  },
+  "required": [
+    "interruptId"
+  ],
+  "title": "FormPart",
+  "type": "object"
+}

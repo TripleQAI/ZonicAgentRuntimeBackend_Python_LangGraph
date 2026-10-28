@@ -10,9 +10,18 @@
           "title": "Corsorigins",
           "type": "array"
         },
+        "defaultPageSize": {
+          "exclusiveMinimum": 0,
+          "title": "Defaultpagesize",
+          "type": "integer"
+        },
         "docsEnabled": {
           "title": "Docsenabled",
           "type": "boolean"
+        },
+        "internalAddress": {
+          "title": "Internaladdress",
+          "type": "string"
         },
         "internalPort": {
           "exclusiveMaximum": 65536,
@@ -24,13 +33,27 @@
           "exclusiveMinimum": 0,
           "title": "Maxbodybytes",
           "type": "integer"
+        },
+        "maxPageSize": {
+          "exclusiveMinimum": 0,
+          "title": "Maxpagesize",
+          "type": "integer"
+        },
+        "sessionTitleChars": {
+          "exclusiveMinimum": 0,
+          "title": "Sessiontitlechars",
+          "type": "integer"
         }
       },
       "required": [
         "docsEnabled",
         "corsOrigins",
         "maxBodyBytes",
-        "internalPort"
+        "internalPort",
+        "internalAddress",
+        "defaultPageSize",
+        "maxPageSize",
+        "sessionTitleChars"
       ],
       "title": "ApiSettings",
       "type": "object"
@@ -38,9 +61,24 @@
     "AsyncRunSettings": {
       "additionalProperties": false,
       "properties": {
+        "callbackBackoffMilliseconds": {
+          "minimum": 0,
+          "title": "Callbackbackoffmilliseconds",
+          "type": "integer"
+        },
         "callbackRetryAttempts": {
           "minimum": 0,
           "title": "Callbackretryattempts",
+          "type": "integer"
+        },
+        "callbackSignatureHeader": {
+          "minLength": 1,
+          "title": "Callbacksignatureheader",
+          "type": "string"
+        },
+        "callbackTimeoutMilliseconds": {
+          "exclusiveMinimum": 0,
+          "title": "Callbacktimeoutmilliseconds",
           "type": "integer"
         },
         "claimBatch": {
@@ -69,7 +107,10 @@
         "idleClaimIntervalMilliseconds",
         "leaseSeconds",
         "claimBatch",
-        "callbackRetryAttempts"
+        "callbackRetryAttempts",
+        "callbackSignatureHeader",
+        "callbackTimeoutMilliseconds",
+        "callbackBackoffMilliseconds"
       ],
       "title": "AsyncRunSettings",
       "type": "object"
@@ -114,6 +155,13 @@
           "title": "Clockskewseconds",
           "type": "integer"
         },
+        "internalMessageRoles": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Internalmessageroles",
+          "type": "array"
+        },
         "jwksCacheSeconds": {
           "exclusiveMinimum": 0,
           "title": "Jwkscacheseconds",
@@ -123,7 +171,8 @@
       "required": [
         "claims",
         "jwksCacheSeconds",
-        "clockSkewSeconds"
+        "clockSkewSeconds",
+        "internalMessageRoles"
       ],
       "title": "AuthSettings",
       "type": "object"
@@ -217,7 +266,32 @@
     },
     "ContentSettings": {
       "additionalProperties": false,
+      "description": "Content parts (P3-08): inline table rows, the ECharts option keys a chart may use, and the\ntags and attributes a sanitized ``html`` part keeps (``*`` for every tag).",
       "properties": {
+        "chartOptionKeys": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Chartoptionkeys",
+          "type": "array"
+        },
+        "htmlAllowedAttributes": {
+          "additionalProperties": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "title": "Htmlallowedattributes",
+          "type": "object"
+        },
+        "htmlAllowedTags": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Htmlallowedtags",
+          "type": "array"
+        },
         "inlineRowLimit": {
           "exclusiveMinimum": 0,
           "title": "Inlinerowlimit",
@@ -225,7 +299,10 @@
         }
       },
       "required": [
-        "inlineRowLimit"
+        "inlineRowLimit",
+        "chartOptionKeys",
+        "htmlAllowedTags",
+        "htmlAllowedAttributes"
       ],
       "title": "ContentSettings",
       "type": "object"
@@ -254,6 +331,11 @@
     "DatasetSettings": {
       "additionalProperties": false,
       "properties": {
+        "cacheTimeoutMilliseconds": {
+          "exclusiveMinimum": 0,
+          "title": "Cachetimeoutmilliseconds",
+          "type": "integer"
+        },
         "cacheTtlSeconds": {
           "exclusiveMinimum": 0,
           "title": "Cachettlseconds",
@@ -276,7 +358,8 @@
       "required": [
         "store",
         "cacheTtlSeconds",
-        "chunkBytes"
+        "chunkBytes",
+        "cacheTimeoutMilliseconds"
       ],
       "title": "DatasetSettings",
       "type": "object"
@@ -429,6 +512,22 @@
       "title": "ExportSettings",
       "type": "object"
     },
+    "ExternalAgentSettings": {
+      "additionalProperties": false,
+      "description": "External agent nodes (P3-06): the wait before retry ``n`` is ``n`` times this.",
+      "properties": {
+        "retryBackoffMilliseconds": {
+          "minimum": 0,
+          "title": "Retrybackoffmilliseconds",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "retryBackoffMilliseconds"
+      ],
+      "title": "ExternalAgentSettings",
+      "type": "object"
+    },
     "FeatureFlags": {
       "additionalProperties": false,
       "properties": {
@@ -539,6 +638,49 @@
       "title": "GatewaySettings",
       "type": "object"
     },
+    "GuardrailSettings": {
+      "additionalProperties": false,
+      "description": "Guardrail nodes and hooks (P3-06, P3-10): the policy model (empty: the catalog default),\nthe policies by name, and the Bedrock Guardrails region (empty: off).",
+      "properties": {
+        "bedrockRegion": {
+          "title": "Bedrockregion",
+          "type": "string"
+        },
+        "defaultPolicy": {
+          "title": "Defaultpolicy",
+          "type": "string"
+        },
+        "defaultVersion": {
+          "title": "Defaultversion",
+          "type": "string"
+        },
+        "model": {
+          "title": "Model",
+          "type": "string"
+        },
+        "policies": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Policies",
+          "type": "object"
+        },
+        "prompt": {
+          "title": "Prompt",
+          "type": "string"
+        }
+      },
+      "required": [
+        "model",
+        "policies",
+        "bedrockRegion",
+        "defaultVersion",
+        "prompt",
+        "defaultPolicy"
+      ],
+      "title": "GuardrailSettings",
+      "type": "object"
+    },
     "HistorySettings": {
       "additionalProperties": false,
       "properties": {
@@ -574,6 +716,16 @@
           "title": "Asyncqueuesize",
           "type": "integer"
         },
+        "cacheMaxEntries": {
+          "exclusiveMinimum": 0,
+          "title": "Cachemaxentries",
+          "type": "integer"
+        },
+        "defaultTimeoutMilliseconds": {
+          "exclusiveMinimum": 0,
+          "title": "Defaulttimeoutmilliseconds",
+          "type": "integer"
+        },
         "documentAllowedTypes": {
           "items": {
             "type": "string"
@@ -581,16 +733,59 @@
           "title": "Documentallowedtypes",
           "type": "array"
         },
+        "endpoints": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Endpoints",
+          "type": "object"
+        },
+        "maskReplacement": {
+          "title": "Maskreplacement",
+          "type": "string"
+        },
         "maxRetriesPerNode": {
           "minimum": 0,
           "title": "Maxretriespernode",
           "type": "integer"
+        },
+        "patterns": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Patterns",
+          "type": "object"
+        },
+        "rateLimitMaxKeys": {
+          "exclusiveMinimum": 0,
+          "title": "Ratelimitmaxkeys",
+          "type": "integer"
+        },
+        "streamMaskHoldbackChars": {
+          "minimum": 0,
+          "title": "Streammaskholdbackchars",
+          "type": "integer"
+        },
+        "webhookMaskPatterns": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Webhookmaskpatterns",
+          "type": "array"
         }
       },
       "required": [
         "documentAllowedTypes",
         "maxRetriesPerNode",
-        "asyncQueueSize"
+        "asyncQueueSize",
+        "defaultTimeoutMilliseconds",
+        "cacheMaxEntries",
+        "rateLimitMaxKeys",
+        "patterns",
+        "maskReplacement",
+        "webhookMaskPatterns",
+        "endpoints",
+        "streamMaskHoldbackChars"
       ],
       "title": "HookSettings",
       "type": "object"
@@ -654,6 +849,11 @@
           "title": "Defaultexpiryhours",
           "type": "number"
         },
+        "expiryCheckSeconds": {
+          "exclusiveMinimum": 0,
+          "title": "Expirycheckseconds",
+          "type": "number"
+        },
         "onExpiry": {
           "enum": [
             "cancel",
@@ -665,7 +865,8 @@
       },
       "required": [
         "onExpiry",
-        "defaultExpiryHours"
+        "defaultExpiryHours",
+        "expiryCheckSeconds"
       ],
       "title": "InterruptSettings",
       "type": "object"
@@ -673,6 +874,11 @@
     "IoSettings": {
       "additionalProperties": false,
       "properties": {
+        "columnSampleRows": {
+          "exclusiveMinimum": 0,
+          "title": "Columnsamplerows",
+          "type": "integer"
+        },
         "inlineBytes": {
           "exclusiveMinimum": 0,
           "title": "Inlinebytes",
@@ -709,10 +915,32 @@
         "inlineRows",
         "inlineBytes",
         "maxResolvedBytes",
+        "columnSampleRows",
         "outputValidation",
         "templatePathUnknown"
       ],
       "title": "IoSettings",
+      "type": "object"
+    },
+    "MaintenanceSettings": {
+      "additionalProperties": false,
+      "description": "The maintenance schedule (P3-11): partitions ahead, trace and runtime retention, rollups.",
+      "properties": {
+        "enabled": {
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "intervalMinutes": {
+          "exclusiveMinimum": 0,
+          "title": "Intervalminutes",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "enabled",
+        "intervalMinutes"
+      ],
+      "title": "MaintenanceSettings",
       "type": "object"
     },
     "ModelRuntimeSettings": {
@@ -721,6 +949,11 @@
         "executorThreads": {
           "exclusiveMinimum": 0,
           "title": "Executorthreads",
+          "type": "integer"
+        },
+        "llmMaxTurns": {
+          "exclusiveMinimum": 0,
+          "title": "Llmmaxturns",
           "type": "integer"
         },
         "maxRetries": {
@@ -737,7 +970,8 @@
       "required": [
         "executorThreads",
         "maxRetries",
-        "requestTimeoutSeconds"
+        "requestTimeoutSeconds",
+        "llmMaxTurns"
       ],
       "title": "ModelRuntimeSettings",
       "type": "object"
@@ -771,6 +1005,11 @@
           "title": "Exporters",
           "type": "array"
         },
+        "feedbackScoreName": {
+          "minLength": 1,
+          "title": "Feedbackscorename",
+          "type": "string"
+        },
         "partitionMonthsAhead": {
           "minimum": 0,
           "title": "Partitionmonthsahead",
@@ -793,6 +1032,11 @@
           },
           "title": "Traceroles",
           "type": "array"
+        },
+        "usageDefaultDays": {
+          "exclusiveMinimum": 0,
+          "title": "Usagedefaultdays",
+          "type": "integer"
         }
       },
       "required": [
@@ -804,6 +1048,8 @@
         "traceRoles",
         "retentionDays",
         "partitionMonthsAhead",
+        "feedbackScoreName",
+        "usageDefaultDays",
         "export"
       ],
       "title": "ObservabilitySettings",
@@ -919,6 +1165,11 @@
     "RunsSettings": {
       "additionalProperties": false,
       "properties": {
+        "cancelGraceSeconds": {
+          "exclusiveMinimum": 0,
+          "title": "Cancelgraceseconds",
+          "type": "number"
+        },
         "cancelOnDisconnect": {
           "title": "Cancelondisconnect",
           "type": "boolean"
@@ -964,10 +1215,41 @@
         "maxActivePerTenant",
         "syncWaitSeconds",
         "cancelOnDisconnect",
+        "cancelGraceSeconds",
         "idempotencyTtlSeconds",
         "onInstanceLoss"
       ],
       "title": "RunsSettings",
+      "type": "object"
+    },
+    "SandboxSettings": {
+      "additionalProperties": false,
+      "description": "The Script node's sandbox service (P3-07): a Piston API at ``ZONIC_SANDBOX_URL``. Without\none, Script nodes fail with ``FEATURE_DISABLED``. ``languages`` maps a node's language to the\nsandbox's runtime name; any other language is ``SANDBOX_ERROR``.",
+      "properties": {
+        "languages": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Languages",
+          "type": "object"
+        },
+        "maxOutputBytes": {
+          "exclusiveMinimum": 0,
+          "title": "Maxoutputbytes",
+          "type": "integer"
+        },
+        "runTimeoutMilliseconds": {
+          "exclusiveMinimum": 0,
+          "title": "Runtimeoutmilliseconds",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "runTimeoutMilliseconds",
+        "maxOutputBytes",
+        "languages"
+      ],
+      "title": "SandboxSettings",
       "type": "object"
     },
     "ShutdownSettings": {
@@ -1122,12 +1404,63 @@
           ],
           "title": "Contextmode",
           "type": "string"
+        },
+        "handoffAcknowledgement": {
+          "title": "Handoffacknowledgement",
+          "type": "string"
+        },
+        "maxHandoffs": {
+          "exclusiveMinimum": 0,
+          "title": "Maxhandoffs",
+          "type": "integer"
+        },
+        "maxIterations": {
+          "exclusiveMinimum": 0,
+          "title": "Maxiterations",
+          "type": "integer"
+        },
+        "sharedContext": {
+          "$ref": "#/$defs/SwarmSharedContext"
         }
       },
       "required": [
-        "contextMode"
+        "contextMode",
+        "maxHandoffs",
+        "maxIterations",
+        "sharedContext",
+        "handoffAcknowledgement"
       ],
       "title": "SwarmSettings",
+      "type": "object"
+    },
+    "SwarmSharedContext": {
+      "additionalProperties": false,
+      "description": "The lines a member gets before its input in context mode ``shared``; ``{task}``,\n``{history}``, ``{members}`` and ``{message}`` are filled in.",
+      "properties": {
+        "history": {
+          "title": "History",
+          "type": "string"
+        },
+        "members": {
+          "title": "Members",
+          "type": "string"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "task": {
+          "title": "Task",
+          "type": "string"
+        }
+      },
+      "required": [
+        "task",
+        "history",
+        "members",
+        "message"
+      ],
+      "title": "SwarmSharedContext",
       "type": "object"
     },
     "TemplateSettings": {
@@ -1227,11 +1560,17 @@
     "engine": {
       "$ref": "#/$defs/EngineSettings"
     },
+    "externalAgents": {
+      "$ref": "#/$defs/ExternalAgentSettings"
+    },
     "features": {
       "$ref": "#/$defs/FeatureFlags"
     },
     "gateway": {
       "$ref": "#/$defs/GatewaySettings"
+    },
+    "guardrails": {
+      "$ref": "#/$defs/GuardrailSettings"
     },
     "history": {
       "$ref": "#/$defs/HistorySettings"
@@ -1247,6 +1586,9 @@
     },
     "io": {
       "$ref": "#/$defs/IoSettings"
+    },
+    "maintenance": {
+      "$ref": "#/$defs/MaintenanceSettings"
     },
     "models": {
       "$ref": "#/$defs/ModelRuntimeSettings"
@@ -1271,6 +1613,9 @@
     },
     "runs": {
       "$ref": "#/$defs/RunsSettings"
+    },
+    "sandbox": {
+      "$ref": "#/$defs/SandboxSettings"
     },
     "shutdown": {
       "$ref": "#/$defs/ShutdownSettings"
@@ -1313,6 +1658,9 @@
     "swarm",
     "tools",
     "hooks",
+    "guardrails",
+    "externalAgents",
+    "maintenance",
     "sse",
     "stream",
     "shutdown",
@@ -1329,6 +1677,7 @@
     "catalog",
     "caches",
     "features",
+    "sandbox",
     "input",
     "content",
     "retention"

@@ -102,6 +102,11 @@
   "agentStrategies": [
     "react"
   ],
+  "requestInputs": {
+    "message": "text",
+    "query": "text",
+    "attachments": "attachments"
+  },
   "rules": [
     {
       "id": "platform.variables-list",
@@ -686,6 +691,23 @@
         "dropParent": true
       },
       "note": "script outputs schema read as the node's output schema"
+    },
+    {
+      "id": "platform.script-output-hint",
+      "class": "platform",
+      "target": "node",
+      "nodeTypes": [
+        "script"
+      ],
+      "when": {
+        "has": "config.outputSchema"
+      },
+      "op": "setValue",
+      "args": {
+        "path": "config.outputValidation",
+        "value": "warn"
+      },
+      "note": "script outputs schema is a hint in the platform: mismatches are warnings"
     },
     {
       "id": "platform.tool-node",

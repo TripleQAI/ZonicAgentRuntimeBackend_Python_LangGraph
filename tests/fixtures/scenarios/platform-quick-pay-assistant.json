@@ -1,0 +1,533 @@
+[
+  [
+    {
+      "data": {
+        "agenticWorkflowId": "<uuid>",
+        "sessionId": "<uuid>",
+        "title": "Create a request"
+      },
+      "seq": 1,
+      "type": "run.started"
+    },
+    {
+      "data": {
+        "nodeName": "start",
+        "nodeType": "start",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "start",
+      "seq": 2,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "qa_master_data",
+          "questionnareResponses",
+          "supplier_data",
+          "user_context",
+          "user_decision_points"
+        ]
+      },
+      "nodeId": "start",
+      "seq": 3,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "code": "STATE_PATH_EMPTY",
+        "details": {},
+        "message": "the path {{flow.current_state}} resolved to nothing; the state operation is skipped"
+      },
+      "nodeId": "start",
+      "seq": 4,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "nodeOutput.interface.inputs.attachments",
+            "nodeOutput.interface.inputs.qa_master_data",
+            "nodeOutput.interface.inputs.questionnaireForSummary",
+            "nodeOutput.interface.inputs.supplier_data",
+            "nodeOutput.interface.inputs.user_context",
+            "nodeOutput.interface.inputs.user_decision_points"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "start",
+      "seq": 5,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 109,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "start",
+      "seq": 6,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "rule_0",
+        "nodeType": "rule",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "ex0cnyj",
+      "seq": 7,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "r-sl5yk8a5"
+        ],
+        "outputSummary": {
+          "bytes": 64,
+          "fields": 3,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "ex0cnyj",
+      "seq": 8,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "knowledge_agent",
+        "nodeType": "agent",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "8mw9yfz",
+      "seq": 9,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "text": "Noted."
+      },
+      "nodeId": "8mw9yfz",
+      "seq": 10,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "keys": [
+          "knowledge"
+        ]
+      },
+      "nodeId": "8mw9yfz",
+      "seq": 11,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "nodeOutput.text",
+            "nodeOutput.toolResults.quick_pay_complete_questionnaire.text"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "8mw9yfz",
+      "seq": 12,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 67,
+          "fields": 4,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 11,
+          "modelCalls": 1,
+          "outputTokens": 1,
+          "totalTokens": 12
+        }
+      },
+      "nodeId": "8mw9yfz",
+      "seq": 13,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "quick_pay",
+        "nodeType": "agent",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "qp_agent_001",
+      "seq": 14,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "inputSummary": {
+          "bytes": 151,
+          "fields": 5,
+          "type": "object"
+        },
+        "toolName": "getinternalfileidsbyuploadedfilesids",
+        "toolUseId": "route-1"
+      },
+      "nodeId": "qp_agent_001",
+      "seq": 15,
+      "type": "tool.started"
+    },
+    {
+      "data": {
+        "status": "success",
+        "toolUseId": "route-1"
+      },
+      "nodeId": "qp_agent_001",
+      "seq": 16,
+      "type": "tool.finished"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "flow.knowledge",
+            "flow.qa_master_data.category",
+            "flow.qa_master_data.category.id",
+            "flow.user_context",
+            "flow.user_context.userDateFormat",
+            "flow.user_decision_points.budgetAmount",
+            "flow.user_decision_points.msp_question_1",
+            "nodeOutput.text"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "qp_agent_001",
+      "seq": 17,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "handoff-txfqfxu"
+        ],
+        "outputSummary": {
+          "bytes": 542,
+          "fields": 5,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 1748,
+          "modelCalls": 1,
+          "outputTokens": 12,
+          "totalTokens": 1760
+        }
+      },
+      "nodeId": "qp_agent_001",
+      "seq": 18,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "getinternalfileidsbyuploadedfilesids",
+        "nodeType": "tool",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "txfqfxu",
+      "seq": 19,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 11,
+          "fields": 1,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "txfqfxu",
+      "seq": 20,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "iteration": 2,
+        "loopId": "loop:qp_agent_001"
+      },
+      "nodeId": "qp_agent_001",
+      "seq": 21,
+      "type": "loop.iteration"
+    },
+    {
+      "data": {
+        "nodeName": "quick_pay",
+        "nodeType": "agent",
+        "resumed": false,
+        "visit": 2
+      },
+      "nodeId": "qp_agent_001",
+      "seq": 22,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "inputSummary": {
+          "bytes": 151,
+          "fields": 5,
+          "type": "object"
+        },
+        "toolName": "getinternalfileidsbyuploadedfilesids",
+        "toolUseId": "route-2"
+      },
+      "nodeId": "qp_agent_001",
+      "seq": 23,
+      "type": "tool.started"
+    },
+    {
+      "data": {
+        "status": "success",
+        "toolUseId": "route-2"
+      },
+      "nodeId": "qp_agent_001",
+      "seq": 24,
+      "type": "tool.finished"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "flow.knowledge",
+            "flow.qa_master_data.category",
+            "flow.qa_master_data.category.id",
+            "flow.user_context",
+            "flow.user_context.userDateFormat",
+            "flow.user_decision_points.budgetAmount",
+            "flow.user_decision_points.msp_question_1"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "qp_agent_001",
+      "seq": 25,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "handoff-txfqfxu"
+        ],
+        "outputSummary": {
+          "bytes": 542,
+          "fields": 5,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 1748,
+          "modelCalls": 1,
+          "outputTokens": 12,
+          "totalTokens": 1760
+        }
+      },
+      "nodeId": "qp_agent_001",
+      "seq": 26,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "getinternalfileidsbyuploadedfilesids",
+        "nodeType": "tool",
+        "resumed": false,
+        "visit": 2
+      },
+      "nodeId": "txfqfxu",
+      "seq": 27,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 11,
+          "fields": 1,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "txfqfxu",
+      "seq": 28,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "iteration": 3,
+        "loopId": "loop:qp_agent_001"
+      },
+      "nodeId": "qp_agent_001",
+      "seq": 29,
+      "type": "loop.iteration"
+    },
+    {
+      "data": {
+        "nodeName": "quick_pay",
+        "nodeType": "agent",
+        "resumed": false,
+        "visit": 3
+      },
+      "nodeId": "qp_agent_001",
+      "seq": 30,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "text": "All "
+      },
+      "nodeId": "qp_agent_001",
+      "seq": 31,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "text": "done: the request is complete."
+      },
+      "nodeId": "qp_agent_001",
+      "seq": 32,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "flow.knowledge",
+            "flow.qa_master_data.category",
+            "flow.qa_master_data.category.id",
+            "flow.user_context",
+            "flow.user_context.userDateFormat",
+            "flow.user_decision_points.budgetAmount",
+            "flow.user_decision_points.msp_question_1"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "qp_agent_001",
+      "seq": 33,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 123,
+          "fields": 4,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 1748,
+          "modelCalls": 1,
+          "outputTokens": 6,
+          "totalTokens": 1754
+        }
+      },
+      "nodeId": "qp_agent_001",
+      "seq": 34,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "output",
+        "nodeType": "output",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "output",
+      "seq": 35,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "flow.questionnareResponses",
+            "runtime.workflowMetaData.agentName"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "output",
+      "seq": 36,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 1850,
+          "fields": 7,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "output",
+      "seq": 37,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "result": {
+          "current_state": "",
+          "messages": "[{\"role\": \"user\", \"content\": \"Create a request\", \"thread\": \"messages\", \"nodeId\": \"start\"}, {\"role\": \"assistant\", \"content\": \"Noted.\", \"thread\": \"messages\", \"nodeId\": \"8mw9yfz\"}, {\"role\": \"assistant\", \"content\": [{\"name\": \"getinternalfileidsbyuploadedfilesids\", \"args\": {\"event\": \"event-value\", \"data\": {\"sample\": \"data\"}, \"additionalData\": {\"sample\": \"additionalData\"}, \"thoughts\": \"thoughts-value\", \"reasoning\": \"reasoning-value\"}, \"id\": \"route-1\", \"type\": \"tool_call\"}], \"thread\": \"messages\", \"nodeId\": \"qp_agent_001\"}, {\"role\": \"tool\", \"content\": \"Continuing with getinternalfileidsbyuploadedfilesids.\", \"thread\": \"messages\", \"nodeId\": \"qp_agent_001\"}, {\"role\": \"assistant\", \"content\": \"\", \"thread\": \"messages\", \"nodeId\": \"qp_agent_001\"}, {\"role\": \"assistant\", \"content\": [{\"name\": \"getinternalfileidsbyuploadedfilesids\", \"args\": {\"event\": \"event-value\", \"data\": {\"sample\": \"data\"}, \"additionalData\": {\"sample\": \"additionalData\"}, \"thoughts\": \"thoughts-value\", \"reasoning\": \"reasoning-value\"}, \"id\": \"route-2\", \"type\": \"tool_call\"}], \"thread\": \"messages\", \"nodeId\": \"qp_agent_001\"}, {\"role\": \"tool\", \"content\": \"Continuing with getinternalfileidsbyuploadedfilesids.\", \"thread\": \"messages\", \"nodeId\": \"qp_agent_001\"}, {\"role\": \"assistant\", \"content\": \"\", \"thread\": \"messages\", \"nodeId\": \"qp_agent_001\"}, {\"role\": \"assistant\", \"content\": \"All done: the request is complete.\", \"thread\": \"messages\", \"nodeId\": \"qp_agent_001\"}]",
+          "questionnaireResponse": "",
+          "response": "Yes",
+          "selectedAgentId": "<uuid>",
+          "selectedAgentName": "",
+          "user_decision_points": "flow.user_decision_points"
+        },
+        "usage": {
+          "inputTokens": 5255,
+          "modelCalls": 4,
+          "outputTokens": 31,
+          "totalTokens": 5286
+        }
+      },
+      "seq": 38,
+      "type": "run.completed"
+    }
+  ]
+]

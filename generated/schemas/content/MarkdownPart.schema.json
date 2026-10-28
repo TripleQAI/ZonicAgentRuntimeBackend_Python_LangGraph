@@ -1,0 +1,18 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "text": {
+      "default": "",
+      "title": "Text",
+      "type": "string"
+    },
+    "type": {
+      "const": "markdown",
+      "default": "markdown",
+      "title": "Type",
+      "type": "string"
+    }
+  },
+  "title": "MarkdownPart",
+  "type": "object"
+}

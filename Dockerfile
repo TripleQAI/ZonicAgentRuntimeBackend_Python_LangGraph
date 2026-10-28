@@ -21,4 +21,5 @@ RUN useradd --system --uid 10001 runtime
 USER runtime
 
 EXPOSE 8000 9000
-CMD ["/app/.venv/bin/uvicorn", "zonic_runtime.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1", "--loop", "uvloop", "--timeout-graceful-shutdown", "60"]
+# The public port 8000 and the internal port 9000 (/metrics) in one process (zonic_runtime.server).
+CMD ["/app/.venv/bin/python", "-m", "zonic_runtime.server"]

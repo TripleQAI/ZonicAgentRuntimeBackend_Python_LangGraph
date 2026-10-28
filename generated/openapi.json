@@ -1,0 +1,5993 @@
+{
+  "components": {
+    "schemas": {
+      "AgentCard": {
+        "additionalProperties": false,
+        "properties": {
+          "agenticWorkflowId": {
+            "title": "Agenticworkflowid",
+            "type": "string"
+          },
+          "bpc": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bpc"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "displayName": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Displayname"
+          },
+          "name": {
+            "default": "",
+            "title": "Name",
+            "type": "string"
+          },
+          "updatedAt": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updatedat"
+          }
+        },
+        "required": [
+          "agenticWorkflowId"
+        ],
+        "title": "AgentCard",
+        "type": "object"
+      },
+      "AgentCardList": {
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AgentCard"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "title": "AgentCardList",
+        "type": "object"
+      },
+      "AnswerInterruptRequest": {
+        "additionalProperties": false,
+        "description": "``POST /v1/runs/{runId}/interrupts/{interruptId}``: the answer, checked against the\ninterrupt's ``answerSchema``, and the mode the resumed turn runs in.",
+        "properties": {
+          "answer": {
+            "title": "Answer"
+          },
+          "mode": {
+            "default": "stream",
+            "enum": [
+              "stream",
+              "sync",
+              "async"
+            ],
+            "title": "Mode",
+            "type": "string"
+          }
+        },
+        "required": [
+          "answer"
+        ],
+        "title": "AnswerInterruptRequest",
+        "type": "object"
+      },
+      "CardAction": {
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Action"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "payload": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Payload"
+          }
+        },
+        "required": [
+          "label"
+        ],
+        "title": "CardAction",
+        "type": "object"
+      },
+      "CardField": {
+        "additionalProperties": false,
+        "properties": {
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "value": {
+            "default": null,
+            "title": "Value"
+          }
+        },
+        "required": [
+          "label"
+        ],
+        "title": "CardField",
+        "type": "object"
+      },
+      "CardPart": {
+        "additionalProperties": false,
+        "properties": {
+          "actions": {
+            "items": {
+              "$ref": "#/components/schemas/CardAction"
+            },
+            "title": "Actions",
+            "type": "array"
+          },
+          "body": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Body"
+          },
+          "fields": {
+            "items": {
+              "$ref": "#/components/schemas/CardField"
+            },
+            "title": "Fields",
+            "type": "array"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          },
+          "type": {
+            "const": "card",
+            "default": "card",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "title": "CardPart",
+        "type": "object"
+      },
+      "ChartPart": {
+        "additionalProperties": false,
+        "description": "An ECharts option: data only, top-level keys on ``content.chartOptionKeys``, no functions.",
+        "properties": {
+          "datasetRef": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DatasetRef"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "library": {
+            "const": "echarts",
+            "default": "echarts",
+            "title": "Library",
+            "type": "string"
+          },
+          "option": {
+            "additionalProperties": true,
+            "title": "Option",
+            "type": "object"
+          },
+          "type": {
+            "const": "chart",
+            "default": "chart",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "title": "ChartPart",
+        "type": "object"
+      },
+      "CitationPart": {
+        "additionalProperties": false,
+        "properties": {
+          "snippet": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Snippet"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "type": {
+            "const": "citation",
+            "default": "citation",
+            "title": "Type",
+            "type": "string"
+          },
+          "url": {
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "url"
+        ],
+        "title": "CitationPart",
+        "type": "object"
+      },
+      "ContentPartData": {
+        "additionalProperties": false,
+        "description": "One content part a node produced (views), also kept in the turn's answer message.",
+        "properties": {
+          "part": {
+            "discriminator": {
+              "mapping": {
+                "card": "#/components/schemas/CardPart",
+                "chart": "#/components/schemas/ChartPart",
+                "citation": "#/components/schemas/CitationPart",
+                "error": "#/components/schemas/ErrorPart",
+                "file": "#/components/schemas/FilePart",
+                "form": "#/components/schemas/FormPart",
+                "grid": "#/components/schemas/GridPart",
+                "html": "#/components/schemas/HtmlPart",
+                "json": "#/components/schemas/JsonPart",
+                "markdown": "#/components/schemas/MarkdownPart",
+                "table": "#/components/schemas/TablePart"
+              },
+              "propertyName": "type"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/MarkdownPart"
+              },
+              {
+                "$ref": "#/components/schemas/TablePart"
+              },
+              {
+                "$ref": "#/components/schemas/GridPart"
+              },
+              {
+                "$ref": "#/components/schemas/ChartPart"
+              },
+              {
+                "$ref": "#/components/schemas/CardPart"
+              },
+              {
+                "$ref": "#/components/schemas/JsonPart"
+              },
+              {
+                "$ref": "#/components/schemas/FilePart"
+              },
+              {
+                "$ref": "#/components/schemas/HtmlPart"
+              },
+              {
+                "$ref": "#/components/schemas/CitationPart"
+              },
+              {
+                "$ref": "#/components/schemas/ErrorPart"
+              },
+              {
+                "$ref": "#/components/schemas/FormPart"
+              }
+            ],
+            "title": "Part"
+          },
+          "type": {
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "part"
+        ],
+        "title": "ContentPartData",
+        "type": "object"
+      },
+      "ContentPartEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ContentPartData"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "nodeId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Nodeid"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
+          },
+          "runId": {
+            "title": "Runid",
+            "type": "string"
+          },
+          "seq": {
+            "minimum": 1,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "truncated": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Truncated"
+          },
+          "ts": {
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Ts",
+            "type": "string"
+          },
+          "type": {
+            "const": "content.part",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "runId",
+          "seq",
+          "ts",
+          "type",
+          "data"
+        ],
+        "title": "ContentPartEvent",
+        "type": "object"
+      },
+      "CreateSessionRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "agenticWorkflowId": {
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Agenticworkflowid",
+            "type": "string"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          }
+        },
+        "required": [
+          "agenticWorkflowId"
+        ],
+        "title": "CreateSessionRequest",
+        "type": "object"
+      },
+      "DatasetPage": {
+        "additionalProperties": false,
+        "description": "``GET /v1/datasets/{datasetId}``: one page of a dataset's rows, filtered and sorted.",
+        "properties": {
+          "columns": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Columns",
+            "type": "array"
+          },
+          "datasetId": {
+            "title": "Datasetid",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "page": {
+            "minimum": 1.0,
+            "title": "Page",
+            "type": "integer"
+          },
+          "pageSize": {
+            "minimum": 1.0,
+            "title": "Pagesize",
+            "type": "integer"
+          },
+          "rows": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Rows",
+            "type": "array"
+          },
+          "total": {
+            "minimum": 0.0,
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "datasetId",
+          "kind",
+          "total",
+          "page",
+          "pageSize"
+        ],
+        "title": "DatasetPage",
+        "type": "object"
+      },
+      "DatasetRef": {
+        "additionalProperties": false,
+        "description": "Full data of a database, HTTP or tool result, kept outside state (design 9.3). The wire\nshape is the Node.js runtime's (content parts carry it); ``node_id``, ``visit`` and\n``preview`` are this runtime's provenance and inline rows.",
+        "properties": {
+          "columns": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Columns",
+            "type": "array"
+          },
+          "contentType": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Contenttype"
+          },
+          "datasetId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Datasetid"
+          },
+          "expiresAt": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Expiresat"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "kind": {
+            "default": "rows",
+            "enum": [
+              "rows",
+              "http_response",
+              "tool_result"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "nodeId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Nodeid"
+          },
+          "preview": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Preview",
+            "type": "array"
+          },
+          "rowCount": {
+            "anyOf": [
+              {
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Rowcount"
+          },
+          "sha256": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Sha256"
+          },
+          "sizeBytes": {
+            "anyOf": [
+              {
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Sizebytes"
+          },
+          "store": {
+            "enum": [
+              "cache",
+              "database"
+            ],
+            "title": "Store",
+            "type": "string"
+          },
+          "visit": {
+            "anyOf": [
+              {
+                "minimum": 1,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Visit"
+          }
+        },
+        "required": [
+          "store",
+          "key"
+        ],
+        "title": "DatasetRef",
+        "type": "object"
+      },
+      "ErrorBody": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "details": {
+            "items": {
+              "$ref": "#/components/schemas/ErrorDetail"
+            },
+            "title": "Details",
+            "type": "array"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "retryable": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Retryable"
+          },
+          "traceId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Traceid"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ],
+        "title": "ErrorBody",
+        "type": "object"
+      },
+      "ErrorDetail": {
+        "additionalProperties": false,
+        "description": "One validation problem: the request path and a short message; never internal details.",
+        "properties": {
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "path": {
+            "title": "Path",
+            "type": "string"
+          },
+          "type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Type"
+          }
+        },
+        "required": [
+          "path",
+          "message"
+        ],
+        "title": "ErrorDetail",
+        "type": "object"
+      },
+      "ErrorEnvelope": {
+        "additionalProperties": false,
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/ErrorBody"
+          }
+        },
+        "required": [
+          "error"
+        ],
+        "title": "ErrorEnvelope",
+        "type": "object"
+      },
+      "ErrorPart": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "const": "error",
+            "default": "error",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ],
+        "title": "ErrorPart",
+        "type": "object"
+      },
+      "FeedbackRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "comment": {
+            "anyOf": [
+              {
+                "maxLength": 2000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Comment"
+          },
+          "rating": {
+            "maximum": 5.0,
+            "minimum": -1.0,
+            "title": "Rating",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "rating"
+        ],
+        "title": "FeedbackRequest",
+        "type": "object"
+      },
+      "FilePart": {
+        "additionalProperties": false,
+        "properties": {
+          "downloadRef": {
+            "title": "Downloadref",
+            "type": "string"
+          },
+          "mediaType": {
+            "title": "Mediatype",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "type": {
+            "const": "file",
+            "default": "file",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "mediaType",
+          "downloadRef"
+        ],
+        "title": "FilePart",
+        "type": "object"
+      },
+      "FormPart": {
+        "additionalProperties": false,
+        "description": "A schema-driven form answering an interrupt (design 9.4).",
+        "properties": {
+          "interruptId": {
+            "title": "Interruptid",
+            "type": "string"
+          },
+          "schema": {
+            "additionalProperties": true,
+            "title": "Schema",
+            "type": "object"
+          },
+          "type": {
+            "const": "form",
+            "default": "form",
+            "title": "Type",
+            "type": "string"
+          },
+          "uiSchema": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Uischema"
+          }
+        },
+        "required": [
+          "interruptId"
+        ],
+        "title": "FormPart",
+        "type": "object"
+      },
+      "GridPart": {
+        "additionalProperties": false,
+        "description": "A server-mode grid paging through ``GET /v1/datasets/{datasetId}``.",
+        "properties": {
+          "columns": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Columns",
+            "type": "array"
+          },
+          "datasetRef": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DatasetRef"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "features": {
+            "additionalProperties": true,
+            "title": "Features",
+            "type": "object"
+          },
+          "pageSize": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Pagesize"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Title"
+          },
+          "type": {
+            "const": "grid",
+            "default": "grid",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "title": "GridPart",
+        "type": "object"
+      },
+      "HealthStatus": {
+        "additionalProperties": false,
+        "description": "``/healthz`` and ``/readyz``: ``ok``; ``degraded`` (ready, shedding new runs); or\n``not_ready`` naming the failing dependency.",
+        "properties": {
+          "checks": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Checks"
+          },
+          "release": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Release"
+          },
+          "status": {
+            "enum": [
+              "ok",
+              "degraded",
+              "not_ready"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "title": "HealthStatus",
+        "type": "object"
+      },
+      "HeartbeatData": {
+        "additionalProperties": false,
+        "properties": {},
+        "title": "HeartbeatData",
+        "type": "object"
+      },
+      "HeartbeatEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/HeartbeatData"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "nodeId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Nodeid"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
+          },
+          "runId": {
+            "title": "Runid",
+            "type": "string"
+          },
+          "seq": {
+            "minimum": 1,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "truncated": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Truncated"
+          },
+          "ts": {
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Ts",
+            "type": "string"
+          },
+          "type": {
+            "const": "heartbeat",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "runId",
+          "seq",
+          "ts",
+          "type",
+          "data"
+        ],
+        "title": "HeartbeatEvent",
+        "type": "object"
+      },
+      "HtmlPart": {
+        "additionalProperties": false,
+        "description": "A builder ``htmlTemplate`` view, sanitized on the server; shown in a sandboxed ``iframe``.",
+        "properties": {
+          "datasetRefs": {
+            "items": {
+              "$ref": "#/components/schemas/DatasetRef"
+            },
+            "title": "Datasetrefs",
+            "type": "array"
+          },
+          "html": {
+            "default": "",
+            "title": "Html",
+            "type": "string"
+          },
+          "type": {
+            "const": "html",
+            "default": "html",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "title": "HtmlPart",
+        "type": "object"
+      },
+      "InterruptRequestedData": {
+        "additionalProperties": false,
+        "properties": {
+          "expiresAt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Expiresat"
+          },
+          "interruptId": {
+            "title": "Interruptid",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "prompt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Prompt"
+          },
+          "schema": {
+            "additionalProperties": true,
+            "title": "Schema",
+            "type": "object"
+          }
+        },
+        "required": [
+          "interruptId",
+          "kind"
+        ],
+        "title": "InterruptRequestedData",
+        "type": "object"
+      },
+      "InterruptRequestedEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/InterruptRequestedData"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "nodeId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Nodeid"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
+          },
+          "runId": {
+            "title": "Runid",
+            "type": "string"
+          },
+          "seq": {
+            "minimum": 1,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "truncated": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Truncated"
+          },
+          "ts": {
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Ts",
+            "type": "string"
+          },
+          "type": {
+            "const": "interrupt.requested",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "runId",
+          "seq",
+          "ts",
+          "type",
+          "data"
+        ],
+        "title": "InterruptRequestedEvent",
+        "type": "object"
+      },
+      "JsonPart": {
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "const": "json",
+            "default": "json",
+            "title": "Type",
+            "type": "string"
+          },
+          "value": {
+            "default": null,
+            "title": "Value"
+          }
+        },
+        "title": "JsonPart",
+        "type": "object"
+      },
+      "LoopIterationData": {
+        "additionalProperties": false,
+        "properties": {
+          "iteration": {
+            "minimum": 1,
+            "title": "Iteration",
+            "type": "integer"
+          },
+          "loopId": {
+            "title": "Loopid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loopId",
+          "iteration"
+        ],
+        "title": "LoopIterationData",
+        "type": "object"
+      },
+      "LoopIterationEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/LoopIterationData"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "nodeId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Nodeid"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
+          },
+          "runId": {
+            "title": "Runid",
+            "type": "string"
+          },
+          "seq": {
+            "minimum": 1,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "truncated": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Truncated"
+          },
+          "ts": {
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Ts",
+            "type": "string"
+          },
+          "type": {
+            "const": "loop.iteration",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "runId",
+          "seq",
+          "ts",
+          "type",
+          "data"
+        ],
+        "title": "LoopIterationEvent",
+        "type": "object"
+      },
+      "MarkdownPart": {
+        "additionalProperties": false,
+        "properties": {
+          "text": {
+            "default": "",
+            "title": "Text",
+            "type": "string"
+          },
+          "type": {
+            "const": "markdown",
+            "default": "markdown",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "title": "MarkdownPart",
+        "type": "object"
+      },
+      "Message": {
+        "additionalProperties": false,
+        "properties": {
+          "contentParts": {
+            "items": {},
+            "title": "Contentparts",
+            "type": "array"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "title": "Createdat",
+            "type": "string"
+          },
+          "feedbackRating": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Feedbackrating"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "messageId": {
+            "title": "Messageid",
+            "type": "string"
+          },
+          "nodeId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nodeid"
+          },
+          "role": {
+            "title": "Role",
+            "type": "string"
+          },
+          "runId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Runid"
+          },
+          "seq": {
+            "title": "Seq",
+            "type": "integer"
+          },
+          "sessionId": {
+            "title": "Sessionid",
+            "type": "string"
+          },
+          "textPreview": {
+            "default": "",
+            "title": "Textpreview",
+            "type": "string"
+          },
+          "visibility": {
+            "title": "Visibility",
+            "type": "string"
+          }
+        },
+        "required": [
+          "messageId",
+          "sessionId",
+          "seq",
+          "role",
+          "kind",
+          "visibility",
+          "createdAt"
+        ],
+        "title": "Message",
+        "type": "object"
+      },
+      "MessageList": {
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/Message"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "nextCursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nextcursor"
+          }
+        },
+        "title": "MessageList",
+        "type": "object"
+      },
+      "NodeFinishedData": {
+        "additionalProperties": false,
+        "properties": {
+          "durationMs": {
+            "minimum": 0,
+            "title": "Durationms",
+            "type": "number"
+          },
+          "errorCode": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Errorcode"
+          },
+          "handles": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Handles",
+            "type": "array"
+          },
+          "outputSummary": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Outputsummary"
+          },
+          "policy": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Policy"
+          },
+          "status": {
+            "enum": [
+              "succeeded",
+              "failed",
+              "interrupted",
+              "continued"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "usage": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Usage"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "status",
+          "durationMs"
+        ],
+        "title": "NodeFinishedData",
+        "type": "object"
+      },
+      "NodeFinishedEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/NodeFinishedData"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "nodeId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Nodeid"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
+          },
+          "runId": {
+            "title": "Runid",
+            "type": "string"
+          },
+          "seq": {
+            "minimum": 1,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "truncated": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Truncated"
+          },
+          "ts": {
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Ts",
+            "type": "string"
+          },
+          "type": {
+            "const": "node.finished",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "runId",
+          "seq",
+          "ts",
+          "type",
+          "data"
+        ],
+        "title": "NodeFinishedEvent",
+        "type": "object"
+      },
+      "NodeStartedData": {
+        "additionalProperties": false,
+        "properties": {
+          "nodeName": {
+            "title": "Nodename",
+            "type": "string"
+          },
+          "nodeType": {
+            "title": "Nodetype",
+            "type": "string"
+          },
+          "resumed": {
+            "default": false,
+            "title": "Resumed",
+            "type": "boolean"
+          },
+          "visit": {
+            "minimum": 1,
+            "title": "Visit",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "nodeType",
+          "nodeName",
+          "visit"
+        ],
+        "title": "NodeStartedData",
+        "type": "object"
+      },
+      "NodeStartedEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/NodeStartedData"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "nodeId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Nodeid"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
+          },
+          "runId": {
+            "title": "Runid",
+            "type": "string"
+          },
+          "seq": {
+            "minimum": 1,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "truncated": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Truncated"
+          },
+          "ts": {
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Ts",
+            "type": "string"
+          },
+          "type": {
+            "const": "node.started",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "runId",
+          "seq",
+          "ts",
+          "type",
+          "data"
+        ],
+        "title": "NodeStartedEvent",
+        "type": "object"
+      },
+      "NodeTypeInfo": {
+        "additionalProperties": false,
+        "description": "One node type the runtime executes, with its ports and effective output schema.",
+        "properties": {
+          "inputs": {
+            "items": {},
+            "title": "Inputs",
+            "type": "array"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "outputAliases": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Outputaliases",
+            "type": "object"
+          },
+          "outputSchema": {
+            "additionalProperties": true,
+            "title": "Outputschema",
+            "type": "object"
+          },
+          "type": {
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "kind"
+        ],
+        "title": "NodeTypeInfo",
+        "type": "object"
+      },
+      "NodeTypeList": {
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/NodeTypeInfo"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "title": "NodeTypeList",
+        "type": "object"
+      },
+      "NodeVisitList": {
+        "additionalProperties": false,
+        "description": "``GET /v1/runs/{id}/nodes``: one entry per node visit, in completion order; no outputs.",
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/TimelineEntry"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "title": "NodeVisitList",
+        "type": "object"
+      },
+      "ReasoningDeltaEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/TextDeltaData"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "nodeId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Nodeid"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
+          },
+          "runId": {
+            "title": "Runid",
+            "type": "string"
+          },
+          "seq": {
+            "minimum": 1,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "truncated": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Truncated"
+          },
+          "ts": {
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Ts",
+            "type": "string"
+          },
+          "type": {
+            "const": "reasoning.delta",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "runId",
+          "seq",
+          "ts",
+          "type",
+          "data"
+        ],
+        "title": "ReasoningDeltaEvent",
+        "type": "object"
+      },
+      "Run": {
+        "additionalProperties": false,
+        "properties": {
+          "agenticWorkflowId": {
+            "title": "Agenticworkflowid",
+            "type": "string"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RunError"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "finishedAt": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finishedat"
+          },
+          "mode": {
+            "enum": [
+              "stream",
+              "sync",
+              "async"
+            ],
+            "title": "Mode",
+            "type": "string"
+          },
+          "pendingInterrupts": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Pendinginterrupts",
+            "type": "array"
+          },
+          "queuedAt": {
+            "format": "date-time",
+            "title": "Queuedat",
+            "type": "string"
+          },
+          "result": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Result"
+          },
+          "revision": {
+            "default": "",
+            "title": "Revision",
+            "type": "string"
+          },
+          "runId": {
+            "title": "Runid",
+            "type": "string"
+          },
+          "sessionId": {
+            "title": "Sessionid",
+            "type": "string"
+          },
+          "startedAt": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Startedat"
+          },
+          "status": {
+            "enum": [
+              "queued",
+              "running",
+              "waiting_input",
+              "succeeded",
+              "failed",
+              "cancelled",
+              "timed_out"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "usage": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Usage"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "runId",
+          "sessionId",
+          "agenticWorkflowId",
+          "status",
+          "mode",
+          "queuedAt"
+        ],
+        "title": "Run",
+        "type": "object"
+      },
+      "RunAccepted": {
+        "additionalProperties": false,
+        "description": "``202``: the run goes on; poll ``links.self`` or follow ``links.events``.",
+        "properties": {
+          "links": {
+            "$ref": "#/components/schemas/RunLinks"
+          },
+          "runId": {
+            "title": "Runid",
+            "type": "string"
+          },
+          "sessionId": {
+            "title": "Sessionid",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "queued",
+              "running",
+              "waiting_input",
+              "succeeded",
+              "failed",
+              "cancelled",
+              "timed_out"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "runId",
+          "sessionId",
+          "status",
+          "links"
+        ],
+        "title": "RunAccepted",
+        "type": "object"
+      },
+      "RunCallback": {
+        "additionalProperties": false,
+        "description": "Where an ``async`` run's completion summary is posted (P4-05): an allow-listed URL, signed\nwith the HMAC key the secret reference names.",
+        "properties": {
+          "secretRef": {
+            "pattern": "^secret:[A-Za-z0-9_.-]+$",
+            "title": "Secretref",
+            "type": "string"
+          },
+          "url": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url",
+          "secretRef"
+        ],
+        "title": "RunCallback",
+        "type": "object"
+      },
+      "RunCancelledData": {
+        "additionalProperties": false,
+        "properties": {
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "reason"
+        ],
+        "title": "RunCancelledData",
+        "type": "object"
+      },
+      "RunCancelledEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/RunCancelledData"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "nodeId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Nodeid"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
+          },
+          "runId": {
+            "title": "Runid",
+            "type": "string"
+          },
+          "seq": {
+            "minimum": 1,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "truncated": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Truncated"
+          },
+          "ts": {
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Ts",
+            "type": "string"
+          },
+          "type": {
+            "const": "run.cancelled",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "runId",
+          "seq",
+          "ts",
+          "type",
+          "data"
+        ],
+        "title": "RunCancelledEvent",
+        "type": "object"
+      },
+      "RunCompletedData": {
+        "additionalProperties": false,
+        "properties": {
+          "result": {
+            "additionalProperties": true,
+            "title": "Result",
+            "type": "object"
+          },
+          "usage": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Usage"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "title": "RunCompletedData",
+        "type": "object"
+      },
+      "RunCompletedEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/RunCompletedData"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "nodeId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Nodeid"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
+          },
+          "runId": {
+            "title": "Runid",
+            "type": "string"
+          },
+          "seq": {
+            "minimum": 1,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "truncated": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Truncated"
+          },
+          "ts": {
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Ts",
+            "type": "string"
+          },
+          "type": {
+            "const": "run.completed",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "runId",
+          "seq",
+          "ts",
+          "type",
+          "data"
+        ],
+        "title": "RunCompletedEvent",
+        "type": "object"
+      },
+      "RunError": {
+        "additionalProperties": false,
+        "description": "The user-safe error of a failed run: catalog code, message and retry flag.",
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "retryable": {
+            "default": false,
+            "title": "Retryable",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ],
+        "title": "RunError",
+        "type": "object"
+      },
+      "RunEvent": {
+        "description": "Any run event, by ``type``.",
+        "discriminator": {
+          "mapping": {
+            "content.part": "#/components/schemas/ContentPartEvent",
+            "heartbeat": "#/components/schemas/HeartbeatEvent",
+            "interrupt.requested": "#/components/schemas/InterruptRequestedEvent",
+            "loop.iteration": "#/components/schemas/LoopIterationEvent",
+            "node.finished": "#/components/schemas/NodeFinishedEvent",
+            "node.started": "#/components/schemas/NodeStartedEvent",
+            "reasoning.delta": "#/components/schemas/ReasoningDeltaEvent",
+            "run.cancelled": "#/components/schemas/RunCancelledEvent",
+            "run.completed": "#/components/schemas/RunCompletedEvent",
+            "run.failed": "#/components/schemas/RunFailedEvent",
+            "run.started": "#/components/schemas/RunStartedEvent",
+            "run.waiting": "#/components/schemas/RunWaitingEvent",
+            "state.updated": "#/components/schemas/StateUpdatedEvent",
+            "stream.gap": "#/components/schemas/StreamGapEvent",
+            "swarm.handoff": "#/components/schemas/SwarmHandoffEvent",
+            "swarm.member.finished": "#/components/schemas/SwarmMemberFinishedEvent",
+            "swarm.member.started": "#/components/schemas/SwarmMemberStartedEvent",
+            "token.delta": "#/components/schemas/TokenDeltaEvent",
+            "tool.finished": "#/components/schemas/ToolFinishedEvent",
+            "tool.started": "#/components/schemas/ToolStartedEvent",
+            "warning": "#/components/schemas/WarningEvent"
+          },
+          "propertyName": "type"
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/RunStartedEvent"
+          },
+          {
+            "$ref": "#/components/schemas/NodeStartedEvent"
+          },
+          {
+            "$ref": "#/components/schemas/NodeFinishedEvent"
+          },
+          {
+            "$ref": "#/components/schemas/TokenDeltaEvent"
+          },
+          {
+            "$ref": "#/components/schemas/ReasoningDeltaEvent"
+          },
+          {
+            "$ref": "#/components/schemas/ToolStartedEvent"
+          },
+          {
+            "$ref": "#/components/schemas/ToolFinishedEvent"
+          },
+          {
+            "$ref": "#/components/schemas/SwarmMemberStartedEvent"
+          },
+          {
+            "$ref": "#/components/schemas/SwarmMemberFinishedEvent"
+          },
+          {
+            "$ref": "#/components/schemas/SwarmHandoffEvent"
+          },
+          {
+            "$ref": "#/components/schemas/LoopIterationEvent"
+          },
+          {
+            "$ref": "#/components/schemas/ContentPartEvent"
+          },
+          {
+            "$ref": "#/components/schemas/StateUpdatedEvent"
+          },
+          {
+            "$ref": "#/components/schemas/InterruptRequestedEvent"
+          },
+          {
+            "$ref": "#/components/schemas/WarningEvent"
+          },
+          {
+            "$ref": "#/components/schemas/RunWaitingEvent"
+          },
+          {
+            "$ref": "#/components/schemas/RunCompletedEvent"
+          },
+          {
+            "$ref": "#/components/schemas/RunFailedEvent"
+          },
+          {
+            "$ref": "#/components/schemas/RunCancelledEvent"
+          },
+          {
+            "$ref": "#/components/schemas/StreamGapEvent"
+          },
+          {
+            "$ref": "#/components/schemas/HeartbeatEvent"
+          }
+        ],
+        "title": "RunEvent"
+      },
+      "RunFailedData": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "retryable": {
+            "default": false,
+            "title": "Retryable",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ],
+        "title": "RunFailedData",
+        "type": "object"
+      },
+      "RunFailedEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/RunFailedData"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "nodeId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Nodeid"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
+          },
+          "runId": {
+            "title": "Runid",
+            "type": "string"
+          },
+          "seq": {
+            "minimum": 1,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "truncated": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Truncated"
+          },
+          "ts": {
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Ts",
+            "type": "string"
+          },
+          "type": {
+            "const": "run.failed",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "runId",
+          "seq",
+          "ts",
+          "type",
+          "data"
+        ],
+        "title": "RunFailedEvent",
+        "type": "object"
+      },
+      "RunInput": {
+        "additionalProperties": false,
+        "properties": {
+          "attachments": {
+            "anyOf": [
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Attachments"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "title": "RunInput",
+        "type": "object"
+      },
+      "RunInterrupt": {
+        "additionalProperties": false,
+        "description": "A pending interrupt of a run (P4-02).",
+        "properties": {
+          "answerSchema": {
+            "additionalProperties": true,
+            "title": "Answerschema",
+            "type": "object"
+          },
+          "expiresAt": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expiresat"
+          },
+          "interruptId": {
+            "title": "Interruptid",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "nodeId": {
+            "title": "Nodeid",
+            "type": "string"
+          },
+          "prompt": {
+            "additionalProperties": true,
+            "title": "Prompt",
+            "type": "object"
+          },
+          "requestedAt": {
+            "format": "date-time",
+            "title": "Requestedat",
+            "type": "string"
+          },
+          "runId": {
+            "title": "Runid",
+            "type": "string"
+          },
+          "uiSchema": {
+            "additionalProperties": true,
+            "title": "Uischema",
+            "type": "object"
+          }
+        },
+        "required": [
+          "interruptId",
+          "runId",
+          "nodeId",
+          "kind",
+          "requestedAt"
+        ],
+        "title": "RunInterrupt",
+        "type": "object"
+      },
+      "RunInterruptList": {
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/RunInterrupt"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "title": "RunInterruptList",
+        "type": "object"
+      },
+      "RunLinks": {
+        "additionalProperties": false,
+        "properties": {
+          "events": {
+            "title": "Events",
+            "type": "string"
+          },
+          "self": {
+            "title": "Self",
+            "type": "string"
+          }
+        },
+        "required": [
+          "self",
+          "events"
+        ],
+        "title": "RunLinks",
+        "type": "object"
+      },
+      "RunOptions": {
+        "additionalProperties": false,
+        "properties": {
+          "callback": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RunCallback"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "title": "RunOptions",
+        "type": "object"
+      },
+      "RunResult": {
+        "additionalProperties": false,
+        "description": "``POST /v1/runs`` in ``sync`` mode: the finished turn (``200``).",
+        "properties": {
+          "error": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RunError"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "result": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Result"
+          },
+          "runId": {
+            "title": "Runid",
+            "type": "string"
+          },
+          "sessionId": {
+            "title": "Sessionid",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "queued",
+              "running",
+              "waiting_input",
+              "succeeded",
+              "failed",
+              "cancelled",
+              "timed_out"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "usage": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Usage"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "runId",
+          "sessionId",
+          "status"
+        ],
+        "title": "RunResult",
+        "type": "object"
+      },
+      "RunStartedData": {
+        "additionalProperties": false,
+        "properties": {
+          "agenticWorkflowId": {
+            "title": "Agenticworkflowid",
+            "type": "string"
+          },
+          "revision": {
+            "title": "Revision",
+            "type": "string"
+          },
+          "sessionId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Sessionid"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Title"
+          }
+        },
+        "required": [
+          "agenticWorkflowId",
+          "revision"
+        ],
+        "title": "RunStartedData",
+        "type": "object"
+      },
+      "RunStartedEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/RunStartedData"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "nodeId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Nodeid"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
+          },
+          "runId": {
+            "title": "Runid",
+            "type": "string"
+          },
+          "seq": {
+            "minimum": 1,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "truncated": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Truncated"
+          },
+          "ts": {
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Ts",
+            "type": "string"
+          },
+          "type": {
+            "const": "run.started",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "runId",
+          "seq",
+          "ts",
+          "type",
+          "data"
+        ],
+        "title": "RunStartedEvent",
+        "type": "object"
+      },
+      "RunWaitingData": {
+        "additionalProperties": false,
+        "properties": {
+          "interruptIds": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Interruptids",
+            "type": "array"
+          }
+        },
+        "title": "RunWaitingData",
+        "type": "object"
+      },
+      "RunWaitingEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/RunWaitingData"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "nodeId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Nodeid"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
+          },
+          "runId": {
+            "title": "Runid",
+            "type": "string"
+          },
+          "seq": {
+            "minimum": 1,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "truncated": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Truncated"
+          },
+          "ts": {
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Ts",
+            "type": "string"
+          },
+          "type": {
+            "const": "run.waiting",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "runId",
+          "seq",
+          "ts",
+          "type",
+          "data"
+        ],
+        "title": "RunWaitingEvent",
+        "type": "object"
+      },
+      "Session": {
+        "additionalProperties": false,
+        "properties": {
+          "agenticWorkflowId": {
+            "title": "Agenticworkflowid",
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "title": "Createdat",
+            "type": "string"
+          },
+          "lastMessageAt": {
+            "format": "date-time",
+            "title": "Lastmessageat",
+            "type": "string"
+          },
+          "sessionId": {
+            "title": "Sessionid",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "active",
+              "archived"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "title": "Updatedat",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sessionId",
+          "agenticWorkflowId",
+          "status",
+          "createdAt",
+          "updatedAt",
+          "lastMessageAt"
+        ],
+        "title": "Session",
+        "type": "object"
+      },
+      "SessionList": {
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/Session"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "nextCursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nextcursor"
+          }
+        },
+        "title": "SessionList",
+        "type": "object"
+      },
+      "StartRunRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "agenticWorkflowId": {
+            "anyOf": [
+              {
+                "maxLength": 100,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Agenticworkflowid"
+          },
+          "input": {
+            "$ref": "#/components/schemas/RunInput"
+          },
+          "mode": {
+            "enum": [
+              "stream",
+              "sync",
+              "async"
+            ],
+            "title": "Mode",
+            "type": "string"
+          },
+          "options": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RunOptions"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "sessionId": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sessionid"
+          }
+        },
+        "required": [
+          "input",
+          "mode"
+        ],
+        "title": "StartRunRequest",
+        "type": "object"
+      },
+      "StateUpdatedData": {
+        "additionalProperties": false,
+        "properties": {
+          "keys": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Keys",
+            "type": "array"
+          }
+        },
+        "title": "StateUpdatedData",
+        "type": "object"
+      },
+      "StateUpdatedEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/StateUpdatedData"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "nodeId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Nodeid"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
+          },
+          "runId": {
+            "title": "Runid",
+            "type": "string"
+          },
+          "seq": {
+            "minimum": 1,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "truncated": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Truncated"
+          },
+          "ts": {
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Ts",
+            "type": "string"
+          },
+          "type": {
+            "const": "state.updated",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "runId",
+          "seq",
+          "ts",
+          "type",
+          "data"
+        ],
+        "title": "StateUpdatedEvent",
+        "type": "object"
+      },
+      "StreamGapData": {
+        "additionalProperties": false,
+        "properties": {
+          "fromSeq": {
+            "minimum": 1,
+            "title": "Fromseq",
+            "type": "integer"
+          },
+          "toSeq": {
+            "anyOf": [
+              {
+                "minimum": 1,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Toseq"
+          }
+        },
+        "required": [
+          "fromSeq"
+        ],
+        "title": "StreamGapData",
+        "type": "object"
+      },
+      "StreamGapEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/StreamGapData"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "nodeId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Nodeid"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
+          },
+          "runId": {
+            "title": "Runid",
+            "type": "string"
+          },
+          "seq": {
+            "minimum": 1,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "truncated": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Truncated"
+          },
+          "ts": {
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Ts",
+            "type": "string"
+          },
+          "type": {
+            "const": "stream.gap",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "runId",
+          "seq",
+          "ts",
+          "type",
+          "data"
+        ],
+        "title": "StreamGapEvent",
+        "type": "object"
+      },
+      "SwarmHandoffData": {
+        "additionalProperties": false,
+        "properties": {
+          "from": {
+            "title": "From",
+            "type": "string"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Message"
+          },
+          "to": {
+            "items": {
+              "type": "string"
+            },
+            "title": "To",
+            "type": "array"
+          }
+        },
+        "required": [
+          "from"
+        ],
+        "title": "SwarmHandoffData",
+        "type": "object"
+      },
+      "SwarmHandoffEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/SwarmHandoffData"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "nodeId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Nodeid"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
+          },
+          "runId": {
+            "title": "Runid",
+            "type": "string"
+          },
+          "seq": {
+            "minimum": 1,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "truncated": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Truncated"
+          },
+          "ts": {
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Ts",
+            "type": "string"
+          },
+          "type": {
+            "const": "swarm.handoff",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "runId",
+          "seq",
+          "ts",
+          "type",
+          "data"
+        ],
+        "title": "SwarmHandoffEvent",
+        "type": "object"
+      },
+      "SwarmMemberData": {
+        "additionalProperties": false,
+        "description": "A member step of a Swarm node; ``status``, ``durationMs`` and ``usage`` when it finished.",
+        "properties": {
+          "durationMs": {
+            "anyOf": [
+              {
+                "minimum": 0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Durationms"
+          },
+          "member": {
+            "title": "Member",
+            "type": "string"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "enum": [
+                  "completed",
+                  "failed",
+                  "cancelled"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "usage": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Usage"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "member"
+        ],
+        "title": "SwarmMemberData",
+        "type": "object"
+      },
+      "SwarmMemberFinishedEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/SwarmMemberData"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "nodeId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Nodeid"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
+          },
+          "runId": {
+            "title": "Runid",
+            "type": "string"
+          },
+          "seq": {
+            "minimum": 1,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "truncated": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Truncated"
+          },
+          "ts": {
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Ts",
+            "type": "string"
+          },
+          "type": {
+            "const": "swarm.member.finished",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "runId",
+          "seq",
+          "ts",
+          "type",
+          "data"
+        ],
+        "title": "SwarmMemberFinishedEvent",
+        "type": "object"
+      },
+      "SwarmMemberStartedEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/SwarmMemberData"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "nodeId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Nodeid"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
+          },
+          "runId": {
+            "title": "Runid",
+            "type": "string"
+          },
+          "seq": {
+            "minimum": 1,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "truncated": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Truncated"
+          },
+          "ts": {
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Ts",
+            "type": "string"
+          },
+          "type": {
+            "const": "swarm.member.started",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "runId",
+          "seq",
+          "ts",
+          "type",
+          "data"
+        ],
+        "title": "SwarmMemberStartedEvent",
+        "type": "object"
+      },
+      "TableColumn": {
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Label"
+          },
+          "type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Type"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "title": "TableColumn",
+        "type": "object"
+      },
+      "TablePart": {
+        "additionalProperties": false,
+        "description": "Rows inline, at most ``content.inlineRowLimit``.",
+        "properties": {
+          "columns": {
+            "items": {
+              "$ref": "#/components/schemas/TableColumn"
+            },
+            "title": "Columns",
+            "type": "array"
+          },
+          "datasetRef": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DatasetRef"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "rows": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Rows",
+            "type": "array"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Title"
+          },
+          "type": {
+            "const": "table",
+            "default": "table",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "title": "TablePart",
+        "type": "object"
+      },
+      "TextDeltaData": {
+        "additionalProperties": false,
+        "properties": {
+          "member": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Member"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "title": "TextDeltaData",
+        "type": "object"
+      },
+      "TimelineEntry": {
+        "additionalProperties": false,
+        "description": "Compact per-visit record, saved at turn end.",
+        "properties": {
+          "durationMs": {
+            "minimum": 0.0,
+            "title": "Durationms",
+            "type": "number"
+          },
+          "errorCode": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Errorcode"
+          },
+          "handles": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Handles",
+            "type": "array"
+          },
+          "nodeId": {
+            "title": "Nodeid",
+            "type": "string"
+          },
+          "nodeType": {
+            "title": "Nodetype",
+            "type": "string"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Path"
+          },
+          "startedAt": {
+            "format": "date-time",
+            "title": "Startedat",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "succeeded",
+              "failed",
+              "interrupted",
+              "continued"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "visit": {
+            "minimum": 1.0,
+            "title": "Visit",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "nodeId",
+          "nodeType",
+          "visit",
+          "status",
+          "startedAt",
+          "durationMs"
+        ],
+        "title": "TimelineEntry",
+        "type": "object"
+      },
+      "TokenDeltaEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/TextDeltaData"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "nodeId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Nodeid"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
+          },
+          "runId": {
+            "title": "Runid",
+            "type": "string"
+          },
+          "seq": {
+            "minimum": 1,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "truncated": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Truncated"
+          },
+          "ts": {
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Ts",
+            "type": "string"
+          },
+          "type": {
+            "const": "token.delta",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "runId",
+          "seq",
+          "ts",
+          "type",
+          "data"
+        ],
+        "title": "TokenDeltaEvent",
+        "type": "object"
+      },
+      "ToolFinishedData": {
+        "additionalProperties": false,
+        "properties": {
+          "durationMs": {
+            "anyOf": [
+              {
+                "minimum": 0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Durationms"
+          },
+          "member": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Member"
+          },
+          "status": {
+            "enum": [
+              "success",
+              "error"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "toolUseId": {
+            "title": "Tooluseid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "toolUseId",
+          "status"
+        ],
+        "title": "ToolFinishedData",
+        "type": "object"
+      },
+      "ToolFinishedEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ToolFinishedData"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "nodeId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Nodeid"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
+          },
+          "runId": {
+            "title": "Runid",
+            "type": "string"
+          },
+          "seq": {
+            "minimum": 1,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "truncated": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Truncated"
+          },
+          "ts": {
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Ts",
+            "type": "string"
+          },
+          "type": {
+            "const": "tool.finished",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "runId",
+          "seq",
+          "ts",
+          "type",
+          "data"
+        ],
+        "title": "ToolFinishedEvent",
+        "type": "object"
+      },
+      "ToolStartedData": {
+        "additionalProperties": false,
+        "properties": {
+          "inputSummary": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Inputsummary"
+          },
+          "member": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Member"
+          },
+          "toolName": {
+            "title": "Toolname",
+            "type": "string"
+          },
+          "toolUseId": {
+            "title": "Tooluseid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "toolName",
+          "toolUseId"
+        ],
+        "title": "ToolStartedData",
+        "type": "object"
+      },
+      "ToolStartedEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ToolStartedData"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "nodeId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Nodeid"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
+          },
+          "runId": {
+            "title": "Runid",
+            "type": "string"
+          },
+          "seq": {
+            "minimum": 1,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "truncated": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Truncated"
+          },
+          "ts": {
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Ts",
+            "type": "string"
+          },
+          "type": {
+            "const": "tool.started",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "runId",
+          "seq",
+          "ts",
+          "type",
+          "data"
+        ],
+        "title": "ToolStartedEvent",
+        "type": "object"
+      },
+      "Trace": {
+        "additionalProperties": false,
+        "description": "``GET /v1/runs/{runId}/trace``: the trace header, its observation tree and its scores.",
+        "properties": {
+          "agenticWorkflowId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Agenticworkflowid"
+          },
+          "endTime": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Endtime"
+          },
+          "errorCount": {
+            "default": 0,
+            "title": "Errorcount",
+            "type": "integer"
+          },
+          "inputTokens": {
+            "default": 0,
+            "title": "Inputtokens",
+            "type": "integer"
+          },
+          "latencyMs": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latencyms"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "observationCount": {
+            "default": 0,
+            "title": "Observationcount",
+            "type": "integer"
+          },
+          "observations": {
+            "items": {
+              "$ref": "#/components/schemas/TraceObservation"
+            },
+            "title": "Observations",
+            "type": "array"
+          },
+          "outputTokens": {
+            "default": 0,
+            "title": "Outputtokens",
+            "type": "integer"
+          },
+          "runId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Runid"
+          },
+          "scores": {
+            "items": {
+              "$ref": "#/components/schemas/TraceScore"
+            },
+            "title": "Scores",
+            "type": "array"
+          },
+          "sessionId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sessionid"
+          },
+          "startTime": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Starttime"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Tags",
+            "type": "array"
+          },
+          "totalCost": {
+            "default": 0,
+            "title": "Totalcost",
+            "type": "number"
+          },
+          "traceId": {
+            "title": "Traceid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "traceId"
+        ],
+        "title": "Trace",
+        "type": "object"
+      },
+      "TraceLink": {
+        "additionalProperties": false,
+        "description": "``GET /v1/runs/{runId}/trace-link``: the run's trace on the Langfuse server, when one is configured.",
+        "properties": {
+          "traceId": {
+            "title": "Traceid",
+            "type": "string"
+          },
+          "url": {
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "traceId",
+          "url"
+        ],
+        "title": "TraceLink",
+        "type": "object"
+      },
+      "TraceObservation": {
+        "additionalProperties": false,
+        "properties": {
+          "children": {
+            "items": {
+              "$ref": "#/components/schemas/TraceObservation"
+            },
+            "title": "Children",
+            "type": "array"
+          },
+          "endTime": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Endtime"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "latencyMs": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latencyms"
+          },
+          "level": {
+            "default": "DEFAULT",
+            "title": "Level",
+            "type": "string"
+          },
+          "metadata": {
+            "additionalProperties": true,
+            "title": "Metadata",
+            "type": "object"
+          },
+          "model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "nodeId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nodeid"
+          },
+          "nodeName": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nodename"
+          },
+          "nodeType": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nodetype"
+          },
+          "observationId": {
+            "title": "Observationid",
+            "type": "string"
+          },
+          "output": {
+            "title": "Output"
+          },
+          "parentObservationId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parentobservationid"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Path"
+          },
+          "startTime": {
+            "default": "",
+            "title": "Starttime",
+            "type": "string"
+          },
+          "statusMessage": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Statusmessage"
+          },
+          "totalCost": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Totalcost"
+          },
+          "type": {
+            "title": "Type",
+            "type": "string"
+          },
+          "usage": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Usage"
+          },
+          "visit": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Visit"
+          }
+        },
+        "required": [
+          "observationId",
+          "type",
+          "name"
+        ],
+        "title": "TraceObservation",
+        "type": "object"
+      },
+      "TraceScore": {
+        "additionalProperties": false,
+        "properties": {
+          "comment": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Comment"
+          },
+          "dataType": {
+            "title": "Datatype",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "observationId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Observationid"
+          },
+          "source": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source"
+          },
+          "stringValue": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stringvalue"
+          },
+          "timestamp": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Timestamp"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          }
+        },
+        "required": [
+          "name",
+          "dataType"
+        ],
+        "title": "TraceScore",
+        "type": "object"
+      },
+      "UpdateSessionRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "status": {
+            "anyOf": [
+              {
+                "enum": [
+                  "active",
+                  "archived"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          }
+        },
+        "title": "UpdateSessionRequest",
+        "type": "object"
+      },
+      "Usage": {
+        "additionalProperties": false,
+        "properties": {
+          "cost": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Cost"
+          },
+          "inputTokens": {
+            "default": 0,
+            "title": "Inputtokens",
+            "type": "integer"
+          },
+          "modelCalls": {
+            "default": 0,
+            "title": "Modelcalls",
+            "type": "integer"
+          },
+          "outputTokens": {
+            "default": 0,
+            "title": "Outputtokens",
+            "type": "integer"
+          },
+          "totalTokens": {
+            "default": 0,
+            "title": "Totaltokens",
+            "type": "integer"
+          }
+        },
+        "title": "Usage",
+        "type": "object"
+      },
+      "UsageItem": {
+        "additionalProperties": false,
+        "properties": {
+          "agenticWorkflowId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Agenticworkflowid"
+          },
+          "avgLatencyMs": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avglatencyms"
+          },
+          "calls": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Calls"
+          },
+          "day": {
+            "title": "Day",
+            "type": "string"
+          },
+          "errorRate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Errorrate"
+          },
+          "errors": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Errors"
+          },
+          "executions": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Executions"
+          },
+          "inputTokens": {
+            "default": 0,
+            "title": "Inputtokens",
+            "type": "integer"
+          },
+          "model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model"
+          },
+          "nodeName": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nodename"
+          },
+          "nodeType": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nodetype"
+          },
+          "outputTokens": {
+            "default": 0,
+            "title": "Outputtokens",
+            "type": "integer"
+          },
+          "p95LatencyMs": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "P95Latencyms"
+          },
+          "totalCost": {
+            "default": 0,
+            "title": "Totalcost",
+            "type": "number"
+          }
+        },
+        "required": [
+          "day"
+        ],
+        "title": "UsageItem",
+        "type": "object"
+      },
+      "UsageList": {
+        "additionalProperties": false,
+        "description": "``GET /v1/observability/usage``: daily node usage, or model usage of the caller's tenant.",
+        "properties": {
+          "groupBy": {
+            "enum": [
+              "node",
+              "model"
+            ],
+            "title": "Groupby",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/UsageItem"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "groupBy"
+        ],
+        "title": "UsageList",
+        "type": "object"
+      },
+      "WarningData": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "details": {
+            "additionalProperties": true,
+            "title": "Details",
+            "type": "object"
+          },
+          "message": {
+            "default": "",
+            "title": "Message",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code"
+        ],
+        "title": "WarningData",
+        "type": "object"
+      },
+      "WarningEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/WarningData"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "nodeId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Nodeid"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
+          },
+          "runId": {
+            "title": "Runid",
+            "type": "string"
+          },
+          "seq": {
+            "minimum": 1,
+            "title": "Seq",
+            "type": "integer"
+          },
+          "truncated": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Truncated"
+          },
+          "ts": {
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Ts",
+            "type": "string"
+          },
+          "type": {
+            "const": "warning",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "runId",
+          "seq",
+          "ts",
+          "type",
+          "data"
+        ],
+        "title": "WarningEvent",
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "title": "Zonic Agent Runtime",
+    "version": "0.1.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/healthz": {
+      "get": {
+        "operationId": "getHealth",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthStatus"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Liveness",
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/readyz": {
+      "get": {
+        "operationId": "getReadiness",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthStatus"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthStatus"
+                }
+              }
+            },
+            "description": "Not ready; `checks` names the failing dependency"
+          }
+        },
+        "summary": "Readiness: the gateway and other dependencies answer",
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/v1/catalog/agents": {
+      "get": {
+        "operationId": "listAgents",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentCardList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "An error: a code of the error catalog"
+          }
+        },
+        "summary": "Workflows the caller may run",
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
+    "/v1/datasets/{datasetId}": {
+      "get": {
+        "operationId": "getDataset",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "datasetId",
+            "required": true,
+            "schema": {
+              "maxLength": 100,
+              "title": "Datasetid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Page"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pageSize",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagesize"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sort",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 200,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Sort"
+            }
+          },
+          {
+            "in": "query",
+            "name": "filter",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 2000,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Filter"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DatasetPage"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "An error: a code of the error catalog"
+          }
+        },
+        "summary": "A page of a dataset's rows, filtered and sorted",
+        "tags": [
+          "datasets"
+        ]
+      }
+    },
+    "/v1/messages/{messageId}/feedback": {
+      "post": {
+        "operationId": "saveFeedback",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "messageId",
+            "required": true,
+            "schema": {
+              "maxLength": 100,
+              "title": "Messageid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FeedbackRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "An error: a code of the error catalog"
+          }
+        },
+        "summary": "A rating and comment on one of the caller's messages",
+        "tags": [
+          "observability"
+        ]
+      }
+    },
+    "/v1/meta/node-types": {
+      "get": {
+        "operationId": "listNodeTypes",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NodeTypeList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "An error: a code of the error catalog"
+          }
+        },
+        "summary": "Node types the runtime executes, with input ports and output schemas",
+        "tags": [
+          "meta"
+        ]
+      }
+    },
+    "/v1/observability/usage": {
+      "get": {
+        "operationId": "getUsage",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "groupBy",
+            "required": false,
+            "schema": {
+              "default": "node",
+              "enum": [
+                "node",
+                "model"
+              ],
+              "title": "Groupby",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "from",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "From"
+            }
+          },
+          {
+            "in": "query",
+            "name": "to",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "To"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsageList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "An error: a code of the error catalog"
+          }
+        },
+        "summary": "Daily usage by node, or by model for the caller's tenant (trace roles only)",
+        "tags": [
+          "observability"
+        ]
+      }
+    },
+    "/v1/runs": {
+      "post": {
+        "operationId": "startRun",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Idempotency-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StartRunRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunResult"
+                }
+              },
+              "text/event-stream": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunEvent"
+                }
+              }
+            },
+            "description": "`stream`: the run events (server-sent `RunEvent`s); `sync`: the finished turn"
+          },
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunAccepted"
+                }
+              }
+            },
+            "description": "`sync`: the run goes on after `runs.syncWaitSeconds`"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "An error: a code of the error catalog"
+          }
+        },
+        "summary": "Start a run in stream or sync mode",
+        "tags": [
+          "runs"
+        ]
+      }
+    },
+    "/v1/runs/{runId}": {
+      "get": {
+        "operationId": "getRun",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "runId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Runid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "If-None-Match",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "If-None-Match"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Run"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "304": {
+            "description": "Unchanged since the given ETag"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "An error: a code of the error catalog"
+          }
+        },
+        "summary": "Run status and result",
+        "tags": [
+          "runs"
+        ]
+      }
+    },
+    "/v1/runs/{runId}/cancel": {
+      "post": {
+        "operationId": "cancelRun",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "runId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Runid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Run"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "An error: a code of the error catalog"
+          }
+        },
+        "summary": "Cancel a run that is queued, running or waiting; a finished run is returned as it is",
+        "tags": [
+          "runs"
+        ]
+      }
+    },
+    "/v1/runs/{runId}/events": {
+      "get": {
+        "operationId": "getRunEvents",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "runId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Runid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Last-Event-ID",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Last-Event-Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              },
+              "text/event-stream": {}
+            },
+            "description": "Server-sent run events"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "An error: a code of the error catalog"
+          }
+        },
+        "summary": "The run's live events; resumes after Last-Event-ID",
+        "tags": [
+          "runs"
+        ]
+      }
+    },
+    "/v1/runs/{runId}/interrupts": {
+      "get": {
+        "operationId": "listRunInterrupts",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "runId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Runid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunInterruptList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "An error: a code of the error catalog"
+          }
+        },
+        "summary": "The run's pending interrupts, oldest first",
+        "tags": [
+          "runs"
+        ]
+      }
+    },
+    "/v1/runs/{runId}/interrupts/{interruptId}": {
+      "post": {
+        "operationId": "answerRunInterrupt",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "runId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Runid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "interruptId",
+            "required": true,
+            "schema": {
+              "maxLength": 100,
+              "title": "Interruptid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnswerInterruptRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunResult"
+                }
+              },
+              "text/event-stream": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunEvent"
+                }
+              }
+            },
+            "description": "`stream`: the run events (server-sent `RunEvent`s); `sync`: the finished turn"
+          },
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunAccepted"
+                }
+              }
+            },
+            "description": "`sync`: the run goes on after `runs.syncWaitSeconds`"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "An error: a code of the error catalog"
+          }
+        },
+        "summary": "Answer an interrupt; the run resumes with the answer in the requested mode",
+        "tags": [
+          "runs"
+        ]
+      }
+    },
+    "/v1/runs/{runId}/nodes": {
+      "get": {
+        "operationId": "listRunNodes",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "runId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Runid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NodeVisitList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "An error: a code of the error catalog"
+          }
+        },
+        "summary": "The run's node timeline: status, duration, handles and error code per visit",
+        "tags": [
+          "runs"
+        ]
+      }
+    },
+    "/v1/runs/{runId}/trace": {
+      "get": {
+        "operationId": "getRunTrace",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "runId",
+            "required": true,
+            "schema": {
+              "maxLength": 100,
+              "title": "Runid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Trace"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "An error: a code of the error catalog"
+          }
+        },
+        "summary": "The run's trace: its observation tree and scores (trace roles only)",
+        "tags": [
+          "observability"
+        ]
+      }
+    },
+    "/v1/runs/{runId}/trace-link": {
+      "get": {
+        "operationId": "getRunTraceLink",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "runId",
+            "required": true,
+            "schema": {
+              "maxLength": 100,
+              "title": "Runid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TraceLink"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "An error: a code of the error catalog"
+          }
+        },
+        "summary": "The run's trace on the Langfuse server, when one is configured (trace roles only)",
+        "tags": [
+          "observability"
+        ]
+      }
+    },
+    "/v1/sessions": {
+      "get": {
+        "operationId": "listSessions",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 500,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Limit"
+            }
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 200,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Q"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "default": "active",
+              "enum": [
+                "active",
+                "archived",
+                "all"
+              ],
+              "title": "Status",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "An error: a code of the error catalog"
+          }
+        },
+        "summary": "The caller's sessions, newest first, with cursor paging and title search",
+        "tags": [
+          "sessions"
+        ]
+      },
+      "post": {
+        "operationId": "createSession",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSessionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Session"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "An error: a code of the error catalog"
+          }
+        },
+        "summary": "A new session for a workflow",
+        "tags": [
+          "sessions"
+        ]
+      }
+    },
+    "/v1/sessions/{sessionId}": {
+      "get": {
+        "operationId": "getSession",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "sessionId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Sessionid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Session"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "An error: a code of the error catalog"
+          }
+        },
+        "summary": "Session details",
+        "tags": [
+          "sessions"
+        ]
+      },
+      "patch": {
+        "operationId": "updateSession",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "sessionId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Sessionid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSessionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Session"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "An error: a code of the error catalog"
+          }
+        },
+        "summary": "Rename or archive a session",
+        "tags": [
+          "sessions"
+        ]
+      }
+    },
+    "/v1/sessions/{sessionId}/messages": {
+      "get": {
+        "operationId": "listMessages",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "sessionId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Sessionid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 500,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Limit"
+            }
+          },
+          {
+            "in": "query",
+            "name": "visibility",
+            "required": false,
+            "schema": {
+              "default": "chat",
+              "enum": [
+                "chat",
+                "internal"
+              ],
+              "title": "Visibility",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "An error: a code of the error catalog"
+          }
+        },
+        "summary": "A session's messages, newest first, with content parts",
+        "tags": [
+          "sessions"
+        ]
+      }
+    }
+  }
+}

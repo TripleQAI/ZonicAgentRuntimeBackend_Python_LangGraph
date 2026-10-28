@@ -1,0 +1,477 @@
+[
+  [
+    {
+      "data": {
+        "agenticWorkflowId": "<uuid>",
+        "sessionId": "<uuid>",
+        "title": "Create a request"
+      },
+      "seq": 1,
+      "type": "run.started"
+    },
+    {
+      "data": {
+        "nodeName": "start",
+        "nodeType": "start",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "start",
+      "seq": 2,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "channel_identified",
+          "dropdownSupplier",
+          "pvresponse",
+          "qa_master_data",
+          "questionnaireResponse",
+          "supplier_data",
+          "user_context",
+          "user_decision_points"
+        ]
+      },
+      "nodeId": "start",
+      "seq": 3,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "code": "STATE_PATH_EMPTY",
+        "details": {},
+        "message": "the path {{flow.questionnaireForSummary}} resolved to nothing; the state operation is skipped"
+      },
+      "nodeId": "start",
+      "seq": 4,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "code": "STATE_PATH_EMPTY",
+        "details": {},
+        "message": "the path {{flow.newSuppliers}} resolved to nothing; the state operation is skipped"
+      },
+      "nodeId": "start",
+      "seq": 5,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "nodeOutput.interface.inputs.attachments",
+            "nodeOutput.interface.inputs.channel_identified",
+            "nodeOutput.interface.inputs.dropdownSupplier",
+            "nodeOutput.interface.inputs.partialViewData",
+            "nodeOutput.interface.inputs.qa_master_data",
+            "nodeOutput.interface.inputs.questionnaireResponse",
+            "nodeOutput.interface.inputs.supplier_data",
+            "nodeOutput.interface.inputs.user_context",
+            "nodeOutput.interface.inputs.user_decision_points"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "start",
+      "seq": 6,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 109,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "start",
+      "seq": 7,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "buying_channel_agent",
+        "nodeType": "agent",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "pnew0ty",
+      "seq": 8,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "inputSummary": {
+          "bytes": 2,
+          "fields": 0,
+          "type": "object"
+        },
+        "toolName": "render_project_request",
+        "toolUseId": "route-1"
+      },
+      "nodeId": "pnew0ty",
+      "seq": 9,
+      "type": "tool.started"
+    },
+    {
+      "data": {
+        "status": "success",
+        "toolUseId": "route-1"
+      },
+      "nodeId": "pnew0ty",
+      "seq": 10,
+      "type": "tool.finished"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "flow.channel_identified",
+            "flow.dropdownSupplier",
+            "flow.qa_master_data.category",
+            "flow.qa_master_data.headerOrg.entityCode",
+            "flow.qa_master_data.headerOrg.entityDetailCode",
+            "flow.qa_master_data.headerOrg.entityName",
+            "flow.supplier_data",
+            "flow.user_context",
+            "identifiedChannel",
+            "nodeOutput.text"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "pnew0ty",
+      "seq": 11,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "handoff-jh7bne4"
+        ],
+        "outputSummary": {
+          "bytes": 207,
+          "fields": 5,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 646,
+          "modelCalls": 1,
+          "outputTokens": 1,
+          "totalTokens": 647
+        }
+      },
+      "nodeId": "pnew0ty",
+      "seq": 12,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "prfcreaterequestformpv00164",
+        "nodeType": "tool",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "jh7bne4",
+      "seq": 13,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "code": "STATE_PATH_EMPTY",
+        "details": {},
+        "message": "the path {{thread.buying_channel_agent_messages}} resolved to nothing; the state operation is skipped"
+      },
+      "nodeId": "jh7bne4",
+      "seq": 14,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 11,
+          "fields": 1,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "jh7bne4",
+      "seq": 15,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "iteration": 2,
+        "loopId": "loop:pnew0ty"
+      },
+      "nodeId": "pnew0ty",
+      "seq": 16,
+      "type": "loop.iteration"
+    },
+    {
+      "data": {
+        "nodeName": "buying_channel_agent",
+        "nodeType": "agent",
+        "resumed": false,
+        "visit": 2
+      },
+      "nodeId": "pnew0ty",
+      "seq": 17,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "inputSummary": {
+          "bytes": 2,
+          "fields": 0,
+          "type": "object"
+        },
+        "toolName": "render_project_request",
+        "toolUseId": "route-2"
+      },
+      "nodeId": "pnew0ty",
+      "seq": 18,
+      "type": "tool.started"
+    },
+    {
+      "data": {
+        "status": "success",
+        "toolUseId": "route-2"
+      },
+      "nodeId": "pnew0ty",
+      "seq": 19,
+      "type": "tool.finished"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "flow.channel_identified",
+            "flow.dropdownSupplier",
+            "flow.qa_master_data.category",
+            "flow.qa_master_data.headerOrg.entityCode",
+            "flow.qa_master_data.headerOrg.entityDetailCode",
+            "flow.qa_master_data.headerOrg.entityName",
+            "flow.supplier_data",
+            "flow.user_context",
+            "identifiedChannel"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "pnew0ty",
+      "seq": 20,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "handoff-jh7bne4"
+        ],
+        "outputSummary": {
+          "bytes": 207,
+          "fields": 5,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 646,
+          "modelCalls": 1,
+          "outputTokens": 1,
+          "totalTokens": 647
+        }
+      },
+      "nodeId": "pnew0ty",
+      "seq": 21,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "prfcreaterequestformpv00164",
+        "nodeType": "tool",
+        "resumed": false,
+        "visit": 2
+      },
+      "nodeId": "jh7bne4",
+      "seq": 22,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "code": "STATE_PATH_EMPTY",
+        "details": {},
+        "message": "the path {{thread.buying_channel_agent_messages}} resolved to nothing; the state operation is skipped"
+      },
+      "nodeId": "jh7bne4",
+      "seq": 23,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 11,
+          "fields": 1,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "jh7bne4",
+      "seq": 24,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "iteration": 3,
+        "loopId": "loop:pnew0ty"
+      },
+      "nodeId": "pnew0ty",
+      "seq": 25,
+      "type": "loop.iteration"
+    },
+    {
+      "data": {
+        "nodeName": "buying_channel_agent",
+        "nodeType": "agent",
+        "resumed": false,
+        "visit": 3
+      },
+      "nodeId": "pnew0ty",
+      "seq": 26,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "text": "All "
+      },
+      "nodeId": "pnew0ty",
+      "seq": 27,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "text": "done: the request is complete."
+      },
+      "nodeId": "pnew0ty",
+      "seq": 28,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "flow.channel_identified",
+            "flow.dropdownSupplier",
+            "flow.qa_master_data.category",
+            "flow.qa_master_data.headerOrg.entityCode",
+            "flow.qa_master_data.headerOrg.entityDetailCode",
+            "flow.qa_master_data.headerOrg.entityName",
+            "flow.supplier_data",
+            "flow.user_context",
+            "identifiedChannel"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "pnew0ty",
+      "seq": 29,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 123,
+          "fields": 4,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 646,
+          "modelCalls": 1,
+          "outputTokens": 6,
+          "totalTokens": 652
+        }
+      },
+      "nodeId": "pnew0ty",
+      "seq": 30,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "output",
+        "nodeType": "output",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "output",
+      "seq": 31,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "runtime.workflowMetaData.agentName"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "output",
+      "seq": 32,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 1184,
+          "fields": 3,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "output",
+      "seq": 33,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "result": {
+          "messages": "[{\"role\": \"user\", \"content\": \"Create a request\", \"thread\": \"messages\", \"nodeId\": \"start\"}, {\"role\": \"assistant\", \"content\": [{\"name\": \"render_project_request\", \"args\": {}, \"id\": \"route-1\", \"type\": \"tool_call\"}], \"thread\": \"messages\", \"nodeId\": \"pnew0ty\"}, {\"role\": \"tool\", \"content\": \"Continuing with prfcreaterequestformpv00164.\", \"thread\": \"messages\", \"nodeId\": \"pnew0ty\"}, {\"role\": \"assistant\", \"content\": \"\", \"thread\": \"messages\", \"nodeId\": \"pnew0ty\"}, {\"role\": \"assistant\", \"content\": [{\"name\": \"render_project_request\", \"args\": {}, \"id\": \"route-2\", \"type\": \"tool_call\"}], \"thread\": \"messages\", \"nodeId\": \"pnew0ty\"}, {\"role\": \"tool\", \"content\": \"Continuing with prfcreaterequestformpv00164.\", \"thread\": \"messages\", \"nodeId\": \"pnew0ty\"}, {\"role\": \"assistant\", \"content\": \"\", \"thread\": \"messages\", \"nodeId\": \"pnew0ty\"}, {\"role\": \"assistant\", \"content\": \"All done: the request is complete.\", \"thread\": \"messages\", \"nodeId\": \"pnew0ty\"}]",
+          "selectedAgentId": "<uuid>",
+          "selectedAgentName": ""
+        },
+        "usage": {
+          "inputTokens": 1938,
+          "modelCalls": 3,
+          "outputTokens": 8,
+          "totalTokens": 1946
+        }
+      },
+      "seq": 34,
+      "type": "run.completed"
+    }
+  ]
+]

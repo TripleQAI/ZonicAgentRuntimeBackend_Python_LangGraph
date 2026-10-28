@@ -1,9 +1,82 @@
 {
   "$defs": {
+    "Condition": {
+      "additionalProperties": true,
+      "description": "One comparison of a rule branch or a conditional update.",
+      "properties": {
+        "field": {
+          "default": null,
+          "title": "Field"
+        },
+        "logic": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Logic"
+        },
+        "op": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Op"
+        },
+        "operator": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Operator"
+        },
+        "value": {
+          "default": null,
+          "title": "Value"
+        }
+      },
+      "title": "Condition",
+      "type": "object"
+    },
+    "ConditionGroup": {
+      "additionalProperties": true,
+      "description": "Conditions joined by ``AND`` or ``OR``: an update's ``when``.",
+      "properties": {
+        "conditionLogic": {
+          "default": "AND",
+          "title": "Conditionlogic",
+          "type": "string"
+        },
+        "conditions": {
+          "items": {
+            "$ref": "#/$defs/Condition"
+          },
+          "title": "Conditions",
+          "type": "array"
+        }
+      },
+      "title": "ConditionGroup",
+      "type": "object"
+    },
     "HookBinding": {
       "additionalProperties": false,
       "properties": {
         "canRoute": {
+          "default": false,
           "title": "Canroute",
           "type": "boolean"
         },
@@ -13,10 +86,12 @@
           "type": "object"
         },
         "enabled": {
+          "default": true,
           "title": "Enabled",
           "type": "boolean"
         },
         "failurePolicy": {
+          "default": "fail_node",
           "enum": [
             "fail_node",
             "fail_run",
@@ -26,10 +101,12 @@
           "type": "string"
         },
         "hook": {
+          "minLength": 1,
           "title": "Hook",
           "type": "string"
         },
         "id": {
+          "pattern": "^[A-Za-z0-9_.:-]+$",
           "title": "Id",
           "type": "string"
         },
@@ -37,6 +114,7 @@
           "$ref": "#/$defs/HookMatch"
         },
         "mode": {
+          "default": "blocking",
           "enum": [
             "blocking",
             "async"
@@ -69,22 +147,32 @@
           "type": "array"
         },
         "order": {
+          "default": 100,
           "title": "Order",
           "type": "integer"
         },
         "overridable": {
+          "default": true,
           "title": "Overridable",
           "type": "boolean"
         },
         "timeoutMs": {
-          "exclusiveMinimum": 0,
-          "title": "Timeoutms",
-          "type": "integer"
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Timeoutms"
         },
         "when": {
           "anyOf": [
             {
-              "$ref": "#/$defs/HookWhen"
+              "$ref": "#/$defs/ConditionGroup"
             },
             {
               "type": "null"
@@ -96,39 +184,9 @@
       "required": [
         "id",
         "hook",
-        "on",
-        "order",
-        "mode",
-        "timeoutMs",
-        "failurePolicy",
-        "canRoute",
-        "overridable",
-        "enabled"
+        "on"
       ],
       "title": "HookBinding",
-      "type": "object"
-    },
-    "HookCondition": {
-      "additionalProperties": false,
-      "properties": {
-        "field": {
-          "title": "Field",
-          "type": "string"
-        },
-        "op": {
-          "title": "Op",
-          "type": "string"
-        },
-        "value": {
-          "default": null,
-          "title": "Value"
-        }
-      },
-      "required": [
-        "field",
-        "op"
-      ],
-      "title": "HookCondition",
       "type": "object"
     },
     "HookMatch": {
@@ -172,32 +230,6 @@
       },
       "title": "HookMatch",
       "type": "object"
-    },
-    "HookWhen": {
-      "additionalProperties": false,
-      "properties": {
-        "conditionLogic": {
-          "enum": [
-            "AND",
-            "OR"
-          ],
-          "title": "Conditionlogic",
-          "type": "string"
-        },
-        "conditions": {
-          "items": {
-            "$ref": "#/$defs/HookCondition"
-          },
-          "title": "Conditions",
-          "type": "array"
-        }
-      },
-      "required": [
-        "conditionLogic",
-        "conditions"
-      ],
-      "title": "HookWhen",
-      "type": "object"
     }
   },
   "additionalProperties": false,
@@ -210,9 +242,6 @@
       "type": "array"
     }
   },
-  "required": [
-    "bindings"
-  ],
   "title": "HookBindings",
   "type": "object"
 }

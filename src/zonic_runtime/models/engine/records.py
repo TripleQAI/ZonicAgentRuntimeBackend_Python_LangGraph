@@ -44,19 +44,24 @@ class Usage(ZonicModel):
 
 
 class DatasetRef(ZonicModel):
-    """Full data of a database, HTTP or tool result, kept outside state (design 9.3)."""
+    """Full data of a database, HTTP or tool result, kept outside state (design 9.3). The wire
+    shape is the Node.js runtime's (content parts carry it); ``node_id``, ``visit`` and
+    ``preview`` are this runtime's provenance and inline rows."""
 
-    dataset_id: str
     store: Literal["cache", "database"]
-    kind: Literal["rows", "http_response", "tool_result"]
-    node_id: str
-    visit: int = Field(ge=1)
-    cache_key: str | None = None
-    content_type: str = "application/json"
-    row_count: int | None = None
-    columns: list[str] | None = None
-    size_bytes: int = 0
+    #: The cache key (``cache`` store) or the dataset ID (``database`` store).
+    key: str
+    #: The public ID: ``GET /v1/datasets/{datasetId}`` (P3-05); absent until registered.
+    dataset_id: str | None = None
+    kind: Literal["rows", "http_response", "tool_result"] = "rows"
+    content_type: str | None = None
+    row_count: int | None = Field(default=None, ge=0)
+    columns: list[str] = Field(default_factory=list)
+    size_bytes: int | None = Field(default=None, ge=0)
     sha256: str | None = None
+    expires_at: datetime | None = None
+    node_id: str | None = None
+    visit: int | None = Field(default=None, ge=1)
     preview: list[dict[str, Any]] = Field(default_factory=list)
 
 
@@ -110,6 +115,8 @@ class TimelineEntry(ZonicModel):
     duration_ms: float = Field(ge=0)
     handles: list[str] = Field(default_factory=list)
     error_code: str | None = None
+    #: A sub-flow's visit: the sub-flow node names leading to it (``agent/lookup``); none at the root.
+    path: str | None = None
 
 
 class NodeRecord(ZonicModel):
@@ -123,6 +130,8 @@ class NodeRecord(ZonicModel):
     output: dict[str, Any] = Field(default_factory=dict)
     usage: Usage | None = None
     error: dict[str, Any] | None = None
+    #: The visit's content parts (views); the turn's answer message carries them (P3-08).
+    parts: list[dict[str, Any]] = Field(default_factory=list)
 
 
 class NodeOutcome(ZonicModel):
@@ -135,8 +144,17 @@ class NodeOutcome(ZonicModel):
     messages: list[ThreadMessage] = Field(default_factory=list)
     datasets: list[DatasetRef] = Field(default_factory=list)
     warnings: list[dict[str, Any]] = Field(default_factory=list)
+    #: Content parts for clients (``models/content``), plain; the view kind also emits each one.
+    parts: list[dict[str, Any]] = Field(default_factory=list)
+    #: Visits of a child workflow (sub-flows), with their ``path``; before the node's own visit.
+    timeline: list[TimelineEntry] = Field(default_factory=list)
     #: The run result, set by the Output kind (``first_result`` keeps the first).
     result: dict[str, Any] | None = None
+    #: State operations of the kind itself (the Variable node's ``updates``); the template
+    #: applies them before the node's ``variableUpdates`` (design 8.1 step 9).
+    updates: list[StateUpdate] = Field(default_factory=list)
+    #: ``output`` is already output data (a hook's ``skip`` or ``recover``), not the kind's raw result.
+    mapped: bool = False
 
     @property
     def activates_all(self) -> bool:

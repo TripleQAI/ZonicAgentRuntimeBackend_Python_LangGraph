@@ -1,0 +1,454 @@
+[
+  [
+    {
+      "data": {
+        "agenticWorkflowId": "<uuid>",
+        "sessionId": "<uuid>",
+        "title": "Create a request"
+      },
+      "seq": 1,
+      "type": "run.started"
+    },
+    {
+      "data": {
+        "nodeName": "start",
+        "nodeType": "start",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "start",
+      "seq": 2,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "channel_identified",
+          "current_state",
+          "global_questionnaireResponse",
+          "partialViewData",
+          "qa_master_data",
+          "questionnaireForSummary",
+          "user_context",
+          "user_decision_points"
+        ]
+      },
+      "nodeId": "start",
+      "seq": 3,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "nodeOutput.interface.inputs.attachments",
+            "nodeOutput.interface.inputs.channel_identified",
+            "nodeOutput.interface.inputs.current_state",
+            "nodeOutput.interface.inputs.decision_points",
+            "nodeOutput.interface.inputs.partialViewData",
+            "nodeOutput.interface.inputs.qa_master_data",
+            "nodeOutput.interface.inputs.questionnaireForSummary",
+            "nodeOutput.interface.inputs.questionnaireResponse",
+            "nodeOutput.interface.inputs.user_context"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "start",
+      "seq": 4,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 109,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "start",
+      "seq": 5,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "agent_0",
+        "nodeType": "agent",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "zo1ua4d",
+      "seq": 6,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "inputSummary": {
+          "bytes": 60,
+          "fields": 1,
+          "type": "object"
+        },
+        "toolName": "storingquestionnaireresponse",
+        "toolUseId": "route-1"
+      },
+      "nodeId": "zo1ua4d",
+      "seq": 7,
+      "type": "tool.started"
+    },
+    {
+      "data": {
+        "status": "success",
+        "toolUseId": "route-1"
+      },
+      "nodeId": "zo1ua4d",
+      "seq": 8,
+      "type": "tool.finished"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "flow.channel_identified",
+            "flow.partialViewData",
+            "flow.qa_master_data",
+            "flow.user_context",
+            "flow.user_context.userDateFormat",
+            "flow.user_context.user_culture_code",
+            "flow.user_decision_points",
+            "nodeOutput.text",
+            "system.attachments"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "zo1ua4d",
+      "seq": 9,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "handoff-t125wn8"
+        ],
+        "outputSummary": {
+          "bytes": 318,
+          "fields": 5,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 2263,
+          "modelCalls": 1,
+          "outputTokens": 3,
+          "totalTokens": 2266
+        }
+      },
+      "nodeId": "zo1ua4d",
+      "seq": 10,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "variable_1",
+        "nodeType": "variable",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "t125wn8",
+      "seq": 11,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "questionnaireResponse"
+        ]
+      },
+      "nodeId": "t125wn8",
+      "seq": 12,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 2,
+          "fields": 0,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "t125wn8",
+      "seq": 13,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "iteration": 2,
+        "loopId": "loop:zo1ua4d"
+      },
+      "nodeId": "zo1ua4d",
+      "seq": 14,
+      "type": "loop.iteration"
+    },
+    {
+      "data": {
+        "nodeName": "agent_0",
+        "nodeType": "agent",
+        "resumed": false,
+        "visit": 2
+      },
+      "nodeId": "zo1ua4d",
+      "seq": 15,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "inputSummary": {
+          "bytes": 60,
+          "fields": 1,
+          "type": "object"
+        },
+        "toolName": "storingquestionnaireresponse",
+        "toolUseId": "route-2"
+      },
+      "nodeId": "zo1ua4d",
+      "seq": 16,
+      "type": "tool.started"
+    },
+    {
+      "data": {
+        "status": "success",
+        "toolUseId": "route-2"
+      },
+      "nodeId": "zo1ua4d",
+      "seq": 17,
+      "type": "tool.finished"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "flow.channel_identified",
+            "flow.partialViewData",
+            "flow.qa_master_data",
+            "flow.user_context",
+            "flow.user_context.userDateFormat",
+            "flow.user_context.user_culture_code",
+            "flow.user_decision_points",
+            "system.attachments"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "zo1ua4d",
+      "seq": 18,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "handoff-t125wn8"
+        ],
+        "outputSummary": {
+          "bytes": 318,
+          "fields": 5,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 2263,
+          "modelCalls": 1,
+          "outputTokens": 3,
+          "totalTokens": 2266
+        }
+      },
+      "nodeId": "zo1ua4d",
+      "seq": 19,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "variable_1",
+        "nodeType": "variable",
+        "resumed": false,
+        "visit": 2
+      },
+      "nodeId": "t125wn8",
+      "seq": 20,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "questionnaireResponse"
+        ]
+      },
+      "nodeId": "t125wn8",
+      "seq": 21,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 2,
+          "fields": 0,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "t125wn8",
+      "seq": 22,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "iteration": 3,
+        "loopId": "loop:zo1ua4d"
+      },
+      "nodeId": "zo1ua4d",
+      "seq": 23,
+      "type": "loop.iteration"
+    },
+    {
+      "data": {
+        "nodeName": "agent_0",
+        "nodeType": "agent",
+        "resumed": false,
+        "visit": 3
+      },
+      "nodeId": "zo1ua4d",
+      "seq": 24,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "text": "All "
+      },
+      "nodeId": "zo1ua4d",
+      "seq": 25,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "text": "done: the request is complete."
+      },
+      "nodeId": "zo1ua4d",
+      "seq": 26,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "flow.channel_identified",
+            "flow.partialViewData",
+            "flow.qa_master_data",
+            "flow.user_context",
+            "flow.user_context.userDateFormat",
+            "flow.user_context.user_culture_code",
+            "flow.user_decision_points",
+            "system.attachments"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "zo1ua4d",
+      "seq": 27,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 123,
+          "fields": 4,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 2263,
+          "modelCalls": 1,
+          "outputTokens": 6,
+          "totalTokens": 2269
+        }
+      },
+      "nodeId": "zo1ua4d",
+      "seq": 28,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "output",
+        "nodeType": "output",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "output",
+      "seq": 29,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "runtime.workflowMetaData.agentName"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "output",
+      "seq": 30,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 1294,
+          "fields": 3,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "output",
+      "seq": 31,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "result": {
+          "messages": "[{\"role\": \"user\", \"content\": \"Create a request\", \"thread\": \"messages\", \"nodeId\": \"start\"}, {\"role\": \"assistant\", \"content\": [{\"name\": \"storingquestionnaireresponse\", \"args\": {\"questionnaireResponse\": {\"sample\": \"questionnaireResponse\"}}, \"id\": \"route-1\", \"type\": \"tool_call\"}], \"thread\": \"messages\", \"nodeId\": \"zo1ua4d\"}, {\"role\": \"tool\", \"content\": \"Continuing with variable_1.\", \"thread\": \"messages\", \"nodeId\": \"zo1ua4d\"}, {\"role\": \"assistant\", \"content\": \"\", \"thread\": \"messages\", \"nodeId\": \"zo1ua4d\"}, {\"role\": \"assistant\", \"content\": [{\"name\": \"storingquestionnaireresponse\", \"args\": {\"questionnaireResponse\": {\"sample\": \"questionnaireResponse\"}}, \"id\": \"route-2\", \"type\": \"tool_call\"}], \"thread\": \"messages\", \"nodeId\": \"zo1ua4d\"}, {\"role\": \"tool\", \"content\": \"Continuing with variable_1.\", \"thread\": \"messages\", \"nodeId\": \"zo1ua4d\"}, {\"role\": \"assistant\", \"content\": \"\", \"thread\": \"messages\", \"nodeId\": \"zo1ua4d\"}, {\"role\": \"assistant\", \"content\": \"All done: the request is complete.\", \"thread\": \"messages\", \"nodeId\": \"zo1ua4d\"}]",
+          "selectedAgentId": "<uuid>",
+          "selectedAgentName": ""
+        },
+        "usage": {
+          "inputTokens": 6789,
+          "modelCalls": 3,
+          "outputTokens": 12,
+          "totalTokens": 6801
+        }
+      },
+      "seq": 32,
+      "type": "run.completed"
+    }
+  ]
+]

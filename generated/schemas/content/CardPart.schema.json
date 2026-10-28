@@ -1,0 +1,103 @@
+{
+  "$defs": {
+    "CardAction": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Action"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "payload": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Payload"
+        }
+      },
+      "required": [
+        "label"
+      ],
+      "title": "CardAction",
+      "type": "object"
+    },
+    "CardField": {
+      "additionalProperties": false,
+      "properties": {
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "value": {
+          "default": null,
+          "title": "Value"
+        }
+      },
+      "required": [
+        "label"
+      ],
+      "title": "CardField",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "actions": {
+      "items": {
+        "$ref": "#/$defs/CardAction"
+      },
+      "title": "Actions",
+      "type": "array"
+    },
+    "body": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Body"
+    },
+    "fields": {
+      "items": {
+        "$ref": "#/$defs/CardField"
+      },
+      "title": "Fields",
+      "type": "array"
+    },
+    "title": {
+      "default": "",
+      "title": "Title",
+      "type": "string"
+    },
+    "type": {
+      "const": "card",
+      "default": "card",
+      "title": "Type",
+      "type": "string"
+    }
+  },
+  "title": "CardPart",
+  "type": "object"
+}

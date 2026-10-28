@@ -1,0 +1,37 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "snippet": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Snippet"
+    },
+    "title": {
+      "title": "Title",
+      "type": "string"
+    },
+    "type": {
+      "const": "citation",
+      "default": "citation",
+      "title": "Type",
+      "type": "string"
+    },
+    "url": {
+      "title": "Url",
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "url"
+  ],
+  "title": "CitationPart",
+  "type": "object"
+}

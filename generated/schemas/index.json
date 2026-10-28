@@ -1,4 +1,46 @@
 {
+  "content": [
+    "CardPart",
+    "ChartPart",
+    "CitationPart",
+    "ErrorPart",
+    "FilePart",
+    "FormPart",
+    "GridPart",
+    "HtmlPart",
+    "JsonPart",
+    "MarkdownPart",
+    "TablePart"
+  ],
+  "events": [
+    "ContentPartEvent",
+    "HeartbeatEvent",
+    "InterruptRequestedEvent",
+    "LoopIterationEvent",
+    "NodeFinishedEvent",
+    "NodeStartedEvent",
+    "ReasoningDeltaEvent",
+    "RunCancelledEvent",
+    "RunCompletedEvent",
+    "RunEvent",
+    "RunFailedEvent",
+    "RunStartedEvent",
+    "RunWaitingEvent",
+    "StateUpdatedEvent",
+    "StreamGapEvent",
+    "SwarmHandoffEvent",
+    "SwarmMemberFinishedEvent",
+    "SwarmMemberStartedEvent",
+    "TokenDeltaEvent",
+    "ToolFinishedEvent",
+    "ToolStartedEvent",
+    "WarningEvent"
+  ],
+  "observability": [
+    "ObsObservationRecord",
+    "ObsScoreRecord",
+    "ObsTraceRecord"
+  ],
   "resources": [
     "BuilderRegistry",
     "DialectRules",

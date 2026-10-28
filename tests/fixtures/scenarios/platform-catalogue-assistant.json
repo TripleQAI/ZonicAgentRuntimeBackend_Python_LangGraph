@@ -1,0 +1,443 @@
+[
+  [
+    {
+      "data": {
+        "agenticWorkflowId": "<uuid>",
+        "sessionId": "<uuid>",
+        "title": "I want a laptop"
+      },
+      "seq": 1,
+      "type": "run.started"
+    },
+    {
+      "data": {
+        "nodeName": "start",
+        "nodeType": "start",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "start",
+      "seq": 2,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "buttonMessage",
+          "extractedEntities",
+          "handoff_to",
+          "partial_view_data",
+          "userContext"
+        ]
+      },
+      "nodeId": "start",
+      "seq": 3,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "nodeOutput.interface.inputs.extractedEntities",
+            "nodeOutput.interface.inputs.parameters.systemMessage",
+            "nodeOutput.interface.inputs.partialViewData",
+            "nodeOutput.interface.inputs.userContext"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "start",
+      "seq": 4,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 106,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "start",
+      "seq": 5,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "set_pv_data",
+        "nodeType": "script",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "k32me1v",
+      "seq": 6,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "cart",
+          "createRequisitionResponseDM"
+        ]
+      },
+      "nodeId": "k32me1v",
+      "seq": 7,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "flow.partial_view_data",
+            "nodeOutput.result.createRequisitionResponseDM",
+            "nodeOutput.result.selectedItems"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "k32me1v",
+      "seq": 8,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 2,
+          "fields": 0,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "k32me1v",
+      "seq": 9,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "supervisor",
+        "nodeType": "agent",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "ujm35ij",
+      "seq": 10,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "text": "{\"assistantMeta\": "
+      },
+      "nodeId": "ujm35ij",
+      "seq": 11,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "text": "{\"cartStatus\": \"loaded\", \"currentSearchKey\": \"sample\", \"queryContext\": \"sample\", \"filterLabel\": \"sample\"}, \"nextStep\": \"clarify\"}"
+      },
+      "nodeId": "ujm35ij",
+      "seq": 12,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "keys": [
+          "assistantMeta",
+          "filterLabel",
+          "itemName",
+          "nextStep",
+          "queryContext"
+        ]
+      },
+      "nodeId": "ujm35ij",
+      "seq": 13,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "flow.buttonMessage",
+            "flow.cart",
+            "nodeOutput.structuredOutput.assistantMeta",
+            "nodeOutput.structuredOutput.assistantMeta.currentSearchKey",
+            "nodeOutput.structuredOutput.assistantMeta.filterLabel",
+            "nodeOutput.structuredOutput.assistantMeta.queryContext",
+            "nodeOutput.structuredOutput.nextStep"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "ujm35ij",
+      "seq": 14,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 652,
+          "fields": 7,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 2048,
+          "modelCalls": 1,
+          "outputTokens": 11,
+          "totalTokens": 2059
+        }
+      },
+      "nodeId": "ujm35ij",
+      "seq": 15,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "set_placeholder",
+        "nodeType": "script",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "1cb89x7",
+      "seq": 16,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "assistantMeta",
+          "catalogAssistPayload",
+          "placeHolderArray"
+        ]
+      },
+      "nodeId": "1cb89x7",
+      "seq": 17,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "code": "OUTPUT_SCHEMA_INVALID",
+        "details": {
+          "path": "output.assistantMeta"
+        },
+        "message": "Additional properties are not allowed ('filterLabel' was unexpected)"
+      },
+      "nodeId": "1cb89x7",
+      "seq": 18,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "code": "OUTPUT_SCHEMA_INVALID",
+        "details": {
+          "path": "output.placeholderArr[0]"
+        },
+        "message": "Additional properties are not allowed ('dataModelPath', 'dataModelRefreshConfig', 'defaultValue', 'editMode', 'key', 'label', 'type' were unexpected)"
+      },
+      "nodeId": "1cb89x7",
+      "seq": 19,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "code": "OUTPUT_SCHEMA_INVALID",
+        "details": {
+          "path": "output.placeholderArr[1]"
+        },
+        "message": "Additional properties are not allowed ('autosuggestConfig', 'dataModelPath', 'dataModelRefreshConfig', 'defaultValue', 'editMode', 'key', 'label', 'readOnly', 'replaceSelectedObject', 'type' were unexpected)"
+      },
+      "nodeId": "1cb89x7",
+      "seq": 20,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "code": "OUTPUT_SCHEMA_INVALID",
+        "details": {
+          "path": "output.placeholderArr[2]"
+        },
+        "message": "Additional properties are not allowed ('autosuggestConfig', 'channelMessageConfig', 'dataModelPath', 'defaultValue', 'dependencies', 'editMode', 'key', 'label', 'readOnly', 'type' were unexpected)"
+      },
+      "nodeId": "1cb89x7",
+      "seq": 21,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "code": "OUTPUT_SCHEMA_INVALID",
+        "details": {
+          "path": "output.placeholderArr[3]"
+        },
+        "message": "Additional properties are not allowed ('autosuggestConfig', 'channelMessageConfig', 'dataModelDependencies', 'dataModelPath', 'dependencies', 'editMode', 'key', 'label', 'searchable', 'type' were unexpected)"
+      },
+      "nodeId": "1cb89x7",
+      "seq": 22,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "flow.partial_view_data"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "1cb89x7",
+      "seq": 23,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 6960,
+          "fields": 3,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "1cb89x7",
+      "seq": 24,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "navigator",
+        "nodeType": "rule",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "dhxvxvh",
+      "seq": 25,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "r-else"
+        ],
+        "outputSummary": {
+          "bytes": 33,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "dhxvxvh",
+      "seq": 26,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "ask_to_clarify",
+        "nodeType": "variable",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "clrfy01",
+      "seq": 27,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 2,
+          "fields": 0,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "clrfy01",
+      "seq": 28,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "output",
+        "nodeType": "output",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "output",
+      "seq": 29,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "flow.assistantMeta.frontdoorIntent",
+            "flow.assistantMeta.inputString",
+            "flow.cart",
+            "flow.handoff_to",
+            "runtime.workflowMetaData.agentName"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "output",
+      "seq": 30,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 835,
+          "fields": 9,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "output",
+      "seq": 31,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "result": {
+          "cartItems": "",
+          "catalogUserDefault": "{}",
+          "frontdoorIntent": "",
+          "handoff_to": "",
+          "itemName": "",
+          "messages": "[{\"role\": \"user\", \"content\": \"I want a laptop\", \"thread\": \"messages\", \"nodeId\": \"start\"}, {\"role\": \"assistant\", \"content\": \"{\\\"assistantMeta\\\": {\\\"cartStatus\\\": \\\"loaded\\\", \\\"currentSearchKey\\\": \\\"sample\\\", \\\"queryContext\\\": \\\"sample\\\", \\\"filterLabel\\\": \\\"sample\\\"}, \\\"nextStep\\\": \\\"clarify\\\"}\", \"thread\": \"messages\", \"nodeId\": \"ujm35ij\"}, {\"role\": \"assistant\", \"content\": \"I wasn't able to identify the specific item you're looking for. Could you describe what you need in a few words?\", \"thread\": \"messages\", \"nodeId\": \"clrfy01\"}]",
+          "queryContext": "sample",
+          "selectedAgentId": "<uuid>",
+          "selectedAgentName": ""
+        },
+        "usage": {
+          "inputTokens": 2048,
+          "modelCalls": 1,
+          "outputTokens": 11,
+          "totalTokens": 2059
+        }
+      },
+      "seq": 32,
+      "type": "run.completed"
+    }
+  ]
+]

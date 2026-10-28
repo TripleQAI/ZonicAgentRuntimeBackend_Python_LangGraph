@@ -1,0 +1,463 @@
+[
+  [
+    {
+      "data": {
+        "agenticWorkflowId": "<uuid>",
+        "sessionId": "<uuid>",
+        "title": "Please refund order 1042"
+      },
+      "seq": 1,
+      "type": "run.started"
+    },
+    {
+      "data": {
+        "nodeName": "Start_1",
+        "nodeType": "start",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "start_1",
+      "seq": 2,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 133,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "start_1",
+      "seq": 3,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "LLM_1",
+        "nodeType": "llm",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "llm_1",
+      "seq": 4,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "text": "Dear "
+      },
+      "nodeId": "llm_1",
+      "seq": 5,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "text": "customer, your refund for order 1042 is on its way."
+      },
+      "nodeId": "llm_1",
+      "seq": 6,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 67,
+          "fields": 1,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 12,
+          "modelCalls": 1,
+          "outputTokens": 11,
+          "totalTokens": 23
+        }
+      },
+      "nodeId": "llm_1",
+      "seq": 7,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "interruptId": "<uuid>",
+        "kind": "approval",
+        "prompt": "Approve this draft?\n\nDear customer, your refund for order 1042 is on its way.",
+        "schema": {
+          "additionalProperties": false,
+          "description": "The decision on an Approval. The runtime sets decidedBy (who answered) and expired.",
+          "properties": {
+            "approved": {
+              "description": "true approves, false rejects",
+              "title": "Approved",
+              "type": "boolean"
+            },
+            "comment": {
+              "anyOf": [
+                {
+                  "maxLength": 2000,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Comment"
+            },
+            "decidedBy": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "readOnly": true,
+              "title": "Decidedby"
+            },
+            "expired": {
+              "default": false,
+              "readOnly": true,
+              "title": "Expired",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "approved"
+          ],
+          "title": "ApprovalAnswer",
+          "type": "object"
+        }
+      },
+      "nodeId": "approval_1",
+      "seq": 8,
+      "type": "interrupt.requested"
+    },
+    {
+      "data": {
+        "interruptIds": [
+          "<uuid>"
+        ]
+      },
+      "seq": 9,
+      "type": "run.waiting"
+    },
+    {
+      "data": {
+        "agenticWorkflowId": "<uuid>",
+        "sessionId": "<uuid>"
+      },
+      "seq": 10,
+      "type": "run.started"
+    },
+    {
+      "data": {
+        "nodeName": "Approval_1",
+        "nodeType": "approval",
+        "resumed": true,
+        "visit": 1
+      },
+      "nodeId": "approval_1",
+      "seq": 11,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "approved"
+        ],
+        "outputSummary": {
+          "bytes": 37,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "approval_1",
+      "seq": 12,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "Approved",
+        "nodeType": "output",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "output_approved",
+      "seq": 13,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 71,
+          "fields": 1,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "output_approved",
+      "seq": 14,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "result": {
+          "response": "Dear customer, your refund for order 1042 is on its way."
+        },
+        "usage": {
+          "inputTokens": 12,
+          "modelCalls": 1,
+          "outputTokens": 11,
+          "totalTokens": 23
+        }
+      },
+      "seq": 15,
+      "type": "run.completed"
+    }
+  ],
+  [
+    {
+      "data": {
+        "agenticWorkflowId": "<uuid>",
+        "sessionId": "<uuid>"
+      },
+      "seq": 1,
+      "type": "run.started"
+    },
+    {
+      "data": {
+        "nodeName": "Start_1",
+        "nodeType": "start",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "start_1",
+      "seq": 2,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 133,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "start_1",
+      "seq": 3,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "LLM_1",
+        "nodeType": "llm",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "llm_1",
+      "seq": 4,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "text": "Dear "
+      },
+      "nodeId": "llm_1",
+      "seq": 5,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "text": "customer, we cannot refund order 1043."
+      },
+      "nodeId": "llm_1",
+      "seq": 6,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 54,
+          "fields": 1,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 27,
+          "modelCalls": 1,
+          "outputTokens": 7,
+          "totalTokens": 34
+        }
+      },
+      "nodeId": "llm_1",
+      "seq": 7,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "interruptId": "<uuid>",
+        "kind": "approval",
+        "prompt": "Approve this draft?\n\nDear customer, we cannot refund order 1043.",
+        "schema": {
+          "additionalProperties": false,
+          "description": "The decision on an Approval. The runtime sets decidedBy (who answered) and expired.",
+          "properties": {
+            "approved": {
+              "description": "true approves, false rejects",
+              "title": "Approved",
+              "type": "boolean"
+            },
+            "comment": {
+              "anyOf": [
+                {
+                  "maxLength": 2000,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Comment"
+            },
+            "decidedBy": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "readOnly": true,
+              "title": "Decidedby"
+            },
+            "expired": {
+              "default": false,
+              "readOnly": true,
+              "title": "Expired",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "approved"
+          ],
+          "title": "ApprovalAnswer",
+          "type": "object"
+        }
+      },
+      "nodeId": "approval_1",
+      "seq": 8,
+      "type": "interrupt.requested"
+    },
+    {
+      "data": {
+        "interruptIds": [
+          "<uuid>"
+        ]
+      },
+      "seq": 9,
+      "type": "run.waiting"
+    },
+    {
+      "data": {
+        "agenticWorkflowId": "<uuid>",
+        "sessionId": "<uuid>"
+      },
+      "seq": 10,
+      "type": "run.started"
+    },
+    {
+      "data": {
+        "nodeName": "Approval_1",
+        "nodeType": "approval",
+        "resumed": true,
+        "visit": 1
+      },
+      "nodeId": "approval_1",
+      "seq": 11,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "rejected"
+        ],
+        "outputSummary": {
+          "bytes": 73,
+          "fields": 3,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "approval_1",
+      "seq": 12,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "Rejected",
+        "nodeType": "output",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "output_rejected",
+      "seq": 13,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 38,
+          "fields": 1,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "output_rejected",
+      "seq": 14,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "result": {
+          "response": "The draft was rejected."
+        },
+        "usage": {
+          "inputTokens": 27,
+          "modelCalls": 1,
+          "outputTokens": 7,
+          "totalTokens": 34
+        }
+      },
+      "seq": 15,
+      "type": "run.completed"
+    }
+  ]
+]

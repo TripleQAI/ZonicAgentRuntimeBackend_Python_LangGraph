@@ -2,7 +2,9 @@
 
 The Output kind writes ``result``; the first Output wins (``first_result``) and every other
 one is reported. When no Output ran, ``settings.result.fallback`` applies in order (the
-last agent text, then the last LLM text, by timeline order), else ``NO_OUTPUT``.
+last agent text, then the last LLM text, by timeline order), else ``NO_OUTPUT``. A sub-flow
+node's text result is an answer too (its child's answer), and a child's own visits in the
+timeline (those with a ``path``) are its child's, not this workflow's (P3-09).
 """
 
 from __future__ import annotations
@@ -18,6 +20,7 @@ from zonic_runtime.workflow.templates.resolver import OUTPUT_FIELD
 
 #: ``last_<kind>_text``: the last text of a node of that kind.
 _FALLBACK = re.compile(r"^last_(?P<kind>[a-z_]+)_text$")
+_SUBFLOW = "subflow"
 #: ``RunResult.source`` when an Output node set the result.
 FROM_OUTPUT_NODE = "outputNode"
 
@@ -37,7 +40,11 @@ def run_result(state: Mapping[str, Any], blueprint: Blueprint, fallback: Sequenc
             for writer in found.get("ignored", [])
         ]
         return RunResult(value=dict(found["value"]), source=FROM_OUTPUT_NODE, warnings=warnings)
-    order = [entry["nodeId"] for entry in state.get("timeline") or [] if entry.get("status") == "succeeded"]
+    order = [
+        entry["nodeId"]
+        for entry in state.get("timeline") or []
+        if entry.get("status") == "succeeded" and not entry.get("path")
+    ]
     records = state.get("nodes") or {}
     for name in fallback:
         match = _FALLBACK.match(name)
@@ -45,6 +52,6 @@ def run_result(state: Mapping[str, Any], blueprint: Blueprint, fallback: Sequenc
         for node_id in reversed(order):
             spec = blueprint.nodes.get(node_id)
             text = (records.get(node_id) or {}).get(OUTPUT_FIELD, {}).get("text")
-            if spec is not None and spec.kind == kind and isinstance(text, str) and text:
+            if spec is not None and spec.kind in (kind, _SUBFLOW) and isinstance(text, str) and text:
                 return RunResult(value={"text": text}, source=name)
     raise ZonicError("NO_OUTPUT")

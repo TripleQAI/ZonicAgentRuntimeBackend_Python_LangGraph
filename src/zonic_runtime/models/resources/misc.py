@@ -122,6 +122,9 @@ class DialectRules(ZonicResourceModel):
     operator_aliases: dict[str, str] = Field(default_factory=dict)
     default_rule_ids: list[str] = Field(default_factory=list)
     agent_strategies: list[str] = Field(default_factory=list)
+    #: A root run's interface inputs from the request: input name -> ``StartRunRequest.input`` field
+    #: (the platform's start nodes read ``interface.inputs.message``, case F-17).
+    request_inputs: dict[str, str] = Field(default_factory=dict)
     rules: list[DialectRule]
 
     @model_validator(mode="after")

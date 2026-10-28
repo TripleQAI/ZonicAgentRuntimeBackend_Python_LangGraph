@@ -1,0 +1,651 @@
+[
+  [
+    {
+      "data": {
+        "agenticWorkflowId": "<uuid>",
+        "sessionId": "<uuid>",
+        "title": "Which facilities had boiler alarms?"
+      },
+      "seq": 1,
+      "type": "run.started"
+    },
+    {
+      "data": {
+        "nodeName": "Start_1",
+        "nodeType": "start",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "start_1785511197864_jvbmh",
+      "seq": 2,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 166,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "start_1785511197864_jvbmh",
+      "seq": 3,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "keywords-extraction",
+        "nodeType": "llm",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "llm_1785511238576_utnwf",
+      "seq": 4,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "text": "{\"keywords\": "
+      },
+      "nodeId": "llm_1785511238576_utnwf",
+      "seq": 5,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "text": "[\"boiler\", \"alarm\"]}"
+      },
+      "nodeId": "llm_1785511238576_utnwf",
+      "seq": 6,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 50,
+          "fields": 1,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 5,
+          "modelCalls": 1,
+          "outputTokens": 3,
+          "totalTokens": 8
+        }
+      },
+      "nodeId": "llm_1785511238576_utnwf",
+      "seq": 7,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "facility-agent",
+        "nodeType": "agent",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "agent_1785511250074_xp7b6",
+      "seq": 8,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "inputSummary": {
+          "bytes": 54,
+          "fields": 2,
+          "type": "object"
+        },
+        "toolName": "handoff_to",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "agent_1785511250074_xp7b6",
+      "seq": 9,
+      "type": "tool.started"
+    },
+    {
+      "data": {
+        "status": "success",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "agent_1785511250074_xp7b6",
+      "seq": 10,
+      "type": "tool.finished"
+    },
+    {
+      "data": {
+        "handles": [
+          "handoff-llm_1785511291123_pvzlk"
+        ],
+        "outputSummary": {
+          "bytes": 249,
+          "fields": 5,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 5,
+          "modelCalls": 1,
+          "outputTokens": 5,
+          "totalTokens": 10
+        }
+      },
+      "nodeId": "agent_1785511250074_xp7b6",
+      "seq": 11,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "direct-answer",
+        "nodeType": "llm",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "llm_1785511291123_pvzlk",
+      "seq": 12,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "text": "<p>Three "
+      },
+      "nodeId": "llm_1785511291123_pvzlk",
+      "seq": 13,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "text": "facilities reported boiler alarms.</p>"
+      },
+      "nodeId": "llm_1785511291123_pvzlk",
+      "seq": 14,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 58,
+          "fields": 1,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 5,
+          "modelCalls": 1,
+          "outputTokens": 5,
+          "totalTokens": 10
+        }
+      },
+      "nodeId": "llm_1785511291123_pvzlk",
+      "seq": 15,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "View_1",
+        "nodeType": "view",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "view_1785511492573_4qhdx",
+      "seq": 16,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "part": {
+          "datasetRefs": [],
+          "html": "<div>\n  \n</div>",
+          "type": "html"
+        },
+        "type": "html"
+      },
+      "nodeId": "view_1785511492573_4qhdx",
+      "seq": 17,
+      "type": "content.part"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "variable.path"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "view_1785511492573_4qhdx",
+      "seq": 18,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 28,
+          "fields": 1,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "view_1785511492573_4qhdx",
+      "seq": 19,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "VarUpdate_1",
+        "nodeType": "variable",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "variable_1785511511620_aig39",
+      "seq": 20,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 2,
+          "fields": 0,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "variable_1785511511620_aig39",
+      "seq": 21,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "Output_1",
+        "nodeType": "output",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "output_1785511275818_6bl65",
+      "seq": 22,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "code": "OUTPUT_MAPPING_MISSING",
+        "details": {},
+        "message": "The output step has no mapping; the last answer was used."
+      },
+      "nodeId": "output_1785511275818_6bl65",
+      "seq": 23,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 2,
+          "fields": 0,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "output_1785511275818_6bl65",
+      "seq": 24,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "result": {
+          "text": "<p>Three facilities reported boiler alarms.</p>"
+        },
+        "usage": {
+          "inputTokens": 15,
+          "modelCalls": 3,
+          "outputTokens": 13,
+          "totalTokens": 28
+        }
+      },
+      "seq": 25,
+      "type": "run.completed"
+    }
+  ],
+  [
+    {
+      "data": {
+        "agenticWorkflowId": "<uuid>",
+        "sessionId": "<uuid>"
+      },
+      "seq": 1,
+      "type": "run.started"
+    },
+    {
+      "data": {
+        "nodeName": "Start_1",
+        "nodeType": "start",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "start_1785511197864_jvbmh",
+      "seq": 2,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 157,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "start_1785511197864_jvbmh",
+      "seq": 3,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "keywords-extraction",
+        "nodeType": "llm",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "llm_1785511238576_utnwf",
+      "seq": 4,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "text": "{\"keywords\": "
+      },
+      "nodeId": "llm_1785511238576_utnwf",
+      "seq": 5,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "text": "[\"alarm\", \"site\"]}"
+      },
+      "nodeId": "llm_1785511238576_utnwf",
+      "seq": 6,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 48,
+          "fields": 1,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 16,
+          "modelCalls": 1,
+          "outputTokens": 3,
+          "totalTokens": 19
+        }
+      },
+      "nodeId": "llm_1785511238576_utnwf",
+      "seq": 7,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "facility-agent",
+        "nodeType": "agent",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "agent_1785511250074_xp7b6",
+      "seq": 8,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "inputSummary": {
+          "bytes": 50,
+          "fields": 2,
+          "type": "object"
+        },
+        "toolName": "handoff_to",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "agent_1785511250074_xp7b6",
+      "seq": 9,
+      "type": "tool.started"
+    },
+    {
+      "data": {
+        "status": "success",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "agent_1785511250074_xp7b6",
+      "seq": 10,
+      "type": "tool.finished"
+    },
+    {
+      "data": {
+        "handles": [
+          "handoff-llm_1785511293299_zq6g4"
+        ],
+        "outputSummary": {
+          "bytes": 249,
+          "fields": 5,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 16,
+          "modelCalls": 1,
+          "outputTokens": 5,
+          "totalTokens": 21
+        }
+      },
+      "nodeId": "agent_1785511250074_xp7b6",
+      "seq": 11,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "data-processing",
+        "nodeType": "llm",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "llm_1785511293299_zq6g4",
+      "seq": 12,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "text": "<table><tr><td>Site "
+      },
+      "nodeId": "llm_1785511293299_zq6g4",
+      "seq": 13,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "text": "A</td><td>2</td></tr></table>"
+      },
+      "nodeId": "llm_1785511293299_zq6g4",
+      "seq": 14,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 60,
+          "fields": 1,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 16,
+          "modelCalls": 1,
+          "outputTokens": 2,
+          "totalTokens": 18
+        }
+      },
+      "nodeId": "llm_1785511293299_zq6g4",
+      "seq": 15,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "View_2",
+        "nodeType": "view",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "view_1785511500675_nupj0",
+      "seq": 16,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "part": {
+          "datasetRefs": [],
+          "html": "<div>\n  \n</div>",
+          "type": "html"
+        },
+        "type": "html"
+      },
+      "nodeId": "view_1785511500675_nupj0",
+      "seq": 17,
+      "type": "content.part"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "variable.path"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "view_1785511500675_nupj0",
+      "seq": 18,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 28,
+          "fields": 1,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "view_1785511500675_nupj0",
+      "seq": 19,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "VarUpdate_1",
+        "nodeType": "variable",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "variable_1785511511620_aig39",
+      "seq": 20,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 2,
+          "fields": 0,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "variable_1785511511620_aig39",
+      "seq": 21,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "Output_1",
+        "nodeType": "output",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "output_1785511275818_6bl65",
+      "seq": 22,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "code": "OUTPUT_MAPPING_MISSING",
+        "details": {},
+        "message": "The output step has no mapping; the last answer was used."
+      },
+      "nodeId": "output_1785511275818_6bl65",
+      "seq": 23,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 2,
+          "fields": 0,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "output_1785511275818_6bl65",
+      "seq": 24,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "result": {
+          "text": "<table><tr><td>Site A</td><td>2</td></tr></table>"
+        },
+        "usage": {
+          "inputTokens": 48,
+          "modelCalls": 3,
+          "outputTokens": 10,
+          "totalTokens": 58
+        }
+      },
+      "seq": 25,
+      "type": "run.completed"
+    }
+  ]
+]

@@ -29,6 +29,8 @@ from zonic_runtime.models.gateway.wire import (
 )
 
 Handler = Callable[["InMemoryGateway", list[Any]], Awaitable[list[dict[str, Any]]]]
+#: Rows of a view computed from the gateway's tables on every read (joins, aggregates).
+ViewFunction = Callable[["InMemoryGateway"], list[dict[str, Any]]]
 
 
 @dataclass
@@ -42,6 +44,7 @@ class Call:
 class InMemoryGateway:
     tables: dict[tuple[str, str], list[dict[str, Any]]] = field(default_factory=dict)
     procedures: dict[tuple[str, str], Handler] = field(default_factory=dict)
+    computed: dict[tuple[str, str], ViewFunction] = field(default_factory=dict)
     calls: list[Call] = field(default_factory=list)
     _faults: list[tuple[str, ZonicError]] = field(default_factory=list)
 
@@ -52,6 +55,13 @@ class InMemoryGateway:
 
     def on_procedure(self, schema: str, name: str, handler: Handler) -> None:
         self.procedures[(schema, name)] = handler
+
+    def define_view(self, schema: str, name: str, rows: ViewFunction) -> None:
+        self.computed[(schema, name)] = rows
+
+    def table(self, schema: str, name: str) -> list[dict[str, Any]]:
+        """A table the computed views and procedures share (rolled back with the others)."""
+        return self.tables.setdefault((schema, name), [])
 
     def fail_next(self, name: str, error: ZonicError, times: int = 1) -> None:
         """The next ``times`` calls of view or procedure ``name`` raise ``error``."""
@@ -94,9 +104,11 @@ class InMemoryGateway:
         offset: int | None,
     ) -> QueryResult:
         self._maybe_fail(name)
-        if (schema, name) not in self.tables:
+        computed = self.computed.get((schema, name))
+        if computed is None and (schema, name) not in self.tables:
             raise ZonicError("DATA_REQUEST_INVALID", gateway_status=404, view=name)
-        rows = [r for r in self.tables[(schema, name)] if all(_matches(r, f) for f in filters or [])]
+        source = computed(self) if computed is not None else self.tables[(schema, name)]
+        rows = [r for r in source if all(_matches(r, f) for f in filters or [])]
         for order in reversed(order_by or []):
             present = [r for r in rows if r.get(order.column) is not None]
             missing = [r for r in rows if r.get(order.column) is None]

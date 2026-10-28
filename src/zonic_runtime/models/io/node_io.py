@@ -17,7 +17,7 @@ class NodeOutput(ZonicModel):
     validated against the node's effective output schema."""
 
     data: dict[str, Any] = Field(default_factory=dict)
-    #: Content parts for clients; their models arrive with the view kind.
+    #: Content parts for clients (``models/content``), plain.
     parts: list[dict[str, Any]] = Field(default_factory=list)
     refs: list[DatasetRef] = Field(default_factory=list)
     usage: Usage | None = None

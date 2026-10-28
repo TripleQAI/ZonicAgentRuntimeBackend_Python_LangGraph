@@ -10,14 +10,14 @@ update leaves the node (DR-4): a reducer cannot know which keys are writable.
 from __future__ import annotations
 
 from collections.abc import Collection, Sequence
-from typing import Any, get_args
+from typing import Any, Literal, cast, get_args
 
 from pydantic import BaseModel
 
 from zonic_runtime.engine.state import CLEAR_THREAD, RUN_VISITS, SEQ
 from zonic_runtime.errors import ZonicError
 from zonic_runtime.models.engine import FlowPatch, StatePatch, ThreadMessage
-from zonic_runtime.models.engine.records import MessageRole
+from zonic_runtime.models.engine.records import MessageKind, MessageRole
 from zonic_runtime.workflow.templates.resolver import DEFAULT_THREAD
 from zonic_runtime.workflow.templates.updates import UpdateResult
 
@@ -77,7 +77,32 @@ def to_update(
 
 def _part(content: Any) -> dict[str, Any]:
     return (
-        {"type": "text", "text": content} if isinstance(content, str) else {"type": "json", "value": content}
+        {"type": "markdown", "text": content}
+        if isinstance(content, str)
+        else {"type": "json", "value": content}
+    )
+
+
+def thread_message(
+    role: MessageRole,
+    kind: MessageKind,
+    content: Any,
+    *,
+    thread: str = DEFAULT_THREAD,
+    visibility: Literal["chat", "internal"] | None = None,
+    node_id: str | None = None,
+    visit: int | None = None,
+) -> ThreadMessage:
+    """One message of the turn; the chat thread is visible unless ``visibility`` says otherwise."""
+    return ThreadMessage(
+        role=role,
+        kind=kind,
+        thread=thread,
+        visibility=visibility or ("chat" if thread == DEFAULT_THREAD else "internal"),
+        node_id=node_id,
+        visit=visit,
+        content_parts=[_part(content)],
+        text_preview=(content if isinstance(content, str) else str(content))[:_PREVIEW_CHARS],
     )
 
 
@@ -85,20 +110,11 @@ def update_messages(result: UpdateResult, node_id: str | None, visit: int | None
     """The messages an ``UpdateWriter`` result appends, as ``ThreadMessage`` models."""
     messages = []
     for written in result.messages:
-        role = written["role"] if written["role"] in _ROLES else "assistant"
+        role = cast(MessageRole, written["role"] if written["role"] in _ROLES else "assistant")
+        kind: MessageKind = "user_input" if role == "user" else "agent_turn"
         thread = written.get("thread", DEFAULT_THREAD)
-        content = written.get("content")
         messages.append(
-            ThreadMessage(
-                role=role,
-                kind="user_input" if role == "user" else "agent_turn",
-                thread=thread,
-                visibility="chat" if thread == DEFAULT_THREAD else "internal",
-                node_id=node_id,
-                visit=visit,
-                content_parts=[_part(content)],
-                text_preview=(content if isinstance(content, str) else str(content))[:_PREVIEW_CHARS],
-            )
+            thread_message(role, kind, written.get("content"), thread=thread, node_id=node_id, visit=visit)
         )
     return messages
 

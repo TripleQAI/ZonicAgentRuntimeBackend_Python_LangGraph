@@ -35,6 +35,8 @@ jobs:
         run: uv run python -m scripts.sync_sql --check
       - name: Vendored workflow fixtures are intact
         run: uv run python -m scripts.sync_builder --check
+      - name: Vendored recordings are intact
+        run: uv run python -m scripts.sync_recordings --check
       - name: Catalog coverage
         run: uv run python -m scripts.catalog_check
       - name: Tests with coverage

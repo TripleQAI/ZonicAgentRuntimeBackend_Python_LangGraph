@@ -123,11 +123,13 @@ cases:
   B-12:
     title: '`agent.json` end to end over two turns with a scripted model'
     tasks:
-    - P2-09
+    - P3-06
+    - P3-07
+    - P3-09
   B-13:
     title: Each platform sub-agent's agent and tool loop
     tasks:
-    - P2-09
+    - P3-06
   B-14:
     title: Builder-dialect documents
     tasks:
@@ -389,7 +391,9 @@ cases:
   F-08:
     title: Routing and joins
     tasks:
-    - P2-09
+    - P3-03
+    - P3-04
+    - P3-08
   F-09:
     title: Tools against recordings
     tasks:
@@ -397,7 +401,7 @@ cases:
   F-10:
     title: Sub-flows across fixtures
     tasks:
-    - P2-09
+    - P3-09
   F-11:
     title: Customer Support Swarm
     tasks:
@@ -425,11 +429,13 @@ cases:
   F-17:
     title: Platform state machine across turns
     tasks:
-    - P2-09
+    - P3-06
+    - P3-07
+    - P3-09
   F-18:
     title: Platform agent and tool loops
     tasks:
-    - P2-09
+    - P3-06
   G-01:
     title: Every fixture
     tasks:

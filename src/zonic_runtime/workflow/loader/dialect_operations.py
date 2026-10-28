@@ -100,6 +100,15 @@ def delete_if_empty(target: JsonObject, args: dict[str, Any], ctx: OperationCont
     return [] if args.get("silent") else [Firing()]
 
 
+def set_value(target: JsonObject, args: dict[str, Any], ctx: OperationContext) -> list[Firing]:
+    """Sets ``value`` at ``path`` unless the document already has one there."""
+    path = args["path"]
+    if _has(target, path):
+        return []
+    set_path(target, path, args.get("value"))
+    return [Firing({"value": args.get("value")})]
+
+
 def replace_value(target: JsonObject, args: dict[str, Any], ctx: OperationContext) -> list[Firing]:
     path = args["path"]
     if not _has(target, path):
@@ -529,6 +538,7 @@ OPERATIONS: Mapping[str, Operation] = MappingProxyType(
     {
         "variablesFromList": variables_from_list,
         "deleteIfEmpty": delete_if_empty,
+        "setValue": set_value,
         "replaceValue": replace_value,
         "appendList": append_list,
         "renameKeysInList": rename_keys_in_list,

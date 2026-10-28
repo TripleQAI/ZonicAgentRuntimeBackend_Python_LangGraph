@@ -13,6 +13,7 @@ Interrupts never reach it (LangGraph's documented rule).
 
 from __future__ import annotations
 
+import asyncio
 from typing import Any
 
 from langchain_core.runnables import RunnableConfig
@@ -21,14 +22,17 @@ from langgraph.runtime import Runtime
 from langgraph.types import Command
 
 from zonic_runtime.engine.context import RunContext
-from zonic_runtime.engine.errors import RUN_FATAL, error_code
-from zonic_runtime.engine.node_template import WorkflowNodeRunner
+from zonic_runtime.engine.errors import RUN_FATAL, TIMEOUT_CODE, error_code
+from zonic_runtime.engine.node_template import NODE_FINISHED, WorkflowNodeRunner
 from zonic_runtime.engine.patches import to_update
 from zonic_runtime.engine.routing import command
 from zonic_runtime.engine.state import RunState
 from zonic_runtime.errors import ZonicError
 from zonic_runtime.models.blueprint import Blueprint, NodeSpec
 from zonic_runtime.models.engine import NodeRecord, StatePatch, TimelineEntry
+
+#: ``ZonicError`` detail of a hook's ``fail_run``: the run ends whatever the node's error policy.
+FAIL_RUN = "fail_run"
 
 
 def _details(error: BaseException) -> dict[str, Any]:
@@ -51,13 +55,25 @@ class ErrorPolicyHandler:
         code = error_code(failure)
         ctx = self.runner.open(state, config, runtime)
         hooks = runtime.context.hooks if runtime.context is not None else None
-        fatal = code in RUN_FATAL
-        recovered = await hooks.on_node_error(ctx, failure) if hooks is not None and not fatal else None
-        if recovered is not None:
-            output, warnings = self.runner.build_output(ctx, recovered)
-            return self.runner.finish(ctx, recovered, output, warnings)
+        fatal = code in RUN_FATAL or (isinstance(failure, ZonicError) and bool(failure.details.get(FAIL_RUN)))
+        bound = self.services.settings.hooks.max_retries_per_node
+        attempt = 0
+        while hooks is not None and not fatal:
+            decision = await hooks.on_node_error(ctx, failure, attempt)
+            if decision is not None and decision.recovered is not None:
+                output, warnings = self.runner.build_output(ctx, decision.recovered)
+                return self.runner.finish(ctx, decision.recovered, output, warnings)
+            if decision is None or decision.retry_after is None or attempt >= bound:
+                break
+            await asyncio.sleep(decision.retry_after)
+            attempt += 1
+            try:
+                return await self._again(state, config, runtime)
+            except ZonicError as again:  # the retried visit failed too: its error is the node's now
+                failure, code = again, again.code
+                fatal = code in RUN_FATAL or bool(again.details.get(FAIL_RUN))
         policy = self.spec.error_policy
-        if policy == "fail_run" or code in RUN_FATAL:
+        if policy == "fail_run" or fatal:
             if isinstance(failure, ZonicError):
                 raise failure
             raise ZonicError(code, node_id=self.spec.node_id, **_details(failure)) from failure
@@ -97,8 +113,21 @@ class ErrorPolicyHandler:
             writer=self.spec.node_id,
             writable_system_keys=(),
         )
-        ctx.emit("node.failed", code=code, policy=policy, handles=[handle])
+        ctx.emit(
+            NODE_FINISHED, status="failed", durationMs=0.0, handles=[handle], errorCode=code, policy=policy
+        )
         return command(self.blueprint, self.spec, [handle], update)
+
+    async def _again(
+        self, state: RunState, config: RunnableConfig, runtime: Runtime[RunContext]
+    ) -> Command[Any]:
+        """The node's visit once more (an ``onNodeError`` hook's ``retry``), under the node's timeout."""
+        seconds = self.spec.timeout_seconds or self.services.settings.engine.node_timeout_seconds
+        try:
+            async with asyncio.timeout(seconds):
+                return await self.runner(state, config, runtime)
+        except TimeoutError as exc:
+            raise ZonicError(TIMEOUT_CODE, node_id=self.spec.node_id) from exc
 
 
 def error_handler(spec: NodeSpec, blueprint: Blueprint, runner: WorkflowNodeRunner) -> ErrorPolicyHandler:

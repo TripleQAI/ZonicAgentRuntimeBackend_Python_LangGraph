@@ -1,0 +1,618 @@
+[
+  [
+    {
+      "data": {
+        "agenticWorkflowId": "<uuid>",
+        "sessionId": "<uuid>",
+        "title": "Create a request"
+      },
+      "seq": 1,
+      "type": "run.started"
+    },
+    {
+      "data": {
+        "nodeName": "start",
+        "nodeType": "start",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "start",
+      "seq": 2,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "current_state",
+          "user_context",
+          "user_decision_points"
+        ]
+      },
+      "nodeId": "start",
+      "seq": 3,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "nodeOutput.interface.inputs.attachments",
+            "nodeOutput.interface.inputs.current_state",
+            "nodeOutput.interface.inputs.user_context",
+            "nodeOutput.interface.inputs.user_decision_points"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "start",
+      "seq": 4,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 109,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "start",
+      "seq": 5,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "questionnaire_exists_check",
+        "nodeType": "rule",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "roj93k7",
+      "seq": 6,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "r-zfdxlfeu"
+        ],
+        "outputSummary": {
+          "bytes": 64,
+          "fields": 3,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "roj93k7",
+      "seq": 7,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "getcategoryspecificquestionnaire",
+        "nodeType": "tool",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "i6qn10t",
+      "seq": 8,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "category_specific_questionnaire"
+        ]
+      },
+      "nodeId": "i6qn10t",
+      "seq": 9,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "flow.qa_master_data.category.id",
+            "flow.qa_master_data.headerOrg.entityDetailCode",
+            "nodeOutput.result.category_Specific_Question"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "i6qn10t",
+      "seq": 10,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 11,
+          "fields": 1,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "i6qn10t",
+      "seq": 11,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "category_specific_questionnaire",
+        "nodeType": "agent",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "q7wxylq",
+      "seq": 12,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "inputSummary": {
+          "bytes": 151,
+          "fields": 4,
+          "type": "object"
+        },
+        "toolName": "update_questionnare_response",
+        "toolUseId": "route-1"
+      },
+      "nodeId": "q7wxylq",
+      "seq": 13,
+      "type": "tool.started"
+    },
+    {
+      "data": {
+        "status": "success",
+        "toolUseId": "route-1"
+      },
+      "nodeId": "q7wxylq",
+      "seq": 14,
+      "type": "tool.finished"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "flow.category_specific_questionnaire",
+            "flow.current_state",
+            "flow.user_decision_points.budget",
+            "flow.user_decision_points.category.id",
+            "flow.user_decision_points.category_specific_budget",
+            "flow.user_decision_points.quick_pay_aggregated_response",
+            "nodeOutput.text"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "q7wxylq",
+      "seq": 15,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "handoff-fpwfsxd"
+        ],
+        "outputSummary": {
+          "bytes": 509,
+          "fields": 5,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 579,
+          "modelCalls": 1,
+          "outputTokens": 8,
+          "totalTokens": 587
+        }
+      },
+      "nodeId": "q7wxylq",
+      "seq": 16,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "update_question_key",
+        "nodeType": "variable",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "fpwfsxd",
+      "seq": 17,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "currentQuestionKey"
+        ]
+      },
+      "nodeId": "fpwfsxd",
+      "seq": 18,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 2,
+          "fields": 0,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "fpwfsxd",
+      "seq": 19,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "update_questionnare_responses",
+        "nodeType": "variable",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "oo3ab53",
+      "seq": 20,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "current_state",
+          "questionnaireForSummary"
+        ]
+      },
+      "nodeId": "oo3ab53",
+      "seq": 21,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "code": "STATE_PATH_EMPTY",
+        "details": {},
+        "message": "the path {{flow.questionnareResponses[flow.currentQuestionKey]}} resolved to nothing; the state operation is skipped"
+      },
+      "nodeId": "oo3ab53",
+      "seq": 22,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 2,
+          "fields": 0,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "oo3ab53",
+      "seq": 23,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "iteration": 2,
+        "loopId": "loop:q7wxylq"
+      },
+      "nodeId": "q7wxylq",
+      "seq": 24,
+      "type": "loop.iteration"
+    },
+    {
+      "data": {
+        "nodeName": "category_specific_questionnaire",
+        "nodeType": "agent",
+        "resumed": false,
+        "visit": 2
+      },
+      "nodeId": "q7wxylq",
+      "seq": 25,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "inputSummary": {
+          "bytes": 151,
+          "fields": 4,
+          "type": "object"
+        },
+        "toolName": "update_questionnare_response",
+        "toolUseId": "route-2"
+      },
+      "nodeId": "q7wxylq",
+      "seq": 26,
+      "type": "tool.started"
+    },
+    {
+      "data": {
+        "status": "success",
+        "toolUseId": "route-2"
+      },
+      "nodeId": "q7wxylq",
+      "seq": 27,
+      "type": "tool.finished"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "flow.category_specific_questionnaire",
+            "flow.user_decision_points.budget",
+            "flow.user_decision_points.category.id",
+            "flow.user_decision_points.category_specific_budget",
+            "flow.user_decision_points.quick_pay_aggregated_response"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "q7wxylq",
+      "seq": 28,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "handoff-fpwfsxd"
+        ],
+        "outputSummary": {
+          "bytes": 509,
+          "fields": 5,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 582,
+          "modelCalls": 1,
+          "outputTokens": 8,
+          "totalTokens": 590
+        }
+      },
+      "nodeId": "q7wxylq",
+      "seq": 29,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "update_question_key",
+        "nodeType": "variable",
+        "resumed": false,
+        "visit": 2
+      },
+      "nodeId": "fpwfsxd",
+      "seq": 30,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "currentQuestionKey"
+        ]
+      },
+      "nodeId": "fpwfsxd",
+      "seq": 31,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 2,
+          "fields": 0,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "fpwfsxd",
+      "seq": 32,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "update_questionnare_responses",
+        "nodeType": "variable",
+        "resumed": false,
+        "visit": 2
+      },
+      "nodeId": "oo3ab53",
+      "seq": 33,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "current_state",
+          "questionnaireForSummary"
+        ]
+      },
+      "nodeId": "oo3ab53",
+      "seq": 34,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "code": "STATE_PATH_EMPTY",
+        "details": {},
+        "message": "the path {{flow.questionnareResponses[flow.currentQuestionKey]}} resolved to nothing; the state operation is skipped"
+      },
+      "nodeId": "oo3ab53",
+      "seq": 35,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 2,
+          "fields": 0,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "oo3ab53",
+      "seq": 36,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "iteration": 3,
+        "loopId": "loop:q7wxylq"
+      },
+      "nodeId": "q7wxylq",
+      "seq": 37,
+      "type": "loop.iteration"
+    },
+    {
+      "data": {
+        "nodeName": "category_specific_questionnaire",
+        "nodeType": "agent",
+        "resumed": false,
+        "visit": 3
+      },
+      "nodeId": "q7wxylq",
+      "seq": 38,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "text": "All "
+      },
+      "nodeId": "q7wxylq",
+      "seq": 39,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "text": "done: the request is complete."
+      },
+      "nodeId": "q7wxylq",
+      "seq": 40,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "flow.category_specific_questionnaire",
+            "flow.user_decision_points.budget",
+            "flow.user_decision_points.category.id",
+            "flow.user_decision_points.category_specific_budget",
+            "flow.user_decision_points.quick_pay_aggregated_response"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "q7wxylq",
+      "seq": 41,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 123,
+          "fields": 4,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 585,
+          "modelCalls": 1,
+          "outputTokens": 6,
+          "totalTokens": 591
+        }
+      },
+      "nodeId": "q7wxylq",
+      "seq": 42,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "output",
+        "nodeType": "output",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "output",
+      "seq": 43,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "runtime.workflowMetaData.agentName"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "output",
+      "seq": 44,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 1839,
+          "fields": 6,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "output",
+      "seq": 45,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "result": {
+          "current_state": "questionnaireStatus-value",
+          "messages": "[{\"role\": \"user\", \"content\": \"Create a request\", \"thread\": \"messages\", \"nodeId\": \"start\"}, {\"role\": \"assistant\", \"content\": [{\"name\": \"update_questionnare_response\", \"args\": {\"questionKey\": \"questionKey-value\", \"response\": \"response-value\", \"QuestionTitle\": \"QuestionTitle-value\", \"questionnaireStatus\": \"questionnaireStatus-value\"}, \"id\": \"route-1\", \"type\": \"tool_call\"}], \"thread\": \"messages\", \"nodeId\": \"q7wxylq\"}, {\"role\": \"tool\", \"content\": \"Continuing with update_question_key.\", \"thread\": \"messages\", \"nodeId\": \"q7wxylq\"}, {\"role\": \"assistant\", \"content\": \"\", \"thread\": \"messages\", \"nodeId\": \"q7wxylq\"}, {\"role\": \"assistant\", \"content\": [{\"name\": \"update_questionnare_response\", \"args\": {\"questionKey\": \"questionKey-value\", \"response\": \"response-value\", \"QuestionTitle\": \"QuestionTitle-value\", \"questionnaireStatus\": \"questionnaireStatus-value\"}, \"id\": \"route-2\", \"type\": \"tool_call\"}], \"thread\": \"messages\", \"nodeId\": \"q7wxylq\"}, {\"role\": \"tool\", \"content\": \"Continuing with update_question_key.\", \"thread\": \"messages\", \"nodeId\": \"q7wxylq\"}, {\"role\": \"assistant\", \"content\": \"\", \"thread\": \"messages\", \"nodeId\": \"q7wxylq\"}, {\"role\": \"assistant\", \"content\": \"All done: the request is complete.\", \"thread\": \"messages\", \"nodeId\": \"q7wxylq\"}]",
+          "questionnaireForSummary": [
+            "{\"questionKey\":questionKey-value, \"questionTitle\":QuestionTitle-value, \"response\":response-value }",
+            "{\"questionKey\":questionKey-value, \"questionTitle\":QuestionTitle-value, \"response\":response-value }"
+          ],
+          "questionnaireResponse": "{}",
+          "selectedAgentId": "<uuid>",
+          "selectedAgentName": ""
+        },
+        "usage": {
+          "inputTokens": 1746,
+          "modelCalls": 3,
+          "outputTokens": 22,
+          "totalTokens": 1768
+        }
+      },
+      "seq": 46,
+      "type": "run.completed"
+    }
+  ]
+]

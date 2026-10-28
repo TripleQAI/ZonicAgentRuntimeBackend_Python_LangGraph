@@ -13,7 +13,7 @@ problem, or with the problems' own catalog code when they all share one (for exa
 
 from __future__ import annotations
 
-from collections.abc import Callable, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from typing import Any, get_args
 
@@ -382,6 +382,7 @@ class BlueprintBuilder:
                 name=draft.node.label,
                 graph_name=names[draft.id],
                 config=draft.config,
+                description=draft.node.description or "",
                 handles=handles.get(draft.id, []),
                 optional_handles=list(draft.entry.optional_handles),
                 destinations=[
@@ -399,6 +400,7 @@ class BlueprintBuilder:
                 io=draft.entry.io,
                 observation=draft.entry.observation or defaults.observation,
                 output_schema=effective_output_schema(draft.entry.io, draft.node.config, self._schemas),
+                **_hook_properties(draft.node.properties or {}),
             )
 
         name_index: dict[str, str] = {}
@@ -444,6 +446,7 @@ class BlueprintBuilder:
             name_index=name_index,
             children=children,
             warnings=findings,
+            runtime_hooks=[h for h in loaded.document.runtime_hooks or [] if isinstance(h, dict)],
         )
 
     # -- per node ---------------------------------------------------------------
@@ -537,3 +540,17 @@ class BlueprintCache:
 
     def __len__(self) -> int:
         return len(self._entries)
+
+
+def _hook_properties(properties: Mapping[str, Any]) -> dict[str, Any]:
+    """``properties.hooks``, ``disabledHooks`` and ``tags`` of a node, as the blueprint keeps them."""
+
+    def items(key: str, kind: type) -> list[Any]:
+        found = properties.get(key)
+        return [i for i in found if isinstance(i, kind)] if isinstance(found, list) else []
+
+    return {
+        "hooks": items("hooks", dict),
+        "disabled_hooks": items("disabledHooks", str),
+        "tags": items("tags", str),
+    }

@@ -25,6 +25,9 @@ class LruCache[K, V]:
         while len(self._items) > self._max:
             self._items.popitem(last=False)
 
+    def pop(self, key: K) -> V | None:
+        return self._items.pop(key, None)
+
     def __len__(self) -> int:
         return len(self._items)
 
