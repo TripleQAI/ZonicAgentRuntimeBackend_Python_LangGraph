@@ -418,3 +418,817 @@ Open: the 9 workflows are owned by `54488448-…`, the builder's earlier user po
    - the builder's `LIVE_GATEWAY_URL` secret and its `cdk.json` production datasource;
    - per-item batch authorization in the gateway;
    - the two Node.js SQL defects.
+
+## Phase 2
+
+| Task | Status | Sanity check |
+|---|---|---|
+| P2-01 Run driver and event stream | Done | S-02, S-03, S-05, S-11, S-12, S-13, E-17, R-06: 26 tests; v3 and v2 sources publish identical events |
+| P2-02 Agent layer and core node kinds | Done | N-01 to N-08, N-12, N-19, M-09, B-02 to B-04, S-09, D-13: 30 tests (N-05's MCP and database tools wait for P3-02) |
+| P2-03 API, use cases, app factory and test client | Done | A-01 to A-07, A-09 to A-12, A-14, A-15 (start and stream; interrupt and dataset steps join with P4-02 and P3-05), S-01, S-06 to S-08, S-10, M-06 (events): 33 tests through HTTP with fakes |
+| P2-04 `TurnSaver` and per-turn persistence | Done | P-05 to P-09, P-11, P-13, E-19, A-07, A-08 (sync part): 11 tests; the checkpointer conformance suite passes all base capabilities |
+| P2-06 Hook framework and core hook types | Done | K-01 to K-07, K-09, K-10, K-12, K-15, K-16: 25 tests |
+| P2-07 Langfuse tracer | Done | L-01 to L-05, L-07, L-08, L-10, L-12, L-13, L-16, L-17, X-06: 15 tests on an isolated provider with an in-memory exporter |
+| P2-05 Run executor and governors | Done | Q-01 to Q-09, Q-16, R-02, R-04, and Q-15 early: 26 tests. Q-05 runs 150 concurrent streaming runs in process; the k6 budgets are P5-02's |
+| P2-08 Gateway span exporter | Done | O-01 to O-06 (exporter side; the SQL side of O-02 to O-04 is P0-09's), L-11: 15 tests. Production now traces through `sp_obs_ingest` |
+| P2-09 Builder scenarios | Done (decision 0005) | F-07 plus the coverage gate: 9 tests. 3 of the 32 vendored workflows plan with Phase 2 kinds and run in stream and sync mode with golden streams; `new-workflow` is refused. F-08, F-10, F-17, F-18, B-12 and B-13 need Phase 3 kinds; 0005 proposes moving them to those tasks |
+
+### P2-01 notes
+
+- **Event contract** (`models/events/run_events.py`): the 21 event types and their data are the Node.js runtime's, so one client reads both runtimes. The envelope is `{id, runId, seq, type, ts, nodeId?, path?, truncated?, data}`. `RunEvent` is a discriminated union, and every type is published under `generated/schemas/events/` (22 files). On the hot path the stream builds plain dictionaries from an `EventDraft`; the tests validate every published event against the models.
+- **One mapper, two sources** (`engine/streaming/`):
+  - `EventMapper` is the only code that reads LangGraph event shapes. `NamespaceMap` turns namespace segments back into builder node IDs (`path` = the enclosing nodes).
+  - `V3EventSource` drives `astream_events(version="v3")` with `CustomTransformer`, `ToolCallTransformer` and the per-run `RunEventTransformer` (SP-3). The transformer's `zonic` channel is local (unnamed), so the drafts never enter LangGraph's main log. That differs from the design text's named `StreamChannel("zonic")`.
+  - `V2EventSource` is the fallback on `astream(..., subgraphs=True, version="v2")`. It also requests the `tools` mode, which `astream` accepts although `StreamMode` does not list it. The same `StreamToolCallHandler` is then attached, so tool events are identical to v3's, and S-12 compares the two streams exactly.
+  - Not requested: the `updates` mode the design lists. No run event reads it.
+- **Template events:**
+  - `node.finished` now carries `outputSummary` (types and sizes from `run/events/summarizer.py`, never values). The output reaches the mapper by reference and is summarized there.
+  - The template emits `state.updated` (changed `flow` keys) and `warning` events.
+  - The error handler emits `node.finished` with `status: failed`, `errorCode` and `policy`, instead of the earlier `node.failed`, which is not in the contract. Two Phase 1 tests now assert the contract event. C-09 still asserts that `node.started` and `node.finished` are a node's only `node.*` events and come first and last.
+- **Bus** (`run/events/bus.py`):
+  - `RunStream` assigns `seq` with no gaps, starting after `start_seq` (`last_event_seq`, DR-9).
+  - It caps data at `sse.maxEventBytes` (`truncated: true`) and keeps the last `stream.replayBufferEvents` events.
+  - A subscriber behind the buffer gets `stream.gap` and continues; the publisher never waits.
+  - `RunEventBus` releases a stream `replayRetentionSeconds` after it closes.
+  - Token coalescing is P2-05's.
+- **Driver** (`run/driver.py`):
+  - Runs the source as an inner task against the run's `Deadline` and an `ActiveRun.cancel()` signal.
+  - Maps the end to `succeeded`, `waiting_input`, `drained`, `timed_out` (`RUN_TIMEOUT`), `cancelled` or `failed` (catalog code, `INTERNAL` for unknown codes).
+  - Builds the result with `run_result` (`NO_OUTPUT` otherwise).
+  - Calls the `TurnFinisher` (P2-04), then publishes warnings and the terminal events: `run.completed`; `interrupt.requested` and `run.waiting`; `run.cancelled`; `run.failed`; none after a drain.
+  - A failed save (`ZonicError`) becomes `run.failed` with that code.
+  - New setting `runs.cancelGraceSeconds` (5) bounds the wait for a cancelled graph. LangGraph does not wait for a node that ignores cancellation, so in practice the run ends at once.
+- **`durability` needs a checkpointer:** without one, LangGraph warns that it has no effect. Root graphs always have the `TurnSaver` (P2-04). Until then the driver tests compile with an `InMemorySaver`.
+- **Test kinds** (`tests/kinds/streaming.py`): `TalkKind` streams a scripted model turn, and `ToolAgentKind` runs `create_agent` with two tools through `invoke_child`, until P2-02's real kinds. Two tool calls in one model turn run concurrently in threads, so their order is not fixed in either source. The S-12 scenario calls one tool per turn, and the parallel case is asserted as sets.
+- `Clock` and `SystemClock` moved to `runtime/clock.py`, so the run layer can share them.
+- `pyproject.toml` ignores `LangChainBetaWarning` in tests (v3 is beta, decision 0001).
+
+### P2-02 notes
+
+- **Agent layer** (`engine/agents/`):
+  - **`ModelFactory`:** resolves a `ModelRef` through `models.json` (catalog code, alias, or provider model ID; empty means the default). Anything unknown or disabled is `MODEL_NOT_ALLOWED`. Parameters are bounded by the entry, retries and timeout come from `settings.models`, and the model is built by a per-provider `ModelBuilder` (`init_chat_model` with `bedrock_converse`, `azure_openai`, `anthropic` or `openai`). Azure takes its deployment, API version and endpoint (from the environment field the entry names). Bedrock gets no client timeout or retry count, since botocore configures those (P2-05).
+  - **`AgentFactory`:** builds one `create_agent` per node with `state_schema=ZonicAgentState` and `context_schema=RunContext`. The middleware is `TurnLimitMiddleware` (`maxIterations`) and `HandoffMiddleware`.
+  - **`AgentServices`:** joins the model factory, the tool provider and the agent factory, and `NodeServices.agents` carries it.
+  - **Tool provider:** `ToolProvider` is a port; it returns no tools until P3-02's `ToolFactory`.
+- **Kinds** (`engine/kinds/`): `entry`, `llm`, `agent`, `router`, `variable`, `output`, `ignore`; `core_kinds()` names them from their class names. Behavior follows the Node.js kinds: message building, splitting out `system`, the last user message as the input, the answer's declared fields, handoff and routing tools.
+  - An LLM node without tools makes one model call (`with_structured_output` when it has a schema). With tools it runs a short agent loop of at most `models.llmMaxTurns` (new setting, 5).
+  - The agent graph and the model are built on a node's first visit and kept by its kind for the life of the compiled graph.
+- **Structured output** (`structured.py`, M-09):
+  - The adapter adds `title` and `description`.
+  - It uses `ProviderStrategy` when the catalog entry supports native structured output, else `ToolStrategy`.
+  - Neither validates a JSON Schema dictionary, so `check` validates the answer with `jsonschema`: `STRUCTURED_OUTPUT_INVALID`.
+  - An LLM node uses the platform's `structuredOutput` even without `responseFormat: json`. The platform documents' variable updates read `structuredOutput.*`; the Node.js LLM kind ignored it there.
+- **Handoff** (`handoff.py`): `handoff_to` has an enum of the targets' names. An invalid name fails the call's validation, the model sees the error and may choose again. A routing tool keeps its name and JSON Schema, merges its preset `parameters` (resolved per visit, passed in `ZonicAgentState.zonic_presets`), and records `toolResults[<name>]`. The tools must annotate the injected argument as plain `ToolRuntime`; with `ToolRuntime | None` LangChain does not inject it.
+- **`maxIterations`:** `TurnLimitMiddleware` subclasses `ModelCallLimitMiddleware(exit_behavior="end")`. Instead of the parent's extra limit message it records `zonic_limited`, so the answer is the last real model text, `stopReason` is `limit` and the node warns `AGENT_TURN_LIMIT`.
+- **Provider errors** (`errors.py`, N-08): only the SDKs' own error classes (botocore, OpenAI, Anthropic, httpx) become `MODEL_UNAVAILABLE`, which the LLM and agent retry policies retry (rule 17: no broad `except`).
+- **Turn messages:**
+  - An agent's tool calls, tool results and intermediate turns are `internal`, and its answer is a chat message.
+  - When a node's own updates also write the same text to the chat thread (the platform agents append `{{nodeOutput.text}}` to `thread.messages`), the template keeps that message once.
+- **`NodeOutcome.updates`:** the Variable kind's `updates` go through the template's update step (step 9) before the node's `variableUpdates`. The kind computes its `changed` output with the same writer.
+- **Token events at the root** (correction to P2-01): a model called directly by a root node has an empty v3 namespace. The mapper now places tokens by the message metadata's `langgraph_checkpoint_ns`, and `NamespaceMap` skips segments that are not builder nodes (the agent's own `model` and `tools`). A tool called directly by a root node has no such path; P3-06's tool kind reports its own events.
+- **`nostream`** is a tag on the model (`tags=["nostream"]`), not on the invocation: an invocation tag would also hide the node's tool events (LangGraph's tools handler checks it too).
+
+### P2-03 notes
+
+- **Contract:** the request, response and error models (`models/api/`), the routes, the `X-Run-Id` and `X-Session-Id` stream headers and the run event types follow the Node.js runtime's API, the Strands design's Section 12, so one client serves both.
+  - `generated/openapi.json` is the committed document (A-10). It includes `RunEvent` for the SSE bodies, and every `/v1` route documents `ErrorEnvelope` as its default response. Path parameters are `{runId}` and `{sessionId}`.
+  - The API models are not exported as separate schema files: the OpenAPI document publishes them.
+  - An event's `ts` is an ISO 8601 string with milliseconds, as in the Node.js contract (a `datetime` field would re-serialize with microseconds and break M-06's round trip).
+- **App** (`main.py`): `create_app(deps)` with a lifespan that drains this instance's runs and closes the gateway; CORS from `api.corsOrigins`; API docs only when `api.docsEnabled`. `app_factory` builds from the environment for `uvicorn --factory`, and `create_openapi()` feeds `scripts/gen.py`.
+  - `RequestContext` is pure ASGI middleware, so it never buffers a stream: it sets the request ID (`X-Request-ID`, echoed, the envelope's `traceId`) and returns `INPUT_TOO_LARGE` above `api.maxBodyBytes`.
+- **Auth** (`api/auth.py`, decision 0004):
+  - PyJWT verifies RS256 against the pool's JWKS, fetched with `httpx`, because PyJWT's `PyJWKClient` blocks the loop (rule 13). Keys are cached `auth.jwksCacheSeconds`, and an unknown `kid` refreshes them.
+  - The audience is `aud` or, for Cognito access tokens, `client_id`. Issuer and audience come from `OIDC_ISSUER` and `OIDC_AUDIENCE`.
+  - No token is `AUTH_REQUIRED`; anything wrong with one is `AUTH_INVALID`.
+  - Rate limits are token buckets per user and per tenant: `RATE_LIMITED`, `Retry-After`.
+- **Use cases** (`application/`): catalog and node types, sessions (cursor paging on `(created_at, session_id)`, title search, internal messages for `auth.internalMessageRoles`), and runs.
+  - **StartRun:** plans and compiles before the run row exists, then calls `sp_run_start`, and drives the run as its own task (`RunRegistry`).
+  - **Modes and replays:** `stream` answers with the SSE of the run's stream, and `sync` waits `runs.syncWaitSeconds`, then answers `202` with links. An idempotent replay returns the first run.
+  - **Reads:** status (with an `ETag`), the node timeline, and events by `Last-Event-ID` (`stream.gap` and the final event from the row once the buffer is gone).
+  - `async` mode is `FEATURE_DISABLED` until P4-04.
+- **SSE** (`api/sse.py`): `id`, `event` and `data` lines, and a heartbeat without `id` after `sse.heartbeatSeconds` of silence. A disconnect ends only the response; the run goes on and is saved (S-07).
+- **Persistence for now** (`run/state/turn_store.py`): `sp_run_start` with the user message and limits, and `sp_run_finish` with status, result, error, usage, the turn's messages, the timeline and `lastEventSeq`.
+  - The root graphs' checkpointer is an `InMemorySaver` whose thread the store deletes after the save.
+  - P2-04 replaces the store with `TurnStateStore`: the start batch, session variables, history, retries until the save deadline, and `TurnSaver`.
+  - A `waiting_input` or `drained` outcome is not saved yet (P4-02, P4-05).
+- **Fakes:**
+  - `tests/fakes/runtime_schema.py` ports the Node.js in-memory runtime schema (sessions, runs, messages, session state, feedback) with the SQL's reason tokens through `translate_status`.
+  - `InMemoryGateway` gained computed views.
+  - `tests/api/app.py` composes the app with a test issuer (an RSA key signing Cognito-shaped access tokens) and scripted models.
+- **New settings:**
+  - `api.defaultPageSize` (20), `api.maxPageSize` (100) and `api.sessionTitleChars` (80);
+  - `auth.internalMessageRoles` (`runtime-support`, `runtime-admin`).
+- **Test client:** `scripts/run_client.py` lists the catalog, starts and prints a stream, and continues a session, all through the published API. A-15 runs it against the app with fakes.
+
+### P2-06 notes
+
+- **Framework** (`hooks/`), ported from the Node.js runtime:
+  - `HookRegistry`: types by name.
+  - `HookResolver`: global bindings from `hooks.json` validated at start-up (`RESOURCE_INVALID` naming the binding's path, K-15); workflow (`runtimeHooks`) and node (`properties.hooks`) bindings limited to `hooks.documentAllowedTypes` (`DOCUMENT_INVALID`, K-10); matching, `disabledHooks`, order then source; cached per revision.
+  - `HookRunner`: `when`, blocking and asynchronous execution, timeouts and failure policies, the actions each point allows, the routing checks.
+  - `TemplateHooks`: the adapter at the template's, the driver's and the agent middleware's points.
+- **Blueprint and document:** the blueprint now carries `runtime_hooks`, and each `NodeSpec` carries `hooks`, `disabled_hooks` and `tags` from the node's `properties`. `WorkflowDocument.runtime_hooks` is a new runtime-only field. `WorkflowRuntime.prepare` resolves the hooks, so a bad document binding fails before the run row exists.
+- **`HookBinding` defaults** are the Node.js runtime's: order 100, blocking, `fail_node`, overridable, enabled; the timeout comes from the new `hooks.defaultTimeoutMilliseconds` (5000). `when` is the Rule node's condition group, evaluated with the same evaluator.
+- **State changes are results, never side effects.**
+  - A hook returns `HookResult` (`patch`, `handles`, `updates`, `code`, `delay_ms`, `message`). `setVariables` returns state operations that the template applies at step 9, together with the node's own, through `NodeOutcome.updates`, because under LangGraph a node's writes are its returned update.
+  - At `beforeRun` the driver applies them to the turn's `flow`.
+- **Template protocol changes:**
+  - `HookDecision` gains `updates` and `warnings`.
+  - `on_node_error(ctx, error, attempt)` returns `ErrorDecision` (`recovered` or `retry_after`). `ErrorPolicyHandler` retries the visit up to `hooks.maxRetriesPerNode`, under the node's timeout.
+  - A hook's `fail_run` is a `ZonicError` detail, and the error handler treats it like a run-fatal code.
+  - An output a hook gives (`skip`, `recover`, or a changed `afterNode` output) is `NodeOutcome.mapped`: it is output data and is revalidated, not mapped again.
+- **`HookMiddleware`** sits first in the agent stack:
+  - `beforeModelCall` `cancel` answers in place of the model;
+  - `afterModelCall` `retry` calls once more;
+  - `beforeToolCall` `cancel` returns the hook's message as the tool's error result;
+  - `afterToolCall` may replace the result.
+  At these points hooks read the call, not run templates (the agent state is not the run state).
+- **Driver:**
+  - `beforeRun` may reject the run or set variables.
+  - `afterRun` may transform the result before the save; a failing `afterRun` fails the run.
+  - `onRunError` adds warnings only.
+- **New catalog codes:** `HOOK_TIMEOUT`, `HOOK_WARNING`, `HOOK_IGNORED`, `HOOK_NOT_OVERRIDABLE`. The three warning codes have status 200.
+- **Left to P3-10:** the other hook types (`mask`, `guardrail`, `approval`, `cache`, `rateLimit`, `webhook`, `mcpTool`, `annotate`), the swarm and interrupt points, and hook observations (P2-07).
+
+### P2-07 notes
+
+- **Tracer** (`integrations/langfuse/provider.py`): the runtime's own `TracerProvider`, never the global one, and a Langfuse client with:
+  - `span_exporter=` the exporter it is given (the gateway exporter of P2-08; an in-memory one in tests), behind `SamplingExporter`;
+  - `mask=` the `Masker`, `mask_otel_spans=` the `Enricher`, and `should_export_span=keep_span`.
+
+  The client gets a per-tracer public key and a placeholder server address (`config/env.NO_LANGFUSE_SERVER`) that is never contacted. A run's `LangfuseRunTrace` opens the root observation with the run ID as trace ID, under `propagate_attributes` (trace name, session, user, tags, metadata), and gives the run its callbacks and event bridge.
+- **Port** (`ports/tracer.py`): `RunTracer`, `RunTrace`, `TraceInfo`, and `NoopTracer` (L-16). The run service begins a trace per run, its callbacks go into the invocation config, `RunContext.tracer` holds it, and the driver runs inside `trace.active()` and ends it with the outcome. `AppDeps` takes a tracer; production uses `NoopTracer` until P2-08's gateway exporter exists.
+- **SP-4 applied:**
+  - The callback handler's own types are not trusted. `ZonicLangfuseCallbackHandler` marks node visit spans (the children of the graph's root run, error handlers included) with `zonic_node_span` and `zonic_visit` (from the state's visit counts).
+  - The `Enricher` retypes them from `zonic_observation_type` (L-02, L-03).
+  - It unwraps the node's `Command` output to the node record's output, captured per node type (DR-5, L-17).
+  - Model and tool spans follow their node type's capture rule (L-10), and the node input, which is the run state, is a summary at most.
+  - The agent's `model` and `tools` wrapper spans are dropped. Re-parenting their children is P2-08's job (SP-4).
+- **Levels:** a node whose error policy handles a failure (`continue`, `route`) ends its observation `WARNING` with the code, while `fail_run` keeps `ERROR` (L-07). The error handler's run is marked as the failed node's (`zonic_error_handler`), and its failed record sets `WARNING` (L-17).
+- **Events:** `NodeContext.trace` adds `event` observations under the node's observation through `ObservationBridge`, which finds the node's run from its config's callback manager and makes its span current, because a Langfuse event takes its parent from the context. The template sends `loop.iteration` (L-04), warnings, and `route` with the handles when a node activates something other than `default` (L-08).
+- **Sampling** (L-12): Langfuse's own `sample_rate` decides when a trace starts, before the outcome is known, so it stays 1.0. `SamplingExporter` holds a trace's spans until the run's root span arrives, then keeps the trace by `observability.sampleRate` (by trace ID) or because an `ERROR` span is in it (`alwaysTraceErrors`). The buffers are bounded and locked, since export runs on the processor's thread.
+- **Masking** (X-06): sensitive keys, the patterns (e-mail, card numbers, bearer tokens) and field caps are applied to every input, output and metadata value. JSON text is masked as JSON. The run stream carries only summaries (P2-01).
+- **Logging policy** (`observability/logging_policy.py`, L-13): one handler at `WARNING`; records inside a run become `event` observations on its trace (through a context variable the trace sets), and records outside a run are dropped. `app_factory` installs it at start-up.
+
+### Phase 2 on the real gateway (2026-10-27)
+
+- **Default gateway:** `config/env.py` now defaults `gateway_base_url` to the deployed Lambda gateway (tripleq-development) instead of `127.0.0.1:8600`. `.env` already pointed there; other environments set `ZONIC_GATEWAY_BASE_URL`.
+- **Live suite:** `tests/live/test_runtime_live.py` (opt-in, `uv run pytest -m live`) runs the app with the real `HttpGateway` and the production tracer. Only the model is scripted and the token is the test issuer's. It runs the live catalog's `test-agent-workflow`.
+  - **Pass:** a new-session turn in sync mode, saved and read back (run, node timeline, messages newest first); a streamed turn; the trace ingested through `sp_obs_ingest`, with `v_obs_trace` and one node observation per visit in `v_obs_observation`.
+  - Whole live suite before the fix: 27 passed, 1 skipped (the batch probe), 1 xfail.
+- **Blocker found:** a second turn on a session fails with `500 DATA_REQUEST_INVALID`.
+  - The cause: the deployed gateway refuses `/v1/batch` to `zonic-agent-runtime` with `403 AuthorizationError`, because the gateway has no per-item datasource authorization. A warm turn starts with one sequential batch (`v_session_state`, `v_message`, `sp_run_start`: P2-04, case P-05).
+  - The fakes allowed the batch, so the offline suite could not see this. The test is a strict `xfail` and flips when the batch is allowed.
+- **Fixed (option A, 2026-10-27):** the gateway already checks every batch item against the caller's own rule (`security/gate.py`), so `ZonicPostgresqlServer_FastAPI/postgresqlmodule/code/config/pgfoundation.lambda.yaml` now grants `batch` to `zonic-agent-runtime` (datasources `agentruntime`, `agentobservability`, `batch`).
+  - Redeployed with `deploy/aws-lambda/deploy.sh` to account 001634074733: same Function URL, credentials kept from Secrets Manager, all five datasources healthy. The gateway's contract and service tests pass (180).
+  - Live suite: 30 passed. The warm turn now works and reads its history; the transactional batch works; a batch item for a datasource the caller lacks (`neondb_dev`) is still refused with `403`.
+  - The config change is uncommitted in the gateway repository.
+- **Rows written:** live runs leave rows in the product database (`agent_runtime` sessions, runs, messages; `agent_observability` traces), all owned by `live-langgraph-verify`, tenant `live-test`.
+
+### P2-09 notes
+
+- **Framework** (`tests/scenarios/builder/`):
+  - A scenario names a vendored fixture and, for each turn, the user's text, the scripted model turns and the expected path of node names.
+  - Each scenario runs through the app in stream mode and again in sync mode. The sync path comes from `GET /v1/runs/{id}/nodes`. Both take the path and give the same result.
+  - The stream matches a golden file in `tests/fixtures/scenarios/`, with IDs, timestamps, durations, revision hashes and UUIDs removed. Regenerate with `ZONIC_UPDATE_SNAPSHOTS=1`, as for the compiled-graph snapshots. This is the repository's convention rather than syrupy, which the plan names.
+  - Fixtures are published under a UUID5 of their path, because catalog IDs are UUIDs and a template's ID is a slug.
+  - Every catalog model is enabled and the script-node feature is on, as for F-15.
+- **Runs now:**
+  - `question_answering_with_tools` (one answer);
+  - `test-agent-workflow` in both dialects, over two turns on one session. Its `DBQuery_1` is reported `NODE_UNREACHABLE`, never compiled and never in an event (F-07).
+  - `new-workflow` is refused with `422 PLAN_INVALID` before any gateway call.
+- **Coverage gate:** for every vendored workflow it computes the compiled node kinds. It fails when:
+  - a workflow that runs with today's kinds has no scenario;
+  - a workflow cannot be planned and has no refused scenario;
+  - a kind's task (`WAITING`) is complete and the workflow still has no scenario.
+
+  Every manifest node type appears in some fixture.
+- **Waiting:** 28 of the 32 vendored workflows need a kind built in Phase 3 or 4 (decision 0005 has the table). F-08, F-10, F-17, F-18, B-12 and B-13 therefore cannot pass with real kinds yet.
+  - Decision 0005 proposes moving them to P3-03, P3-04, P3-06, P3-07, P3-08 and P3-09, and amending M2. Running them now with stand-in kinds is the alternative.
+  - Accepted with the M2 approval (2026-10-27): the plan and `tests/catalog.yaml` are amended and P2-09 is complete.
+- **Test app:** `FakeApp.publish` counts a template wrapper's nodes from its `document` member.
+
+### P2-08 notes
+
+- **Production tracer** (`integrations/langfuse/tracing.py`): `GatewayTracing.create` builds `LangfuseTracer` over `GatewaySpanExporter` when `observability.enabled` and `exporters` is `["gateway"]`. Any other exporter is `RESOURCE_INVALID` at start-up: the Langfuse OTLP exporter is not built.
+  - `AppDeps.from_environment` uses it, so `NoopTracer` is now only for tests and tracing off.
+  - `start()` binds the exporter to the app's loop. `aclose()` flushes from a worker thread before the gateway closes.
+- **Exporter** (`gateway_exporter.py`): runs on the span processor's thread and never on the loop, so runs never wait for tracing.
+  - Records join a queue of `export.maxQueueSize`; when it is full, the oldest are dropped and counted (`dropped`, `zonic_trace_records_dropped`) (O-06).
+  - Batches hold at most `maxObservationsPerCall` records and `maxBytesPerCall` bytes. A single record above the byte cap goes alone (O-05).
+  - On `DATA_UNAVAILABLE` a batch is retried `retryAttempts` times with exponential backoff. After that it stays queued for the next export, and `/readyz` reports `checks.tracing: degraded` (L-11).
+  - Any other refusal drops that batch and counts it, so a bad record cannot block the queue.
+  - **Ingest bridge:** `GatewayIngest` reaches the async `GatewayPort` from the exporter thread with `run_coroutine_threadsafe` and a timeout. Called on the loop thread it raises, because it could never complete there. Async code must flush through `asyncio.to_thread`, as `GatewayTracing.flush` and `aclose` do.
+  - **No `DEBUG` log line for drops:** case O-06 asks for a `DEBUG` count, but the logging policy drops records below `WARNING`. The count is the gauge instead.
+- **Mapper** (`record_mapper.py`, O-01):
+  - **IDs and types:** span ID → `observationId`, and trace ID → `traceId`, so a resent batch inserts nothing new (O-02). The root's parent, the propagated context, is not sent. Unknown observation types become `span`.
+  - **Node columns:** the node metadata fills `nodeId`, `nodeType`, `nodeName`, `nodeKind` and `visit` and is left out of `metadata`, along with the keys every span repeats from the trace (run, workflow, revision, thread, checkpoint namespaces). The blueprint now adds `zonic_node_name` when a node's name differs from its ID.
+  - **`gen_ai.*`:** these attributes fill model, usage and parameters where the Langfuse ones are missing (`genaiAttributeMap`).
+  - **Cost:** sent only when the span carries `cost_details`; otherwise `sp_obs_ingest` prices the usage (O-04).
+  - **Size:** an input or output above `limits.maxObservationBytes` becomes its summary, with `metadata.truncated`.
+  - **Trace header:** from the root span. It carries `status` (the run status, now on the root as `zonic_status`) and `tenantId` (now in `TraceInfo.metadata`).
+  - **UUID columns:** run, session and workflow are sent only when they are UUIDs (the procedure casts them) and are kept in `metadata` otherwise.
+- **Re-parenting (SP-4):** the agent graph's `model` and `tools` wrapper spans were dropped by `should_export_span`, which left their model and tool calls pointing at parents that were never exported.
+  - `SamplingExporter` already holds a whole trace until its root ends, so it now drops the wrappers there (`tidy`) and gives their children the wrapper's parent. Langfuse's default span filter applies instead of `keep_span`.
+  - A model call now hangs under its agent node with no dangling parent, checked on a real traced run.
+- **Models** (`models/observability`): `ObsTraceRecord`, `ObsObservationRecord`, `ObsScoreRecord` (published under `generated/schemas/observability/`) and `ObsIngestArgs` (the `sp_obs_ingest` call, idempotent). On the hot path the exporter builds dictionaries, and the tests validate every record against the models.
+- **Flaky test seen once:** `test_Q05_150_concurrent_streaming_runs…` failed once in 11 full runs on this machine and passed in the other 10 and alone. Its assertions now report what failed, and the event-loop lag p99 is the likely one. The budget itself is P5-02's.
+
+### P2-05 notes
+
+- **Admission** (`run/executor/executor.py`): `RunExecutor` admits at most `runs.maxConcurrentRuns` runs per process. One more gets `429 RATE_LIMITED` with `Retry-After: 1`, and running runs are unaffected (R-04). An overloaded process gets `503 OVERLOADED` (Q-15, tested early).
+  - The permit is taken before any gateway call. A start that fails gives it back, and so does an idempotent replay. A started run holds it until its task ends.
+  - The caps per session, user and tenant stay in `sp_run_start`, across instances.
+- **Pressure** (`runtime/pressure.py`): event-loop lag is sampled every `pressure.sampleIntervalMilliseconds`. RSS comes from `/proc/self/statm` on Linux and is 0 on Windows.
+  - Above `maxEventLoopLagMilliseconds` or `maxRssMegabytes` the process is overloaded. `/readyz` then answers `200` with `status: degraded` and `checks.pressure`, since running runs continue. `HealthStatus.status` gained `degraded`.
+  - Active runs are bounded by admission, not by a pressure threshold.
+- **Model governors** (`engine/agents/governor.py`): one per catalog model, shared by every run. Each has an in-flight cap and request and token buckets from `quota`. A call still queued at `maxQueueWaitMilliseconds`, or one the buckets cannot serve before then, is `MODEL_BUSY`, which the LLM retry policy retries (R-02 sees 7 refusals in a burst of 8 runs and no hang).
+  - Direct LLM calls take a permit in `LlmKind`, and agent loops take one in `GovernorMiddleware`. The token count is LangChain's approximation of the messages.
+- **Tool permits:** `ToolPermitMiddleware` bounds each node's concurrent tool calls to `tools.maxConcurrentPerTurn` (Q-07: ten calls, four at once). The permits live in the run's `RunPermits`, never in the shared agent graph.
+- **Node permits** (Q-06): the run-wide pool now has a test with four containers, each fanning out to four leaves, under `maxConcurrencyPerRun` 3. Containers (`holds_permit = False`) hold no permit, so nesting cannot deadlock.
+- **Coalescing** (`run/events/bus.py`, Q-04): with `sse.coalesceMilliseconds` (16) and `coalesceBytes` (1024), the `RunStream` joins `token.delta` and `reasoning.delta` before they get a `seq`.
+  - A node's first delta goes out at once. Later ones are joined until the window ends, the bytes collect, or any other event is published. Joined text always goes out before the next event, so order and gapless `seq` hold for every subscriber.
+  - A window of 0 turns coalescing off.
+- **Subscriber back-pressure:** each SSE response reads the stream through a queue of `stream.subscriberQueueEvents`. A slow reader falls behind the replay buffer and gets `stream.gap`; the run never waits.
+  - **Defect found and fixed:** `_pump` used to `await queue.put(_DONE)` in `finally`. A pump cancelled while its queue was full (the client went away) would have hung forever. The test fails on the old code.
+- **Pools** (`integrations/http/pools.py`):
+  - `BedrockClients`: one boto3 `bedrock-runtime` client per region, passed to every `ChatBedrockConverse` (Q-09). botocore sets `max_pool_connections` = `models.executorThreads`, the read timeout and `standard` retries.
+  - `install_blocking_executor`: makes a `ThreadPoolExecutor` of `models.executorThreads` (160) the loop's default executor at app start. LangChain's `run_in_executor(None, …)` uses it, so boto3 calls are bounded (Q-09 checks 100 calls on 8 threads).
+  - `HttpPools`: one `httpx.AsyncClient` per upstream. The JWKS client now comes from it and is closed with the app; it was never closed before. The gateway keeps its own client.
+- **CPU pool** (`runtime/process_pool.py`): `CpuPool` runs work on payloads of `cpu.offloadBytes` or more in a spawn-started `ProcessPoolExecutor` of `cpu.workers`, and smaller payloads inline (Q-16, with the masker). Nothing on the run path calls it yet: its first user is P2-08's exporter, which masks large payloads. The `time.sleep` half of Q-16 is the existing AST rule 13, now with its own test.
+- **Metrics** (`runtime/metrics.py`, `api/internal.py`): `/metrics` on the internal app serves gauges read at scrape time:
+  - `zonic_active_runs`, `zonic_streams_open`, `zonic_node_permits_in_use`;
+  - `zonic_event_loop_lag_milliseconds` and its p99, `zonic_overloaded`;
+  - `zonic_model_queue_depth` and `zonic_model_in_flight` by `model`.
+  - "Queued runs seen" waits for the async claimer (P4-05).
+- **Serving:** the Dockerfile ran `uvicorn zonic_runtime.main:app`, which does not exist, so the image could not have started.
+  - It now runs `python -m zonic_runtime.server`: one process and one event loop (uvloop off Windows) serving the public app on `ZONIC_PORT` (8000) and the internal app on `api.internalPort` (9000). Both share one `AppDeps`.
+  - Only the public server takes signals; its exit stops the internal one. Its lifespan calls `AppDeps.start()` (pressure monitor, blocking executor) and `aclose()`.
+  - `ZONIC_HOST` and `ZONIC_PORT` are new `EnvironmentModel` fields.
+- **Not yet:** `Q-01` to `Q-09` are also P5-02's (k6 on the target task), so the catalog check counts them as due only then. Budgets such as the p99 lag of 50 ms are not asserted here; Q-05 asserts only that the process is not overloaded.
+
+### P2-04 notes
+
+- **`TurnSaver`** (`engine/persistence/turn_saver.py`) is an `InMemorySaver` with one buffer per run.
+  - `attach(run, bundle?)` before the run and `detach(run)` after its save. Detaching exports the latest `state.checkpointsKeptPerNamespace` (2) checkpoints per namespace, with their pending writes and blobs, and frees the thread.
+  - A write to a thread that is not attached is `CHECKPOINT_THREAD_UNKNOWN`. The conformance suite runs with `strict=False` and passes every base capability (P-07).
+  - Serialization is `JsonPlusSerializer` without pickle fallback, or `EncryptedSerializer` with the `CHECKPOINT_AES_KEY` hex key when `state.encryption.enabled`.
+  - Under `durability="exit"` there is one `aput` per run whatever the node count (P-06).
+- **`CheckpointBundle`** (`codec.py`): format `langgraph-jsonplus-zstd-v1` and `langgraphVersion` are recorded, and each payload is zstd-compressed and base64-encoded (P-09). P-08 resumes a detached bundle, taken through JSON, in a fresh saver and graph. The `runtime_checkpoint` row itself (`sp_interrupt_create`) is P4-02's.
+- **`TurnStateStore`** (`run/state/turn_store.py`) replaces P2-03's minimal store.
+  - **Start, existing session:** one `sequential` batch of `v_session_state`, `v_message` (newest `history.maxMessages`) and `sp_run_start`.
+  - **Start, new session:** `sp_run_start` alone.
+  - **End:** one `sp_run_finish`. It carries the turn's messages, the answer message (added unless a chat message of the turn already says it), the declared variables with `expectedVersion`, the timeline and `lastEventSeq`.
+  - **Failures at the end:** the save is retried on `DATA_UNAVAILABLE` until `state.saveDeadlineMilliseconds`, then `STATE_UNAVAILABLE` (P-11). A version conflict is retried once over the latest variables, then saved without them, with `STATE_CONFLICT`.
+- **Warm turns** (P-05): exactly the start batch and `sp_run_finish`.
+  - `WorkflowLoader.load_cached` finds the workflow in the cached catalog (`catalog.cacheSeconds`) and falls back to the filtered read for one it does not list.
+  - The run service caches each session's workflow by owner; `sp_run_start` still checks the owner.
+- **Session variables** (P-13, E-19): declared variables persist unless `persist: false` (new `VariableDefinition.persist`), plus `persistence.flow` keys. A turn's `flow` is the declared defaults overlaid with the saved values. History is grouped by thread; the chat thread keeps only chat-visible messages. Node records and visit counts start empty each turn.
+- **Template scope:** every message in `{{messages}}` and `{{thread.<name>}}` now reads as `{role, content, thread}`, both history and this turn's, where before this turn's were raw `ThreadMessage` records. Two P1-08 tests were updated to read `content`.
+- **Persistence for now:** a `waiting_input` or `drained` outcome is not saved yet (P4-02, P4-05).
+
+
+## Phase 3
+
+Started 2026-10-27 after the M2 approval (decision 0005 accepted with it). Wave order: 10 (P3-03, P3-07, P3-08), 11 (P3-01, P3-09), 12 (P3-02, P3-10, P3-12), 13 (P3-04, P3-06, P3-11), 14 (P3-05); stop at M3.
+
+| Task | Status | Sanity check |
+|---|---|---|
+| P3-03 Egress guard and HTTP node | Done | N-14, X-02, X-03: 29 tests with a fixed resolver and `FakeUpstream`; 2 live tests over real DNS and TLS |
+| P3-07 Script node | Done | N-17: 10 tests; the wrapper runs for real under local `node` and `python`, the Piston API is a fake (no sandbox service is configured) |
+| P3-08 View node and content parts | Done | N-18, B-11, M-06: 25 tests; fsh-facility-agent-v2 scenarios (both dialects, two branches) join the golden streams (F-08 part); live suite 32 passed |
+| P3-01 MCP integration | Done | T-01, T-02, T-06, T-08, G-08: 15 tests over the real `McpPool` and `MCPAdapter` with an in-process FastMCP server; 2 live tests against the real Zonic MCP server run locally |
+| P3-09 Sub-flows | Done | N-11, G-05, S-04 and L-06 (sub-flow parts), F-10: 13 tests through the app; the vendored `all-agents` supervisor runs into its `fsh-facility-agent-v2` child in both dialects |
+| P3-02 Tool factory | Done | N-05 (tools part), T-03 to T-05, T-07, T-09: 21 tests with the real `McpPool` over the in-process FastMCP server; 7 new builder scenarios (fsh-energy-agent in three copies, test-relationship in two, the calculator turn) |
+| P3-10 Remaining hook types | Done | K-08, K-14: 25 tests (webhook over the real `EgressGuard` with `FakeUpstream`, a masked agent traced through `LangfuseTracer` to a fake ingest); offline 1,391 passed; live suite 32 passed, 2 skipped |
+| P3-12 Recorded responses | Done; decision 0006 (recordings vendored from the Node.js runtime) | F-09: 5 tests; the 25 Node.js recordings found by this runtime's keys; fsh-energy-agent (recorded open-data copy, and the Zonic copy through template aliases) runs on the recordings with no unrecorded call; offline 1,395 passed; live 32 passed, 2 skipped |
+| P3-04 Database node | Done, with P3-05 (wave 14) brought forward | N-13, X-01 (datasets part), F-08: 7 N-13 and X-01 tests; 11 new builder scenarios (fsh-facility-agent and fsh-risk-agent in three copies, all-agents in two, complex-agent) with goldens; the open-data SQL turns answered by the recordings |
+| P3-05 Datasets | Done | P-12, B-11: 50,000 rows and a 5 MB body kept in full in both stores and paged; the grid names its dataset; live: an NYC Open Data response kept as a dataset, saved by the transactional turn-end batch on the deployed gateway and paged back for its owner only; offline 1,421 passed; live 33 passed, 2 skipped |
+| P3-06 Tool, external agent and guardrail kinds | Done | N-10, N-15, N-16, B-05, F-17, F-18, B-12, B-13: 30 tests; the 9 platform workflows join the builder scenarios with goldens (the orchestrator over two turns into its quick-pay child; seven sub-agents through their loops twice; the catalogue's script nodes run under local `node`); offline 1,459 passed; live 33 passed, 2 skipped |
+| P3-11 Trace and usage APIs, feedback, maintenance | Done | L-14, L-15, O-07, O-08: 9 tests; live: the trace tree, feedback scored on the trace and model usage on the deployed gateway, and a maintenance pass (partitions, rollups) whose rollups match the raw rows; offline 1,480 passed; live 35 passed, 2 skipped |
+
+### P3-03 notes
+
+- **Guard** (`integrations/egress/guard.py`, port `ports/egress.py`): checks every request and every followed redirect.
+  - **Allow list:** the scheme, the host (exact, or `*.suffix`, which does not match the bare domain) and the port.
+  - **Resolved addresses:** with `blockPrivateRanges`, every resolved address must be public. Private, loopback, link-local (metadata), multicast, reserved, unspecified and IPv4-mapped private addresses are `EGRESS_DENIED`, as is a host that does not resolve.
+  - **Pinning:** the connection goes to the checked address. The URL carries the IP, while `Host` and the TLS server name (`sni_hostname`) carry the host, so there is no second DNS lookup to rebind and the certificate is still verified against the host. The live test proves this on `httpbin.org`.
+  - **Redirects:** followed only with `followRedirects` (at most 5), each checked again; otherwise a 3xx is returned unfollowed.
+  - **Limits:** `maxResponseBytes` is read as a stream and stops with `EGRESS_DENIED` (reason `maxResponseBytes`; the catalog has no dedicated code). The timeout is the request's, capped by `timeoutSeconds`. Environment proxies are ignored (`trust_env=False`).
+  - **Failures:** a 5xx, or a failed connection (reason `connection`), is `UPSTREAM_5XX` with the method; a slow call is `TIMEOUT`.
+- **Kind `http`** (`engine/kinds/io_kinds.py`):
+  - **Request:** method, list headers (`key`/`value`) and body (text as is, other values as JSON).
+  - **Output:** `status`, `headers`, `body` text and `json` when the body is JSON. A 4xx is an output, not an error.
+  - **Timeout:** the request gets 90% of the node timeout, so a slow answer is the retryable `TIMEOUT` and not the outer `NODE_TIMEOUT`. Before this they raced.
+  - **Retries:** `retry_policy` now honors the manifest's `methods`, so `TIMEOUT` and `UPSTREAM_5XX` retry for GET and HEAD only and a POST is never repeated (N-14).
+- **URL encoding** (X-03): `TemplateResolver.resolve` takes an `encode` callback for values embedded in a longer string. The HTTP kind percent-encodes every value placed after the URL's authority, so `a/../admin?x=1` stays one path segment. A template that is the whole base URL is used as it is. If a `beforeNode` hook changed the URL input, the hook's value is used.
+- **Wiring:**
+  - **`ServicePorts`:** a new group on `NodeServices` holds process-wide adapters (egress now; sandbox, MCP and cache later). `RunContext.ports` stays for owner-bound ports. This deviates from design 7.1's list, which put egress in `RunPorts`; egress holds nothing owner-bound.
+  - **Defaults:** `AppDeps.build` defaults egress to the guard over `egress.json` and closes it with the app. Tests pass fakes through `Harness(ports=...)` or `AppDeps.build(ports=...)`.
+
+### P3-07 notes
+
+- **Port and adapter:** `ports/sandbox.py` and `integrations/sandbox/piston.py` (`POST {ZONIC_SANDBOX_URL}/api/v2/execute`). Built to match the Node.js runtime so both run a script the same way:
+  - the same wrapper (`input` holds the inputs, passed as one JSON string literal, never as code), the same `__ZONIC_RESULT__` marker and the same failure reasons;
+  - the same `SANDBOX_ERROR` code (502, not retryable), added to `error-catalog.json`;
+  - the same `sandbox` settings block (`runTimeoutMilliseconds` 3000, `maxOutputBytes`, `languages` javascript and python).
+- **Behaviour:**
+  - The run timeout sent is the smaller of the node's and the setting.
+  - A script Piston kills (`signal`) is `SANDBOX_ERROR` with `timeout_ms`, and so are a non-zero exit, a missing or non-JSON result, an unknown language, and an unreachable or failing service.
+- **Kind `sandbox`** (`engine/kinds/io_kinds.py`):
+  - The `inputs` mapping list becomes a record, each value converted to its `type`.
+  - A returned object is the output, and any other value becomes `{value}`.
+  - With `features.scriptNode` off, planning refuses the node with `FEATURE_DISABLED`. With the flag on but no `ZONIC_SANDBOX_URL`, the node fails with `FEATURE_DISABLED` (N-17).
+- **Plan Q5** (Piston for production) stays as recommended: the adapter ships, and the node stays off by feature flag.
+- **Not verified live:** there is no Piston service in any environment yet. A live test needs `ZONIC_SANDBOX_URL`.
+
+### P3-08 notes
+
+- **Content parts** (`models/content`): `markdown`, `table`, `grid`, `chart`, `card`, `json`, `file`, `html`, `citation`, `error` and `form`, discriminated by `type` and published under `generated/schemas/content/`. The shapes are the Node.js runtime's, so one client reads both runtimes. Every part round trips as its own class with identical JSON (M-06).
+- **Contract changes for the UI owner's review** (the `generated/` snapshot changed):
+  - `content.part` events now carry a typed `part`.
+  - `DatasetRef` takes the Node.js wire shape (`store`, `key`, optional `datasetId`, `kind`, `rowCount`, `columns`, `sizeBytes`, `sha256`, `expiresAt`); `nodeId`, `visit` and `preview` remain as optional extras. Nothing produced dataset refs before this.
+  - Message text parts are `markdown`, the design's type, instead of `text`. Readers still accept `text`, so saved rows keep working (the live suite reads them).
+- **Kind `view`** (`engine/kinds/io_kinds.py`, helpers in `io/view_parts.py`), after the Node.js runtime's:
+  - **`html_template`:** the template is sanitized into an `html` part. Template values are HTML-escaped by the port binding.
+  - **`template_config` `grid`:** a `grid` part over the dataset `cacheDataKey` names, or a `table` of inline rows capped at `content.inlineRowLimit`.
+  - **`chart`:** a `chart` part whose option is checked (top-level keys on `content.chartOptionKeys`; no functions or function text such as `function (p) {…}` or `=>`), plus an `html` part from `html_data`.
+  - **Failures:** another view type, or a bad option, is `CONTENT_INVALID` (N-18). Missing data warns `view.data-missing`.
+  - **Delivery:** each part is emitted as `content.part`, kept in the node record (`NodeRecord.parts`) and added after the text in the turn's answer message, in completion order, so a reopened session shows it.
+- **Sanitizer** (`nh3` 0.3.7, a new dependency): only `content.htmlAllowedTags` and `htmlAllowedAttributes` stay.
+  - Removed with their content: `script`, `style`, `iframe`, `object`, `embed`, `noscript`, `template`.
+  - Also removed: event handlers, `javascript:` and every non-`https`/`mailto` link, images other than inline `data:image`, CSS that loads or runs something, and comments (B-11).
+- **Port encoding:** `PortBinding.encode` (`uriComponent`, `html`; encoders in `io/encoders.py`), as the Node.js manifest has it.
+  - The HTTP `url` port and the view `html` port declare it.
+  - The URL encoding of P3-03 moved there from the HTTP kind, which now reads its `url` input as the binder resolved it.
+- **Scenario gate:** configured agent and LLM tools count as waiting for the tool factory (P3-02), and a scenario may name what it knowingly runs without (`waits`). fsh-energy-agent therefore waits for P3-02 (its LLM nodes call MCP tools), while fsh-facility-agent-v2 runs now.
+- **Not yet:** a grid's `datasetRef.datasetId` is filled once P3-05 registers datasets by cache key.
+
+### P3-01 notes
+
+- **Pool** (`integrations/mcp/pool.py`), following SP-7:
+  - **Held clients:** one `fastmcp` client per server of `mcp-servers.json`, created and entered on first use, then held for the process lifetime inside `langchain.mcp.MCPAdapter`. That adapter is beta; its warning is silenced at import, and it stays behind the pool.
+  - **Concurrency:** at most `maxInFlight` calls per server. 25 concurrent calls from 25 runs share 1 connection (T-06).
+  - **Endpoints:** from the catalog and the environment (`env:mcp_base_url`), never from a document. `authSecretRef: env:<field>` is sent as a bearer token.
+  - **Tool catalog version:** a `tools/list_changed` notification marks the list stale, and a list that differs on the next `tools()` bumps `version`.
+    - The version is part of the compiled-graph cache key (`WorkflowRuntime.prepare`, G-08).
+    - The in-process FastMCP does not send that notification when a tool is added, so the test delivers it through the client's own handler. The handler survives the adapter's clone of the client.
+  - **Failures:** an unreachable server, a missing URL or a closed pool is `TOOL_UNAVAILABLE` (T-01: connection refused fails at once, as `RuntimeError` from `fastmcp`).
+- **`execute`** (`integrations/mcp/execute.py`, models `models/mcp`):
+  - **Contract:** the server's camelCase shape (`ZonicMCPServer_FastAPI app/models/execution.py`) and the Node.js runtime's.
+  - **Parsing:** the reply is read from the result's structured content or its text JSON.
+  - **Flow updates:** the server's `meta.flowUpdates`, then each successful tool's `output.data.variable` bound to its value (T-02).
+  - **Partial results:** per-tool errors come back in the results (`partial`).
+  - **Failures:** a protocol error or a reply that is not the contract is `TOOL_FAILED`, added to the catalog (502, not retryable) for parity with the Node.js runtime.
+- **Owner-bound** (T-08): `RunMcp` in `RunContext.ports.mcp`, made per run by the run service, stamps the run's identity (`runId`, `ownerSub`, `sessionId`, `tenantId`) into `context.system` and makes the request ID `runId:<key>`, so a retried call is the same request. The pool holds nothing of a run.
+- **App:** `AppDeps.from_environment` builds the pool, the lifespan's `warm()` lists the tools at start-up (a server that is down is retried by the first call), and `aclose` closes it.
+- **Real server:** the live tests ran against `ZonicMCPServer_FastAPI` started locally (port 8301, `FUNCTION_ALLOWLIST=statistics`, no database).
+  - They showed that every tool type, functions included, answers in the `{is_cached, data: {variable, value}}` envelope. The fake now does the same.
+  - The database and API tools wait for D-7 and P3-12's recordings.
+- **Flaky test seen again:** one full run of five had one failure that did not recur in three reruns, most likely `test_Q05_150_concurrent…` as before (P2-05 notes).
+
+### P3-09 notes
+
+- **Kind `subflow`** (`engine/kinds/subflow_kind.py`, after the Node.js runtime's): a container that holds no node permit.
+  - **Running the child:** it opens the child through `ServicePorts.subflows` and runs the child graph through `invoke_child`, so callbacks, the checkpoint namespace, `RunContext`, the deadline and the permits reach it.
+  - **What the child starts from:** the mapped `inputs` (read by its Start node as interface inputs), the parent's `system` and history, and `flow` per `subflow.inheritFlow` (`none`, the child's declared variables, or `all`).
+  - **Output:** the child's result (its Output node, else the fallback chain) is the node's output.
+  - **Joining the parent's turn:** the child's chat messages and visits join it (`TimelineEntry.path`, node IDs as on events), and so does its usage.
+  - **Limits** (N-11): the call chain travels in the child's `configurable` (`zonic_lineage`). A workflow already on it is `SUBFLOW_CYCLE`; a chain deeper than `subflow.maxDepth` is `SUBFLOW_DEPTH_EXCEEDED`; a child that does not exist is `WORKFLOW_NOT_FOUND`. With decision 0004 every stored workflow is visible to a caller with a valid token.
+- **Opener** (`application/subflows.py`): bound to `WorkflowRuntime`, which owns the loader and the blueprint and graph caches.
+  - **Loading:** the first child a parent revision opens loads all of its static children with one `in` read (`v_agent_summary`, then `v_agent_export` on a cache miss), kept `catalog.cacheSeconds` (F-10: one summary read for the supervisor's three children). A templated or missing child is read alone.
+  - **Graphs:** child graphs come from the graph cache in the `child` role, compiled without a checkpointer, with the current tool catalog version (G-05).
+- **Nesting on events, timeline and trace** (S-04, L-06):
+  - **Registry:** `RunContext.children` (`ChildBlueprints`, per run) records each child blueprint the sub-flow kind opens, by (parent workflow, node).
+  - **Events:** `NamespaceMap` follows it, so a grandchild's tokens are `nodeId: llm`, `path: child/grand`. A sub-flow whose child is not open yet is not cached as unknown.
+  - **Trace:** the Langfuse handler now treats a child graph run inside a sub-flow node visit as a graph run, so the child's node visits are marked, numbered and typed like the root's, nested under the sub-flow node's observation.
+- **Result fallback:** a sub-flow node's text result now counts as an answer, and a child's own timeline entries (those with a `path`) are skipped. `all-agents` has an Output without a mapping and a supervisor that only hands off, so before this it ended `NO_OUTPUT`.
+- **Scenario gate:**
+  - **Children:** it now follows sub-flow children transitively (same dialect folder first). `all-agents`, `test-relationship` and `django/complex-agent` therefore wait for their children's tools, HTTP and database nodes, and a child no fixture holds is `missing-child`.
+  - **Fixture gap:** `platform/intelligent-buying-orchestrator` has one (`exec_category_agnostic`, `025421e9-…`, never vendored), recorded in `FIXTURE_GAPS`. Its F-17 scenario has to avoid that branch, or the child has to be vendored.
+- **Code fix found while testing:** `ctx.config_values()` has snake_case field names; the kind first read `agenticWorkflowId` and found nothing.
+
+### Q-05 flake fixed (2026-10-27)
+
+- **Symptom:** `test_Q05_150_concurrent…` failed in 6 of 8 full-suite runs with an event-loop lag "p99" of 200 to 208 ms against the 200 ms limit.
+- **Cause:** under 150 concurrent runs the 20 ms sampler got only about 19 samples, so the p99 was just the single largest one: one pause (garbage collection or the burst of 150 starts) of 70 to 170 ms alone, a little more under full-suite heap pressure. It was not the graph compile, which takes 2 ms.
+- **The same weakness was in production:** `PressureMonitor.overloaded()` compared only the latest sample, so one GC pause would have shed new runs with `503 OVERLOADED`.
+- **Fix:**
+  - `overloaded()` now compares the 90th percentile of the last 10 samples (`recent_lag_milliseconds`). One slow sample does not trip it; sustained lag does within a few samples, as a new Q-15 test checks.
+  - Q-05 asserts the same p90 and reports p99 in its message. The p99 budget of 50 ms stays P5-02's (k6 on the target task).
+  - Six full runs after the fix all passed (1,340).
+
+### Checkpoint M3 (2026-10-27)
+
+Phase 3 is built: P3-01 to P3-12, 43 tasks complete in all. P3-05 was brought forward with P3-04; decision 0006 vendors the recordings.
+
+| M3 asks | Status |
+|---|---|
+| All builder fixtures, with tools and sub-flows, run against the fakes with recorded responses (F-08, F-09, F-10) | 29 builder scenarios over 33 vendored documents, stream and sync, with golden streams. The open-data SQL turns and fsh-energy-agent run on the recordings. `exec_category_agnostic` (the orchestrator's child) is still not vendored (`FIXTURE_GAPS`) |
+| The platform workflows run their multi-turn scripts (F-17, F-18) | The orchestrator over two turns into its quick-pay child; seven sub-agents through their loops twice; the catalogue assistant |
+| Database and HTTP results kept in full in both stores (P-12) | 50,000 rows and a 5 MB body in the `database` and `cache` stores, paged through `/v1/datasets`. Live: an NYC Open Data response kept and paged back on the deployed gateway |
+| One open-data fixture against the real MCP server locally once D-7 is settled | Not yet. D-7 is open: the MCP server needs the `sample_open_data` connection. The MCP live tests skip without `ZONIC_MCP_BASE_URL` |
+
+**Gates:** ruff, ruff format, mypy (220 files), import-linter (4 contracts), `gen --check`, `sync_builder --check`, `sync_recordings --check` and `catalog_check` (241 cases with tests, 223 due) all pass. `sync_sql --check` still fails until the Node.js repository commits its `db/observability/005_procedures.sql` change. 1,480 offline tests pass; the live suite passes 35 and skips 2.
+
+**For review:**
+- decision 0006;
+- the order change (P3-05 with P3-04);
+- the parity gaps closed in P3-06 (`requestInputs`, `mcp-resource`, the script output hint, structured output errors);
+- the v3 streaming defect fixed in P3-10;
+- the live checks that wrote to the product database: rows of owner `live-langgraph-verify` and tenant `live-test`, one feedback score, partitions ahead and refreshed rollups.
+
+### P3-11 notes
+
+- **`TraceService`** (`application/observability.py`, after the Node.js `trace-service.ts`):
+  - `GET /v1/runs/{id}/trace` reads the trace, its observations (nested by parent, each level in start order) and its scores in one gateway batch, for the owner only;
+  - `GET /v1/observability/usage` returns the daily node rollups, or with `groupBy=model` the caller's tenant's model usage (`from` and `to`, else `observability.usageDefaultDays`);
+  - `GET /v1/runs/{id}/trace-link` returns the trace's URL on the Langfuse server, `NOT_FOUND` when none is configured.
+
+  All three need a role in `observability.traceRoles`; otherwise `FORBIDDEN` (L-15). Another user's run is the same 404 as a missing one.
+- **`FeedbackService`:** `POST /v1/messages/{id}/feedback` stores the rating through `sp_feedback_save`, which checks ownership (a foreign message is 404). It then upserts a `NUMERIC` trace score named `observability.feedbackScoreName`, with a score ID derived from the message and the user, so a new rating replaces the old one. The score is best effort: a run without a trace keeps its rating (L-14).
+- **`MaintenanceService`:** every `maintenance.intervalMinutes`, on every instance, it calls `sp_obs_partition_ensure`, `sp_obs_retention_purge`, `sp_obs_refresh_rollups` and `sp_retention_purge`. A failing step does not stop the others, and the last report is kept (O-07). Only the server's deps start it (`AppDeps.maintain`), never a test app's. The vendored `sp_retention_purge` removes expired checkpoints and datasets and archives idle sessions; it does not expire interrupts, which the plan row mentions.
+- **O-08:** `FanOutExporter` sends the same spans to the gateway exporter and to an OTLP exporter on the Langfuse server (`observability.exporters` with `langfuse`, plus `ZONIC_LANGFUSE_*`). The gateway's result is the result; the Langfuse side's failures are counted and never raised. `langfuse` without `gateway`, or without its keys, stops start-up (`RESOURCE_INVALID`).
+- **Test fakes:** `ObsStore` gained the trace, observation and score views (with the trace's user and tenant), the daily rollups, `sp_obs_score_upsert` and the maintenance procedures. `RuntimeSchema` gained `sp_retention_purge`.
+- **Live:** the retention purges are not run against the deployed gateway, because they delete product data; they are tested offline. The live pass runs the additive steps and checks the model rollup of tenant `live-test` against its raw observations.
+
+### P3-06 notes
+
+- **Kinds** (`engine/kinds/integration_kinds.py`, after the Node.js `tool-node.ts`, `external-agent-node.ts` and `guardrail-node.ts`):
+  - **`tool`:** the tool comes from the agents' `ToolFactory` (`ToolProvider.create`) and is called directly, with a `ToolRuntime` over the run, and no model call. A server tool's text answer is parsed as JSON. With `pass` and `fail` edges, success activates `pass` (plus the default edge when connected) and a tool error activates `fail`; without a `fail` edge a tool error fails the node with `TOOL_FAILED`.
+  - **`external_agent`:** A2A `message/send` over JSON-RPC by default, or `protocol: http`, through the egress guard. The API key is a secret reference. `UPSTREAM_5XX` is retried `retries` times (`externalAgents.retryBackoffMilliseconds`). Failures are `EXTERNAL_AGENT_ERROR`, new in the catalog.
+  - **`guardrail`:** the policy model (`guardrails.model`, else the catalog default) asked for a structured `GuardrailDecision`, or a Bedrock guardrail when the node names `guardrailId`. `pass`, `fail`, or `warn` (passes with `guardrail.flagged`). Blocked content without a `fail` edge is `GUARDRAIL_BLOCKED`.
+- **Policy model and Bedrock:** `engine/agents/policy_guard.py` (`PolicyGuard`) also backs the `guardrail` hook's `policy_model` provider. That provider failed at load until now; it now works whenever agent services exist. `integrations/guardrails/bedrock.py` (`ApplyGuardrail` on the `bedrock-runtime` client) is wired when `guardrails.bedrockRegion` is set. Its live call is untested, since no guardrail is provisioned.
+- **Parity gaps found and closed for the platform workflows:**
+  - **`requestInputs`** (`dialects.json`): a root run's interface inputs come from the request (`message` and `query` from `text`), as in Node.js. Platform start nodes read `interface.inputs.message`, and without it the agents' prompts were missing.
+  - **`mcp-resource` tools** (a reference file of an MCP server): `McpPort.resource` and `McpPool.resource` (`read_resource`) back a tool with no arguments.
+  - **`platform.script-output-hint`** (`setValue`, a new dialect operation) and a per-node `outputValidation`: the platform's script output schema is a hint, so mismatches are warnings.
+  - **`StructuredOutputValidationError`** (native structured output that is not JSON) is now `STRUCTURED_OUTPUT_INVALID`. It was `INTERNAL`.
+- **Platform scenarios** (`tests/scenarios/builder/platform.py`, after the Node.js `platform-loops.ts`):
+  - **Responders:** a scenario may carry a `responder` factory, a fresh stateful model per run that answers by the tools each call offers. Its structured answers fill required fields from the offered schema (the structured tool, or `response_format`).
+  - **Fakes:** `ServerToolsMcp` answers servers' own tools by MCP name, and script nodes run on `FakePiston`.
+  - **The orchestrator:** turn 1 routes on `flow.current_state` from `get_next_questions` into the quick-pay sub-flow; turn 2 goes straight there from the saved state.
+- **Not yet:** `FIXTURE_GAPS` still lists the orchestrator's `exec_category_agnostic` child, which was never vendored (H-9 in the Node.js project); the scenario's path avoids it.
+
+### P3-04 and P3-05 notes
+
+- **Order:** P3-05 (wave 14) was built with P3-04. The database node's dataset reference and `/v1/datasets` need the store, and P3-05 depends on nothing else. Wave 13's P3-06 and P3-11 follow.
+- **`mcp_execute` kind** (`engine/kinds/database_kind.py`, after the Node.js `mcp-execute-node.ts`):
+  - the query runs as one database tool of MCP `execute` (`db_query_tool`): the script, `connection` (a registered name, never a connection string, D-7), `databaseType`, `maxRows`, `queryTimeout`, and only the parameters the query references;
+  - **in the `cache` store** the server caches the rows and returns a summary. A result above `io.maxResolvedBytes` is described from that summary and never read; a smaller one is read back from the cache.
+  - **in the `database` store** the rows come inline.
+  - **the output** is a preview (`io.inlineRows`, `io.inlineBytes`), the count, the columns and the `datasetRef`. Later templates read every row while the run holds them (`PendingDatasets.held`, overlaid on the node's output in the template scope).
+  - **failures:** an unreachable server is `TOOL_UNAVAILABLE`, a failed query `TOOL_FAILED`, a vanished cache entry `DATA_UNAVAILABLE`. Never empty rows.
+- **Datasets** (`ports/datasets.py`, `run/state/dataset_store.py`, after the Node.js `dataset-store.ts`):
+  - `keep`, `register`, `describe`, `adopt`; chunking by `datasets.chunkBytes`. The `cache` store falls back to `database` without a cache service.
+  - Each run gets a `RunDatasets` (`RunPorts.datasets`) with its pending metadata and chunks.
+  - The HTTP kind keeps the whole response as an `http_response` dataset, with a body preview.
+  - An agent tool's cached result is registered as a dataset.
+  - A grid over a key this turn registered gets its `datasetId` (B-11).
+- **Cache service:** `integrations/cache/http_cache_store.py` speaks the MCP server's `keys/<key>` protocol (`ZONIC_CACHE_API_URL`, `datasets.cacheTimeoutMilliseconds`). The `cache` and `rateLimit` hooks now share the port.
+- **Turn end:** the metadata goes in `sp_run_finish` (chunk 0). When there are `database`-store chunks, `sp_dataset_save` and `sp_run_finish` go in one transactional batch, so both commit or neither does.
+- **`GET /v1/datasets/{datasetId}`** (`application/datasets.py`, after the Node.js `dataset-service.ts`):
+  - the metadata is read with the owner filter, so another user's dataset, a missing one and a malformed ID are the same 404 `DATASET_NOT_FOUND` (X-01, new in the catalog);
+  - then the cache or the joined chunks are read;
+  - paging uses `api.defaultPageSize` and `maxPageSize`, `sort` is `field[:desc]` in natural order, and `filter` is a JSON object of contains-terms.
+- **Test fakes:** `RuntimeSchema` gained `v_dataset`, `sp_dataset_save` and the chunk-0 insert of `sp_run_finish`, after the vendored SQL. `FakeCacheStore` is the cache service in memory. The test app's dataset store uses the fake clock, so expiry times repeat.
+- **Scenarios:** the facility and risk agents (data analysis in every copy; the open-data SQL turns against the recordings, F-09), `all-agents` and `complex-agent` (the supervisor answers, then hands off into the fsh-risk-agent sub-flow). The F-07 comparison of stream and sync results now ignores generated IDs (a dataset reference in an answer).
+- **Settings:** `io.columnSampleRows`, `datasets.cacheTimeoutMilliseconds`.
+
+### P3-12 notes
+
+- **Decision 0006:** the recordings are the Node.js runtime's (`npm run record:fixtures`), vendored byte for byte by `scripts/sync_recordings.py`, with a commit and SHA-256 per file in `SOURCE.json`. `--check` is in CI. This project has no recorder of its own. One would need a PostgreSQL driver (rule 5), the DB Query kind (P3-04) and new live access to `sample_open_data`, and two recorders would give the runtimes different data.
+- **Recorded documents:** a recording's key includes the hash of the tool's request template, so the documents the recordings were made against are vendored too (`tests/fixtures/recordings/documents/`). This project's own `open-data/fsh-energy-agent.json`, exported from agent-build-langgraph, is an older copy with 4 of the 5 recorded templates.
+- **Ported exactly:**
+  - `tests/fakes/recordings.py`: canonical JSON with JavaScript number text, 16-character hashes, file names, `Recordings`, `template_aliases`;
+  - `integrations/mcp/tool_parameters.py`: `resolve_tool_parameters`, `resolve_server_tokens`.
+
+  A test checks that every vendored recording is found by the key this runtime computes.
+- **Replay:**
+  - `FakeMcpServer` answers each tool from `answers`, else from the recordings, with the Node.js fake's envelopes. A `saveToCache` tool's rows go into `cache` and the flow gets the key.
+  - It logs every call with its resolved parameters (`tool_calls`).
+  - `FakeEgress` (an `EgressPort` over the allow list) replays the HTTP recordings.
+  - An unrecorded call fails the test in both fakes.
+- **F-09:** `fsh-energy-agent` runs with the Node.js scripted model over the red hook context and takes the recorded path. The database tools take `userID` 1809 from the workflow's variable and the period and facility from the keywords, and the bills kept for the flow are 1,787 rows. The Zonic copy's T-SQL tools borrow the PostgreSQL recordings through template aliases.
+- **Waits for P3-04:** the `fsh-facility-agent` and `fsh-risk-agent` HTTP scenarios (their DB Query node needs the kind to plan). Their three HTTP recordings are replayed by a `FakeEgress` test now.
+- **Scenario goldens (F-08)** keep their scripted MCP answers; F-09 is the recordings' test.
+
+### P3-10 notes
+
+- **Hook types** (`hooks/integration.py`, ported from the Node.js runtime's `hooks/types/integration.ts`; registered with the core types by `WorkflowRuntime` through `HookPorts`):
+  - **`mask`:** keys (any depth) and patterns (`settings.hooks.patterns` names or `/source/flags`) in the input, the output and its content parts, or the result.
+  - **`guardrail`:** `patterns` works now. `policy_model` and `bedrock` need the guardrail ports of P3-06; until then such a binding fails at load ("not configured"). `block` fails with `GUARDRAIL_BLOCKED`, `warn` warns `guardrail.flagged`, `redact` replaces the flagged fields. At `beforeRun` it checks the user's message.
+  - **`cache`:** keys per scope (`session`, `user`, `tenant`), the resolved `key` or the bound input; a hit skips the node with the cached output and handles. The cache service arrives with P3-05; until then entries live in this process (an LRU of `cacheMaxEntries`).
+  - **`rateLimit`:** a sliding window per scope in this process; a fixed window shared through the cache service once it exists.
+  - **`webhook`:** asynchronous by default (the type decides its mode: `HookRunner._mode`). The payload is masked with `webhookMaskPatterns` and `maskKeys`, signed `x-zonic-signature: sha256=<HMAC>` when `secretRef` names a secret, and sent through the egress guard. An endpoint not in `settings.hooks.endpoints` or not on the allow list stops start-up (K-08). Blocking, `{"action": "fail"}` vetoes.
+  - **`mcpTool`:** calls a server's tool with the resolved `inputMapping` and sets the value (`mcp_content`, the Node.js `mcpContent`) at the `outputMapping` targets.
+  - **`annotate`:** tags and metadata (`zonic_annotation`) on the node's observation, or the run's at run-level points. A score becomes an `ObsScoreRecord` that the gateway exporter sends with its next batch.
+- **Hook observations:** a `span` per blocking execution and an `event` per asynchronous dispatch, under the node's observation (`hook:<bindingId>`).
+- **Run-level hooks** now get the run's tracer, so `annotate` works at `afterRun`, and warnings that hooks raise there reach the outcome.
+- **Stream masking:** the event mapper masks the token and reasoning deltas of nodes with blocking `afterNode` `mask` bindings (`HookRunner.stream_mask`, as in Node.js). It holds back `streamMaskHoldbackChars` and flushes before `node.finished`. A match longer than the holdback can stream in part, as in Node.js.
+- **`EgressPort.allows(url)`:** checks scheme, host and port without DNS, for the load-time check. `EgressGuard.check` uses the same static checks.
+- **Defect found and fixed (v3 streaming):** LangGraph builds a `RunEventTransformer` for every subgraph mux (`factory(scope)`), and they all shared the run's mapper. Each event nested under a subgraph was therefore mapped once per enclosing mux. Only the root projection is drained, so the extra drafts were discarded, but the mapper's state was hit more than once. The stream masker exposed it (text doubled). Child-scope transformers now do nothing. The other state this affected was tool start times (a second pop, so no duration).
+- **Parity:** `afterRun` allows only `continue` in both runtimes, so a `guardrail` `block` there is `HOOK_RESULT_INVALID`, not a block.
+- **Not yet:** masking of content parts is implemented but has no test of its own. Stream masking looks up bindings on the root blueprint only, as Node.js does, so a sub-flow child's own `mask` bindings mask its state but not its stream.
+
+### P3-02 notes
+
+- **`ToolFactory`** (`engine/agents/tool_factory.py`, after the Node.js runtime's) is now the default `ToolProvider` (`NoTools` remains for tests that want none). From the canonical `ToolRef`s the normalizer already makes, it builds:
+  - **`database`, `api`, `function`** (the builder's MCP configured tools): tools that call MCP `execute` with the configured tool, the model's input, and the visit's `flow` and `system` as context.
+    - Secrets are resolved at call time.
+    - The model's input schema is the parameters no runtime source fills; `payloadType: from_llm` takes any object.
+    - A cached result goes back to the model as `{saved, variable, key}`. The flow updates go back to the run.
+    - A per-tool error is an error result the model sees, not a failed node.
+  - **`mcp`, `agentcore_gateway`:** a server's own tool, reached only when called, so a server that is down or unknown is a tool error.
+  - **`strands_builtin`:** `calculator` (no `eval`) and `current_time`, when on `tools.builtinAllowList`; any other name is `TOOL_NOT_ALLOWED` (T-05).
+- **Tool rules:**
+  - Every tool validates the model's input against its schema first. An invalid input is an error result the model can correct, and it never reaches the server (T-03).
+  - Errors use `handle_tool_error`.
+- **Run data only through `ToolRuntime`:**
+  - **Agent state:** the kind seeds `zonic_flow`, `zonic_system` and `zonic_visit`. Tools return `Command(update=…)` with the flow updates (`zonic_flow_updates`, merged, also into `zonic_flow` so later tools see them), and the kind writes them as `flow.<key>` updates (N-05).
+  - **Ports:** `RunContext.ports` carries the owner-bound MCP port (P3-01) and the new `secrets` port.
+- **Idempotency key** (DR-2, T-09):
+  - **Numbering:** `ToolPermitMiddleware` numbers a visit's calls in issue order in `RunContext.tool_calls`, and the kind restarts the count at each attempt.
+  - **Request ID:** the MCP request ID is `runId:nodeId:visit:callIndex`. A re-executed visit whose model asks again in the same order sends the same keys although the call IDs differ.
+- **Secrets** (T-04):
+  - **References:** `ports/secrets.py` resolves `secret:<name>` and `{{secrets.<name>}}`. `EnvironmentSecrets` reads `ZONIC_SECRET_<NAME>`; AWS Secrets Manager is P5-04.
+  - **Failures:** a missing secret is `TOOL_FAILED` naming the reference.
+  - **Containment:** the value reaches only the MCP request, never events or state, which the test checks.
+  - **Literal credentials:** a literal credential in tool settings (the Node.js key set, plus credential headers) fails the document with `DOCUMENT_INVALID` at load.
+- **T-07:** six calls with `maxConcurrentPerTurn` 2 run at most two at once, and each result pairs with its call ID. Cancelling the run cancels the call on the server (in process).
+- **Sub-flow answers:** a sub-flow node's output now also carries the child's last chat answer as `text` when its result has none. Without it, `test-relationship` (whose child's Output maps `messages`) ended `NO_OUTPUT`.
+- **Scenarios:**
+  - **Gate:** a requirement that is not a node kind (configured tools) counts as built once its task is complete, and a scenario's `waits` must go once its task is complete.
+  - **New scenarios:** fsh-energy-agent (open-data, zonic, zonic-versioned: keywords, the agent's handoff with `analysisType`, the `analyse_energy_performance` function through the MCP fake, `Rule_1`'s variance branch, the chart view) and `test-relationship` (the agent hands off into the fsh-energy-agent sub-flow; a second turn answers directly).
+  - **Runner:** it gained MCP answers per scenario, published children, nested visit names, and the timeline compared in completion order.
+- **Not yet:** a cached result is not registered as a dataset (P3-05). `mcp-resource` tools are not supported (no fixture has one). The built-in `http_request` is not implemented (not on the allow list).
+
+## Phase 4
+
+Started 2026-10-27 after the M3 approval. Order: P4-01, P4-02, P4-03, P4-04, P4-05; stop at M4.
+
+| Task | Status | Sanity check |
+|---|---|---|
+| P4-01 Swarm subgraph | Done | G-06, W-01 to W-13, K-13, L-06, F-11, F-12: 27 tests through the app and the harness; the Customer Support Swarm joins the builder scenarios with a golden stream; offline 1,507 passed. Live with P4-02: the live catalog's facility-operations Swarm hands off on the deployed gateway |
+| P4-02 Interrupts and resume | Done | N-20, M-10, H-01 to H-05, H-07 to H-11, L-09, F-13: 17 tests; Approval Flow and the Facility Operations Swarm (all six paths of Section 20.5) join the scenarios with golden streams; offline 1,528 passed. Live: facility-operations pauses at publish_approval with one `sp_interrupt_create` and resumes through `sp_interrupt_answer` on the deployed gateway; live 36 passed, 2 skipped |
+| P4-03 Tool approvals and the approval hook | Done | H-06, K-11, W-11 (through the app): 9 tests; offline 1,537 passed. Live: a gated `current_time` call of the facility-operations coordinator pauses the run and goes on once approved, on the deployed gateway; live 37 passed, 2 skipped |
+| P4-04 Asynchronous mode and cancellation | Done | A-08 (async), A-13, H-12, E-17 (cancel through the API): 6 tests; offline 1,544 passed. Live: an `async` run answers 202 and succeeds, and a waiting facility-operations run is cancelled with its interrupts and checkpoint, on the deployed gateway; live 39 passed, 2 skipped |
+| P4-05 Durable asynchronous runs, drain and handover | Done | Q-10 to Q-15, R-03, P-10, P-14, the completion callback: 13 tests with two instances on one fake gateway; offline 1,557 passed. Live: an async run drained on one instance is claimed and finished by a second, and the first is fenced off, on the deployed gateway; live 40 passed, 2 skipped |
+
+### P4-01 notes
+
+- **The subgraph** (`engine/agents/swarm/`) follows design 8.6 and the SP-6 result:
+  - `builder.py`: `SwarmState`, one node per member (the member's graph name and trace metadata, `TimeoutPolicy(nodeTimeoutSeconds)`), `START` to the entry member, compiled once per Swarm spec. Each member node runs the member's `create_agent` graph through `invoke_child`.
+  - `handoff_tools.py`: `transfer_to_<member>(message, context)` for every other member. It checks the step limit `min(maxHandoffs + 1, maxIterations)` and repetitive-handoff detection, then returns `Command(goto, graph=Command.PARENT)` with the model's message (this call only) and its acknowledgement, so the shared history never has a dangling call.
+  - `member_context.py`: `shared` puts the task, the handoffs, the other members and the last message (the lines of `settings.swarm.sharedContext`) before the handoff pairs; `handoff` gives the last message and its pair only.
+- **Kind `multi_agent`** (`engine/kinds/swarm_kind.py`, pattern `swarm` from the manifest's `options`): an LLM member is an agent with no tools of its own (it keeps its transfers); members' own inputs (system prompt, configured messages) are bound at the Swarm's visit against the run state. Output `{status, text, finalAgent, nodeHistory, executionTimeMs}`, with the members' usage, turn messages (the final answer for the chat, the rest internal) and flow changes.
+- **The Swarm owns its deadline.** A new `owns_deadline` kind flag makes the compiler give the node no run timeout: with the node's `TimeoutPolicy` set from `executionTimeoutSeconds` (the manifest's `timeoutSecondsFrom`), LangGraph's watchdog would always fire before the kind's `asyncio.timeout`, so the error would be `NODE_TIMEOUT` instead of `SWARM_TIMEOUT`. A member past its own timeout fails the Swarm with `NODE_TIMEOUT` and the member's name.
+- **Events and traces.** The event mapper treats a member's namespace segment as the Swarm node's, with `member` on `token.delta`, `tool.started` and `tool.finished` (Node.js's shape); `swarm.*` events written inside the subgraph keep the Swarm's own path. The Swarm registers its members as its child blueprint, so each member step is a node observation (typed by the member's type, visits counted per member) under the Swarm's, and each handoff an event observation under the member that handed off.
+- **Hooks:** `beforeMemberCall` on the member (a `cancel` fails the Swarm with `SWARM_MEMBER_CANCELLED`); `onHandoff` on the Swarm node.
+- **Contract and resources:**
+  - `SwarmMemberData` gained `status`, `durationMs` and `usage`; `SwarmHandoffData` `message`; tool events `member`; `NodeSpec.description` (a member's description is in the other members' transfer tools).
+  - Settings `swarm.maxHandoffs`, `maxIterations`, `sharedContext`, `handoffAcknowledgement`. Manifest: the Swarm's default `timeoutSeconds` 900.
+  - Catalog: `SWARM_MEMBER_CANCELLED`, `SWARM_DETECTION_OFF` (the warning when only one detection setting is given).
+- **Matches the builder:** an `entryPoint` given by member name is refused at planning (`PLAN_INVALID`), as the builder's rules do; the kind takes the member's node ID.
+- **F-12** runs the Facility Operations template's Swarm node and five members alone: the whole template also compiles its approval and human-input nodes, whose `interrupt` kind is P4-02's. Its full-path scenario (Section 20.5) and F-13 come with P4-02; the helpers for it are in `scenarios.py`.
+- **Live:** the live catalog has no Customer Support Swarm. Its one Swarm workflow, `facility-operations`, also has the approval, so it could not compile before P4-02. It ran live with P4-02 (see there).
+
+### P4-02 notes
+
+- **Kind `interrupt`** (`engine/kinds/interrupt_kind.py`): Approval and Human Input.
+  - The node template calls `interrupt(request, response_schema=AnswerModel)` before anything else, so a pausing visit has no side effect and no `node.started`: the node starts once, when answered, with `resumed: true` (H-11).
+  - The request binds the prompt port only: the manifest's `options.form`, the answer's JSON Schema, the expiry (`timeoutHours`, else `interrupts.defaultExpiryHours`).
+  - Answer models (M-10): Approval `{approved, comment}` (the runtime adds `decidedBy`; `expired` comes from an expiry); Human Input `{value}`, typed by `inputType` through the manifest's new `options.valueSchemas` (Node.js's set) and optional when `required` is false. LangGraph validates the resume value with them; an invalid one is `INTERRUPT_ANSWER_INVALID`.
+  - The response is `{{approval.response}}` / `{{human.response}}` (the decision, or the value) and is written to `responseVariable` when that names a state path. An Approval follows `approved` or `rejected`.
+- **The pause** (`run/state/checkpoint_store.py`, `TurnStateStore.finish`): one `sp_interrupt_create` with the interrupt rows, the checkpoint row and the turn's messages so far, retried like the turn end.
+  - The checkpoint body is the detached `TurnSaver` bundle plus the documents the run compiled (`RunContext.documents`), the row IDs mapped to LangGraph's, the seq of the pause's last event, and the turn's facts (the state it started from, the persisted keys, how many messages are saved).
+  - A resumed turn saves only the messages after those.
+- **The resume** (`application/resume_run.py`, `RunService.resume`):
+  - The answer is checked against the stored `answerSchema` (400), then by `onResume` hooks, then recorded with `sp_interrupt_answer` (409 already answered, 410 expired, 404 another user's run).
+  - The run moves to the next attempt with `sp_run_transition` (the fencing token of its saves). Its graph is compiled from the stored root document, and its sub-flows open the children it paused with (`SubflowPort.open(..., documents)`, H-09).
+  - The buffer is restored, the payload is `Command(resume={id: answer})`, and the stream continues the run's seq (H-05). Any instance can resume (H-04).
+  - Routes `GET /v1/runs/{id}/interrupts` and `POST /v1/runs/{id}/interrupts/{interruptId}` (`answer`, `mode`) answer as `POST /v1/runs` does (stream, sync, or 202).
+- **Decision 0007:** with the vendored SQL, interrupt rows are written per pause and a run resumes with each answer (SP-8's subset rule), because `sp_interrupt_create` is idempotent per interrupt ID and no view returns answers. A row an earlier pause left pending answers `404`.
+- **Expiry** (`InterruptExpiry`): every `interrupts.expiryCheckSeconds` (new setting, 60), on the server's instances only, the current pause's interrupts past `expiresAt` are handled through `sp_run_transition`. With `onExpiry: cancel`, the run is cancelled with `INTERRUPT_EXPIRED`. With `reject`, an Approval resumes as rejected (H-03).
+- **Hooks:** `onInterrupt` (run level, at a pause, before its save) and `onResume` (before the answer is recorded; `fail` rejects it). Neither the trace nor the hooks run anything before `interrupt()`.
+- **Traces (L-09):** the resumed turn's trace is the same (trace ID = run ID), with `interrupt.requested` at the pause and `interrupt.answered` at the resume, and the resumed nodes join it.
+- **Parity fix found on the Facility Operations template:** an LLM node with `responseFormat: json` and no schema (the builder's request parsers) now has the answer's JSON object as `result` and as its fields, as the Node.js runtime does. A text answer warns `LLM_NOT_JSON` (new catalog code). No existing golden changed.
+- **Scenarios:**
+  - The runner answers a turn's interrupts in order, in both modes.
+  - Approval Flow covers approved and rejected.
+  - The Facility Operations Swarm covers all six paths of Section 20.5: SEVERITY 3; SEVERITY 8 approved; SEVERITY 8 rejected into `reviewer_feedback`; no SEVERITY line, reviewed; the quick answer; refused.
+  - No vendored workflow waits for a kind any more.
+- **Live on the deployed gateway** (owner `live-langgraph-verify`, tenant `live-test`):
+  - The run: the live catalog's `facility-operations` hands off from the coordinator to the report writer, pauses at `publish_approval` (one interrupt row, a `pause` checkpoint at attempt 1, the run `waiting_input`), resumes on the answer, and is `published`; the checkpoint is gone and a second answer is 409.
+  - What is local: the model is scripted, the script node runs under the local interpreter, the members' MCP tools are a local fake, and the weather is the real Open-Meteo call.
+  - **Finding:** that live document names `us.anthropic.claude-sonnet-4-5-20250929-v1:0`, which `resources/models.json` does not list, so the deployed runtime would refuse the workflow with `MODEL_NOT_ALLOWED`. The live test maps the ID to `claude-sonnet-4-6` in its own resources only. Adding Sonnet 4.5 to the catalog, or changing the document, is a decision for the product.
+- **Not yet:** H-12 (cancel a waiting run) and `async` resumes are P4-04's. Tool approvals and the `approval` hook are P4-03's.
+
+### P4-03 notes
+
+- **Tool approvals** (`engine/agents/middleware/approval.py`): LangChain's `HumanInTheLoopMiddleware` in `per_call` mode.
+  - It covers the node's tools that `settings.tools.requireApproval` names, with the decisions `approve`, `edit` and `reject` (`AgentFactory` now takes the list and the expiry from the settings).
+  - Each gated call pauses the run with one interrupt as it starts. Its value is LangChain's `ToolApprovalRequest` with what the pause saves (kind `tool_approval`, the node, the prompt with the tool and its arguments, the expiry); its schema is LangChain's decision schema, which the pause stores as the answer schema.
+  - Approved, the tool runs; edited, it runs with the reviewer's arguments (same tool, its argument types); rejected, it never runs and the model reads why (H-06). A decision outside the schema is 400.
+  - It is the outermost middleware, so hooks and permits run only once a call goes ahead.
+  - **Note:** it extends `HumanInTheLoopMiddleware._tool_approval_request`, a private method of LangChain 1.4. An upgrade must recheck it.
+- **Hook type `approval`** (`hooks/builtin.py`, config `ApprovalHookConfig`; Node.js's, extended to tool calls as the plan asks):
+  - The request is asked before anything runs: at a node, by the template's step 2 (before its own interrupt, a kind's or none), for the bindings whose `when` holds; at a tool call, by `HookMiddleware` before the `beforeToolCall` hooks.
+  - The hook then applies the answer. Approved, the node or the call goes on. A rejected node is skipped with `rejectedOutput` and `rejectedHandles` (or fails, `onReject: fail`); a rejected tool call is cancelled with `message` as its result (K-11).
+  - Like any other interrupt, an approval request is answered with `ApprovalAnswer` (now in `engine/approvals.py`), so the API adds `decidedBy`.
+- **W-11 through the app:** with `current_time` gated, the Customer Support Swarm's tech_support member pauses mid-step. On approval the same member goes on: only its turn after the tool's result calls the model.
+- **Live on the deployed gateway:** in a second facility-operations run, the coordinator's gated `current_time` call wrote a `tool_approval` interrupt row; approved, the coordinator handed to the writer and the run finished (SEVERITY 3, no review).
+
+### P4-04 notes
+
+- **`async`** answers `202` with `links.self` and `links.events` at once. The turn runs on this instance, as a `sync` turn nobody waits for, and so does a resume with `mode: async`. `GET /v1/runs/{id}` answers with an `ETag` (`304` while unchanged) and `Retry-After` while the run is queued or running (A-08).
+  - The run starts `running`, here, without the queue. P4-05 makes `async` runs durable: queued, claimed by any instance, leased, drained and handed over.
+  - A `sync` turn past `runs.syncWaitSeconds` already answered `202` (P2-04).
+- **`POST /v1/runs/{id}/cancel`** answers `202` with the run (the Node.js contract). A finished run is returned as it is; another user's run is 404.
+  - **A run this instance drives:** its task is cancelled, and the turn is saved as `cancelled` within `runs.cancelGraceSeconds`. The request waits that long, so the answer shows the final status (E-17).
+  - **Any other unfinished run** (queued, waiting, or driven elsewhere): `sp_run_transition` to `cancelled`, which cancels its pending interrupts and deletes its checkpoint (H-12). A run another instance drives keeps running there until its turn-end save is refused (the run has finished); stopping its task across instances is P4-05's.
+- **A-13** needed no change: `/readyz` answers 503 `not_ready` naming the gateway, and stays 200 with `tracing: degraded` while exports fail.
+
+### P4-05 notes
+
+- **Instances and leases** (`run/executor/instance.py`, `leases.py`):
+  - A process is a `RunInstance`: an ID, and the internal address other instances reach it at (`api.internalAddress`, else this host and `api.internalPort`, built in `config/env.py`).
+  - With durable runs, every run started, resumed or claimed here holds the instance's lease. One `sp_run_heartbeat` renews them every `asyncRuns.leaseSeconds / 3`. A run it reports lost is stopped here without saving (`ActiveRun.stopped`): the newer attempt would refuse its writes anyway.
+- **The queue** (`run/executor/claimer.py`):
+  - An `async` run that finds no free permit (`RATE_LIMITED` or `OVERLOADED`) is stored `queued`, with the caller's snapshot and its callback, after its plan is checked; `202` at once (Q-10, Q-15).
+  - `RunClaimer` calls `sp_run_claim` while permits are free: at most `claimBatch` runs, round-robin across tenants (Q-11), and running runs whose lease expired. It claims every `claimIntervalMilliseconds` while runs come, every `idleClaimIntervalMilliseconds` while none do.
+  - A claimed run with a checkpoint of kind `async` continues from it with `None` input, so its completed supersteps do not run again. Otherwise it runs its turn again from the session's saved state. A `stream` or `sync` run lost with its instance fails with `SHUTDOWN` (`runs.onInstanceLoss`; Q-12).
+- **Fencing:** every write of a run carries its attempt: the finish, the pause, the checkpoint, the dataset chunks (P-10). After a takeover, the old owner's writes are `RUN_LEASE_LOST` (Q-13).
+- **Drain** (`RunService.drain`, at `AppDeps.aclose`):
+  - The claimer stops. Each `async` run gets `RunControl.request_drain`; LangGraph stops it at the next superstep boundary (`GraphDrained`). Its checkpoint is saved with `sp_checkpoint_save` and it is released to the queue with `sp_run_release` (R-03).
+  - `stream` and `sync` runs get `shutdown.drainSeconds` to finish, then fail with `SHUTDOWN`; waiting runs are not touched.
+  - **Differs from the plan's wording:** the vendored `sp_checkpoint_save` writes kind `async`, not `drain`, so a drained run's checkpoint has kind `async`, like write-behind's. The claim treats both the same.
+- **`durability="async"`** for every `async` turn (SP-10: under `exit`, a child graph's work since its node started would be lost on a drain). With `state.asyncCheckpoints`, write-behind saves the latest checkpoint at most every `checkpointIntervalSeconds`, and only when it changed; nodes never wait for it (P-14). It is off by default.
+- **Completion callbacks** (`run/callbacks.py`): a run started with `options.callback` (`{url, secretRef}`, new in the request) posts its summary when it ends: run, session, status, result and error code, never its messages. The post goes through the egress guard, signed in `asyncRuns.callbackSignatureHeader` with HMAC-SHA256 under the named secret, and is retried `callbackRetryAttempts` times with backoff (new settings: the header, timeout and backoff).
+- **Events across instances** (Q-14): `GET /v1/runs/{id}/events` for a run another instance drives (its lease names another address) proxies that instance's `/internal/runs/{id}/events` (new on the internal app), after `Last-Event-ID`. The events come through as they are: seq continues and nothing is duplicated.
+- **Not covered:** a run that resumed from an interrupt and then lost its instance has only its pause checkpoint, whose answers no vendored view returns (decision 0007). Such a run runs its turn again from the saved state and asks again. The cross-instance proxy and the callbacks are tested offline only: no second process or callback endpoint is reachable from the live suite.
+
+### Checkpoint M4 (2026-10-27)
+
+Phase 4 is built: P4-01 to P4-05, 48 tasks complete in all. Decision 0007 (interrupt rows per pause) is new.
+
+| M4 asks | Status |
+|---|---|
+| The Customer Support Swarm runs with scripted handoffs (F-11) | Triage hands off to billing, which answers; a golden stream in stream and sync mode; its limits (11 steps, window 6, 2 unique) checked |
+| The Facility Operations Swarm runs its full path (Section 20.5) with an LLM member, an approval that pauses and resumes across requests, and the rejected branch through Human Input (F-12, F-13) | All six paths as one scenario with a golden stream: SEVERITY 3; SEVERITY 8 approved; SEVERITY 8 rejected into `reviewer_feedback`; no SEVERITY line, reviewed; the quick answer; refused. Live: the live catalog's facility-operations pauses at `publish_approval` and resumes on the deployed gateway |
+| An interrupt inside a sub-flow and one inside a loop resume without repeating completed nodes (H-07, H-08, H-11) | The child's LLM does not run again; the loop's approval resumes its own visit; nothing before `interrupt()` has a side effect |
+| An `async` run drained on one instance finishes on another without repeating completed supersteps (R-03) | Offline and live: the drained run is checkpointed after its last superstep, released, claimed by the second instance and finished there with only the nodes left |
+| Fencing rejects the old owner (Q-13) | Offline and live: the old attempt's `sp_run_finish` is `RUN_LEASE_LOST`, and its heartbeat reports the run lost |
+
+**Gates:** ruff, ruff format, mypy (236 files), import-linter (4 contracts), `gen --check`, `sync_builder --check`, `sync_recordings --check` and `catalog_check` (284 cases with tests, 269 due) all pass. `sync_sql --check` still fails until the Node.js repository commits its SQL changes (now `db/observability/001_schema_create.sql` and `005_procedures.sql`, and runtime `004_views.sql`, `005_procedures.sql`, `006_grants.sql`). 1,557 offline tests pass; the live suite passes 40 and skips 2.
+
+**For review:**
+- decision 0007 (interrupt rows per pause; resume with each answer);
+- the parity fix for `responseFormat: json` LLM nodes without a schema (P4-02), and the `owns_deadline` kind flag (P4-01);
+- the live finding: the live facility-operations document names Sonnet 4.5, which `resources/models.json` does not list (the deployed runtime would refuse it with `MODEL_NOT_ALLOWED`);
+- the live checks that wrote to the product database: runs of owner `live-langgraph-verify` and tenant `live-test` that paused, resumed, were cancelled, and one drained and claimed by a second instance. The claim ran only after a read showed that run was the only claimable one; none is left queued or running.
+
+## Phase 5
+
+Started 2026-10-27 after the M4 approval. Order: P5-01 and P5-05 (local), then P5-02 to P5-04 and P5-06, which need the decisions noted under them; stop at M5.
+
+| Task | Status | Sanity check |
+|---|---|---|
+| P5-01 Security pass | Done | X-01, X-04 to X-07: 8 tests (X-02, X-03, X-08 were proved earlier); `pip-audit` over the 542 locked packages: no known vulnerabilities; offline 1,565 passed; live 40 passed, 2 skipped |
+| P5-05 Documentation | Done | Review task. The test client now answers interrupts and pages datasets (three A-15 tests); the builder's new document hook type `approval` is allowed (one K-11 test); the SQL re-vendored and the Idempotency-Key TTL sent (one A-06 test); `sync_sql --check` passes again; offline 1,570 passed; live 40 passed, 2 skipped |
+| P5-02 Performance validation | Done | Report `docs/load/p5-02-report.md`. On 1 vCPU / 2 GB with the real gateway, every budget holds except run start p95 (156 ms against 150, with the internet round trip to us-east-1). Q-05: 450 of 450 runs at 150 concurrent; lag p99 24.7 ms; 0.8 MB per run. D-9: the account's Lambda limit is 10. New: the throttle retry (R-05), stall tests (R-01), an RSS gauge |
+| P5-03 Live sanity | Built; Bedrock blocked | V-02 (all three MCP tool types, real open data) and V-03 pass. V-01, V-04, V-05 and F-14 fail: the account has no Anthropic use-case form on file. Model catalog fixed: inference profiles, Haiku 4.5 and Sonnet 4.5 added, Opus 4.8 disabled. Offline 1,575 passed; live 45 passed, 6 failed (Bedrock), 3 skipped (deployed) |
+| P5-04 Deployment to dev | Done | Deployed 2026-10-28 with the user's approval: https://d2mqmloek8azsa.cloudfront.net (stack `zonic-agent-runtime-dev`, tripleq-development). V-06 passes through CloudFront and the ALB. M5 on dev with the test client: a full run, and a page of a real dataset (NYC Open Data, 10 rows); the approval check needs the Script node's sandbox, not deployed. Live 50 passed, 2 skipped |
+| P5-06 Release gates | Open | Catalog: 296 of 296 cases have tests. D-6: F2 and F3 are open in the MCP server. Contract review prepared (`docs/contract-review.md`), waiting for the UI owner. Q11 stays open |
+
+### Phase 5, second round (2026-10-28)
+
+The user approved the AWS deploy, gave an OpenAI API key ("leave the bedrock for later use"), asked for the Lambda capacity to match, and set the MCP server's security aside.
+
+- **OpenAI instead of Bedrock, for now:**
+  - The key is only in the git-ignored `.env` and Secrets Manager (`zonic-agent-runtime/dev/openai-api-key`).
+  - New catalog entries `openai-gpt-4.1` and `openai-gpt-4.1-mini`. `gpt-5` models were not used: they refuse the temperature and token limits the runtime sends.
+  - New catalog field `substitutes`: a code served by another code while its provider is unavailable, applied after aliases and before the enabled check.
+  - The AWS image's overlay `deploy/aws/resources/models.dev.json` serves Sonnet 4.6, Sonnet 4.5 and Opus 4.8 with `gpt-4.1`, and Haiku 4.5 and `gpt-5-mini` with `gpt-4.1-mini`. Local runs and the offline tests read `resources/` alone, so they still name Bedrock. To return to Bedrock, empty the overlay's `substitutes`.
+- **The OpenAI clients:**
+  - OpenAI and Azure OpenAI models now share one `httpx.AsyncClient` per endpoint from the process's pools (design 11.3). langchain-openai's default client is process-wide and stays bound to the first event loop that used it.
+  - With its own client the SDK stops streaming usage, so `stream_usage` is set: without it, generations had no `usageDetails`.
+- **Live suite on OpenAI** (`LIVE_BEDROCK=1` runs Bedrock instead): V-01, V-02 (three tool types), V-04 and F-14 pass, and V-05 passes.
+  - Finding: on the Claude-tuned fsh-energy-agent, GPT-4.1 describes its handoff in JSON instead of calling the handoff tool, so the database branch does not run. V-05 therefore checks the run, the observations and usage, and any database tool that runs.
+- **Cost:** `agent_observability.obs_model_price` is empty, so no observation gets a cost from any provider. Prices are data for the owner to load with `sp_obs_model_price_upsert`; nothing was inserted.
+- **Deployed:**
+  - Stack `zonic-agent-runtime-dev` at https://d2mqmloek8azsa.cloudfront.net.
+  - The first create failed: the ALB security group's description had an apostrophe, which EC2 refuses. The stack rolled back with no resources and was deleted before it was created again.
+  - The AWS overlay `deploy/aws/resources/settings.dev.json` is the repository's dev settings plus `datasets.store: database`. There is no cache service on AWS, so with the `cache` store a run kept no full data. A test keeps the overlay in step with `resources/settings.dev.json`.
+- **M5 on dev:**
+  - A full run streams through the load balancer (V-06).
+  - A dataset of real open data is paged with the test client. Finding: fsh-facility-agent's Output does not expose its HTTP node's `datasetId`, so a client cannot find the dataset from the run; it was read from `runtime_dataset`.
+  - The approval pause on dev waits for a sandbox: facility-operations has a Script node, and without `ZONIC_SANDBOX_URL` the plan refuses it with `FEATURE_DISABLED`. The pause and resume are proven live on the deployed gateway (V-03).
+- **Data:** the live owner's 25 sessions and 26 runs from these runs were deleted. The test user's 9 dev runs are kept as the M5 record.
+- **Lambda capacity (D-9):** a Service Quotas request raises the account's concurrent executions from 10 to 1,000, the regional default (request `bdc47bfaf50a4d4194d1454b87c3ed51pZzZ3BN2`; AWS opened support case 179315751000638; the limit is still 10).
+- **`deploy.sh` fixes found on the first runs:**
+  - Windows `git` and `docker` need native paths;
+  - the AES key comes from `openssl rand`, since `python` is not on Git Bash's path;
+  - `inherit_errexit`, so a failure inside `$(...)` stops the script.
+
+### P5-02 notes
+
+- **Where it ran:** a container of 1 vCPU and 2 GB (Docker Desktop), the real deployed gateway and the trace export, and the simulated model of design 11.1 (`tests/load/model.py`, stamped chunks). The Fargate task waits for P5-04. All numbers and how to repeat them are in `docs/load/p5-02-report.md`.
+- **The load code** is in `tests/load/`:
+  - `bench.py`: compilation, per-node overhead and the 50-branch Rule, in process;
+  - `server.py`: the runtime with stand-ins for the model and the identity provider;
+  - `drive.py`: concurrent SSE runs, `/metrics` sampling and a JSON report;
+  - `Dockerfile`.
+  - **Differs from the plan:** a Python driver instead of k6, because k6 cannot read an SSE body as it streams.
+- **D-9:**
+  - The tripleq-development account's Lambda concurrency limit is 10, shared by every function. 150 simultaneous starts got `429` from Lambda for two of every three gateway calls, and the runtime mapped that to `DATA_REQUEST_INVALID` without retrying.
+  - **Fixed in the runtime:** `429` is now `DATA_UNAVAILABLE` and is retried for every call, writes included, `gateway.throttleRetries` (4) times: a throttled request was never run. New test R-05.
+  - **Open:** a quota increase, or the gateway's container deployment.
+- **R-01:**
+  - A stalled model stream ends at botocore's read timeout (`models.requestTimeoutSeconds`). It becomes `MODEL_UNAVAILABLE`, and the LLM node's retry policy retries it. Two new tests.
+  - LangGraph's `idle_timeout` does not count streamed tokens as progress, so it cannot detect stalls; the manifest leaves it unset.
+  - A retried node streams its answer again after a second `node.started`. The client guide tells clients to discard the earlier tokens.
+- **New gauge:** `zonic_resident_memory_megabytes` on `/metrics`.
+- **Data:** the load runs' 1,013 sessions and runs, 1,982 messages, 1,013 traces and 11,019 observations (owners `load-test-*`) were deleted afterwards. The approach was a count, one transaction, then a recount; no other row was touched.
+
+### P5-03 notes
+
+- **Product database:** the vendored SQL (Node.js `f94fea1`) was applied with `scripts/init_db.sh` at 2026-10-28T01:52Z, with the user's approval. It adds `sp_interrupt_expire`, the Idempotency-Key TTL and `001_latency_bigint`.
+- **Models:**
+  - The account needs inference profiles (`us.anthropic.*`); the bare IDs are refused for on-demand calls, so the catalog now uses the profiles.
+  - Haiku 4.5 (named by 27 vendored nodes) and Sonnet 4.5 (the live Facility Operations document) are in the catalog, with aliases for the IDs documents use.
+  - Opus 4.8 is disabled, because the account cannot call it.
+  - Sonnet 3.7 has reached end of life and is not mapped to another model.
+- **Bedrock blocked:** the calls worked once, then every Anthropic model answered "Model use case details have not been submitted" (`GetUseCaseForModelAccess`: form not filled; agreement `NOT_AVAILABLE`). Submitting the form is the account owner's. V-01, V-04, V-05 and F-14 are written and fail until it is done.
+- **Provider keys:** `ZONIC_AZURE_OPENAI_API_KEY`, `ZONIC_OPENAI_API_KEY` and `ZONIC_ANTHROPIC_API_KEY` were read and never used, and the environment reader turned secrets into their masked text. Both are fixed: each key-based provider gets its key, and `openai` gets its `endpointEnv` base URL (Q3 readiness). New test.
+- **MCP:**
+  - The runtime sends the MCP server's bearer token (`ZONIC_MCP_AUTH_TOKEN`, `authSecretRef`).
+  - The `sample_open_data` connection was added to the MCP server's SSM settings and the Lambda redeployed with its own `deploy.sh`; none of that repository's files changed. Neon still had the role's password, so nothing was reset. The unpooled endpoint is used, because Neon's pooler refuses the server's `statement_timeout` startup option.
+  - V-02 passes for function, database (real open data) and api tools.
+- **Test identity:** app client `zonic-agent-runtime-dev-verify` and user `runtime-dev-verify@example.com` in the pool `strands-visual-builder-users-docker`, with the user's approval; the password is only in `.env`. `OIDC_AUDIENCE` may list several clients (new test). The production image, run locally, accepted the test user's token and listed the live catalog.
+- **Data:** the live owner's rows (`live-langgraph-verify`) were deleted after the runs. They were 190 runs, 171 sessions and 482 messages, and after the last run another 13 sessions and 14 runs. That owner held every run in the product database.
+
+### P5-04 notes
+
+- **The stack** (`deploy/aws/runtime.yaml`), in its own VPC with public subnets and no NAT gateway:
+  - ALB with an idle timeout of 120 s, reachable only from CloudFront's origin prefix list; CloudFront serves HTTPS on its own domain, with caching and compression off for SSE;
+  - Fargate service: one 1 vCPU / 2 GB task, stop timeout 90 s, deregistration delay 45 s, circuit-breaker rollback;
+  - task role for Bedrock;
+  - Secrets Manager entries for the gateway key, the MCP token and the checkpoint AES key (generated once);
+  - logs under `/zonic/agent-runtime/dev`.
+- **`deploy/aws/deploy.sh`:** checks the account, pushes an immutable image tag to ECR, writes the secrets without printing them, and deploys and waits for the service.
+- **Image fix:** the `Dockerfile` did not copy `README.md`, which `pyproject.toml` names as the readme, so `uv sync` failed. It now copies it, and the image builds and starts (readiness `ok` on the real gateway).
+- **Not run:** the session's permission check refused the deploy command. V-06 and the M5 test-client checks (`tests/live/test_deployed_live.py`) skip until `ZONIC_DEPLOYED_URL` is set.
+
+### P5-06 notes
+
+- **Catalog:** 296 of 296 cases have tests.
+- **D-6 (MCP server, read-only review):**
+  - F1 is fixed on Lambda by one shared token. It is open by default elsewhere, because an empty token means no authentication.
+  - F2 is open: a caller holding the token can have any environment variable, the Lambda's AWS credentials and the database DSNs included, sent to a URL of its choice.
+  - F3 is open in the code (an empty allowlist allows any callable) and blocked only by the Lambda deploy script's checks.
+- **Contract review:** `docs/contract-review.md` compares this runtime's contract with the one the runtime UI is built on (Node.js `b522fd6`).
+  - The endpoints and event types match.
+  - The node timeline items and the error details differ and would break the UI as written; `Usage.model` differs too, but the UI does not read it.
+  - The interrupt answer schemas (`ApprovalAnswer`, `InputAnswer`) are now published under `generated/schemas/answers/`.
+
+### P5-05 notes
+
+- **Written:**
+  - `README.md`, rewritten: what the runtime is, the document map, getting started, the gates, the layout.
+  - `docs/client-integration.md`, for the deferred UI and other clients: the contract files, auth and owner scope, errors, the three modes and polling, SSE with `Last-Event-ID` and `stream.gap`, interrupts with the answer shapes and errors, content parts and dataset paging, sessions.
+  - `docs/extending.md`, the recipes of design 17: path A (manifest only), B (new kind, with its configuration model, kind class, registry and conformance entry), C (a new multi-agent pattern) and a new hook type.
+  - `docs/runbooks/`: deploy, rotate keys, add a node type, add a hook type, add a model, upgrade LangGraph with waiting runs, the test client.
+  - `docs/decisions/README.md`, an index of 0001 to 0007.
+- **Test client** (`scripts/run_client.py`):
+  - It answers a paused run's interrupts, with `--answer` JSON or the answer typed at the terminal, until the run ends. Without either, it leaves the run waiting.
+  - It pages a dataset (`--dataset`, `--page`, `--page-size`, `--sort`, `--filter`) and lists the dataset IDs a run's events name.
+  - Three new A-15 tests: an answered approval completes; with no answer the run stays waiting; a database node's dataset is paged with sort and filter.
+- **Builder re-vendored:** the builder's commit `b25bcfc` (2026-10-27) adds document version 2.1 hook bindings (`runtimeHooks`, `properties.hooks`, `disabledHooks`) and the hook types its editor offers. `sync_builder --check` failed on it; re-vendored.
+  - All eight of the builder's `configTemplate`s validate against the runtime's hook configuration models.
+  - The builder offers `approval`, which `hooks.documentAllowedTypes` did not allow. The Node.js runtime allows it, so it is now allowed here too.
+  - New test: a node's own approval binding pauses and resumes (K-11).
+- **SQL re-vendored:** the Node.js repository committed its SQL changes (`f94fea1`, 2026-10-27), so `scripts.sync_sql` vendored them, and `sync_sql --check` passes for the first time since Phase 3. The changes, all in procedure bodies or comments, with no new tables, views or columns:
+  - `sp_run_start` gives up an Idempotency-Key older than `idempotencyTtlSeconds` when the caller sends it. The runtime never sent it, so a key never expired despite `runs.idempotencyTtlSeconds`. It now sends the TTL with every key, as the Node.js runtime does, and the fake schema honors it (the fake's runs gained `created_at`).
+  - New `sp_interrupt_expire`: answers an expired, still pending interrupt.
+  - The observability procedures: a trace header with only an end time no longer starts at `now()`, and latencies are `bigint`.
+- **Not applied to any database.** The product database (Neon `agent-build-langgraph`) still has the earlier procedures. The runtime's calls work on both: an older `sp_run_start` ignores the TTL field.
+- **Decision 0007, for review:** one of its three reasons, that no `sp_interrupt_expire` exists, no longer holds. Expiry still goes through `sp_run_transition`. Moving it to `sp_interrupt_expire` waits for the new SQL to be applied to the database.
+- **Found while writing the runbooks (not changed):**
+  - The checkpoint key cannot be rotated while checkpoints are outstanding. LangGraph's `EncryptedSerializer` takes one key, so a paused or queued run written under the old key cannot be read under the new one. The runbook waits for the checkpoints to clear; reading with a second, old key would need a small serializer change.
+  - No old-version checkpoint fixture exists yet for the LangGraph upgrade check (design risk table). The upgrade runbook has the first upgrade capture one.
+  - `ZONIC_INTERNAL_ADDRESS` (`EnvironmentModel.internal_address`) is read by nothing; instances use `api.internalAddress` or their host name.
+  - The tool-approval answer uses LangChain's snake-case `edited_action`, unlike the rest of the camelCase contract. The client guide documents it.
+
+### P5-01 notes
+
+- **X-01:** a second user gets the same 404 as for a missing ID on every user-scoped endpoint, and alice's run is unchanged. The endpoints are the session read, rename and messages; the run, its events, nodes, cancel, interrupts and the answer; the trace; feedback; a dataset; and a start on alice's session.
+- **X-04:** an injected prompt that names another session reaches nothing of it. The MCP call carries the run owner's identity and session whatever the tool arguments say, and the other session's conversation is not in the history.
+- **X-05:** a provider error reaches the client as the catalog message only.
+  - **Defect fixed:** the error's text reached the observation's `statusMessage` unmasked (for example `Bearer sk-...`). The span `Enricher` now masks every span's status message with the trace masker's patterns.
+- **X-06:** with `state.encryption` and a key, the checkpoint's serialized blobs are `+aes` and hold no plaintext. Without the key, the same blobs do hold it. The encrypted run still resumes with its key.
+- **X-07, response hardening:**
+  - CORS answers only `api.corsOrigins`: a preflight from another origin is 400 and no response carries `Access-Control-Allow-Origin` for it.
+  - A body above `api.maxBodyBytes` is 413 `INPUT_TOO_LARGE`, by `Content-Length` and now also when sent in chunks without one: those are read up to the limit, then handed on.
+  - Every public response carries `api.responseHeaders` (new setting: `nosniff`, `DENY` framing, `no-referrer`, a `default-src 'none'` CSP, HSTS, same-origin resources). The interactive docs page, on in dev only, is left without them because its scripts would be blocked. A route's own header (`Cache-Control` on streams) is kept.
+- **CI:** a dependency audit step (`uv export` then `pip-audit`, no pip, no dependency resolution).

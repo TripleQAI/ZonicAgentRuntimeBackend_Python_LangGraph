@@ -36,13 +36,20 @@ ErrorHandlerFactory = Callable[[NodeSpec, Blueprint, Any], Any]
 
 
 def retry_policy(spec: RetrySpec | None) -> RetryPolicy | None:
-    """A ``RetryPolicy`` that retries only the catalog codes the manifest lists (design 8.8)."""
+    """A ``RetryPolicy`` that retries only the catalog codes the manifest lists (design 8.8), and
+    with ``methods`` (the http kind) only errors of those HTTP methods: a POST is never repeated."""
     if spec is None or spec.max_attempts <= 1:
         return None
     codes = frozenset(spec.on)
+    methods = frozenset(m.upper() for m in spec.methods)
 
     def retry_on(error: Exception) -> bool:
-        return error_code(error) in codes
+        if error_code(error) not in codes:
+            return False
+        if not methods:
+            return True
+        method = getattr(error, "details", {}).get("method")
+        return isinstance(method, str) and method.upper() in methods
 
     options: dict[str, Any] = {"max_attempts": spec.max_attempts, "retry_on": retry_on}
     if spec.initial_interval_seconds is not None:
@@ -56,10 +63,11 @@ def retry_policy(spec: RetrySpec | None) -> RetryPolicy | None:
     return RetryPolicy(**options)
 
 
-def timeout_policy(spec: NodeSpec, default_seconds: float) -> TimeoutPolicy:
-    return TimeoutPolicy(
-        run_timeout=spec.timeout_seconds or default_seconds, idle_timeout=spec.idle_timeout_seconds
-    )
+def timeout_policy(spec: NodeSpec, default_seconds: float, *, owned: bool = False) -> TimeoutPolicy:
+    """The node's ``TimeoutPolicy``; a kind that owns its deadline (``owns_deadline``) keeps only
+    the idle timeout."""
+    run_timeout = None if owned else spec.timeout_seconds or default_seconds
+    return TimeoutPolicy(run_timeout=run_timeout, idle_timeout=spec.idle_timeout_seconds)
 
 
 def destinations(blueprint: Blueprint, spec: NodeSpec) -> dict[str, str]:
@@ -95,7 +103,11 @@ class WorkflowCompiler:
                 action,
                 defer=spec.join.barrier,
                 retry_policy=retry_policy(spec.retry),
-                timeout=timeout_policy(spec, self._engine.node_timeout_seconds),
+                timeout=timeout_policy(
+                    spec,
+                    self._engine.node_timeout_seconds,
+                    owned=getattr(getattr(action, "kind", None), "owns_deadline", False),
+                ),
                 error_handler=self._error_handler(spec, blueprint, action) if self._error_handler else None,
                 destinations=destinations(blueprint, spec) or None,
                 metadata=spec.trace_metadata(),

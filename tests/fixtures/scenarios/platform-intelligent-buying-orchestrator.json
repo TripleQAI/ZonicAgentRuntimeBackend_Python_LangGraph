@@ -1,0 +1,1402 @@
+[
+  [
+    {
+      "data": {
+        "agenticWorkflowId": "<uuid>",
+        "sessionId": "<uuid>",
+        "title": "I need to pay a supplier quickly"
+      },
+      "seq": 1,
+      "type": "run.started"
+    },
+    {
+      "data": {
+        "nodeName": "start",
+        "nodeType": "start",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "start",
+      "seq": 2,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "systemMessage"
+        ]
+      },
+      "nodeId": "start",
+      "seq": 3,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "nodeOutput.interface.inputs.attachments",
+            "nodeOutput.interface.inputs.parameters.systemMessage"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "start",
+      "seq": 4,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 157,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "start",
+      "seq": 5,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "channel_lockin",
+        "nodeType": "rule",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "kqw6yki",
+      "seq": 6,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "r-t00a64bi"
+        ],
+        "outputSummary": {
+          "bytes": 64,
+          "fields": 3,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "kqw6yki",
+      "seq": 7,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "get_user_context",
+        "nodeType": "agent",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "bootstrap_get_user_context",
+      "seq": 8,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "text": "{\"userDateFormat\": "
+      },
+      "nodeId": "bootstrap_get_user_context",
+      "seq": 9,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "text": "\"dd/MM/yyyy\", \"userCultureCode\": \"en-GB\", \"userTimeZone\": \"UTC\", \"userCurrencyCode\": \"GBP\", \"userContextFetched\": true}"
+      },
+      "nodeId": "bootstrap_get_user_context",
+      "seq": 10,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "keys": [
+          "user_context",
+          "user_context_fetched"
+        ]
+      },
+      "nodeId": "bootstrap_get_user_context",
+      "seq": 11,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "nodeOutput.structuredOutput.userContextFetched",
+            "nodeOutput.structuredOutput.userCultureCode",
+            "nodeOutput.structuredOutput.userCurrencyCode",
+            "nodeOutput.structuredOutput.userDateFormat",
+            "nodeOutput.structuredOutput.userTimeZone",
+            "nodeOutput.text"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "bootstrap_get_user_context",
+      "seq": 12,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 615,
+          "fields": 10,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 111,
+          "modelCalls": 1,
+          "outputTokens": 10,
+          "totalTokens": 121
+        }
+      },
+      "nodeId": "bootstrap_get_user_context",
+      "seq": 13,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "extract_entities",
+        "nodeType": "llm",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "cma0hwk",
+      "seq": 14,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "extractedEntities"
+        ]
+      },
+      "nodeId": "cma0hwk",
+      "seq": 15,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 322,
+          "fields": 4,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 389,
+          "modelCalls": 1,
+          "outputTokens": 5,
+          "totalTokens": 394
+        }
+      },
+      "nodeId": "cma0hwk",
+      "seq": 16,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "prerouting_rules",
+        "nodeType": "rule",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "kgrt72s",
+      "seq": 17,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "r-else"
+        ],
+        "outputSummary": {
+          "bytes": 33,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "kgrt72s",
+      "seq": 18,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "procurement_policy_assistant",
+        "nodeType": "agent",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "procurement_policy_assistant",
+      "seq": 19,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "inputSummary": {
+          "bytes": 11,
+          "fields": 1,
+          "type": "object"
+        },
+        "toolName": "get_next_questions",
+        "toolUseId": "next-1"
+      },
+      "nodeId": "procurement_policy_assistant",
+      "seq": 20,
+      "type": "tool.started"
+    },
+    {
+      "data": {
+        "status": "success",
+        "toolUseId": "next-1"
+      },
+      "nodeId": "procurement_policy_assistant",
+      "seq": 21,
+      "type": "tool.finished"
+    },
+    {
+      "data": {
+        "text": "Let "
+      },
+      "nodeId": "procurement_policy_assistant",
+      "seq": 22,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "text": "us set up the quick payment."
+      },
+      "nodeId": "procurement_policy_assistant",
+      "seq": 23,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "keys": [
+          "channel_identified",
+          "current_state",
+          "user_decision_points"
+        ]
+      },
+      "nodeId": "procurement_policy_assistant",
+      "seq": 24,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "code": "STATE_PATH_EMPTY",
+        "details": {},
+        "message": "the path {{flow.current_question.decision_point}} resolved to nothing; the state operation is skipped"
+      },
+      "nodeId": "procurement_policy_assistant",
+      "seq": 25,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "flow.qa_master_data.category",
+            "flow.qa_master_data.entities.budget",
+            "flow.qa_master_data.headerOrg",
+            "nodeOutput.text",
+            "nodeOutput.toolResults.buying_agent_frontdoor_tool.frontdoor_qa_masterData",
+            "nodeOutput.toolResults.channel_identifier.channel_identified",
+            "nodeOutput.toolResults.get_decision_points",
+            "nodeOutput.toolResults.get_next_questions",
+            "nodeOutput.toolResults.get_next_questions.result.current_state",
+            "nodeOutput.toolResults.get_next_questions.result.external_url",
+            "nodeOutput.toolResults.get_next_questions.result.filtered_decision_points",
+            "nodeOutput.toolResults.get_next_questions.result.question.questionId",
+            "nodeOutput.toolResults.get_next_questions.result.user_decision_points"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "procurement_policy_assistant",
+      "seq": 26,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 305,
+          "fields": 4,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 3351,
+          "modelCalls": 2,
+          "outputTokens": 9,
+          "totalTokens": 3360
+        }
+      },
+      "nodeId": "procurement_policy_assistant",
+      "seq": 27,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "current_state_router",
+        "nodeType": "rule",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "p5n5drq",
+      "seq": 28,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "flow.channel_identified"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "p5n5drq",
+      "seq": 29,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "r-mqgv5xgy"
+        ],
+        "outputSummary": {
+          "bytes": 64,
+          "fields": 3,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "p5n5drq",
+      "seq": 30,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "quick_pay",
+        "nodeType": "workflow",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "4n6tnna",
+      "seq": 31,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "nodeName": "start",
+        "nodeType": "start",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "start",
+      "path": "4n6tnna",
+      "seq": 32,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "qa_master_data",
+          "questionnareResponses",
+          "quickPaySetup",
+          "supplier_data",
+          "user_context",
+          "user_decision_points"
+        ]
+      },
+      "nodeId": "start",
+      "path": "4n6tnna",
+      "seq": 33,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "nodeOutput.interface.inputs.attachments"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "start",
+      "path": "4n6tnna",
+      "seq": 34,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 446,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "start",
+      "path": "4n6tnna",
+      "seq": 35,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "rule_0",
+        "nodeType": "rule",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "ex0cnyj",
+      "path": "4n6tnna",
+      "seq": 36,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "flow.knowledge"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "ex0cnyj",
+      "path": "4n6tnna",
+      "seq": 37,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "r-sl5yk8a5"
+        ],
+        "outputSummary": {
+          "bytes": 64,
+          "fields": 3,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "ex0cnyj",
+      "path": "4n6tnna",
+      "seq": 38,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "knowledge_agent",
+        "nodeType": "agent",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "8mw9yfz",
+      "path": "4n6tnna",
+      "seq": 39,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "text": "Noted."
+      },
+      "nodeId": "8mw9yfz",
+      "path": "4n6tnna",
+      "seq": 40,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "keys": [
+          "knowledge"
+        ]
+      },
+      "nodeId": "8mw9yfz",
+      "path": "4n6tnna",
+      "seq": 41,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "nodeOutput.text",
+            "nodeOutput.toolResults.quick_pay_complete_questionnaire.text"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "8mw9yfz",
+      "path": "4n6tnna",
+      "seq": 42,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 67,
+          "fields": 4,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 15,
+          "modelCalls": 1,
+          "outputTokens": 1,
+          "totalTokens": 16
+        }
+      },
+      "nodeId": "8mw9yfz",
+      "path": "4n6tnna",
+      "seq": 43,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "quick_pay",
+        "nodeType": "agent",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "qp_agent_001",
+      "path": "4n6tnna",
+      "seq": 44,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "text": "Noted."
+      },
+      "nodeId": "qp_agent_001",
+      "path": "4n6tnna",
+      "seq": 45,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "flow.knowledge",
+            "flow.lastQuestionAsked",
+            "flow.qa_master_data.category",
+            "flow.qa_master_data.category.id",
+            "flow.user_context.userDateFormat",
+            "flow.user_decision_points.budgetAmount",
+            "flow.user_decision_points.msp_question_1",
+            "flow.user_selected_currency",
+            "nodeOutput.text"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "qp_agent_001",
+      "path": "4n6tnna",
+      "seq": 46,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 67,
+          "fields": 4,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 1752,
+          "modelCalls": 1,
+          "outputTokens": 1,
+          "totalTokens": 1753
+        }
+      },
+      "nodeId": "qp_agent_001",
+      "path": "4n6tnna",
+      "seq": 47,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "output",
+        "nodeType": "output",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "output",
+      "path": "4n6tnna",
+      "seq": 48,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "flow.response",
+            "runtime.workflowMetaData.agentName"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "output",
+      "path": "4n6tnna",
+      "seq": 49,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 554,
+          "fields": 7,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "output",
+      "path": "4n6tnna",
+      "seq": 50,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "keys": [
+          "current_state",
+          "questionnaireForSummary",
+          "user_decision_points"
+        ]
+      },
+      "nodeId": "4n6tnna",
+      "seq": 51,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "code": "STATE_PATH_EMPTY",
+        "details": {},
+        "message": "the path {{flow.current_question.response}} resolved to nothing; the state operation is skipped"
+      },
+      "nodeId": "4n6tnna",
+      "seq": 52,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "code": "STATE_PATH_EMPTY",
+        "details": {},
+        "message": "the path {{flow.current_question.decision_point}} resolved to nothing; the state operation is skipped"
+      },
+      "nodeId": "4n6tnna",
+      "seq": 53,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "flow.channel_identified",
+            "nodeOutput.current_state",
+            "nodeOutput.messages",
+            "nodeOutput.questionnaireResponse",
+            "nodeOutput.response",
+            "nodeOutput.user_decision_points"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "4n6tnna",
+      "seq": 54,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 570,
+          "fields": 8,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 1767,
+          "modelCalls": 2,
+          "outputTokens": 2,
+          "totalTokens": 1769
+        }
+      },
+      "nodeId": "4n6tnna",
+      "seq": 55,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "display_output_rule",
+        "nodeType": "rule",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "zp960r1",
+      "seq": 56,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "r-otiz3jzg"
+        ],
+        "outputSummary": {
+          "bytes": 64,
+          "fields": 3,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "zp960r1",
+      "seq": 57,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "output",
+        "nodeType": "output",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "output",
+      "seq": 58,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "runtime.workflowMetaData.agentName"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "output",
+      "seq": 59,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 1954,
+          "fields": 3,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "output",
+      "seq": 60,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "result": {
+          "messages": "[{\"role\": \"user\", \"content\": \"I need to pay a supplier quickly\", \"thread\": \"messages\", \"nodeId\": \"start\"}, {\"role\": \"assistant\", \"content\": \"{\\\"userDateFormat\\\": \\\"dd/MM/yyyy\\\", \\\"userCultureCode\\\": \\\"en-GB\\\", \\\"userTimeZone\\\": \\\"UTC\\\", \\\"userCurrencyCode\\\": \\\"GBP\\\", \\\"userContextFetched\\\": true}\", \"thread\": \"messages\", \"nodeId\": \"bootstrap_get_user_context\"}, {\"role\": \"assistant\", \"content\": [{\"name\": \"get_next_questions\", \"args\": {\"data\": {}}, \"id\": \"next-1\", \"type\": \"tool_call\"}], \"thread\": \"messages\", \"nodeId\": \"procurement_policy_assistant\"}, {\"role\": \"tool\", \"content\": {\"result\": {\"current_state\": \"quickPaySetup\", \"user_decision_points\": \"amount\"}}, \"thread\": \"messages\", \"nodeId\": \"procurement_policy_assistant\"}, {\"role\": \"assistant\", \"content\": \"Let us set up the quick payment.\", \"thread\": \"messages\", \"nodeId\": \"procurement_policy_assistant\"}, {\"role\": \"user\", \"content\": \"I need to pay a supplier quickly\", \"thread\": \"messages\", \"nodeId\": \"start\"}, {\"role\": \"assistant\", \"content\": \"Noted.\", \"thread\": \"messages\", \"nodeId\": \"8mw9yfz\"}, {\"role\": \"assistant\", \"content\": \"Noted.\", \"thread\": \"messages\", \"nodeId\": \"qp_agent_001\"}, {\"role\": \"assistant\", \"content\": \"[{\\\"role\\\": \\\"user\\\", \\\"content\\\": \\\"I need to pay a supplier quickly\\\", \\\"thread\\\": \\\"messages\\\", \\\"nodeId\\\": \\\"start\\\"}, {\\\"role\\\": \\\"assistant\\\", \\\"content\\\": \\\"Noted.\\\", \\\"thread\\\": \\\"messages\\\", \\\"nodeId\\\": \\\"8mw9yfz\\\"}, {\\\"role\\\": \\\"assistant\\\", \\\"content\\\": \\\"Noted.\\\", \\\"thread\\\": \\\"messages\\\", \\\"nodeId\\\": \\\"qp_agent_001\\\"}]\", \"thread\": \"messages\", \"nodeId\": \"4n6tnna\"}]",
+          "selectedAgentId": "<uuid>",
+          "selectedAgentName": ""
+        },
+        "usage": {
+          "inputTokens": 5618,
+          "modelCalls": 6,
+          "outputTokens": 26,
+          "totalTokens": 5644
+        }
+      },
+      "seq": 61,
+      "type": "run.completed"
+    }
+  ],
+  [
+    {
+      "data": {
+        "agenticWorkflowId": "<uuid>",
+        "sessionId": "<uuid>"
+      },
+      "seq": 1,
+      "type": "run.started"
+    },
+    {
+      "data": {
+        "nodeName": "start",
+        "nodeType": "start",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "start",
+      "seq": 2,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "systemMessage"
+        ]
+      },
+      "nodeId": "start",
+      "seq": 3,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "nodeOutput.interface.inputs.attachments",
+            "nodeOutput.interface.inputs.parameters.systemMessage"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "start",
+      "seq": 4,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 112,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "start",
+      "seq": 5,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "channel_lockin",
+        "nodeType": "rule",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "kqw6yki",
+      "seq": 6,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "r-ravsvv6s"
+        ],
+        "outputSummary": {
+          "bytes": 64,
+          "fields": 3,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "kqw6yki",
+      "seq": 7,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "quick_pay",
+        "nodeType": "workflow",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "4n6tnna",
+      "seq": 8,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "nodeName": "start",
+        "nodeType": "start",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "start",
+      "path": "4n6tnna",
+      "seq": 9,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "qa_master_data",
+          "questionnareResponses",
+          "quickPaySetup",
+          "supplier_data",
+          "user_context",
+          "user_decision_points"
+        ]
+      },
+      "nodeId": "start",
+      "path": "4n6tnna",
+      "seq": 10,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "nodeOutput.interface.inputs.attachments"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "start",
+      "path": "4n6tnna",
+      "seq": 11,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 435,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "start",
+      "path": "4n6tnna",
+      "seq": 12,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "rule_0",
+        "nodeType": "rule",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "ex0cnyj",
+      "path": "4n6tnna",
+      "seq": 13,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "flow.knowledge"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "ex0cnyj",
+      "path": "4n6tnna",
+      "seq": 14,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "r-sl5yk8a5"
+        ],
+        "outputSummary": {
+          "bytes": 64,
+          "fields": 3,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "ex0cnyj",
+      "path": "4n6tnna",
+      "seq": 15,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "knowledge_agent",
+        "nodeType": "agent",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "8mw9yfz",
+      "path": "4n6tnna",
+      "seq": 16,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "text": "Noted."
+      },
+      "nodeId": "8mw9yfz",
+      "path": "4n6tnna",
+      "seq": 17,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "keys": [
+          "knowledge"
+        ]
+      },
+      "nodeId": "8mw9yfz",
+      "path": "4n6tnna",
+      "seq": 18,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "nodeOutput.text",
+            "nodeOutput.toolResults.quick_pay_complete_questionnaire.text"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "8mw9yfz",
+      "path": "4n6tnna",
+      "seq": 19,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 67,
+          "fields": 4,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 227,
+          "modelCalls": 1,
+          "outputTokens": 1,
+          "totalTokens": 228
+        }
+      },
+      "nodeId": "8mw9yfz",
+      "path": "4n6tnna",
+      "seq": 20,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "quick_pay",
+        "nodeType": "agent",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "qp_agent_001",
+      "path": "4n6tnna",
+      "seq": 21,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "text": "Noted."
+      },
+      "nodeId": "qp_agent_001",
+      "path": "4n6tnna",
+      "seq": 22,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "flow.knowledge",
+            "flow.lastQuestionAsked",
+            "flow.qa_master_data.category",
+            "flow.qa_master_data.category.id",
+            "flow.user_context.userDateFormat",
+            "flow.user_decision_points.budgetAmount",
+            "flow.user_decision_points.msp_question_1",
+            "flow.user_selected_currency",
+            "nodeOutput.text"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "qp_agent_001",
+      "path": "4n6tnna",
+      "seq": 23,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 67,
+          "fields": 4,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 1964,
+          "modelCalls": 1,
+          "outputTokens": 1,
+          "totalTokens": 1965
+        }
+      },
+      "nodeId": "qp_agent_001",
+      "path": "4n6tnna",
+      "seq": 24,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "output",
+        "nodeType": "output",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "output",
+      "path": "4n6tnna",
+      "seq": 25,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "flow.response",
+            "runtime.workflowMetaData.agentName"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "output",
+      "path": "4n6tnna",
+      "seq": 26,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 4712,
+          "fields": 7,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "output",
+      "path": "4n6tnna",
+      "seq": 27,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "keys": [
+          "current_state",
+          "questionnaireForSummary",
+          "user_decision_points"
+        ]
+      },
+      "nodeId": "4n6tnna",
+      "seq": 28,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "code": "STATE_PATH_EMPTY",
+        "details": {},
+        "message": "the path {{flow.current_question.response}} resolved to nothing; the state operation is skipped"
+      },
+      "nodeId": "4n6tnna",
+      "seq": 29,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "code": "STATE_PATH_EMPTY",
+        "details": {},
+        "message": "the path {{flow.current_question.decision_point}} resolved to nothing; the state operation is skipped"
+      },
+      "nodeId": "4n6tnna",
+      "seq": 30,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "nodeOutput.current_state",
+            "nodeOutput.messages",
+            "nodeOutput.questionnaireResponse",
+            "nodeOutput.response",
+            "nodeOutput.user_decision_points"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "4n6tnna",
+      "seq": 31,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 4728,
+          "fields": 8,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 2191,
+          "modelCalls": 2,
+          "outputTokens": 2,
+          "totalTokens": 2193
+        }
+      },
+      "nodeId": "4n6tnna",
+      "seq": 32,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "display_output_rule",
+        "nodeType": "rule",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "zp960r1",
+      "seq": 33,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "r-otiz3jzg"
+        ],
+        "outputSummary": {
+          "bytes": 64,
+          "fields": 3,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "zp960r1",
+      "seq": 34,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "output",
+        "nodeType": "output",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "output",
+      "seq": 35,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "runtime.workflowMetaData.agentName"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "output",
+      "seq": 36,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 11125,
+          "fields": 3,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "output",
+      "seq": 37,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "result": {
+          "messages": "[{\"role\": \"user\", \"content\": \"I need to pay a supplier quickly\", \"thread\": \"messages\"}, {\"role\": \"user\", \"content\": \"I need to pay a supplier quickly\", \"nodeId\": \"start\", \"thread\": \"messages\"}, {\"role\": \"assistant\", \"content\": \"{\\\"userDateFormat\\\": \\\"dd/MM/yyyy\\\", \\\"userCultureCode\\\": \\\"en-GB\\\", \\\"userTimeZone\\\": \\\"UTC\\\", \\\"userCurrencyCode\\\": \\\"GBP\\\", \\\"userContextFetched\\\": true}\", \"nodeId\": \"bootstrap_get_user_context\", \"thread\": \"messages\"}, {\"role\": \"assistant\", \"content\": \"Let us set up the quick payment.\", \"nodeId\": \"procurement_policy_assistant\", \"thread\": \"messages\"}, {\"role\": \"user\", \"content\": \"I need to pay a supplier quickly\", \"nodeId\": \"start\", \"thread\": \"messages\"}, {\"role\": \"assistant\", \"content\": \"Noted.\", \"nodeId\": \"8mw9yfz\", \"thread\": \"messages\"}, {\"role\": \"assistant\", \"content\": \"Noted.\", \"nodeId\": \"qp_agent_001\", \"thread\": \"messages\"}, {\"role\": \"assistant\", \"content\": \"[{\\\"role\\\": \\\"user\\\", \\\"content\\\": \\\"I need to pay a supplier quickly\\\", \\\"thread\\\": \\\"messages\\\", \\\"nodeId\\\": \\\"start\\\"}, {\\\"role\\\": \\\"assistant\\\", \\\"content\\\": \\\"Noted.\\\", \\\"thread\\\": \\\"messages\\\", \\\"nodeId\\\": \\\"8mw9yfz\\\"}, {\\\"role\\\": \\\"assistant\\\", \\\"content\\\": \\\"Noted.\\\", \\\"thread\\\": \\\"messages\\\", \\\"nodeId\\\": \\\"qp_agent_001\\\"}]\", \"nodeId\": \"4n6tnna\", \"thread\": \"messages\"}, {\"role\": \"assistant\", \"content\": {\"messages\": \"[{\\\"role\\\": \\\"user\\\", \\\"content\\\": \\\"I need to pay a supplier quickly\\\", \\\"thread\\\": \\\"messages\\\", \\\"nodeId\\\": \\\"start\\\"}, {\\\"role\\\": \\\"assistant\\\", \\\"content\\\": \\\"{\\\\\\\"userDateFormat\\\\\\\": \\\\\\\"dd/MM/yyyy\\\\\\\", \\\\\\\"userCultureCode\\\\\\\": \\\\\\\"en-GB\\\\\\\", \\\\\\\"userTimeZone\\\\\\\": \\\\\\\"UTC\\\\\\\", \\\\\\\"userCurrencyCode\\\\\\\": \\\\\\\"GBP\\\\\\\", \\\\\\\"userContextFetched\\\\\\\": true}\\\", \\\"thread\\\": \\\"messages\\\", \\\"nodeId\\\": \\\"bootstrap_get_user_context\\\"}, {\\\"role\\\": \\\"assistant\\\", \\\"content\\\": [{\\\"name\\\": \\\"get_next_questions\\\", \\\"args\\\": {\\\"data\\\": {}}, \\\"id\\\": \\\"next-1\\\", \\\"type\\\": \\\"tool_call\\\"}], \\\"thread\\\": \\\"messages\\\", \\\"nodeId\\\": \\\"procurement_policy_assistant\\\"}, {\\\"role\\\": \\\"tool\\\", \\\"content\\\": {\\\"result\\\": {\\\"current_state\\\": \\\"quickPaySetup\\\", \\\"user_decision_points\\\": \\\"amount\\\"}}, \\\"thread\\\": \\\"messages\\\", \\\"nodeId\\\": \\\"procurement_policy_assistant\\\"}, {\\\"role\\\": \\\"assistant\\\", \\\"content\\\": \\\"Let us set up the quick payment.\\\", \\\"thread\\\": \\\"messages\\\", \\\"nodeId\\\": \\\"procurement_policy_assistant\\\"}, {\\\"role\\\": \\\"user\\\", \\\"content\\\": \\\"I need to pay a supplier quickly\\\", \\\"thread\\\": \\\"messages\\\", \\\"nodeId\\\": \\\"start\\\"}, {\\\"role\\\": \\\"assistant\\\", \\\"content\\\": \\\"Noted.\\\", \\\"thread\\\": \\\"messages\\\", \\\"nodeId\\\": \\\"8mw9yfz\\\"}, {\\\"role\\\": \\\"assistant\\\", \\\"content\\\": \\\"Noted.\\\", \\\"thread\\\": \\\"messages\\\", \\\"nodeId\\\": \\\"qp_agent_001\\\"}, {\\\"role\\\": \\\"assistant\\\", \\\"content\\\": \\\"[{\\\\\\\"role\\\\\\\": \\\\\\\"user\\\\\\\", \\\\\\\"content\\\\\\\": \\\\\\\"I need to pay a supplier quickly\\\\\\\", \\\\\\\"thread\\\\\\\": \\\\\\\"messages\\\\\\\", \\\\\\\"nodeId\\\\\\\": \\\\\\\"start\\\\\\\"}, {\\\\\\\"role\\\\\\\": \\\\\\\"assistant\\\\\\\", \\\\\\\"content\\\\\\\": \\\\\\\"Noted.\\\\\\\", \\\\\\\"thread\\\\\\\": \\\\\\\"messages\\\\\\\", \\\\\\\"nodeId\\\\\\\": \\\\\\\"8mw9yfz\\\\\\\"}, {\\\\\\\"role\\\\\\\": \\\\\\\"assistant\\\\\\\", \\\\\\\"content\\\\\\\": \\\\\\\"Noted.\\\\\\\", \\\\\\\"thread\\\\\\\": \\\\\\\"messages\\\\\\\", \\\\\\\"nodeId\\\\\\\": \\\\\\\"qp_agent_001\\\\\\\"}]\\\", \\\"thread\\\": \\\"messages\\\", \\\"nodeId\\\": \\\"4n6tnna\\\"}]\", \"selectedAgentId\": \"<uuid>\", \"selectedAgentName\": \"\"}, \"thread\": \"messages\"}, {\"role\": \"user\", \"content\": \"The amount is 120\", \"thread\": \"messages\", \"nodeId\": \"start\"}, {\"role\": \"user\", \"content\": \"The amount is 120\", \"thread\": \"messages\", \"nodeId\": \"start\"}, {\"role\": \"assistant\", \"content\": \"Noted.\", \"thread\": \"messages\", \"nodeId\": \"8mw9yfz\"}, {\"role\": \"assistant\", \"content\": \"Noted.\", \"thread\": \"messages\", \"nodeId\": \"qp_agent_001\"}, {\"role\": \"assistant\", \"content\": \"[{\\\"role\\\": \\\"user\\\", \\\"content\\\": \\\"I need to pay a supplier quickly\\\", \\\"thread\\\": \\\"messages\\\"}, {\\\"role\\\": \\\"user\\\", \\\"content\\\": \\\"I need to pay a supplier quickly\\\", \\\"nodeId\\\": \\\"start\\\", \\\"thread\\\": \\\"messages\\\"}, {\\\"role\\\": \\\"assistant\\\", \\\"content\\\": \\\"{\\\\\\\"userDateFormat\\\\\\\": \\\\\\\"dd/MM/yyyy\\\\\\\", \\\\\\\"userCultureCode\\\\\\\": \\\\\\\"en-GB\\\\\\\", \\\\\\\"userTimeZone\\\\\\\": \\\\\\\"UTC\\\\\\\", \\\\\\\"userCurrencyCode\\\\\\\": \\\\\\\"GBP\\\\\\\", \\\\\\\"userContextFetched\\\\\\\": true}\\\", \\\"nodeId\\\": \\\"bootstrap_get_user_context\\\", \\\"thread\\\": \\\"messages\\\"}, {\\\"role\\\": \\\"assistant\\\", \\\"content\\\": \\\"Let us set up the quick payment.\\\", \\\"nodeId\\\": \\\"procurement_policy_assistant\\\", \\\"thread\\\": \\\"messages\\\"}, {\\\"role\\\": \\\"user\\\", \\\"content\\\": \\\"I need to pay a supplier quickly\\\", \\\"nodeId\\\": \\\"start\\\", \\\"thread\\\": \\\"messages\\\"}, {\\\"role\\\": \\\"assistant\\\", \\\"content\\\": \\\"Noted.\\\", \\\"nodeId\\\": \\\"8mw9yfz\\\", \\\"thread\\\": \\\"messages\\\"}, {\\\"role\\\": \\\"assistant\\\", \\\"content\\\": \\\"Noted.\\\", \\\"nodeId\\\": \\\"qp_agent_001\\\", \\\"thread\\\": \\\"messages\\\"}, {\\\"role\\\": \\\"assistant\\\", \\\"content\\\": \\\"[{\\\\\\\"role\\\\\\\": \\\\\\\"user\\\\\\\", \\\\\\\"content\\\\\\\": \\\\\\\"I need to pay a supplier quickly\\\\\\\", \\\\\\\"thread\\\\\\\": \\\\\\\"messages\\\\\\\", \\\\\\\"nodeId\\\\\\\": \\\\\\\"start\\\\\\\"}, {\\\\\\\"role\\\\\\\": \\\\\\\"assistant\\\\\\\", \\\\\\\"content\\\\\\\": \\\\\\\"Noted.\\\\\\\", \\\\\\\"thread\\\\\\\": \\\\\\\"messages\\\\\\\", \\\\\\\"nodeId\\\\\\\": \\\\\\\"8mw9yfz\\\\\\\"}, {\\\\\\\"role\\\\\\\": \\\\\\\"assistant\\\\\\\", \\\\\\\"content\\\\\\\": \\\\\\\"Noted.\\\\\\\", \\\\\\\"thread\\\\\\\": \\\\\\\"messages\\\\\\\", \\\\\\\"nodeId\\\\\\\": \\\\\\\"qp_agent_001\\\\\\\"}]\\\", \\\"nodeId\\\": \\\"4n6tnna\\\", \\\"thread\\\": \\\"messages\\\"}, {\\\"role\\\": \\\"assistant\\\", \\\"content\\\": {\\\"messages\\\": \\\"[{\\\\\\\"role\\\\\\\": \\\\\\\"user\\\\\\\", \\\\\\\"content\\\\\\\": \\\\\\\"I need to pay a supplier quickly\\\\\\\", \\\\\\\"thread\\\\\\\": \\\\\\\"messages\\\\\\\", \\\\\\\"nodeId\\\\\\\": \\\\\\\"start\\\\\\\"}, {\\\\\\\"role\\\\\\\": \\\\\\\"assistant\\\\\\\", \\\\\\\"content\\\\\\\": \\\\\\\"{\\\\\\\\\\\\\\\"userDateFormat\\\\\\\\\\\\\\\": \\\\\\\\\\\\\\\"dd/MM/yyyy\\\\\\\\\\\\\\\", \\\\\\\\\\\\\\\"userCultureCode\\\\\\\\\\\\\\\": \\\\\\\\\\\\\\\"en-GB\\\\\\\\\\\\\\\", \\\\\\\\\\\\\\\"userTimeZone\\\\\\\\\\\\\\\": \\\\\\\\\\\\\\\"UTC\\\\\\\\\\\\\\\", \\\\\\\\\\\\\\\"userCurrencyCode\\\\\\\\\\\\\\\": \\\\\\\\\\\\\\\"GBP\\\\\\\\\\\\\\\", \\\\\\\\\\\\\\\"userContextFetched\\\\\\\\\\\\\\\": true}\\\\\\\", \\\\\\\"thread\\\\\\\": \\\\\\\"messages\\\\\\\", \\\\\\\"nodeId\\\\\\\": \\\\\\\"bootstrap_get_user_context\\\\\\\"}, {\\\\\\\"role\\\\\\\": \\\\\\\"assistant\\\\\\\", \\\\\\\"content\\\\\\\": [{\\\\\\\"name\\\\\\\": \\\\\\\"get_next_questions\\\\\\\", \\\\\\\"args\\\\\\\": {\\\\\\\"data\\\\\\\": {}}, \\\\\\\"id\\\\\\\": \\\\\\\"next-1\\\\\\\", \\\\\\\"type\\\\\\\": \\\\\\\"tool_call\\\\\\\"}], \\\\\\\"thread\\\\\\\": \\\\\\\"messages\\\\\\\", \\\\\\\"nodeId\\\\\\\": \\\\\\\"procurement_policy_assistant\\\\\\\"}, {\\\\\\\"role\\\\\\\": \\\\\\\"tool\\\\\\\", \\\\\\\"content\\\\\\\": {\\\\\\\"result\\\\\\\": {\\\\\\\"current_state\\\\\\\": \\\\\\\"quickPaySetup\\\\\\\", \\\\\\\"user_decision_points\\\\\\\": \\\\\\\"amount\\\\\\\"}}, \\\\\\\"thread\\\\\\\": \\\\\\\"messages\\\\\\\", \\\\\\\"nodeId\\\\\\\": \\\\\\\"procurement_policy_assistant\\\\\\\"}, {\\\\\\\"role\\\\\\\": \\\\\\\"assistant\\\\\\\", \\\\\\\"content\\\\\\\": \\\\\\\"Let us set up the quick payment.\\\\\\\", \\\\\\\"thread\\\\\\\": \\\\\\\"messages\\\\\\\", \\\\\\\"nodeId\\\\\\\": \\\\\\\"procurement_policy_assistant\\\\\\\"}, {\\\\\\\"role\\\\\\\": \\\\\\\"user\\\\\\\", \\\\\\\"content\\\\\\\": \\\\\\\"I need to pay a supplier quickly\\\\\\\", \\\\\\\"thread\\\\\\\": \\\\\\\"messages\\\\\\\", \\\\\\\"nodeId\\\\\\\": \\\\\\\"start\\\\\\\"}, {\\\\\\\"role\\\\\\\": \\\\\\\"assistant\\\\\\\", \\\\\\\"content\\\\\\\": \\\\\\\"Noted.\\\\\\\", \\\\\\\"thread\\\\\\\": \\\\\\\"messages\\\\\\\", \\\\\\\"nodeId\\\\\\\": \\\\\\\"8mw9yfz\\\\\\\"}, {\\\\\\\"role\\\\\\\": \\\\\\\"assistant\\\\\\\", \\\\\\\"content\\\\\\\": \\\\\\\"Noted.\\\\\\\", \\\\\\\"thread\\\\\\\": \\\\\\\"messages\\\\\\\", \\\\\\\"nodeId\\\\\\\": \\\\\\\"qp_agent_001\\\\\\\"}, {\\\\\\\"role\\\\\\\": \\\\\\\"assistant\\\\\\\", \\\\\\\"content\\\\\\\": \\\\\\\"[{\\\\\\\\\\\\\\\"role\\\\\\\\\\\\\\\": \\\\\\\\\\\\\\\"user\\\\\\\\\\\\\\\", \\\\\\\\\\\\\\\"content\\\\\\\\\\\\\\\": \\\\\\\\\\\\\\\"I need to pay a supplier quickly\\\\\\\\\\\\\\\", \\\\\\\\\\\\\\\"thread\\\\\\\\\\\\\\\": \\\\\\\\\\\\\\\"messages\\\\\\\\\\\\\\\", \\\\\\\\\\\\\\\"nodeId\\\\\\\\\\\\\\\": \\\\\\\\\\\\\\\"start\\\\\\\\\\\\\\\"}, {\\\\\\\\\\\\\\\"role\\\\\\\\\\\\\\\": \\\\\\\\\\\\\\\"assistant\\\\\\\\\\\\\\\", \\\\\\\\\\\\\\\"content\\\\\\\\\\\\\\\": \\\\\\\\\\\\\\\"Noted.\\\\\\\\\\\\\\\", \\\\\\\\\\\\\\\"thread\\\\\\\\\\\\\\\": \\\\\\\\\\\\\\\"messages\\\\\\\\\\\\\\\", \\\\\\\\\\\\\\\"nodeId\\\\\\\\\\\\\\\": \\\\\\\\\\\\\\\"8mw9yfz\\\\\\\\\\\\\\\"}, {\\\\\\\\\\\\\\\"role\\\\\\\\\\\\\\\": \\\\\\\\\\\\\\\"assistant\\\\\\\\\\\\\\\", \\\\\\\\\\\\\\\"content\\\\\\\\\\\\\\\": \\\\\\\\\\\\\\\"Noted.\\\\\\\\\\\\\\\", \\\\\\\\\\\\\\\"thread\\\\\\\\\\\\\\\": \\\\\\\\\\\\\\\"messages\\\\\\\\\\\\\\\", \\\\\\\\\\\\\\\"nodeId\\\\\\\\\\\\\\\": \\\\\\\\\\\\\\\"qp_agent_001\\\\\\\\\\\\\\\"}]\\\\\\\", \\\\\\\"thread\\\\\\\": \\\\\\\"messages\\\\\\\", \\\\\\\"nodeId\\\\\\\": \\\\\\\"4n6tnna\\\\\\\"}]\\\", \\\"selectedAgentId\\\": \\\"<uuid>\\\", \\\"selectedAgentName\\\": \\\"\\\"}, \\\"thread\\\": \\\"messages\\\"}, {\\\"role\\\": \\\"user\\\", \\\"content\\\": \\\"The amount is 120\\\", \\\"thread\\\": \\\"messages\\\", \\\"nodeId\\\": \\\"start\\\"}, {\\\"role\\\": \\\"assistant\\\", \\\"content\\\": \\\"Noted.\\\", \\\"thread\\\": \\\"messages\\\", \\\"nodeId\\\": \\\"8mw9yfz\\\"}, {\\\"role\\\": \\\"assistant\\\", \\\"content\\\": \\\"Noted.\\\", \\\"thread\\\": \\\"messages\\\", \\\"nodeId\\\": \\\"qp_agent_001\\\"}]\", \"thread\": \"messages\", \"nodeId\": \"4n6tnna\"}]",
+          "selectedAgentId": "<uuid>",
+          "selectedAgentName": ""
+        },
+        "usage": {
+          "inputTokens": 2191,
+          "modelCalls": 2,
+          "outputTokens": 2,
+          "totalTokens": 2193
+        }
+      },
+      "seq": 38,
+      "type": "run.completed"
+    }
+  ]
+]

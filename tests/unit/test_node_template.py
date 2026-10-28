@@ -81,7 +81,9 @@ async def test_E15_continue_in_one_parallel_branch_keeps_the_sibling_updates() -
     final, events, *_ = await h.run(document)
     assert final["flow"]["values"] == {"fromB": 1}
     assert final["nodes"]["a"]["status"] == "failed" and final["nodes"]["b"]["status"] == "succeeded"
-    assert any(e["event"] == "node.failed" and e["nodeId"] == "a" for e in events)
+    assert any(
+        e["event"] == "node.finished" and e["status"] == "failed" and e["nodeId"] == "a" for e in events
+    )
 
 
 # --- E-16: retries ---------------------------------------------------------------------------

@@ -45,6 +45,8 @@ class VariableDefinition(ZonicDocumentModel):
     required: bool | None = None
     ref_id: str | None = None
     id: str | None = None
+    #: Saved with the session at turn end unless false (design 9.3, case P-13).
+    persist: bool | None = None
 
 
 class SystemParam(ZonicDocumentModel):
@@ -129,6 +131,8 @@ class WorkflowDocument(ZonicDocumentModel):
     semantic_use_cases: str | None = None
     system_params: list[SystemParam] | None = None
     limits: DocumentLimits | None = None
+    #: Workflow hook bindings (design 13); validated when the blueprint's hooks are resolved.
+    runtime_hooks: list[Any] | None = None
     nodes: list[WorkflowNode]
     edges: list[WorkflowEdge]
 

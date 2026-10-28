@@ -1,0 +1,25 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "code": {
+      "title": "Code",
+      "type": "string"
+    },
+    "message": {
+      "title": "Message",
+      "type": "string"
+    },
+    "type": {
+      "const": "error",
+      "default": "error",
+      "title": "Type",
+      "type": "string"
+    }
+  },
+  "required": [
+    "code",
+    "message"
+  ],
+  "title": "ErrorPart",
+  "type": "object"
+}

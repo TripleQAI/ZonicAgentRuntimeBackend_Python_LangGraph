@@ -30,6 +30,9 @@ from zonic_runtime.models.gateway.wire import (
 from zonic_runtime.models.resources.settings import GatewaySettings
 
 _RETRYABLE_STATUS = frozenset({503})
+#: Throttled before the gateway ran the request (Lambda's ``Rate Exceeded``, P5-02): retried for
+#: every call, writes included, ``throttleRetries`` times.
+_THROTTLED = 429
 
 #: Reason tokens the procedures raise as the whole message (fn_raise, db/runtime/005 header)
 #: -> catalog code. The gateway passes the database message through, DETAIL on later lines.
@@ -60,7 +63,7 @@ def translate_status(status: int, body: Any) -> ZonicError:
         found = _REASON_RE.match(message)
         code = _CONFLICT_REASONS.get(found.group(1)) if found else None
         return ZonicError(code) if code else ZonicError("DATA_CONFLICT", gateway_type=kind)
-    if status == 503:
+    if status in (503, _THROTTLED):
         return ZonicError("DATA_UNAVAILABLE", gateway_status=status)
     return ZonicError("DATA_REQUEST_INVALID", gateway_status=status, gateway_type=kind)
 
@@ -99,15 +102,17 @@ class HttpGateway:
     # -- transport -----------------------------------------------------------
 
     async def _post(self, path: str, payload: dict[str, Any], *, retry: bool, request_id: str | None) -> Any:
-        attempts = self._settings.read_retries + 1 if retry else 1
+        reads = self._settings.read_retries if retry else 0
         headers = {"x-request-id": request_id} if request_id else None
-        last: ZonicError | None = None
-        for attempt in range(attempts):
+        failures = throttled = 0
+        while True:
             try:
                 async with self._in_flight:
                     response = await self._client.post(path, json=payload, headers=headers)
             except httpx.HTTPError as exc:
                 last = ZonicError("DATA_UNAVAILABLE", transport=type(exc).__name__)
+                failures += 1
+                again = failures <= reads
             else:
                 if response.status_code < 400:
                     return response.json()
@@ -117,12 +122,18 @@ class HttpGateway:
                 except ValueError:
                     body = response.text
                 last = translate_status(response.status_code, body)
-                if response.status_code not in _RETRYABLE_STATUS:
+                if response.status_code == _THROTTLED:
+                    throttled += 1
+                    again = throttled <= self._settings.throttle_retries
+                elif response.status_code in _RETRYABLE_STATUS:
+                    failures += 1
+                    again = failures <= reads
+                else:
                     raise last
-            if attempt + 1 < attempts:
-                await asyncio.sleep(self._settings.retry_backoff_milliseconds / 1000 * (2**attempt))
-        assert last is not None
-        raise last
+            if not again:
+                raise last
+            tries = failures + throttled - 1
+            await asyncio.sleep(self._settings.retry_backoff_milliseconds / 1000 * (2**tries))
 
     # -- operations ----------------------------------------------------------
 

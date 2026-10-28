@@ -1,0 +1,199 @@
+{
+  "$defs": {
+    "NodeFinishedData": {
+      "additionalProperties": false,
+      "properties": {
+        "durationMs": {
+          "minimum": 0,
+          "title": "Durationms",
+          "type": "number"
+        },
+        "errorCode": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Errorcode"
+        },
+        "handles": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Handles",
+          "type": "array"
+        },
+        "outputSummary": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Outputsummary"
+        },
+        "policy": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Policy"
+        },
+        "status": {
+          "enum": [
+            "succeeded",
+            "failed",
+            "interrupted",
+            "continued"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "usage": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Usage"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "status",
+        "durationMs"
+      ],
+      "title": "NodeFinishedData",
+      "type": "object"
+    },
+    "Usage": {
+      "additionalProperties": false,
+      "properties": {
+        "cost": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cost"
+        },
+        "inputTokens": {
+          "default": 0,
+          "title": "Inputtokens",
+          "type": "integer"
+        },
+        "modelCalls": {
+          "default": 0,
+          "title": "Modelcalls",
+          "type": "integer"
+        },
+        "outputTokens": {
+          "default": 0,
+          "title": "Outputtokens",
+          "type": "integer"
+        },
+        "totalTokens": {
+          "default": 0,
+          "title": "Totaltokens",
+          "type": "integer"
+        }
+      },
+      "title": "Usage",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "data": {
+      "$ref": "#/$defs/NodeFinishedData"
+    },
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "nodeId": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Nodeid"
+    },
+    "path": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Path"
+    },
+    "runId": {
+      "title": "Runid",
+      "type": "string"
+    },
+    "seq": {
+      "minimum": 1,
+      "title": "Seq",
+      "type": "integer"
+    },
+    "truncated": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Truncated"
+    },
+    "ts": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+      "title": "Ts",
+      "type": "string"
+    },
+    "type": {
+      "const": "node.finished",
+      "title": "Type",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "runId",
+    "seq",
+    "ts",
+    "type",
+    "data"
+  ],
+  "title": "NodeFinishedEvent",
+  "type": "object"
+}

@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import time
 from collections.abc import Callable, Iterable, Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any
 
@@ -56,6 +56,9 @@ class LoadedDocument:
     #: ``major.minor``; a missing ``schemaVersion`` reads as 1.0.
     version: str
     findings: tuple[BlueprintWarning, ...]
+    #: The document as stored (the export JSON): a pause keeps it, so a resume compiles this
+    #: revision again whatever the builder saved since (design 3.5, case H-09).
+    stored: Any = field(default=None, compare=False, repr=False)
 
 
 def _invalid(problems: Iterable[ValidationProblem]) -> ZonicError:
@@ -114,6 +117,17 @@ class WorkflowLoader:
         row = next(iter(self._unique(rows)), None)
         if row is None:
             raise ZonicError("WORKFLOW_NOT_FOUND", agentic_workflow_id=agentic_workflow_id)
+        return (await self._revisions({agentic_workflow_id: row.updated_at}))[0]
+
+    async def load_cached(self, agentic_workflow_id: str, caller: WorkflowCaller) -> LoadedDocument:
+        """``load`` through the cached catalog: a warm turn reads nothing before its start batch
+        (case P-05). A workflow the cached catalog does not list is read as ``load`` does, so a
+        newly published one is found at once."""
+        row = next(
+            (r for r in await self.catalog(caller) if r.agentic_workflow_id == agentic_workflow_id), None
+        )
+        if row is None:
+            return await self.load(agentic_workflow_id, caller)
         return (await self._revisions({agentic_workflow_id: row.updated_at}))[0]
 
     async def load_exports(self, ids: Sequence[str]) -> list[LoadedDocument]:
@@ -210,4 +224,5 @@ class WorkflowLoader:
             revision=revision_hash(normalized.canonical),
             version=version,
             findings=tuple(normalized.findings),
+            stored=stored,
         )

@@ -6,6 +6,7 @@
       "path": "/mcp/",
       "transport": "streamable_http",
       "enabled": true,
+      "authSecretRef": "env:mcp_auth_token",
       "maxInFlight": 32,
       "timeoutSeconds": 60,
       "executeTool": "execute"

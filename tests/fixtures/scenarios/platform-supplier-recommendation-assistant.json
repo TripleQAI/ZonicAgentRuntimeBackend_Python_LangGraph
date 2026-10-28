@@ -1,0 +1,429 @@
+[
+  [
+    {
+      "data": {
+        "agenticWorkflowId": "<uuid>",
+        "sessionId": "<uuid>",
+        "title": "Create a request"
+      },
+      "seq": 1,
+      "type": "run.started"
+    },
+    {
+      "data": {
+        "nodeName": "start",
+        "nodeType": "start",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "start",
+      "seq": 2,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "qa_master_data"
+        ]
+      },
+      "nodeId": "start",
+      "seq": 3,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "nodeOutput.interface.inputs.attachments",
+            "nodeOutput.interface.inputs.qa_master_data"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "start",
+      "seq": 4,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 109,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "start",
+      "seq": 5,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "supervisor",
+        "nodeType": "agent",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "2zzeodz",
+      "seq": 6,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "inputSummary": {
+          "bytes": 27,
+          "fields": 1,
+          "type": "object"
+        },
+        "toolName": "store_new_suppliers",
+        "toolUseId": "route-1"
+      },
+      "nodeId": "2zzeodz",
+      "seq": 7,
+      "type": "tool.started"
+    },
+    {
+      "data": {
+        "status": "success",
+        "toolUseId": "route-1"
+      },
+      "nodeId": "2zzeodz",
+      "seq": 8,
+      "type": "tool.finished"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "flow.qa_master_data.category",
+            "flow.qa_master_data.entities.item",
+            "flow.qa_master_data.headerOrg.entityCode",
+            "flow.qa_master_data.headerOrg.entityDetailCode",
+            "flow.qa_master_data.headerOrg.entityName",
+            "flow.qa_master_data.region.code",
+            "flow.qa_master_data.region.id",
+            "flow.qa_master_data.region.name",
+            "nodeOutput.text"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "2zzeodz",
+      "seq": 9,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "handoff-ngv97l7"
+        ],
+        "outputSummary": {
+          "bytes": 243,
+          "fields": 5,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 3801,
+          "modelCalls": 1,
+          "outputTokens": 2,
+          "totalTokens": 3803
+        }
+      },
+      "nodeId": "2zzeodz",
+      "seq": 10,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "store_new_suppliers",
+        "nodeType": "variable",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "ngv97l7",
+      "seq": 11,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "newSuppliers"
+        ]
+      },
+      "nodeId": "ngv97l7",
+      "seq": 12,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 2,
+          "fields": 0,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "ngv97l7",
+      "seq": 13,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "iteration": 2,
+        "loopId": "loop:2zzeodz"
+      },
+      "nodeId": "2zzeodz",
+      "seq": 14,
+      "type": "loop.iteration"
+    },
+    {
+      "data": {
+        "nodeName": "supervisor",
+        "nodeType": "agent",
+        "resumed": false,
+        "visit": 2
+      },
+      "nodeId": "2zzeodz",
+      "seq": 15,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "inputSummary": {
+          "bytes": 27,
+          "fields": 1,
+          "type": "object"
+        },
+        "toolName": "store_new_suppliers",
+        "toolUseId": "route-2"
+      },
+      "nodeId": "2zzeodz",
+      "seq": 16,
+      "type": "tool.started"
+    },
+    {
+      "data": {
+        "status": "success",
+        "toolUseId": "route-2"
+      },
+      "nodeId": "2zzeodz",
+      "seq": 17,
+      "type": "tool.finished"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "flow.qa_master_data.category",
+            "flow.qa_master_data.entities.item",
+            "flow.qa_master_data.headerOrg.entityCode",
+            "flow.qa_master_data.headerOrg.entityDetailCode",
+            "flow.qa_master_data.headerOrg.entityName",
+            "flow.qa_master_data.region.code",
+            "flow.qa_master_data.region.id",
+            "flow.qa_master_data.region.name"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "2zzeodz",
+      "seq": 18,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "handoff-ngv97l7"
+        ],
+        "outputSummary": {
+          "bytes": 243,
+          "fields": 5,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 3801,
+          "modelCalls": 1,
+          "outputTokens": 2,
+          "totalTokens": 3803
+        }
+      },
+      "nodeId": "2zzeodz",
+      "seq": 19,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "store_new_suppliers",
+        "nodeType": "variable",
+        "resumed": false,
+        "visit": 2
+      },
+      "nodeId": "ngv97l7",
+      "seq": 20,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "newSuppliers"
+        ]
+      },
+      "nodeId": "ngv97l7",
+      "seq": 21,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 2,
+          "fields": 0,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "ngv97l7",
+      "seq": 22,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "iteration": 3,
+        "loopId": "loop:2zzeodz"
+      },
+      "nodeId": "2zzeodz",
+      "seq": 23,
+      "type": "loop.iteration"
+    },
+    {
+      "data": {
+        "nodeName": "supervisor",
+        "nodeType": "agent",
+        "resumed": false,
+        "visit": 3
+      },
+      "nodeId": "2zzeodz",
+      "seq": 24,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "text": "All "
+      },
+      "nodeId": "2zzeodz",
+      "seq": 25,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "text": "done: the request is complete."
+      },
+      "nodeId": "2zzeodz",
+      "seq": 26,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "flow.qa_master_data.category",
+            "flow.qa_master_data.entities.item",
+            "flow.qa_master_data.headerOrg.entityCode",
+            "flow.qa_master_data.headerOrg.entityDetailCode",
+            "flow.qa_master_data.headerOrg.entityName",
+            "flow.qa_master_data.region.code",
+            "flow.qa_master_data.region.id",
+            "flow.qa_master_data.region.name"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "2zzeodz",
+      "seq": 27,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 123,
+          "fields": 4,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 3801,
+          "modelCalls": 1,
+          "outputTokens": 6,
+          "totalTokens": 3807
+        }
+      },
+      "nodeId": "2zzeodz",
+      "seq": 28,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "output",
+        "nodeType": "output",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "output",
+      "seq": 29,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 1231,
+          "fields": 4,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "output",
+      "seq": 30,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "result": {
+          "current_state": "supplierRecommendation",
+          "messages": "[{\"role\": \"user\", \"content\": \"Create a request\", \"thread\": \"messages\", \"nodeId\": \"start\"}, {\"role\": \"assistant\", \"content\": [{\"name\": \"store_new_suppliers\", \"args\": {\"suppliers\": [\"suppliers\"]}, \"id\": \"route-1\", \"type\": \"tool_call\"}], \"thread\": \"messages\", \"nodeId\": \"2zzeodz\"}, {\"role\": \"tool\", \"content\": \"Continuing with store_new_suppliers.\", \"thread\": \"messages\", \"nodeId\": \"2zzeodz\"}, {\"role\": \"assistant\", \"content\": \"\", \"thread\": \"messages\", \"nodeId\": \"2zzeodz\"}, {\"role\": \"assistant\", \"content\": [{\"name\": \"store_new_suppliers\", \"args\": {\"suppliers\": [\"suppliers\"]}, \"id\": \"route-2\", \"type\": \"tool_call\"}], \"thread\": \"messages\", \"nodeId\": \"2zzeodz\"}, {\"role\": \"tool\", \"content\": \"Continuing with store_new_suppliers.\", \"thread\": \"messages\", \"nodeId\": \"2zzeodz\"}, {\"role\": \"assistant\", \"content\": \"\", \"thread\": \"messages\", \"nodeId\": \"2zzeodz\"}, {\"role\": \"assistant\", \"content\": \"All done: the request is complete.\", \"thread\": \"messages\", \"nodeId\": \"2zzeodz\"}]",
+          "newSuppliers": [
+            "suppliers"
+          ],
+          "supplier_data": {}
+        },
+        "usage": {
+          "inputTokens": 11403,
+          "modelCalls": 3,
+          "outputTokens": 10,
+          "totalTokens": 11413
+        }
+      },
+      "seq": 31,
+      "type": "run.completed"
+    }
+  ]
+]

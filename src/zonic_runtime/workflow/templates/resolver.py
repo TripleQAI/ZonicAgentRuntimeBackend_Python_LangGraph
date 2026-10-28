@@ -22,6 +22,7 @@ from typing import Any
 
 from pydantic import BaseModel
 
+from zonic_runtime.io.encoders import Encoder
 from zonic_runtime.models.blueprint import Blueprint
 from zonic_runtime.models.resources.manifest import NodeRuntimeManifest
 from zonic_runtime.models.resources.misc import TemplateNamespaces
@@ -156,15 +157,24 @@ class TemplateResolver:
 
     # -- public ---------------------------------------------------------------
 
-    def resolve(self, value: Any, context: TemplateContext, issues: TemplateIssues | None = None) -> Any:
-        """Templates in a value; dicts and lists are resolved item by item."""
+    def resolve(
+        self,
+        value: Any,
+        context: TemplateContext,
+        issues: TemplateIssues | None = None,
+        *,
+        encode: Encoder | None = None,
+    ) -> Any:
+        """Templates in a value; dicts and lists are resolved item by item. ``encode`` rewrites
+        each value embedded in a longer string (never a whole-string template), given the
+        template's offset in the string: the HTTP kind encodes URL path and query values (X-03)."""
         issues = issues if issues is not None else TemplateIssues()
         if isinstance(value, str):
-            return self._resolve_string(value, context, issues)
+            return self._resolve_string(value, context, issues, encode)
         if isinstance(value, list):
-            return [self.resolve(item, context, issues) for item in value]
+            return [self.resolve(item, context, issues, encode=encode) for item in value]
         if isinstance(value, dict):
-            return {key: self.resolve(item, context, issues) for key, item in value.items()}
+            return {key: self.resolve(item, context, issues, encode=encode) for key, item in value.items()}
         return value
 
     def read(self, path: str, context: TemplateContext, issues: TemplateIssues | None = None) -> Any:
@@ -197,7 +207,9 @@ class TemplateResolver:
 
     # -- strings --------------------------------------------------------------
 
-    def _resolve_string(self, value: str, context: TemplateContext, issues: TemplateIssues) -> Any:
+    def _resolve_string(
+        self, value: str, context: TemplateContext, issues: TemplateIssues, encode: Encoder | None = None
+    ) -> Any:
         exact = _EXACT.match(value)
         if exact:
             found = self.read(exact.group(1), context, issues)
@@ -212,7 +224,8 @@ class TemplateResolver:
             if found is None:
                 issues._add(issues.missing, match.group(1).strip())
                 return ""
-            return _to_text(found)
+            text = _to_text(found)
+            return encode(match.start(), text) if encode is not None else text
 
         return _EMBEDDED.sub(embed, value)
 

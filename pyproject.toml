@@ -27,6 +27,7 @@ dependencies = [
     "opentelemetry-sdk~=1.45.1",
     "prometheus-client~=0.26.0",
     "jsonschema~=4.26.0",
+    "nh3~=0.3.7",
 ]
 
 [dependency-groups]
@@ -68,7 +69,7 @@ packages = ["zonic_runtime"]
 plugins = ["pydantic.mypy"]
 
 [[tool.mypy.overrides]]
-module = ["zstandard.*", "Crypto.*", "langgraph_checkpoint_conformance.*"]
+module = ["zstandard.*", "Crypto.*", "langgraph_checkpoint_conformance.*", "boto3.*", "botocore.*", "uvloop.*"]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
@@ -89,6 +90,8 @@ filterwarnings = [
     "ignore::DeprecationWarning:langgraph.*",
     "ignore::DeprecationWarning:langfuse.*",
     "ignore::PendingDeprecationWarning",
+    # astream_events(version="v3") is beta (decision 0001); the driver keeps it behind engine/streaming/.
+    "ignore::langchain_core._api.beta_decorator.LangChainBetaWarning",
 ]
 
 [tool.coverage.run]

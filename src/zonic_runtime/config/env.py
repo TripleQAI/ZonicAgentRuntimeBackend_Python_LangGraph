@@ -9,6 +9,7 @@ from the process environment, then from the repository's git-ignored ``.env`` (s
 from __future__ import annotations
 
 import os
+import re
 from functools import lru_cache
 from pathlib import Path
 from typing import Literal
@@ -17,6 +18,16 @@ from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 _REPO_ROOT = Path(__file__).resolve().parents[3]
+
+
+#: Where the Langfuse client would send traces if it ever did: export goes to the runtime's own
+#: span exporter (design 12), so this address is never contacted.
+NO_LANGFUSE_SERVER = "http://127.0.0.1:9"
+
+
+def internal_address(host: str, port: int) -> str:
+    """This instance's internal port as other instances reach it (the default of ``api.internalAddress``)."""
+    return f"http://{host}:{port}"
 
 
 class EnvironmentModel(BaseSettings):
@@ -32,9 +43,13 @@ class EnvironmentModel(BaseSettings):
     resources_dir: Path = _REPO_ROOT / "resources"
     instance_id: str = Field(default_factory=lambda: f"{os.getpid()}")
     internal_address: str = "http://127.0.0.1:9000"
+    #: The public port (``zonic_runtime.server``); the internal one is ``api.internalPort``.
+    port: int = 8000
+    host: str = "0.0.0.0"
 
-    # pgfoundation gateway
-    gateway_base_url: str = "http://127.0.0.1:8600"
+    # pgfoundation gateway: the deployed Lambda (tripleq-development), never a local one.
+    # Other environments set ZONIC_GATEWAY_BASE_URL.
+    gateway_base_url: str = "https://sdyvf4y53x524cwgdisy2qyfqy0bgjkm.lambda-url.us-east-1.on.aws"
     gateway_api_key: SecretStr | None = None
 
     # identity provider (OIDC)
@@ -51,7 +66,12 @@ class EnvironmentModel(BaseSettings):
 
     # MCP server and cache service
     mcp_base_url: str | None = None
+    #: The MCP server's bearer token (its ``MCP_AUTH_TOKEN``); ``mcp-servers.json`` names it.
+    mcp_auth_token: SecretStr | None = None
     cache_api_url: str | None = None
+
+    # the Script node's sandbox (a Piston API); unset: Script nodes are FEATURE_DISABLED
+    sandbox_url: str | None = None
 
     # Langfuse (only when the optional server exporter is on)
     langfuse_public_key: SecretStr | None = None
@@ -71,3 +91,8 @@ def secret_from_environment(name: str) -> str | None:
     """Value of the secret ``name`` from the environment provider (``ZONIC_SECRET_<NAME>``)."""
     key = "ZONIC_SECRET_" + name.upper().replace("-", "_").replace(".", "_")
     return os.environ.get(key)
+
+
+def environment_secret(name: str) -> str | None:
+    """A ``secret:<name>`` from ``ZONIC_SECRET_<NAME>`` (the secret port's local adapter)."""
+    return os.environ.get("ZONIC_SECRET_" + re.sub(r"[^A-Za-z0-9]", "_", name).upper()) or None

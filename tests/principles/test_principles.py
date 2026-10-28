@@ -277,3 +277,16 @@ def test_X08_waiver_requires_a_reason(tmp_path: Path, monkeypatch: pytest.Monkey
     monkeypatch.setattr(sys.modules[__name__], "SRC", planted)
     lines = [v.line for v in collect() if v.rule == "rule-1-node-type"]
     assert lines == [2]
+
+
+def test_Q16_a_node_calling_time_sleep_fails_the_blocking_call_rule(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    planted = tmp_path / "zonic_runtime"
+    (planted / "engine" / "kinds").mkdir(parents=True)
+    (planted / "engine" / "kinds" / "sleepy.py").write_text(
+        "import time\n\n\nasync def execute(ctx, node_input):\n    time.sleep(0.5)\n    return None\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(sys.modules[__name__], "SRC", planted)
+    assert [(v.rule, v.line) for v in collect()] == [("rule-13-blocking", 5)]

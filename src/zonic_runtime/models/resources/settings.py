@@ -52,6 +52,8 @@ class RunsSettings(ZonicResourceModel):
     max_active_per_tenant: int = Field(gt=0)
     sync_wait_seconds: float = Field(gt=0)
     cancel_on_disconnect: bool
+    #: How long a cancelled or timed-out run waits for its nodes to stop before it ends anyway.
+    cancel_grace_seconds: float = Field(gt=0)
     idempotency_ttl_seconds: int = Field(gt=0)
     on_instance_loss: InstanceLossPolicy
 
@@ -83,12 +85,16 @@ class DatasetSettings(ZonicResourceModel):
     store: Literal["cache", "database"]
     cache_ttl_seconds: int = Field(gt=0)
     chunk_bytes: int = Field(gt=0)
+    #: Each call to the cache service (``ZONIC_CACHE_API_URL``, P3-05).
+    cache_timeout_milliseconds: int = Field(gt=0)
 
 
 class IoSettings(ZonicResourceModel):
     inline_rows: int = Field(ge=0)
     inline_bytes: int = Field(gt=0)
     max_resolved_bytes: int = Field(gt=0)
+    #: Rows read for a dataset's column names (every key of the first rows, in first-seen order).
+    column_sample_rows: int = Field(gt=0)
     output_validation: Literal["strict", "warn"]
     template_path_unknown: Literal["warning", "error"]
 
@@ -105,10 +111,28 @@ class CompatSettings(ZonicResourceModel):
 class InterruptSettings(ZonicResourceModel):
     on_expiry: Literal["cancel", "reject"]
     default_expiry_hours: float = Field(gt=0)
+    #: How often each instance expires the interrupts past their ``expiresAt`` (P4-02).
+    expiry_check_seconds: float = Field(gt=0)
+
+
+class SwarmSharedContext(ZonicResourceModel):
+    """The lines a member gets before its input in context mode ``shared``; ``{task}``,
+    ``{history}``, ``{members}`` and ``{message}`` are filled in."""
+
+    task: str
+    history: str
+    members: str
+    message: str
 
 
 class SwarmSettings(ZonicResourceModel):
     context_mode: Literal["shared", "handoff"]
+    #: ``config.maxHandoffs`` and ``config.maxIterations`` when a Swarm node leaves them out.
+    max_handoffs: int = Field(gt=0)
+    max_iterations: int = Field(gt=0)
+    shared_context: SwarmSharedContext
+    #: The ``ToolMessage`` that pairs a handoff call in the shared history; ``{member}`` is the target.
+    handoff_acknowledgement: str
 
 
 class ToolSettings(ZonicResourceModel):
@@ -121,6 +145,43 @@ class HookSettings(ZonicResourceModel):
     document_allowed_types: list[str]
     max_retries_per_node: int = Field(ge=0)
     async_queue_size: int = Field(gt=0)
+    default_timeout_milliseconds: int = Field(gt=0)
+    #: ``cache`` and ``rateLimit`` hooks without the cache service: entries kept in this process.
+    cache_max_entries: int = Field(gt=0)
+    rate_limit_max_keys: int = Field(gt=0)
+    #: Named patterns of personal data, ``/source/flags`` (``mask``, ``guardrail``, ``webhook``).
+    patterns: dict[str, str]
+    mask_replacement: str
+    webhook_mask_patterns: list[str]
+    #: ``webhook`` endpoints by name; each must pass the egress allow list (checked at load).
+    endpoints: dict[str, str]
+    #: Characters of a masked node's streamed text held back so a match split across deltas is masked.
+    stream_mask_holdback_chars: int = Field(ge=0)
+
+
+class GuardrailSettings(ZonicResourceModel):
+    """Guardrail nodes and hooks (P3-06, P3-10): the policy model (empty: the catalog default),
+    the policies by name, and the Bedrock Guardrails region (empty: off)."""
+
+    model: str
+    policies: dict[str, str]
+    bedrock_region: str
+    default_version: str
+    prompt: str
+    default_policy: str
+
+
+class MaintenanceSettings(ZonicResourceModel):
+    """The maintenance schedule (P3-11): partitions ahead, trace and runtime retention, rollups."""
+
+    enabled: bool
+    interval_minutes: int = Field(gt=0)
+
+
+class ExternalAgentSettings(ZonicResourceModel):
+    """External agent nodes (P3-06): the wait before retry ``n`` is ``n`` times this."""
+
+    retry_backoff_milliseconds: int = Field(ge=0)
 
 
 class SseSettings(ZonicResourceModel):
@@ -146,6 +207,10 @@ class AsyncRunSettings(ZonicResourceModel):
     lease_seconds: int = Field(gt=0)
     claim_batch: int = Field(gt=0)
     callback_retry_attempts: int = Field(ge=0)
+    #: The header of a completion callback's signature: ``sha256=<hex HMAC-SHA256 of the body>``.
+    callback_signature_header: str = Field(min_length=1)
+    callback_timeout_milliseconds: int = Field(gt=0)
+    callback_backoff_milliseconds: int = Field(ge=0)
 
 
 class PressureSettings(ZonicResourceModel):
@@ -172,6 +237,8 @@ class GatewaySettings(ZonicResourceModel):
     timeout_milliseconds: int = Field(gt=0)
     connect_timeout_milliseconds: int = Field(gt=0)
     read_retries: int = Field(ge=0)
+    #: Retries of a throttled (429) call, writes included: the gateway did not run it.
+    throttle_retries: int = Field(ge=0)
     retry_backoff_milliseconds: int = Field(gt=0)
     max_view_rows: int = Field(gt=0)
 
@@ -185,6 +252,8 @@ class ModelRuntimeSettings(ZonicResourceModel):
     executor_threads: int = Field(gt=0)
     max_retries: int = Field(ge=0)
     request_timeout_seconds: float = Field(gt=0)
+    #: Model calls of an LLM node that has tools (its short agent loop).
+    llm_max_turns: int = Field(gt=0)
 
 
 class ResultSettings(ZonicResourceModel):
@@ -210,6 +279,10 @@ class ObservabilitySettings(ZonicResourceModel):
     trace_roles: list[str]
     retention_days: int = Field(gt=0)
     partition_months_ahead: int = Field(ge=0)
+    #: The score a message's feedback becomes on its run's trace (P3-11).
+    feedback_score_name: str = Field(min_length=1)
+    #: ``GET /v1/observability/usage`` without ``from``: this many days back.
+    usage_default_days: int = Field(gt=0)
     export: ExportSettings
 
 
@@ -224,6 +297,8 @@ class AuthSettings(ZonicResourceModel):
     claims: AuthClaims
     jwks_cache_seconds: int = Field(gt=0)
     clock_skew_seconds: int = Field(ge=0)
+    #: Groups (the ``groups`` claim) that may read agents' internal messages.
+    internal_message_roles: list[str]
 
 
 class RateLimitSettings(ZonicResourceModel):
@@ -236,6 +311,15 @@ class ApiSettings(ZonicResourceModel):
     cors_origins: list[str]
     max_body_bytes: int = Field(gt=0)
     internal_port: int = Field(gt=0, lt=65536)
+    #: How other instances reach this one's internal port (its run events, P4-05); empty is
+    #: ``http://<host name>:<internalPort>``.
+    internal_address: str
+    #: Headers on every public response (P5-01): content sniffing, framing, referrers, HSTS.
+    response_headers: dict[str, str]
+    default_page_size: int = Field(gt=0)
+    max_page_size: int = Field(gt=0)
+    #: A new session's title: the start of its first message.
+    session_title_chars: int = Field(gt=0)
 
 
 class CatalogSettings(ZonicResourceModel):
@@ -256,12 +340,28 @@ class FeatureFlags(ZonicResourceModel):
     script_node: bool
 
 
+class SandboxSettings(ZonicResourceModel):
+    """The Script node's sandbox service (P3-07): a Piston API at ``ZONIC_SANDBOX_URL``. Without
+    one, Script nodes fail with ``FEATURE_DISABLED``. ``languages`` maps a node's language to the
+    sandbox's runtime name; any other language is ``SANDBOX_ERROR``."""
+
+    run_timeout_milliseconds: int = Field(gt=0)
+    max_output_bytes: int = Field(gt=0)
+    languages: dict[str, str]
+
+
 class InputSettings(ZonicResourceModel):
     max_chars: int = Field(gt=0)
 
 
 class ContentSettings(ZonicResourceModel):
+    """Content parts (P3-08): inline table rows, the ECharts option keys a chart may use, and the
+    tags and attributes a sanitized ``html`` part keeps (``*`` for every tag)."""
+
     inline_row_limit: int = Field(gt=0)
+    chart_option_keys: list[str]
+    html_allowed_tags: list[str]
+    html_allowed_attributes: dict[str, list[str]]
 
 
 class RetentionSettings(ZonicResourceModel):
@@ -286,6 +386,9 @@ class RuntimeSettings(ZonicResourceModel):
     swarm: SwarmSettings
     tools: ToolSettings
     hooks: HookSettings
+    guardrails: GuardrailSettings
+    external_agents: ExternalAgentSettings
+    maintenance: MaintenanceSettings
     sse: SseSettings
     stream: StreamSettings
     shutdown: ShutdownSettings
@@ -302,6 +405,7 @@ class RuntimeSettings(ZonicResourceModel):
     catalog: CatalogSettings
     caches: CacheSizes
     features: FeatureFlags
+    sandbox: SandboxSettings
     input: InputSettings
     content: ContentSettings
     retention: RetentionSettings

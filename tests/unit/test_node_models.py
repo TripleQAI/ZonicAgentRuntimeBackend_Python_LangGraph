@@ -100,6 +100,7 @@ def test_M05_engine_records_round_trip() -> None:
         content_parts=[{"type": "text", "text": "hi"}],
     )
     dataset = DatasetRef(
+        key="db_1:1",
         dataset_id="d1",
         store="cache",
         kind="rows",

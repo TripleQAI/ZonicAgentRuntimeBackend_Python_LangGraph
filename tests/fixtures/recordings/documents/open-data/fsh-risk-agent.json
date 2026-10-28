@@ -1,0 +1,574 @@
+{
+  "bpc": "",
+  "name": "fsh-risk-agent",
+  "edges": [
+    {
+      "id": "edge_1781411632601_lin9j",
+      "data": {
+        "sourceType": "start",
+        "targetType": "agent"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "start_1781411608791_nnlo9",
+      "target": "agent_1781411611589_etqc7",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "default",
+      "targetHandle": "default"
+    },
+    {
+      "id": "edge_1781411641826_00z08",
+      "data": {
+        "sourceType": "http_request",
+        "targetType": "output"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "http_request_1781411624250_df0jq",
+      "target": "output_1781411614547_vkabf",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "default",
+      "targetHandle": "default"
+    },
+    {
+      "id": "edge_1781411644169_vykrb",
+      "data": {
+        "sourceType": "agent",
+        "targetType": "output"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "agent_1781411611589_etqc7",
+      "target": "output_1781411614547_vkabf",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "default",
+      "targetHandle": "default"
+    },
+    {
+      "id": "edge_1781411647232_32a9g",
+      "data": {
+        "offset": {
+          "x": 45,
+          "y": 10
+        },
+        "sourceType": "view",
+        "targetType": "output"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "view_1781411626544_n6si3",
+      "target": "output_1781411614547_vkabf",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "default",
+      "targetHandle": "default"
+    },
+    {
+      "id": "edge_1781411655686_9jftg",
+      "data": {
+        "handoff": true,
+        "sourceType": "agent",
+        "targetType": "llm"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "agent_1781411611589_etqc7",
+      "target": "llm_1781411616866_1gnji",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "handoff-llm_1781411616866_1gnji",
+      "targetHandle": null
+    },
+    {
+      "id": "edge_1781461889721_2bymt",
+      "data": {
+        "sourceType": "llm",
+        "targetType": "view"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "llm_1781461886104_la3lw",
+      "target": "view_1781411626544_n6si3",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "default",
+      "targetHandle": "default"
+    },
+    {
+      "id": "edge_1781461898094_jicec",
+      "data": {
+        "handoff": true,
+        "sourceType": "agent",
+        "targetType": "llm"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "agent_1781411611589_etqc7",
+      "target": "llm_1781461886104_la3lw",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "handoff-llm_1781461886104_la3lw",
+      "targetHandle": null
+    },
+    {
+      "id": "edge_1781464260666_luybu",
+      "data": {
+        "sourceType": "db_query",
+        "targetType": "output"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "db_query_1781464255639_pguv4",
+      "target": "output_1781411614547_vkabf",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "default",
+      "targetHandle": "default"
+    },
+    {
+      "id": "edge_1781464264158_ekwxh",
+      "data": {
+        "sourceType": "llm",
+        "targetType": "rule"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "llm_1781411616866_1gnji",
+      "target": "rule_1781464252190_fimjo",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "default",
+      "targetHandle": "default"
+    },
+    {
+      "id": "edge_1781464265815_10m1k",
+      "data": {
+        "sourceType": "rule",
+        "targetType": "db_query"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "rule_1781464252190_fimjo",
+      "target": "db_query_1781464255639_pguv4",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "r_default",
+      "targetHandle": "default"
+    },
+    {
+      "id": "edge_1781464267741_jzex7",
+      "data": {
+        "sourceType": "rule",
+        "targetType": "http_request"
+      },
+      "type": "default",
+      "style": {
+        "strokeWidth": 3
+      },
+      "source": "rule_1781464252190_fimjo",
+      "target": "http_request_1781411624250_df0jq",
+      "selected": false,
+      "deletable": true,
+      "sourceHandle": "r_else",
+      "targetHandle": "default"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "start_1781411608791_nnlo9",
+      "name": "Start_1",
+      "type": "start",
+      "style": {},
+      "width": 200,
+      "config": {
+        "interfaceInputs": [],
+        "variableUpdates": []
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 200,
+        "y": 150
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 200,
+        "y": 150
+      }
+    },
+    {
+      "id": "agent_1781411611589_etqc7",
+      "name": "risk-agent",
+      "type": "agent",
+      "style": {},
+      "width": 200,
+      "config": {
+        "model": "claude-sonnet-4-6",
+        "tools": [],
+        "strategy": "react",
+        "outputSchema": [],
+        "stateUpdates": [],
+        "systemPrompt": "",
+        "handoffTarget": [
+          "llm_1781411616866_1gnji",
+          "llm_1781461886104_la3lw"
+        ],
+        "maxIterations": 10,
+        "includeThoughts": false,
+        "variableUpdates": [],
+        "userQueryMapping": "{{system.userQuery}}"
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 499,
+        "y": 132
+      },
+      "selected": true,
+      "deletable": true,
+      "properties": {},
+      "description": "rick agent v2",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 499,
+        "y": 132
+      }
+    },
+    {
+      "id": "output_1781411614547_vkabf",
+      "name": "Output_1",
+      "type": "output",
+      "style": {},
+      "width": 200,
+      "config": {
+        "format": "text",
+        "outputKey": "result",
+        "stateUpdates": [],
+        "outputMapping": [
+          {
+            "key": "messages",
+            "type": "string",
+            "value": "{{messages}}"
+          }
+        ]
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 1748,
+        "y": 145
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 1748,
+        "y": 145
+      }
+    },
+    {
+      "id": "llm_1781411616866_1gnji",
+      "name": "sql-query-generator",
+      "type": "llm",
+      "style": {},
+      "width": 200,
+      "config": {
+        "model": "claude-sonnet-4-6",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You write one read-only PostgreSQL query for the user's question.\n\nDatabase: PostgreSQL, schema sample_open_data (open test data: NYC Housing Authority utility bills from NYC Open Data, FEMA disaster declarations from OpenFEMA).\n\nTables:\n- facility(facility_sk, facility_name, client_code, region, division, borough, county, amp, funding_source)\n- bill(bill_sk, facility_sk, account, utility_meter, utility_type, measurement_code, measurement_unit_code, bill_date, period_start, period_end, expense, consumption, currency_abbr, vendor_sk, estimated)\n  utility_type is 'Electricity' (kWh), 'Natural Gas' (Therms) or 'Water' (HCF); expense is in USD.\n- vendor(vendor_sk, vendor_name)\n- disaster_declaration(disaster_number, designated_area, declaration_type, incident_type, declaration_title, declaration_date, incident_begin_date, incident_end_date, ia_program_declared, pa_program_declared, hm_program_declared)\n- v_facility_disaster: each facility joined to the disasters declared for its county (facility.county = disaster_declaration.designated_area).\n\nRules: SELECT only; qualify tables with sample_open_data; add LIMIT 100 unless the question asks for an aggregate. Return only the SQL, no explanation."
+          }
+        ],
+        "maxTokens": 1024,
+        "temperature": 0.7,
+        "outputSchema": [],
+        "stateUpdates": [],
+        "errorHandling": false,
+        "userQueryVars": [],
+        "responseFormat": "text",
+        "variableUpdates": [
+          {
+            "path": "flow.sqlQuery",
+            "role": "assistant",
+            "value": "{{nodes.sql-query-generator.output}}",
+            "operation": "set"
+          },
+          {
+            "path": "messages",
+            "role": "assistant",
+            "value": "{{nodes.data-analysis.output}}",
+            "operation": "append"
+          }
+        ],
+        "userQueryMapping": "{{system.userQuery}}"
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 731,
+        "y": 362
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 731,
+        "y": 362
+      }
+    },
+    {
+      "id": "http_request_1781411624250_df0jq",
+      "name": "query-risk",
+      "type": "http_request",
+      "style": {},
+      "width": 200,
+      "config": {
+        "url": "https://www.fema.gov/api/open/v2/DisasterDeclarationsSummaries?%24filter=state+eq+%27NY%27&%24orderby=declarationDate+desc&%24top=10&%24select=disasterNumber%2CdeclarationType%2CincidentType%2CdeclarationTitle%2CdesignatedArea%2CdeclarationDate",
+        "body": "",
+        "method": "GET",
+        "headers": [],
+        "stateUpdates": [],
+        "timeoutSeconds": 30,
+        "variableUpdates": []
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 1315,
+        "y": 428
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 1315,
+        "y": 428
+      }
+    },
+    {
+      "id": "view_1781411626544_n6si3",
+      "name": "report",
+      "type": "view",
+      "style": {},
+      "width": 200,
+      "config": {
+        "htmlTemplate": "<div>\n  <!-- Reference variables with {{variable.path}} -->\n</div>",
+        "outputVariable": "view.html",
+        "variableUpdates": []
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 1312,
+        "y": 526
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 1312,
+        "y": 526
+      }
+    },
+    {
+      "id": "llm_1781461886104_la3lw",
+      "name": "data-analysis",
+      "type": "llm",
+      "style": {},
+      "width": 200,
+      "config": {
+        "model": "claude-sonnet-4-6",
+        "messages": [],
+        "maxTokens": 1024,
+        "temperature": 0.7,
+        "outputSchema": [],
+        "stateUpdates": [],
+        "errorHandling": false,
+        "responseFormat": "text",
+        "variableUpdates": [],
+        "userQueryMapping": "{{system.userQuery}}"
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 722,
+        "y": 513
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 722,
+        "y": 513
+      }
+    },
+    {
+      "id": "rule_1781464252190_fimjo",
+      "name": "Rule_1",
+      "type": "rule",
+      "style": {},
+      "width": 200,
+      "config": {
+        "rules": [
+          {
+            "label": "True",
+            "ruleId": "r_default",
+            "conditions": [
+              {
+                "op": "eq",
+                "field": "{{flow.useDBQuery}}",
+                "logic": "AND",
+                "value": "true"
+              }
+            ],
+            "conditionLogic": "AND"
+          },
+          {
+            "label": "Else",
+            "ruleId": "r_else",
+            "isDefault": true,
+            "conditions": [],
+            "conditionLogic": "AND"
+          }
+        ]
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 1018,
+        "y": 379
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 1018,
+        "y": 379
+      }
+    },
+    {
+      "id": "db_query_1781464255639_pguv4",
+      "name": "query-analysis",
+      "type": "db_query",
+      "style": {},
+      "width": 200,
+      "config": {
+        "query": "SELECT * FROM sample_open_data.v_facility_disaster ORDER BY declaration_date DESC LIMIT 10",
+        "maxRows": 1000,
+        "outputKey": "db.result",
+        "parameters": [
+          {
+            "key": "queryParameter",
+            "value": "{{flow.sqlQuery}}"
+          }
+        ],
+        "connectionId": "sample_open_data",
+        "databaseType": "postgresql",
+        "outputSchema": {},
+        "timeoutSeconds": 30,
+        "variableUpdates": [
+          {
+            "path": "flow.queryResponse",
+            "role": "assistant",
+            "value": "{{nodes.query-analysis.output}}",
+            "operation": "set"
+          },
+          {
+            "path": "messages",
+            "role": "assistant",
+            "value": "{{nodes.query-analysis.output}}",
+            "operation": "append"
+          }
+        ]
+      },
+      "height": 80,
+      "dragging": false,
+      "position": {
+        "x": 1322,
+        "y": 299
+      },
+      "selected": false,
+      "deletable": true,
+      "properties": {},
+      "description": "",
+      "variableUpdates": [],
+      "positionAbsolute": {
+        "x": 1322,
+        "y": 299
+      }
+    }
+  ],
+  "editAs": "",
+  "skills": [],
+  "security": {},
+  "interface": {},
+  "variables": {
+    "sqlQuery": {
+      "type": "string"
+    },
+    "useDBQuery": {
+      "type": "boolean",
+      "default": "true"
+    },
+    "generatedHtml": {
+      "type": "string"
+    },
+    "queryResponse": {
+      "type": "json"
+    }
+  },
+  "isDisabled": false,
+  "description": "",
+  "displayName": "fsh-risk-agent",
+  "schemaVersion": "2.0",
+  "invocationType": "",
+  "semanticDomain": "risk",
+  "includeThoughts": false,
+  "publishChannels": [],
+  "semanticKeywords": "•\tRegisters a query_risk_exposure tool that combines load history and weather outlooks with market data — forward strips, capacity tags, and locational pricing — to project exposure rather than report history.\n•\tQuantifies each exposure in dollars and shows the assumptions behind it, for example “4CP exposure for summer is moderate-to-elevated, roughly $184K in capacity charges, peak risk window late July to early August.”\n•\tPresents mitigation tradeoffs, for example hedging a portion of an open position now versus deferring, without recommending one; the user makes the call.\n•\tCites the market data, forecast window, and methodology behind every projection, so the reasoning — not just the number — is auditable.\n•\tOperates under the strictest Guardrail of the three: every output is framed as advisory decision support, and the agent does not issue directives on financial positions.",
+  "semanticUseCases": "The Risk Agent is the forecasting lane: it projects a portfolio's forward financial exposure to energy markets and presents the tradeoffs of mitigating it. Where the Energy Agent reports what a building used and the Facilities Agent explains current behavior, the Risk Agent looks ahead — quantifying coincident-peak (4CP) risk, capacity charge exposure, and price volatility on open positions in dollar terms. It is advisory by design: it frames the levers and their tradeoffs as decision support and stops short of directing a specific action.",
+  "agenticWorkflowId": "f1c5d831-b832-4105-8225-720eca07298e",
+  "enableForAutoInvoke": false,
+  "semanticSearchEnabled": true,
+  "isAvailableForMigration": false
+}

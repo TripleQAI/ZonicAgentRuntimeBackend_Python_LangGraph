@@ -1,0 +1,3386 @@
+[
+  [
+    {
+      "data": {
+        "agenticWorkflowId": "<uuid>",
+        "sessionId": "<uuid>",
+        "title": "Why did electricity costs rise at Baruch Houses in Q1 2024?"
+      },
+      "seq": 1,
+      "type": "run.started"
+    },
+    {
+      "data": {
+        "nodeName": "Start_1",
+        "nodeType": "start",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "start_1",
+      "seq": 2,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "reportStatus",
+          "reviewThreshold",
+          "runCount",
+          "userId"
+        ]
+      },
+      "nodeId": "start_1",
+      "seq": 3,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 306,
+          "fields": 4,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "start_1",
+      "seq": 4,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "input_guardrail",
+        "nodeType": "guardrail",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "guardrail_1",
+      "seq": 5,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "pass"
+        ],
+        "outputSummary": {
+          "bytes": 45,
+          "fields": 3,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 90,
+          "modelCalls": 1,
+          "outputTokens": 6,
+          "totalTokens": 96
+        }
+      },
+      "nodeId": "guardrail_1",
+      "seq": 6,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "request_parser",
+        "nodeType": "llm",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "llm_parser",
+      "seq": 7,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "text": "{\"intent\": "
+      },
+      "nodeId": "llm_parser",
+      "seq": 8,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "text": "\"investigation\", \"facilityName\": \"Baruch Houses\", \"utilityType\": \"Electricity\", \"periodStart\": \"2024-01-01\", \"periodEnd\": \"2024-03-31\", \"includeRisk\": false, \"referencePeriodStart\": \"2023-01-01\", \"referencePeriodEnd\": \"2023-03-31\"}"
+      },
+      "nodeId": "llm_parser",
+      "seq": 9,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "keys": [
+          "facilityName",
+          "includeRisk",
+          "intent",
+          "periodEnd",
+          "periodStart",
+          "periodStartMonth",
+          "referencePeriodEnd",
+          "referencePeriodStart",
+          "utilityType"
+        ]
+      },
+      "nodeId": "llm_parser",
+      "seq": 10,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "system.currentDate"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "llm_parser",
+      "seq": 11,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 993,
+          "fields": 11,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 151,
+          "modelCalls": 1,
+          "outputTokens": 17,
+          "totalTokens": 168
+        }
+      },
+      "nodeId": "llm_parser",
+      "seq": 12,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "scope_router",
+        "nodeType": "rule",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "rule_scope",
+      "seq": 13,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "r_investigate"
+        ],
+        "outputSummary": {
+          "bytes": 70,
+          "fields": 3,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "rule_scope",
+      "seq": 14,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "weather_context",
+        "nodeType": "http_request",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "http_weather",
+      "seq": 15,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "weatherDaily"
+        ]
+      },
+      "nodeId": "http_weather",
+      "seq": 16,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 5022,
+          "fields": 5,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "http_weather",
+      "seq": 17,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "operations_team",
+        "nodeType": "swarm",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "swarm_ops",
+      "seq": 18,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "member": "coordinator"
+      },
+      "nodeId": "swarm_ops",
+      "seq": 19,
+      "type": "swarm.member.started"
+    },
+    {
+      "data": {
+        "inputSummary": {
+          "bytes": 77,
+          "fields": 1,
+          "type": "object"
+        },
+        "member": "coordinator",
+        "toolName": "transfer_to_energy_analyst",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "swarm_ops",
+      "seq": 20,
+      "type": "tool.started"
+    },
+    {
+      "data": {
+        "member": "coordinator",
+        "status": "success",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "swarm_ops",
+      "seq": 21,
+      "type": "tool.finished"
+    },
+    {
+      "data": {
+        "member": "coordinator",
+        "status": "completed",
+        "usage": {
+          "inputTokens": 169,
+          "modelCalls": 1,
+          "outputTokens": 12,
+          "totalTokens": 181
+        }
+      },
+      "nodeId": "swarm_ops",
+      "seq": 22,
+      "type": "swarm.member.finished"
+    },
+    {
+      "data": {
+        "from": "coordinator",
+        "message": "Cost and consumption for Baruch Houses, Q1 2024 against Q1 2023",
+        "to": [
+          "energy_analyst"
+        ]
+      },
+      "nodeId": "swarm_ops",
+      "seq": 23,
+      "type": "swarm.handoff"
+    },
+    {
+      "data": {
+        "member": "energy_analyst"
+      },
+      "nodeId": "swarm_ops",
+      "seq": 24,
+      "type": "swarm.member.started"
+    },
+    {
+      "data": {
+        "inputSummary": {
+          "bytes": 2,
+          "fields": 0,
+          "type": "object"
+        },
+        "member": "energy_analyst",
+        "toolName": "get_utility_bills_with_historical_data",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "swarm_ops",
+      "seq": 25,
+      "type": "tool.started"
+    },
+    {
+      "data": {
+        "member": "energy_analyst",
+        "status": "success",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "swarm_ops",
+      "seq": 26,
+      "type": "tool.finished"
+    },
+    {
+      "data": {
+        "inputSummary": {
+          "bytes": 47,
+          "fields": 1,
+          "type": "object"
+        },
+        "member": "energy_analyst",
+        "toolName": "transfer_to_report_writer",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "swarm_ops",
+      "seq": 27,
+      "type": "tool.started"
+    },
+    {
+      "data": {
+        "member": "energy_analyst",
+        "status": "success",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "swarm_ops",
+      "seq": 28,
+      "type": "tool.finished"
+    },
+    {
+      "data": {
+        "member": "energy_analyst",
+        "status": "completed",
+        "usage": {
+          "inputTokens": 448,
+          "modelCalls": 2,
+          "outputTokens": 9,
+          "totalTokens": 457
+        }
+      },
+      "nodeId": "swarm_ops",
+      "seq": 29,
+      "type": "swarm.member.finished"
+    },
+    {
+      "data": {
+        "from": "energy_analyst",
+        "message": "Costs up 12 percent; no data gaps",
+        "to": [
+          "report_writer"
+        ]
+      },
+      "nodeId": "swarm_ops",
+      "seq": 30,
+      "type": "swarm.handoff"
+    },
+    {
+      "data": {
+        "member": "report_writer"
+      },
+      "nodeId": "swarm_ops",
+      "seq": 31,
+      "type": "swarm.member.started"
+    },
+    {
+      "data": {
+        "member": "report_writer",
+        "text": "# "
+      },
+      "nodeId": "swarm_ops",
+      "seq": 32,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "member": "report_writer",
+        "text": "Report\nCosts rose 12 percent.\nSEVERITY: 3"
+      },
+      "nodeId": "swarm_ops",
+      "seq": 33,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "member": "report_writer",
+        "status": "completed",
+        "usage": {
+          "inputTokens": 226,
+          "modelCalls": 1,
+          "outputTokens": 8,
+          "totalTokens": 234
+        }
+      },
+      "nodeId": "swarm_ops",
+      "seq": 34,
+      "type": "swarm.member.finished"
+    },
+    {
+      "data": {
+        "keys": [
+          "swarmFinalAgent",
+          "swarmNodeHistory",
+          "swarmReport"
+        ]
+      },
+      "nodeId": "swarm_ops",
+      "seq": 35,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 190,
+          "fields": 5,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 843,
+          "modelCalls": 4,
+          "outputTokens": 29,
+          "totalTokens": 872
+        }
+      },
+      "nodeId": "swarm_ops",
+      "seq": 36,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "score_findings",
+        "nodeType": "script",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "script_score",
+      "seq": 37,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "needsReview",
+          "severity"
+        ]
+      },
+      "nodeId": "script_score",
+      "seq": 38,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 34,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "script_score",
+      "seq": 39,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "review_gate",
+        "nodeType": "rule",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "rule_review",
+      "seq": 40,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "r_else"
+        ],
+        "outputSummary": {
+          "bytes": 33,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "rule_review",
+      "seq": 41,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "record_run",
+        "nodeType": "variable",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "variable_record",
+      "seq": 42,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "history",
+          "reportStatus",
+          "runCount"
+        ]
+      },
+      "nodeId": "variable_record",
+      "seq": 43,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 55,
+          "fields": 3,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "variable_record",
+      "seq": 44,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "report_view",
+        "nodeType": "view",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "view_report",
+      "seq": 45,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "part": {
+          "datasetRefs": [],
+          "html": "<div class=\"facility-report\">\n  <h2>Facility operations report</h2>\n  <p><strong>Question:</strong> Why did electricity costs rise at Baruch Houses in Q1 2024?</p>\n  <p><strong>Scope:</strong> Baruch Houses · Electricity · 2024-01-01 to 2024-03-31</p>\n  <p><strong>Severity:</strong> 3 / 10 · <strong>Status:</strong> published</p>\n  <hr>\n  <div class=\"report-body\"># Report\nCosts rose 12 percent.\nSEVERITY: 3</div>\n  <p class=\"meta\">Final agent: report_writer</p>\n</div>",
+          "type": "html"
+        },
+        "type": "html"
+      },
+      "nodeId": "view_report",
+      "seq": 46,
+      "type": "content.part"
+    },
+    {
+      "data": {
+        "keys": [
+          "reportHtml"
+        ]
+      },
+      "nodeId": "view_report",
+      "seq": 47,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 501,
+          "fields": 1,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "view_report",
+      "seq": 48,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "Report",
+        "nodeType": "output",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "output_report",
+      "seq": 49,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 719,
+          "fields": 6,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "output_report",
+      "seq": 50,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "result": {
+          "finalAgent": "report_writer",
+          "handoffs": [
+            "coordinator",
+            "energy_analyst",
+            "report_writer"
+          ],
+          "html": "{\"html\": \"<div class=\\\"facility-report\\\">\\n  <h2>Facility operations report</h2>\\n  <p><strong>Question:</strong> Why did electricity costs rise at Baruch Houses in Q1 2024?</p>\\n  <p><strong>Scope:</strong> Baruch Houses · Electricity · 2024-01-01 to 2024-03-31</p>\\n  <p><strong>Severity:</strong> 3 / 10 · <strong>Status:</strong> published</p>\\n  <hr>\\n  <div class=\\\"report-body\\\"># Report\\nCosts rose 12 percent.\\nSEVERITY: 3</div>\\n  <p class=\\\"meta\\\">Final agent: report_writer</p>\\n</div>\"}",
+          "report": "# Report\nCosts rose 12 percent.\nSEVERITY: 3",
+          "severity": 3,
+          "status": "published"
+        },
+        "usage": {
+          "inputTokens": 1084,
+          "modelCalls": 6,
+          "outputTokens": 52,
+          "totalTokens": 1136
+        }
+      },
+      "seq": 51,
+      "type": "run.completed"
+    }
+  ],
+  [
+    {
+      "data": {
+        "agenticWorkflowId": "<uuid>",
+        "sessionId": "<uuid>"
+      },
+      "seq": 1,
+      "type": "run.started"
+    },
+    {
+      "data": {
+        "nodeName": "Start_1",
+        "nodeType": "start",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "start_1",
+      "seq": 2,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "reportStatus",
+          "reviewThreshold",
+          "runCount",
+          "userId"
+        ]
+      },
+      "nodeId": "start_1",
+      "seq": 3,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 228,
+          "fields": 4,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "start_1",
+      "seq": 4,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "input_guardrail",
+        "nodeType": "guardrail",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "guardrail_1",
+      "seq": 5,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "pass"
+        ],
+        "outputSummary": {
+          "bytes": 45,
+          "fields": 3,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 86,
+          "modelCalls": 1,
+          "outputTokens": 6,
+          "totalTokens": 92
+        }
+      },
+      "nodeId": "guardrail_1",
+      "seq": 6,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "request_parser",
+        "nodeType": "llm",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "llm_parser",
+      "seq": 7,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "text": "{\"intent\": "
+      },
+      "nodeId": "llm_parser",
+      "seq": 8,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "text": "\"investigation\", \"facilityName\": \"Baruch Houses\", \"utilityType\": \"Electricity\", \"periodStart\": \"2024-01-01\", \"periodEnd\": \"2024-03-31\", \"includeRisk\": false, \"referencePeriodStart\": \"2023-01-01\", \"referencePeriodEnd\": \"2023-03-31\"}"
+      },
+      "nodeId": "llm_parser",
+      "seq": 9,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "keys": [
+          "facilityName",
+          "includeRisk",
+          "intent",
+          "periodEnd",
+          "periodStart",
+          "periodStartMonth",
+          "referencePeriodEnd",
+          "referencePeriodStart",
+          "utilityType"
+        ]
+      },
+      "nodeId": "llm_parser",
+      "seq": 10,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "system.currentDate"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "llm_parser",
+      "seq": 11,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 993,
+          "fields": 11,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 183,
+          "modelCalls": 1,
+          "outputTokens": 17,
+          "totalTokens": 200
+        }
+      },
+      "nodeId": "llm_parser",
+      "seq": 12,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "scope_router",
+        "nodeType": "rule",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "rule_scope",
+      "seq": 13,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "r_investigate"
+        ],
+        "outputSummary": {
+          "bytes": 70,
+          "fields": 3,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "rule_scope",
+      "seq": 14,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "weather_context",
+        "nodeType": "http_request",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "http_weather",
+      "seq": 15,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "weatherDaily"
+        ]
+      },
+      "nodeId": "http_weather",
+      "seq": 16,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 5022,
+          "fields": 5,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "http_weather",
+      "seq": 17,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "operations_team",
+        "nodeType": "swarm",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "swarm_ops",
+      "seq": 18,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "member": "coordinator"
+      },
+      "nodeId": "swarm_ops",
+      "seq": 19,
+      "type": "swarm.member.started"
+    },
+    {
+      "data": {
+        "inputSummary": {
+          "bytes": 77,
+          "fields": 1,
+          "type": "object"
+        },
+        "member": "coordinator",
+        "toolName": "transfer_to_energy_analyst",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "swarm_ops",
+      "seq": 20,
+      "type": "tool.started"
+    },
+    {
+      "data": {
+        "member": "coordinator",
+        "status": "success",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "swarm_ops",
+      "seq": 21,
+      "type": "tool.finished"
+    },
+    {
+      "data": {
+        "member": "coordinator",
+        "status": "completed",
+        "usage": {
+          "inputTokens": 165,
+          "modelCalls": 1,
+          "outputTokens": 12,
+          "totalTokens": 177
+        }
+      },
+      "nodeId": "swarm_ops",
+      "seq": 22,
+      "type": "swarm.member.finished"
+    },
+    {
+      "data": {
+        "from": "coordinator",
+        "message": "Cost and consumption for Baruch Houses, Q1 2024 against Q1 2023",
+        "to": [
+          "energy_analyst"
+        ]
+      },
+      "nodeId": "swarm_ops",
+      "seq": 23,
+      "type": "swarm.handoff"
+    },
+    {
+      "data": {
+        "member": "energy_analyst"
+      },
+      "nodeId": "swarm_ops",
+      "seq": 24,
+      "type": "swarm.member.started"
+    },
+    {
+      "data": {
+        "inputSummary": {
+          "bytes": 2,
+          "fields": 0,
+          "type": "object"
+        },
+        "member": "energy_analyst",
+        "toolName": "get_utility_bills_with_historical_data",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "swarm_ops",
+      "seq": 25,
+      "type": "tool.started"
+    },
+    {
+      "data": {
+        "member": "energy_analyst",
+        "status": "success",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "swarm_ops",
+      "seq": 26,
+      "type": "tool.finished"
+    },
+    {
+      "data": {
+        "inputSummary": {
+          "bytes": 47,
+          "fields": 1,
+          "type": "object"
+        },
+        "member": "energy_analyst",
+        "toolName": "transfer_to_report_writer",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "swarm_ops",
+      "seq": 27,
+      "type": "tool.started"
+    },
+    {
+      "data": {
+        "member": "energy_analyst",
+        "status": "success",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "swarm_ops",
+      "seq": 28,
+      "type": "tool.finished"
+    },
+    {
+      "data": {
+        "member": "energy_analyst",
+        "status": "completed",
+        "usage": {
+          "inputTokens": 440,
+          "modelCalls": 2,
+          "outputTokens": 9,
+          "totalTokens": 449
+        }
+      },
+      "nodeId": "swarm_ops",
+      "seq": 29,
+      "type": "swarm.member.finished"
+    },
+    {
+      "data": {
+        "from": "energy_analyst",
+        "message": "Costs up 12 percent; no data gaps",
+        "to": [
+          "report_writer"
+        ]
+      },
+      "nodeId": "swarm_ops",
+      "seq": 30,
+      "type": "swarm.handoff"
+    },
+    {
+      "data": {
+        "member": "report_writer"
+      },
+      "nodeId": "swarm_ops",
+      "seq": 31,
+      "type": "swarm.member.started"
+    },
+    {
+      "data": {
+        "member": "report_writer",
+        "text": "# "
+      },
+      "nodeId": "swarm_ops",
+      "seq": 32,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "member": "report_writer",
+        "text": "Report\nCosts doubled.\nSEVERITY: 8"
+      },
+      "nodeId": "swarm_ops",
+      "seq": 33,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "member": "report_writer",
+        "status": "completed",
+        "usage": {
+          "inputTokens": 222,
+          "modelCalls": 1,
+          "outputTokens": 6,
+          "totalTokens": 228
+        }
+      },
+      "nodeId": "swarm_ops",
+      "seq": 34,
+      "type": "swarm.member.finished"
+    },
+    {
+      "data": {
+        "keys": [
+          "swarmFinalAgent",
+          "swarmNodeHistory",
+          "swarmReport"
+        ]
+      },
+      "nodeId": "swarm_ops",
+      "seq": 35,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 182,
+          "fields": 5,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 827,
+          "modelCalls": 4,
+          "outputTokens": 27,
+          "totalTokens": 854
+        }
+      },
+      "nodeId": "swarm_ops",
+      "seq": 36,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "score_findings",
+        "nodeType": "script",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "script_score",
+      "seq": 37,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "needsReview",
+          "severity"
+        ]
+      },
+      "nodeId": "script_score",
+      "seq": 38,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 33,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "script_score",
+      "seq": 39,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "review_gate",
+        "nodeType": "rule",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "rule_review",
+      "seq": 40,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "r_review"
+        ],
+        "outputSummary": {
+          "bytes": 60,
+          "fields": 3,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "rule_review",
+      "seq": 41,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "interruptId": "<uuid>",
+        "kind": "approval",
+        "prompt": "Severity 8/10. Publish this facility operations report?\n\n# Report\nCosts doubled.\nSEVERITY: 8",
+        "schema": {
+          "additionalProperties": false,
+          "description": "The decision on an Approval. The runtime sets decidedBy (who answered) and expired.",
+          "properties": {
+            "approved": {
+              "description": "true approves, false rejects",
+              "title": "Approved",
+              "type": "boolean"
+            },
+            "comment": {
+              "anyOf": [
+                {
+                  "maxLength": 2000,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Comment"
+            },
+            "decidedBy": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "readOnly": true,
+              "title": "Decidedby"
+            },
+            "expired": {
+              "default": false,
+              "readOnly": true,
+              "title": "Expired",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "approved"
+          ],
+          "title": "ApprovalAnswer",
+          "type": "object"
+        }
+      },
+      "nodeId": "approval_1",
+      "seq": 42,
+      "type": "interrupt.requested"
+    },
+    {
+      "data": {
+        "interruptIds": [
+          "<uuid>"
+        ]
+      },
+      "seq": 43,
+      "type": "run.waiting"
+    },
+    {
+      "data": {
+        "agenticWorkflowId": "<uuid>",
+        "sessionId": "<uuid>"
+      },
+      "seq": 44,
+      "type": "run.started"
+    },
+    {
+      "data": {
+        "nodeName": "publish_approval",
+        "nodeType": "approval",
+        "resumed": true,
+        "visit": 1
+      },
+      "nodeId": "approval_1",
+      "seq": 45,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "approvalResponse"
+        ]
+      },
+      "nodeId": "approval_1",
+      "seq": 46,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "approved"
+        ],
+        "outputSummary": {
+          "bytes": 61,
+          "fields": 3,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "approval_1",
+      "seq": 47,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "record_run",
+        "nodeType": "variable",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "variable_record",
+      "seq": 48,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "history",
+          "reportStatus",
+          "runCount"
+        ]
+      },
+      "nodeId": "variable_record",
+      "seq": 49,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 57,
+          "fields": 3,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "variable_record",
+      "seq": 50,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "report_view",
+        "nodeType": "view",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "view_report",
+      "seq": 51,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "part": {
+          "datasetRefs": [],
+          "html": "<div class=\"facility-report\">\n  <h2>Facility operations report</h2>\n  <p><strong>Question:</strong> And the heating bills in Q1 2024?</p>\n  <p><strong>Scope:</strong> Baruch Houses · Electricity · 2024-01-01 to 2024-03-31</p>\n  <p><strong>Severity:</strong> 8 / 10 · <strong>Status:</strong> published</p>\n  <hr>\n  <div class=\"report-body\"># Report\nCosts doubled.\nSEVERITY: 8</div>\n  <p class=\"meta\">Final agent: report_writer</p>\n</div>",
+          "type": "html"
+        },
+        "type": "html"
+      },
+      "nodeId": "view_report",
+      "seq": 52,
+      "type": "content.part"
+    },
+    {
+      "data": {
+        "keys": [
+          "reportHtml"
+        ]
+      },
+      "nodeId": "view_report",
+      "seq": 53,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 467,
+          "fields": 1,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "view_report",
+      "seq": 54,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "Report",
+        "nodeType": "output",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "output_report",
+      "seq": 55,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 677,
+          "fields": 6,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "output_report",
+      "seq": 56,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "result": {
+          "finalAgent": "report_writer",
+          "handoffs": [
+            "coordinator",
+            "energy_analyst",
+            "report_writer"
+          ],
+          "html": "{\"html\": \"<div class=\\\"facility-report\\\">\\n  <h2>Facility operations report</h2>\\n  <p><strong>Question:</strong> And the heating bills in Q1 2024?</p>\\n  <p><strong>Scope:</strong> Baruch Houses · Electricity · 2024-01-01 to 2024-03-31</p>\\n  <p><strong>Severity:</strong> 8 / 10 · <strong>Status:</strong> published</p>\\n  <hr>\\n  <div class=\\\"report-body\\\"># Report\\nCosts doubled.\\nSEVERITY: 8</div>\\n  <p class=\\\"meta\\\">Final agent: report_writer</p>\\n</div>\"}",
+          "report": "# Report\nCosts doubled.\nSEVERITY: 8",
+          "severity": 8,
+          "status": "published"
+        },
+        "usage": {
+          "inputTokens": 1096,
+          "modelCalls": 6,
+          "outputTokens": 50,
+          "totalTokens": 1146
+        }
+      },
+      "seq": 57,
+      "type": "run.completed"
+    }
+  ],
+  [
+    {
+      "data": {
+        "agenticWorkflowId": "<uuid>",
+        "sessionId": "<uuid>"
+      },
+      "seq": 1,
+      "type": "run.started"
+    },
+    {
+      "data": {
+        "nodeName": "Start_1",
+        "nodeType": "start",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "start_1",
+      "seq": 2,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "reportStatus",
+          "reviewThreshold",
+          "runCount",
+          "userId"
+        ]
+      },
+      "nodeId": "start_1",
+      "seq": 3,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 222,
+          "fields": 4,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "start_1",
+      "seq": 4,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "input_guardrail",
+        "nodeType": "guardrail",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "guardrail_1",
+      "seq": 5,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "pass"
+        ],
+        "outputSummary": {
+          "bytes": 45,
+          "fields": 3,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 86,
+          "modelCalls": 1,
+          "outputTokens": 6,
+          "totalTokens": 92
+        }
+      },
+      "nodeId": "guardrail_1",
+      "seq": 6,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "request_parser",
+        "nodeType": "llm",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "llm_parser",
+      "seq": 7,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "text": "{\"intent\": "
+      },
+      "nodeId": "llm_parser",
+      "seq": 8,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "text": "\"investigation\", \"facilityName\": \"Baruch Houses\", \"utilityType\": \"Electricity\", \"periodStart\": \"2024-01-01\", \"periodEnd\": \"2024-03-31\", \"includeRisk\": false, \"referencePeriodStart\": \"2023-01-01\", \"referencePeriodEnd\": \"2023-03-31\"}"
+      },
+      "nodeId": "llm_parser",
+      "seq": 9,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "keys": [
+          "facilityName",
+          "includeRisk",
+          "intent",
+          "periodEnd",
+          "periodStart",
+          "periodStartMonth",
+          "referencePeriodEnd",
+          "referencePeriodStart",
+          "utilityType"
+        ]
+      },
+      "nodeId": "llm_parser",
+      "seq": 10,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "system.currentDate"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "llm_parser",
+      "seq": 11,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 993,
+          "fields": 11,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 212,
+          "modelCalls": 1,
+          "outputTokens": 17,
+          "totalTokens": 229
+        }
+      },
+      "nodeId": "llm_parser",
+      "seq": 12,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "scope_router",
+        "nodeType": "rule",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "rule_scope",
+      "seq": 13,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "r_investigate"
+        ],
+        "outputSummary": {
+          "bytes": 70,
+          "fields": 3,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "rule_scope",
+      "seq": 14,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "weather_context",
+        "nodeType": "http_request",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "http_weather",
+      "seq": 15,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "weatherDaily"
+        ]
+      },
+      "nodeId": "http_weather",
+      "seq": 16,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 5022,
+          "fields": 5,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "http_weather",
+      "seq": 17,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "operations_team",
+        "nodeType": "swarm",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "swarm_ops",
+      "seq": 18,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "member": "coordinator"
+      },
+      "nodeId": "swarm_ops",
+      "seq": 19,
+      "type": "swarm.member.started"
+    },
+    {
+      "data": {
+        "inputSummary": {
+          "bytes": 77,
+          "fields": 1,
+          "type": "object"
+        },
+        "member": "coordinator",
+        "toolName": "transfer_to_energy_analyst",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "swarm_ops",
+      "seq": 20,
+      "type": "tool.started"
+    },
+    {
+      "data": {
+        "member": "coordinator",
+        "status": "success",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "swarm_ops",
+      "seq": 21,
+      "type": "tool.finished"
+    },
+    {
+      "data": {
+        "member": "coordinator",
+        "status": "completed",
+        "usage": {
+          "inputTokens": 165,
+          "modelCalls": 1,
+          "outputTokens": 12,
+          "totalTokens": 177
+        }
+      },
+      "nodeId": "swarm_ops",
+      "seq": 22,
+      "type": "swarm.member.finished"
+    },
+    {
+      "data": {
+        "from": "coordinator",
+        "message": "Cost and consumption for Baruch Houses, Q1 2024 against Q1 2023",
+        "to": [
+          "energy_analyst"
+        ]
+      },
+      "nodeId": "swarm_ops",
+      "seq": 23,
+      "type": "swarm.handoff"
+    },
+    {
+      "data": {
+        "member": "energy_analyst"
+      },
+      "nodeId": "swarm_ops",
+      "seq": 24,
+      "type": "swarm.member.started"
+    },
+    {
+      "data": {
+        "inputSummary": {
+          "bytes": 2,
+          "fields": 0,
+          "type": "object"
+        },
+        "member": "energy_analyst",
+        "toolName": "get_utility_bills_with_historical_data",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "swarm_ops",
+      "seq": 25,
+      "type": "tool.started"
+    },
+    {
+      "data": {
+        "member": "energy_analyst",
+        "status": "success",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "swarm_ops",
+      "seq": 26,
+      "type": "tool.finished"
+    },
+    {
+      "data": {
+        "inputSummary": {
+          "bytes": 47,
+          "fields": 1,
+          "type": "object"
+        },
+        "member": "energy_analyst",
+        "toolName": "transfer_to_report_writer",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "swarm_ops",
+      "seq": 27,
+      "type": "tool.started"
+    },
+    {
+      "data": {
+        "member": "energy_analyst",
+        "status": "success",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "swarm_ops",
+      "seq": 28,
+      "type": "tool.finished"
+    },
+    {
+      "data": {
+        "member": "energy_analyst",
+        "status": "completed",
+        "usage": {
+          "inputTokens": 440,
+          "modelCalls": 2,
+          "outputTokens": 9,
+          "totalTokens": 449
+        }
+      },
+      "nodeId": "swarm_ops",
+      "seq": 29,
+      "type": "swarm.member.finished"
+    },
+    {
+      "data": {
+        "from": "energy_analyst",
+        "message": "Costs up 12 percent; no data gaps",
+        "to": [
+          "report_writer"
+        ]
+      },
+      "nodeId": "swarm_ops",
+      "seq": 30,
+      "type": "swarm.handoff"
+    },
+    {
+      "data": {
+        "member": "report_writer"
+      },
+      "nodeId": "swarm_ops",
+      "seq": 31,
+      "type": "swarm.member.started"
+    },
+    {
+      "data": {
+        "member": "report_writer",
+        "text": "# "
+      },
+      "nodeId": "swarm_ops",
+      "seq": 32,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "member": "report_writer",
+        "text": "Report\nCosts doubled.\nSEVERITY: 8"
+      },
+      "nodeId": "swarm_ops",
+      "seq": 33,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "member": "report_writer",
+        "status": "completed",
+        "usage": {
+          "inputTokens": 222,
+          "modelCalls": 1,
+          "outputTokens": 6,
+          "totalTokens": 228
+        }
+      },
+      "nodeId": "swarm_ops",
+      "seq": 34,
+      "type": "swarm.member.finished"
+    },
+    {
+      "data": {
+        "keys": [
+          "swarmFinalAgent",
+          "swarmNodeHistory",
+          "swarmReport"
+        ]
+      },
+      "nodeId": "swarm_ops",
+      "seq": 35,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 182,
+          "fields": 5,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 827,
+          "modelCalls": 4,
+          "outputTokens": 27,
+          "totalTokens": 854
+        }
+      },
+      "nodeId": "swarm_ops",
+      "seq": 36,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "score_findings",
+        "nodeType": "script",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "script_score",
+      "seq": 37,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "needsReview",
+          "severity"
+        ]
+      },
+      "nodeId": "script_score",
+      "seq": 38,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 33,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "script_score",
+      "seq": 39,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "review_gate",
+        "nodeType": "rule",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "rule_review",
+      "seq": 40,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "r_review"
+        ],
+        "outputSummary": {
+          "bytes": 60,
+          "fields": 3,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "rule_review",
+      "seq": 41,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "interruptId": "<uuid>",
+        "kind": "approval",
+        "prompt": "Severity 8/10. Publish this facility operations report?\n\n# Report\nCosts doubled.\nSEVERITY: 8",
+        "schema": {
+          "additionalProperties": false,
+          "description": "The decision on an Approval. The runtime sets decidedBy (who answered) and expired.",
+          "properties": {
+            "approved": {
+              "description": "true approves, false rejects",
+              "title": "Approved",
+              "type": "boolean"
+            },
+            "comment": {
+              "anyOf": [
+                {
+                  "maxLength": 2000,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Comment"
+            },
+            "decidedBy": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "readOnly": true,
+              "title": "Decidedby"
+            },
+            "expired": {
+              "default": false,
+              "readOnly": true,
+              "title": "Expired",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "approved"
+          ],
+          "title": "ApprovalAnswer",
+          "type": "object"
+        }
+      },
+      "nodeId": "approval_1",
+      "seq": 42,
+      "type": "interrupt.requested"
+    },
+    {
+      "data": {
+        "interruptIds": [
+          "<uuid>"
+        ]
+      },
+      "seq": 43,
+      "type": "run.waiting"
+    },
+    {
+      "data": {
+        "agenticWorkflowId": "<uuid>",
+        "sessionId": "<uuid>"
+      },
+      "seq": 44,
+      "type": "run.started"
+    },
+    {
+      "data": {
+        "nodeName": "publish_approval",
+        "nodeType": "approval",
+        "resumed": true,
+        "visit": 1
+      },
+      "nodeId": "approval_1",
+      "seq": 45,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "approvalResponse"
+        ]
+      },
+      "nodeId": "approval_1",
+      "seq": 46,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "rejected"
+        ],
+        "outputSummary": {
+          "bytes": 61,
+          "fields": 3,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "approval_1",
+      "seq": 47,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "interruptId": "<uuid>",
+        "kind": "input",
+        "prompt": "What should change before this report can be published?",
+        "schema": {
+          "additionalProperties": false,
+          "properties": {
+            "value": {
+              "title": "Value",
+              "type": "string"
+            }
+          },
+          "required": [
+            "value"
+          ],
+          "title": "InputAnswer",
+          "type": "object"
+        }
+      },
+      "nodeId": "human_feedback",
+      "seq": 48,
+      "type": "interrupt.requested"
+    },
+    {
+      "data": {
+        "interruptIds": [
+          "<uuid>"
+        ]
+      },
+      "seq": 49,
+      "type": "run.waiting"
+    },
+    {
+      "data": {
+        "agenticWorkflowId": "<uuid>",
+        "sessionId": "<uuid>"
+      },
+      "seq": 50,
+      "type": "run.started"
+    },
+    {
+      "data": {
+        "nodeName": "reviewer_feedback",
+        "nodeType": "human_input",
+        "resumed": true,
+        "visit": 1
+      },
+      "nodeId": "human_feedback",
+      "seq": 51,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "reviewerFeedback"
+        ]
+      },
+      "nodeId": "human_feedback",
+      "seq": 52,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 28,
+          "fields": 1,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "human_feedback",
+      "seq": 53,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "Rejected",
+        "nodeType": "output",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "output_rejected",
+      "seq": 54,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 100,
+          "fields": 3,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "output_rejected",
+      "seq": 55,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "result": {
+          "feedback": "Name the meters.",
+          "report": "# Report\nCosts doubled.\nSEVERITY: 8",
+          "status": "rejected"
+        },
+        "usage": {
+          "inputTokens": 1125,
+          "modelCalls": 6,
+          "outputTokens": 50,
+          "totalTokens": 1175
+        }
+      },
+      "seq": 56,
+      "type": "run.completed"
+    }
+  ],
+  [
+    {
+      "data": {
+        "agenticWorkflowId": "<uuid>",
+        "sessionId": "<uuid>"
+      },
+      "seq": 1,
+      "type": "run.started"
+    },
+    {
+      "data": {
+        "nodeName": "Start_1",
+        "nodeType": "start",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "start_1",
+      "seq": 2,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "reportStatus",
+          "reviewThreshold",
+          "runCount",
+          "userId"
+        ]
+      },
+      "nodeId": "start_1",
+      "seq": 3,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 186,
+          "fields": 4,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "start_1",
+      "seq": 4,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "input_guardrail",
+        "nodeType": "guardrail",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "guardrail_1",
+      "seq": 5,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "pass"
+        ],
+        "outputSummary": {
+          "bytes": 45,
+          "fields": 3,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 84,
+          "modelCalls": 1,
+          "outputTokens": 6,
+          "totalTokens": 90
+        }
+      },
+      "nodeId": "guardrail_1",
+      "seq": 6,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "request_parser",
+        "nodeType": "llm",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "llm_parser",
+      "seq": 7,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "text": "{\"intent\": "
+      },
+      "nodeId": "llm_parser",
+      "seq": 8,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "text": "\"investigation\", \"facilityName\": \"Baruch Houses\", \"utilityType\": \"Electricity\", \"periodStart\": \"2024-01-01\", \"periodEnd\": \"2024-03-31\", \"includeRisk\": false, \"referencePeriodStart\": \"2023-01-01\", \"referencePeriodEnd\": \"2023-03-31\"}"
+      },
+      "nodeId": "llm_parser",
+      "seq": 9,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "keys": [
+          "facilityName",
+          "includeRisk",
+          "intent",
+          "periodEnd",
+          "periodStart",
+          "periodStartMonth",
+          "referencePeriodEnd",
+          "referencePeriodStart",
+          "utilityType"
+        ]
+      },
+      "nodeId": "llm_parser",
+      "seq": 10,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "system.currentDate"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "llm_parser",
+      "seq": 11,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 993,
+          "fields": 11,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 234,
+          "modelCalls": 1,
+          "outputTokens": 17,
+          "totalTokens": 251
+        }
+      },
+      "nodeId": "llm_parser",
+      "seq": 12,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "scope_router",
+        "nodeType": "rule",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "rule_scope",
+      "seq": 13,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "r_investigate"
+        ],
+        "outputSummary": {
+          "bytes": 70,
+          "fields": 3,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "rule_scope",
+      "seq": 14,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "weather_context",
+        "nodeType": "http_request",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "http_weather",
+      "seq": 15,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "weatherDaily"
+        ]
+      },
+      "nodeId": "http_weather",
+      "seq": 16,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 5022,
+          "fields": 5,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "http_weather",
+      "seq": 17,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "operations_team",
+        "nodeType": "swarm",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "swarm_ops",
+      "seq": 18,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "member": "coordinator"
+      },
+      "nodeId": "swarm_ops",
+      "seq": 19,
+      "type": "swarm.member.started"
+    },
+    {
+      "data": {
+        "inputSummary": {
+          "bytes": 77,
+          "fields": 1,
+          "type": "object"
+        },
+        "member": "coordinator",
+        "toolName": "transfer_to_energy_analyst",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "swarm_ops",
+      "seq": 20,
+      "type": "tool.started"
+    },
+    {
+      "data": {
+        "member": "coordinator",
+        "status": "success",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "swarm_ops",
+      "seq": 21,
+      "type": "tool.finished"
+    },
+    {
+      "data": {
+        "member": "coordinator",
+        "status": "completed",
+        "usage": {
+          "inputTokens": 163,
+          "modelCalls": 1,
+          "outputTokens": 12,
+          "totalTokens": 175
+        }
+      },
+      "nodeId": "swarm_ops",
+      "seq": 22,
+      "type": "swarm.member.finished"
+    },
+    {
+      "data": {
+        "from": "coordinator",
+        "message": "Cost and consumption for Baruch Houses, Q1 2024 against Q1 2023",
+        "to": [
+          "energy_analyst"
+        ]
+      },
+      "nodeId": "swarm_ops",
+      "seq": 23,
+      "type": "swarm.handoff"
+    },
+    {
+      "data": {
+        "member": "energy_analyst"
+      },
+      "nodeId": "swarm_ops",
+      "seq": 24,
+      "type": "swarm.member.started"
+    },
+    {
+      "data": {
+        "inputSummary": {
+          "bytes": 2,
+          "fields": 0,
+          "type": "object"
+        },
+        "member": "energy_analyst",
+        "toolName": "get_utility_bills_with_historical_data",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "swarm_ops",
+      "seq": 25,
+      "type": "tool.started"
+    },
+    {
+      "data": {
+        "member": "energy_analyst",
+        "status": "success",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "swarm_ops",
+      "seq": 26,
+      "type": "tool.finished"
+    },
+    {
+      "data": {
+        "inputSummary": {
+          "bytes": 47,
+          "fields": 1,
+          "type": "object"
+        },
+        "member": "energy_analyst",
+        "toolName": "transfer_to_report_writer",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "swarm_ops",
+      "seq": 27,
+      "type": "tool.started"
+    },
+    {
+      "data": {
+        "member": "energy_analyst",
+        "status": "success",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "swarm_ops",
+      "seq": 28,
+      "type": "tool.finished"
+    },
+    {
+      "data": {
+        "member": "energy_analyst",
+        "status": "completed",
+        "usage": {
+          "inputTokens": 436,
+          "modelCalls": 2,
+          "outputTokens": 9,
+          "totalTokens": 445
+        }
+      },
+      "nodeId": "swarm_ops",
+      "seq": 29,
+      "type": "swarm.member.finished"
+    },
+    {
+      "data": {
+        "from": "energy_analyst",
+        "message": "Costs up 12 percent; no data gaps",
+        "to": [
+          "report_writer"
+        ]
+      },
+      "nodeId": "swarm_ops",
+      "seq": 30,
+      "type": "swarm.handoff"
+    },
+    {
+      "data": {
+        "member": "report_writer"
+      },
+      "nodeId": "swarm_ops",
+      "seq": 31,
+      "type": "swarm.member.started"
+    },
+    {
+      "data": {
+        "member": "report_writer",
+        "text": "# "
+      },
+      "nodeId": "swarm_ops",
+      "seq": 32,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "member": "report_writer",
+        "text": "Report\nNo severity line here."
+      },
+      "nodeId": "swarm_ops",
+      "seq": 33,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "member": "report_writer",
+        "status": "completed",
+        "usage": {
+          "inputTokens": 220,
+          "modelCalls": 1,
+          "outputTokens": 6,
+          "totalTokens": 226
+        }
+      },
+      "nodeId": "swarm_ops",
+      "seq": 34,
+      "type": "swarm.member.finished"
+    },
+    {
+      "data": {
+        "keys": [
+          "swarmFinalAgent",
+          "swarmNodeHistory",
+          "swarmReport"
+        ]
+      },
+      "nodeId": "swarm_ops",
+      "seq": 35,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 177,
+          "fields": 5,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 819,
+          "modelCalls": 4,
+          "outputTokens": 27,
+          "totalTokens": 846
+        }
+      },
+      "nodeId": "swarm_ops",
+      "seq": 36,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "score_findings",
+        "nodeType": "script",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "script_score",
+      "seq": 37,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "needsReview",
+          "severity"
+        ]
+      },
+      "nodeId": "script_score",
+      "seq": 38,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 34,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "script_score",
+      "seq": 39,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "review_gate",
+        "nodeType": "rule",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "rule_review",
+      "seq": 40,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "r_review"
+        ],
+        "outputSummary": {
+          "bytes": 60,
+          "fields": 3,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "rule_review",
+      "seq": 41,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "interruptId": "<uuid>",
+        "kind": "approval",
+        "prompt": "Severity 10/10. Publish this facility operations report?\n\n# Report\nNo severity line here.",
+        "schema": {
+          "additionalProperties": false,
+          "description": "The decision on an Approval. The runtime sets decidedBy (who answered) and expired.",
+          "properties": {
+            "approved": {
+              "description": "true approves, false rejects",
+              "title": "Approved",
+              "type": "boolean"
+            },
+            "comment": {
+              "anyOf": [
+                {
+                  "maxLength": 2000,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Comment"
+            },
+            "decidedBy": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "readOnly": true,
+              "title": "Decidedby"
+            },
+            "expired": {
+              "default": false,
+              "readOnly": true,
+              "title": "Expired",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "approved"
+          ],
+          "title": "ApprovalAnswer",
+          "type": "object"
+        }
+      },
+      "nodeId": "approval_1",
+      "seq": 42,
+      "type": "interrupt.requested"
+    },
+    {
+      "data": {
+        "interruptIds": [
+          "<uuid>"
+        ]
+      },
+      "seq": 43,
+      "type": "run.waiting"
+    },
+    {
+      "data": {
+        "agenticWorkflowId": "<uuid>",
+        "sessionId": "<uuid>"
+      },
+      "seq": 44,
+      "type": "run.started"
+    },
+    {
+      "data": {
+        "nodeName": "publish_approval",
+        "nodeType": "approval",
+        "resumed": true,
+        "visit": 1
+      },
+      "nodeId": "approval_1",
+      "seq": 45,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "approvalResponse"
+        ]
+      },
+      "nodeId": "approval_1",
+      "seq": 46,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "approved"
+        ],
+        "outputSummary": {
+          "bytes": 37,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "approval_1",
+      "seq": 47,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "record_run",
+        "nodeType": "variable",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "variable_record",
+      "seq": 48,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "history",
+          "reportStatus",
+          "runCount"
+        ]
+      },
+      "nodeId": "variable_record",
+      "seq": 49,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 60,
+          "fields": 3,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "variable_record",
+      "seq": 50,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "report_view",
+        "nodeType": "view",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "view_report",
+      "seq": 51,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "part": {
+          "datasetRefs": [],
+          "html": "<div class=\"facility-report\">\n  <h2>Facility operations report</h2>\n  <p><strong>Question:</strong> And gas in Q1 2024?</p>\n  <p><strong>Scope:</strong> Baruch Houses · Electricity · 2024-01-01 to 2024-03-31</p>\n  <p><strong>Severity:</strong> 10 / 10 · <strong>Status:</strong> published</p>\n  <hr>\n  <div class=\"report-body\"># Report\nNo severity line here.</div>\n  <p class=\"meta\">Final agent: report_writer</p>\n</div>",
+          "type": "html"
+        },
+        "type": "html"
+      },
+      "nodeId": "view_report",
+      "seq": 52,
+      "type": "content.part"
+    },
+    {
+      "data": {
+        "keys": [
+          "reportHtml"
+        ]
+      },
+      "nodeId": "view_report",
+      "seq": 53,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 449,
+          "fields": 1,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "view_report",
+      "seq": 54,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "Report",
+        "nodeType": "output",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "output_report",
+      "seq": 55,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 654,
+          "fields": 6,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "output_report",
+      "seq": 56,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "result": {
+          "finalAgent": "report_writer",
+          "handoffs": [
+            "coordinator",
+            "energy_analyst",
+            "report_writer"
+          ],
+          "html": "{\"html\": \"<div class=\\\"facility-report\\\">\\n  <h2>Facility operations report</h2>\\n  <p><strong>Question:</strong> And gas in Q1 2024?</p>\\n  <p><strong>Scope:</strong> Baruch Houses · Electricity · 2024-01-01 to 2024-03-31</p>\\n  <p><strong>Severity:</strong> 10 / 10 · <strong>Status:</strong> published</p>\\n  <hr>\\n  <div class=\\\"report-body\\\"># Report\\nNo severity line here.</div>\\n  <p class=\\\"meta\\\">Final agent: report_writer</p>\\n</div>\"}",
+          "report": "# Report\nNo severity line here.",
+          "severity": 10,
+          "status": "published"
+        },
+        "usage": {
+          "inputTokens": 1137,
+          "modelCalls": 6,
+          "outputTokens": 50,
+          "totalTokens": 1187
+        }
+      },
+      "seq": 57,
+      "type": "run.completed"
+    }
+  ],
+  [
+    {
+      "data": {
+        "agenticWorkflowId": "<uuid>",
+        "sessionId": "<uuid>"
+      },
+      "seq": 1,
+      "type": "run.started"
+    },
+    {
+      "data": {
+        "nodeName": "Start_1",
+        "nodeType": "start",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "start_1",
+      "seq": 2,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "reportStatus",
+          "reviewThreshold",
+          "runCount",
+          "userId"
+        ]
+      },
+      "nodeId": "start_1",
+      "seq": 3,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 174,
+          "fields": 4,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "start_1",
+      "seq": 4,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "input_guardrail",
+        "nodeType": "guardrail",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "guardrail_1",
+      "seq": 5,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "pass"
+        ],
+        "outputSummary": {
+          "bytes": 45,
+          "fields": 3,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 83,
+          "modelCalls": 1,
+          "outputTokens": 6,
+          "totalTokens": 89
+        }
+      },
+      "nodeId": "guardrail_1",
+      "seq": 6,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "request_parser",
+        "nodeType": "llm",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "llm_parser",
+      "seq": 7,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "text": "{\"intent\": "
+      },
+      "nodeId": "llm_parser",
+      "seq": 8,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "text": "\"definition\", \"facilityName\": \"Baruch Houses\", \"utilityType\": \"Electricity\", \"periodStart\": \"2024-01-01\", \"periodEnd\": \"2024-03-31\", \"includeRisk\": false, \"referencePeriodStart\": \"2023-01-01\", \"referencePeriodEnd\": \"2023-03-31\"}"
+      },
+      "nodeId": "llm_parser",
+      "seq": 9,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "keys": [
+          "facilityName",
+          "includeRisk",
+          "intent",
+          "periodEnd",
+          "periodStart",
+          "periodStartMonth",
+          "referencePeriodEnd",
+          "referencePeriodStart",
+          "utilityType"
+        ]
+      },
+      "nodeId": "llm_parser",
+      "seq": 10,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "system.currentDate"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "llm_parser",
+      "seq": 11,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 981,
+          "fields": 11,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 263,
+          "modelCalls": 1,
+          "outputTokens": 17,
+          "totalTokens": 280
+        }
+      },
+      "nodeId": "llm_parser",
+      "seq": 12,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "scope_router",
+        "nodeType": "rule",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "rule_scope",
+      "seq": 13,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "r_else"
+        ],
+        "outputSummary": {
+          "bytes": 33,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "rule_scope",
+      "seq": 14,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "quick_answer",
+        "nodeType": "llm",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "llm_quick",
+      "seq": 15,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "text": "A "
+      },
+      "nodeId": "llm_quick",
+      "seq": 16,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "text": "hundred cubic feet."
+      },
+      "nodeId": "llm_quick",
+      "seq": 17,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 32,
+          "fields": 1,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 135,
+          "modelCalls": 1,
+          "outputTokens": 4,
+          "totalTokens": 139
+        }
+      },
+      "nodeId": "llm_quick",
+      "seq": 18,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "Quick_answer",
+        "nodeType": "output",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "output_quick",
+      "seq": 19,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 54,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "output_quick",
+      "seq": 20,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "result": {
+          "answer": "A hundred cubic feet.",
+          "status": "answered"
+        },
+        "usage": {
+          "inputTokens": 481,
+          "modelCalls": 3,
+          "outputTokens": 27,
+          "totalTokens": 508
+        }
+      },
+      "seq": 21,
+      "type": "run.completed"
+    }
+  ],
+  [
+    {
+      "data": {
+        "agenticWorkflowId": "<uuid>",
+        "sessionId": "<uuid>"
+      },
+      "seq": 1,
+      "type": "run.started"
+    },
+    {
+      "data": {
+        "nodeName": "Start_1",
+        "nodeType": "start",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "start_1",
+      "seq": 2,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "reportStatus",
+          "reviewThreshold",
+          "runCount",
+          "userId"
+        ]
+      },
+      "nodeId": "start_1",
+      "seq": 3,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 189,
+          "fields": 4,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "start_1",
+      "seq": 4,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "input_guardrail",
+        "nodeType": "guardrail",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "guardrail_1",
+      "seq": 5,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "fail"
+        ],
+        "outputSummary": {
+          "bytes": 94,
+          "fields": 3,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 83,
+          "modelCalls": 1,
+          "outputTokens": 7,
+          "totalTokens": 90
+        }
+      },
+      "nodeId": "guardrail_1",
+      "seq": 6,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "Refused",
+        "nodeType": "output",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "output_refused",
+      "seq": 7,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 106,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "output_refused",
+      "seq": 8,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "result": {
+          "answer": "I can only help with facility energy, cost, operations and risk questions.",
+          "status": "refused"
+        },
+        "usage": {
+          "inputTokens": 83,
+          "modelCalls": 1,
+          "outputTokens": 7,
+          "totalTokens": 90
+        }
+      },
+      "seq": 9,
+      "type": "run.completed"
+    }
+  ]
+]

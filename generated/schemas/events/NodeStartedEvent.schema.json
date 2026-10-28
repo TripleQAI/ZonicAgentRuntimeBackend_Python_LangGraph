@@ -1,0 +1,109 @@
+{
+  "$defs": {
+    "NodeStartedData": {
+      "additionalProperties": false,
+      "properties": {
+        "nodeName": {
+          "title": "Nodename",
+          "type": "string"
+        },
+        "nodeType": {
+          "title": "Nodetype",
+          "type": "string"
+        },
+        "resumed": {
+          "default": false,
+          "title": "Resumed",
+          "type": "boolean"
+        },
+        "visit": {
+          "minimum": 1,
+          "title": "Visit",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "nodeType",
+        "nodeName",
+        "visit"
+      ],
+      "title": "NodeStartedData",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "data": {
+      "$ref": "#/$defs/NodeStartedData"
+    },
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "nodeId": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Nodeid"
+    },
+    "path": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Path"
+    },
+    "runId": {
+      "title": "Runid",
+      "type": "string"
+    },
+    "seq": {
+      "minimum": 1,
+      "title": "Seq",
+      "type": "integer"
+    },
+    "truncated": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Truncated"
+    },
+    "ts": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+      "title": "Ts",
+      "type": "string"
+    },
+    "type": {
+      "const": "node.started",
+      "title": "Type",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "runId",
+    "seq",
+    "ts",
+    "type",
+    "data"
+  ],
+  "title": "NodeStartedEvent",
+  "type": "object"
+}

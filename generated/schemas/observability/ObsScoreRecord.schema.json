@@ -1,0 +1,153 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "authorUserId": {
+      "anyOf": [
+        {
+          "maxLength": 128,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Authoruserid"
+    },
+    "comment": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Comment"
+    },
+    "dataType": {
+      "enum": [
+        "NUMERIC",
+        "CATEGORICAL",
+        "BOOLEAN",
+        "CORRECTION",
+        "TEXT"
+      ],
+      "title": "Datatype",
+      "type": "string"
+    },
+    "environment": {
+      "anyOf": [
+        {
+          "maxLength": 50,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Environment"
+    },
+    "metadata": {
+      "additionalProperties": true,
+      "title": "Metadata",
+      "type": "object"
+    },
+    "name": {
+      "maxLength": 100,
+      "title": "Name",
+      "type": "string"
+    },
+    "observationId": {
+      "anyOf": [
+        {
+          "pattern": "^[0-9a-f]{16}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Observationid"
+    },
+    "scoreId": {
+      "title": "Scoreid",
+      "type": "string"
+    },
+    "sessionId": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Sessionid"
+    },
+    "source": {
+      "default": "API",
+      "enum": [
+        "API",
+        "EVAL",
+        "ANNOTATION"
+      ],
+      "title": "Source",
+      "type": "string"
+    },
+    "stringValue": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Stringvalue"
+    },
+    "timestamp": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Timestamp"
+    },
+    "traceId": {
+      "pattern": "^[0-9a-f]{32}$",
+      "title": "Traceid",
+      "type": "string"
+    },
+    "value": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Value"
+    }
+  },
+  "required": [
+    "scoreId",
+    "traceId",
+    "name",
+    "dataType"
+  ],
+  "title": "ObsScoreRecord",
+  "type": "object"
+}

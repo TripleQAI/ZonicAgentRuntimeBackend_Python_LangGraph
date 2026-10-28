@@ -1,0 +1,30 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "downloadRef": {
+      "title": "Downloadref",
+      "type": "string"
+    },
+    "mediaType": {
+      "title": "Mediatype",
+      "type": "string"
+    },
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "type": {
+      "const": "file",
+      "default": "file",
+      "title": "Type",
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "mediaType",
+    "downloadRef"
+  ],
+  "title": "FilePart",
+  "type": "object"
+}

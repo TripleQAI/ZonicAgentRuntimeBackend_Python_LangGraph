@@ -1,0 +1,567 @@
+[
+  [
+    {
+      "data": {
+        "agenticWorkflowId": "<uuid>",
+        "sessionId": "<uuid>",
+        "title": "Was electricity use at Main higher than last year in Q1?"
+      },
+      "seq": 1,
+      "type": "run.started"
+    },
+    {
+      "data": {
+        "nodeName": "Start_1",
+        "nodeType": "start",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "start_1781397881238_6xn68",
+      "seq": 2,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 229,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "start_1781397881238_6xn68",
+      "seq": 3,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "keywords-extraction",
+        "nodeType": "llm",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "llm_1782398709633_eb8bo",
+      "seq": 4,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "text": "{\"newPeriodStart\": "
+      },
+      "nodeId": "llm_1782398709633_eb8bo",
+      "seq": 5,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "text": "\"2026-01-01\", \"newPeriodEnd\": \"2026-03-31\", \"historicalReferencePeriodStart\": \"2025-01-01\", \"historicalReferencePeriodEnd\": \"2025-03-31\"}"
+      },
+      "nodeId": "llm_1782398709633_eb8bo",
+      "seq": 6,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "keys": [
+          "account",
+          "facilityName",
+          "historicalReferencePeriodEnd",
+          "historicalReferencePeriodStart",
+          "newPeriodEnd",
+          "newPeriodStart",
+          "subRegion",
+          "utilityBillsGridTitleSummary",
+          "utilityType"
+        ]
+      },
+      "nodeId": "llm_1782398709633_eb8bo",
+      "seq": 7,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "flow.newPeriodEnd",
+            "flow.newPeriodStart",
+            "nodes.keywords-extraction.output.account",
+            "nodes.keywords-extraction.output.facilityName",
+            "nodes.keywords-extraction.output.region",
+            "nodes.keywords-extraction.output.subRegion",
+            "nodes.keywords-extraction.output.utilityBillsGridTitleSummary",
+            "nodes.keywords-extraction.output.utilityType"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "llm_1782398709633_eb8bo",
+      "seq": 8,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 440,
+          "fields": 11,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 8287,
+          "modelCalls": 1,
+          "outputTokens": 8,
+          "totalTokens": 8295
+        }
+      },
+      "nodeId": "llm_1782398709633_eb8bo",
+      "seq": 9,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "energy-agent",
+        "nodeType": "agent",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "agent_1781397954641_geg1e",
+      "seq": 10,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "text": "{\"analysisType\": "
+      },
+      "nodeId": "agent_1781397954641_geg1e",
+      "seq": 11,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "text": "\"usage_variance_higher_lower\", \"analysisLevel\": \"site\", \"aggregationOption\": \"monthly\"}"
+      },
+      "nodeId": "agent_1781397954641_geg1e",
+      "seq": 12,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "inputSummary": {
+          "bytes": 85,
+          "fields": 2,
+          "type": "object"
+        },
+        "toolName": "handoff_to",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "agent_1781397954641_geg1e",
+      "seq": 13,
+      "type": "tool.started"
+    },
+    {
+      "data": {
+        "status": "success",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "agent_1781397954641_geg1e",
+      "seq": 14,
+      "type": "tool.finished"
+    },
+    {
+      "data": {
+        "keys": [
+          "aggregationOption",
+          "analysisLevel",
+          "analysisType"
+        ]
+      },
+      "nodeId": "agent_1781397954641_geg1e",
+      "seq": 15,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "nodes.energy-agent.output.aggregationOption",
+            "nodes.energy-agent.output.analysisLevel",
+            "nodes.energy-agent.output.analysisType"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "agent_1781397954641_geg1e",
+      "seq": 16,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "handoff-llm_1783647948890_oroz3"
+        ],
+        "outputSummary": {
+          "bytes": 633,
+          "fields": 8,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 1916,
+          "modelCalls": 1,
+          "outputTokens": 13,
+          "totalTokens": 1929
+        }
+      },
+      "nodeId": "agent_1781397954641_geg1e",
+      "seq": 17,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "get-historical-data-with-reference",
+        "nodeType": "llm",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "llm_1783647948890_oroz3",
+      "seq": 18,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "inputSummary": {
+          "bytes": 38,
+          "fields": 2,
+          "type": "object"
+        },
+        "toolName": "analyse_energy_performance",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "llm_1783647948890_oroz3",
+      "seq": 19,
+      "type": "tool.started"
+    },
+    {
+      "data": {
+        "status": "success",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "llm_1783647948890_oroz3",
+      "seq": 20,
+      "type": "tool.finished"
+    },
+    {
+      "data": {
+        "text": "The "
+      },
+      "nodeId": "llm_1783647948890_oroz3",
+      "seq": 21,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "text": "analysis is ready."
+      },
+      "nodeId": "llm_1783647948890_oroz3",
+      "seq": 22,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "keys": [
+          "energyPerformanceAnalysisResult"
+        ]
+      },
+      "nodeId": "llm_1783647948890_oroz3",
+      "seq": 23,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 33,
+          "fields": 1,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 2331,
+          "modelCalls": 2,
+          "outputTokens": 8,
+          "totalTokens": 2339
+        }
+      },
+      "nodeId": "llm_1783647948890_oroz3",
+      "seq": 24,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "Rule_1",
+        "nodeType": "rule",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "rule_1783746264100_ljsfg",
+      "seq": 25,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "r_elgn8m"
+        ],
+        "outputSummary": {
+          "bytes": 60,
+          "fields": 3,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "rule_1783746264100_ljsfg",
+      "seq": 26,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "usage-consumption-analysis",
+        "nodeType": "llm",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "llm_1783746322334_uqllv",
+      "seq": 27,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "text": "{\"dataAnalysisResult\": "
+      },
+      "nodeId": "llm_1783746322334_uqllv",
+      "seq": 28,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "text": "\"<p>Use was <b>12.4%</b> higher than in Q1 2025.</p>\"}"
+      },
+      "nodeId": "llm_1783746322334_uqllv",
+      "seq": 29,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "keys": [
+          "dataAnalysisResult"
+        ]
+      },
+      "nodeId": "llm_1783746322334_uqllv",
+      "seq": 30,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 167,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 1983,
+          "modelCalls": 1,
+          "outputTokens": 9,
+          "totalTokens": 1992
+        }
+      },
+      "nodeId": "llm_1783746322334_uqllv",
+      "seq": 31,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "utility-analysis",
+        "nodeType": "view",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "view_1783023686612_2lr8k",
+      "seq": 32,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "part": {
+          "library": "echarts",
+          "option": {
+            "series": [
+              {
+                "data": [
+                  410,
+                  455,
+                  470
+                ],
+                "type": "bar"
+              }
+            ],
+            "title": {
+              "text": "Electricity use"
+            },
+            "xAxis": {
+              "data": [
+                "Jan",
+                "Feb",
+                "Mar"
+              ],
+              "type": "category"
+            },
+            "yAxis": {
+              "type": "value"
+            }
+          },
+          "type": "chart"
+        },
+        "type": "chart"
+      },
+      "nodeId": "view_1783023686612_2lr8k",
+      "seq": 33,
+      "type": "content.part"
+    },
+    {
+      "data": {
+        "part": {
+          "datasetRefs": [],
+          "html": "<p>Use was <b>12.4%</b> higher than in Q1 2025.</p>",
+          "type": "html"
+        },
+        "type": "html"
+      },
+      "nodeId": "view_1783023686612_2lr8k",
+      "seq": 34,
+      "type": "content.part"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 81,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "view_1783023686612_2lr8k",
+      "seq": 35,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "utility-bills-variable-update",
+        "nodeType": "variable",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "variable_1783387115349_esyg3",
+      "seq": 36,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "account",
+          "facilityName",
+          "region",
+          "subRegion",
+          "utilityType"
+        ]
+      },
+      "nodeId": "variable_1783387115349_esyg3",
+      "seq": 37,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 76,
+          "fields": 5,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "variable_1783387115349_esyg3",
+      "seq": 38,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "Output_1",
+        "nodeType": "output",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "output_1781397965377_sz6ig",
+      "seq": 39,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "result"
+        ]
+      },
+      "nodeId": "output_1781397965377_sz6ig",
+      "seq": 40,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 1376,
+          "fields": 1,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "output_1781397965377_sz6ig",
+      "seq": 41,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "result": {
+          "messages": "[{\"role\": \"assistant\", \"content\": [{\"name\": \"handoff_to\", \"args\": {\"target\": \"get-historical-data-with-reference\", \"reason\": \"variance against last year\"}, \"id\": \"call_0\", \"type\": \"tool_call\"}], \"thread\": \"messages\", \"nodeId\": \"agent_1781397954641_geg1e\"}, {\"role\": \"tool\", \"content\": \"Handing off to get-historical-data-with-reference.\", \"thread\": \"messages\", \"nodeId\": \"agent_1781397954641_geg1e\"}, {\"role\": \"assistant\", \"content\": \"{\\\"analysisType\\\": \\\"usage_variance_higher_lower\\\", \\\"analysisLevel\\\": \\\"site\\\", \\\"aggregationOption\\\": \\\"monthly\\\"}\", \"thread\": \"messages\", \"nodeId\": \"agent_1781397954641_geg1e\"}, {\"role\": \"assistant\", \"content\": [{\"name\": \"analyse_energy_performance\", \"args\": {\"site\": \"Main\", \"metric\": \"electricity\"}, \"id\": \"call_0\", \"type\": \"tool_call\"}], \"thread\": \"messages\", \"nodeId\": \"llm_1783647948890_oroz3\"}, {\"role\": \"tool\", \"content\": {\"summary\": {\"site\": \"Main\", \"change_pct\": 12.4}, \"chart_json\": {\"title\": {\"text\": \"Electricity use\"}, \"xAxis\": {\"type\": \"category\", \"data\": [\"Jan\", \"Feb\", \"Mar\"]}, \"yAxis\": {\"type\": \"value\"}, \"series\": [{\"type\": \"bar\", \"data\": [410, 455, 470]}]}}, \"thread\": \"messages\", \"nodeId\": \"llm_1783647948890_oroz3\"}]"
+        },
+        "usage": {
+          "inputTokens": 14517,
+          "modelCalls": 5,
+          "outputTokens": 38,
+          "totalTokens": 14555
+        }
+      },
+      "seq": 42,
+      "type": "run.completed"
+    }
+  ]
+]

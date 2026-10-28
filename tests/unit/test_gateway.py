@@ -310,6 +310,19 @@ async def test_P03_procedure_not_retried_unless_idempotent() -> None:
     assert calls == [503, 503, 200]  # an idempotent write is
 
 
+async def test_R05_a_throttled_call_is_retried_writes_included_then_data_unavailable() -> None:
+    client, calls = _counting([429, 429, 200])
+    gateway = HttpGateway(SETTINGS, ENV, client=client)
+    await gateway.procedure("runtime", "runtime", "sp_run_start", [])  # the gateway never ran it
+    assert calls == [429, 429, 200]
+    client, calls = _counting([429])
+    gateway = HttpGateway(SETTINGS, ENV, client=client)
+    with pytest.raises(ZonicError) as info:
+        await gateway.view("runtime", "runtime", "v_run")
+    assert info.value.code == "DATA_UNAVAILABLE" and info.value.details["gateway_status"] == 429
+    assert len(calls) == SETTINGS.throttle_retries + 1
+
+
 async def test_P03_client_errors_are_not_retried() -> None:
     client, calls = _counting([400])
     gateway = HttpGateway(SETTINGS, ENV, client=client)

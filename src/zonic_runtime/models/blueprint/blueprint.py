@@ -85,6 +85,8 @@ class NodeSpec(_Frozen):
     name: str
     graph_name: str
     config: SerializeAsAny[NodeConfigBase]
+    #: The node's ``description``: a Swarm member's, in the other members' handoff tools.
+    description: str = ""
     handles: list[str] = Field(default_factory=list)
     optional_handles: list[str] = Field(default_factory=list)
     destinations: list[str] = Field(default_factory=list)
@@ -103,6 +105,11 @@ class NodeSpec(_Frozen):
     output_schema: dict[str, Any] | None = None
     #: Langfuse observation type and capture (manifest defaults, then the type's entry).
     observation: ObservationSpec | None = None
+    #: The node's own hook bindings (``properties.hooks``), the global and workflow bindings it
+    #: turns off (``properties.disabledHooks``) and its ``properties.tags`` (design 13).
+    hooks: list[dict[str, Any]] = Field(default_factory=list)
+    disabled_hooks: list[str] = Field(default_factory=list)
+    tags: list[str] = Field(default_factory=list)
 
     @property
     def compiled(self) -> bool:
@@ -116,6 +123,8 @@ class NodeSpec(_Frozen):
             "zonic_node_type": self.node_type,
             "zonic_kind": self.kind,
         }
+        if self.name and self.name != self.node_id:
+            meta["zonic_node_name"] = self.name
         if self.loop_id:
             meta["zonic_loop_id"] = self.loop_id
         if self.observation is not None:
@@ -136,6 +145,8 @@ class Blueprint(_Frozen):
     name_index: dict[str, str] = Field(default_factory=dict)
     children: list[str] = Field(default_factory=list)
     warnings: list[BlueprintWarning] = Field(default_factory=list)
+    #: The document's ``runtimeHooks``: workflow hook bindings (design 13).
+    runtime_hooks: list[dict[str, Any]] = Field(default_factory=list)
 
     @property
     def errors(self) -> list[BlueprintWarning]:

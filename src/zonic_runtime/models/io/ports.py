@@ -7,7 +7,7 @@ aliases). The manifest carries one ``NodeIoSpec`` per node type.
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Literal
 
 from pydantic import Field, model_validator
 
@@ -33,6 +33,9 @@ class PortBinding(ZonicResourceModel):
     config_path: str | None = None  # a template held in the node, e.g. 'config.userQueryMapping'
     template: str | None = None  # the type's default, e.g. '{{system.userQuery}}'
     state_path: str | None = None  # e.g. 'history'
+    #: How values embedded in the text are encoded (``io/encoders.py``): ``uriComponent`` for
+    #: URLs (X-03), ``html`` for HTML templates (B-11).
+    encode: Literal["uriComponent", "html"] | None = None
 
     @model_validator(mode="after")
     def _at_least_one(self) -> PortBinding:

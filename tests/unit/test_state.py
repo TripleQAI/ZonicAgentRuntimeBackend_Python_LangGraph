@@ -360,7 +360,7 @@ def test_B07_thread_and_writable_system_targets_and_a_read_only_key() -> None:
         "hello",
     )
     scope = template_scope(final)
-    assert scope.thread("agent_messages")[0]["textPreview"] == "hello"
+    assert scope.thread("agent_messages")[0]["content"] == "hello"  # templates read {role, content} (P2-04)
     bad = {
         "id": "v",
         "type": "variable",
@@ -374,8 +374,8 @@ def test_thread_clear_hides_earlier_messages_of_that_thread() -> None:
     state = {
         **STATE,
         "history": {
-            "notes": [{"role": "user", "textPreview": "old"}],
-            "messages": [{"role": "user", "textPreview": "hi"}],
+            "notes": [{"role": "user", "content": "old"}],
+            "messages": [{"role": "user", "content": "hi"}],
         },
     }
     node = {
@@ -389,8 +389,8 @@ def test_thread_clear_hides_earlier_messages_of_that_thread() -> None:
         },
     }
     scope = template_scope(_apply(_doc(node), state, OUTPUT))
-    assert [m["textPreview"] for m in scope.thread("notes")] == ["fresh"]
-    assert [m["textPreview"] for m in scope.thread("messages")] == ["hi"]
+    assert [m["content"] for m in scope.thread("notes")] == ["fresh"]
+    assert [m["content"] for m in scope.thread("messages")] == ["hi"]
 
 
 # --- RunContext parts -----------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0",
-  "builderCommit": "0b9306f8393dc8c10b40c3244389a97677090ef3",
+  "builderCommit": "b25bcfcd46ab397ad4f40294a10bbb06fe7f1f35",
   "semantics": {
     "childReference": {
       "workflow": "config.agenticWorkflowId"
@@ -616,7 +616,7 @@
     "backend/workflow/resources/node_types/variable.json": "7af45f11957a637cbc0238c04d512c1c1c2be9d6c040433fac0e9e1f7709f6a4",
     "backend/workflow/resources/node_types/view.json": "0beb56fc50bee9bc6a4cffb340eacb94bb8aa22ec86fc071489462cbb2975915",
     "backend/workflow/resources/node_types/workflow.json": "d0a9ba630b531a5fff18af91af1f581398251fe8728a9237d9f29b6f598e8c70",
-    "backend/workflow/resources/option_sets.json": "8c944ea68ef7294e8e1e85599bd5b179e26a30f733c82286f96d5c67dc98c209",
+    "backend/workflow/resources/option_sets.json": "dd7921ca9b8a2606011ca4faac53f88d75982582566e258475af67b0e0ec735f",
     "backend/workflow/resources/validation_rules.json": "d7819e43260ad785156b3227c7fcb3536f19e9aa44495e0ab04851fb8a3b999e"
   }
 }

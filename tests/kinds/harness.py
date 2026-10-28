@@ -151,7 +151,7 @@ class RecordingHooks:
     async def after_node(self, ctx: NodeContext, outcome: NodeOutcome) -> None:
         self.recorder.hooks.append(("after", ctx.spec.node_id))
 
-    async def on_node_error(self, ctx: NodeContext, error: BaseException) -> None:
+    async def on_node_error(self, ctx: NodeContext, error: BaseException, attempt: int = 0) -> None:
         self.recorder.hooks.append(("error", ctx.spec.node_id))
 
 
@@ -169,6 +169,12 @@ class Harness:
     recorder: Recorder = field(default_factory=Recorder)
     checkpointer: Any = None
     hooks: Any = None
+    #: ``AgentServices`` for the LLM and agent kinds (P2-02); scripted in tests.
+    agents: Any = None
+    #: ``ServicePorts`` for the I/O kinds (P3-03 on): fakes in tests.
+    ports: Any = None
+    #: ``RunContext.ports`` builder, ``run_id -> RunPorts`` (owner-bound MCP, secrets; P3-02).
+    run_ports: Any = None
 
     def plan(self, document: dict[str, Any]) -> Blueprint:
         loader = WorkflowLoader.from_resources(self.resources)
@@ -177,7 +183,7 @@ class Harness:
     def compile(self, blueprint: Blueprint) -> Any:
         default = {k: PassKind for k in {s.kind for s in blueprint.nodes.values()}}
         registry = KindRegistry({**default, **self.kinds})
-        services = NodeServices.from_resources(self.resources)
+        services = NodeServices.from_resources(self.resources, agents=self.agents, ports=self.ports)
         compiler = WorkflowCompiler(
             runner_factory(registry, services),
             self.resources.settings.engine,
@@ -188,6 +194,8 @@ class Harness:
 
     def context(self, blueprint: Blueprint, run_id: str = "run-1") -> Any:
         ctx = run_context(blueprint, self.resources, run_id)
+        if self.run_ports is not None:
+            ctx = replace(ctx, ports=self.run_ports(run_id))
         return replace(ctx, hooks=self.hooks) if self.hooks is not None else ctx
 
     def config(self, blueprint: Blueprint, run_id: str = "run-1") -> dict[str, Any]:

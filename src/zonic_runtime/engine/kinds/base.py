@@ -29,10 +29,13 @@ class NodeKind(Protocol):
 
 
 class BaseKind:
-    """Defaults for kinds: no interrupt, holds a permit."""
+    """Defaults for kinds: no interrupt, holds a permit, timed by its node's ``TimeoutPolicy``."""
 
     interrupts_first: ClassVar[bool] = False
     holds_permit: ClassVar[bool] = True
+    #: The kind enforces the node's timeout itself (the Swarm's ``SWARM_TIMEOUT``): the compiler
+    #: gives its node no run timeout, so the two never race.
+    owns_deadline: ClassVar[bool] = False
 
     def request(self, ctx: NodeContext) -> InterruptRequest:
         """The interrupt payload of an ``interrupts_first`` kind."""
@@ -41,6 +44,10 @@ class BaseKind:
     def answer_model(self, ctx: NodeContext) -> Any:
         """The answer's model, for ``interrupt(response_schema=...)``; ``None`` for any answer."""
         return None
+
+    def response(self, ctx: NodeContext, answer: Any) -> Any:
+        """What ``interrupt()`` returned, as the node's templates read it (``interrupt_answer``)."""
+        return answer
 
     async def execute(self, ctx: NodeContext, node_input: NodeInput) -> NodeOutcome:
         raise NotImplementedError

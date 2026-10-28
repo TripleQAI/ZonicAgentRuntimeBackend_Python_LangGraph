@@ -181,6 +181,13 @@
       "title": "Operatoraliases",
       "type": "object"
     },
+    "requestInputs": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Requestinputs",
+      "type": "object"
+    },
     "rules": {
       "items": {
         "$ref": "#/$defs/DialectRule"

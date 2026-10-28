@@ -84,11 +84,15 @@ BEGIN
         PERFORM fn_raise('invalid_argument', '22023', 'status must be running or queued');
     END IF;
 
-    -- A repeated Idempotency-Key returns the first run (case A-12).
+    -- A repeated Idempotency-Key returns the first run (case A-12) within idempotencyTtlSeconds;
+    -- an older run gives its key up, so the request starts a new run.
     IF p_run->>'idempotencyKey' IS NOT NULL THEN
         SELECT * INTO v_existing FROM runtime_run
-         WHERE owner_sub = v_owner AND idempotency_key = p_run->>'idempotencyKey';
-        IF FOUND THEN
+         WHERE owner_sub = v_owner AND idempotency_key = p_run->>'idempotencyKey' FOR UPDATE;
+        IF FOUND AND p_run ? 'idempotencyTtlSeconds' AND v_existing.created_at
+                < now() - make_interval(secs => (p_run->>'idempotencyTtlSeconds')::integer) THEN
+            UPDATE runtime_run SET idempotency_key = NULL WHERE run_id = v_existing.run_id;
+        ELSIF FOUND THEN
             o_run_id := v_existing.run_id;
             o_session_id := v_existing.session_id;
             SELECT message_id INTO o_message_id FROM runtime_message
@@ -389,6 +393,20 @@ BEGIN
     UPDATE runtime_interrupt
        SET status = 'answered', answer = p_answer, answered_at = now(), answered_by = p_owner_sub
      WHERE interrupt_id = p_interrupt_id;
+END;
+$$;
+
+-- An expired interrupt answered by the expiry job (onExpiry: reject, case H-06): only while it is
+-- still pending and past its expiry, so a racing instance or a late answer leaves it unchanged.
+CREATE OR REPLACE PROCEDURE agent_runtime.sp_interrupt_expire(
+    p_interrupt_id uuid, p_answer jsonb, INOUT o_expired boolean DEFAULT NULL)
+LANGUAGE plpgsql SECURITY DEFINER SET search_path = agent_runtime, pg_temp AS $$
+BEGIN
+    UPDATE runtime_interrupt
+       SET status = 'answered', answer = p_answer, answered_at = now(), answered_by = 'system:expiry'
+     WHERE interrupt_id = p_interrupt_id AND status = 'pending'
+       AND expires_at IS NOT NULL AND expires_at < now();
+    o_expired := FOUND;
 END;
 $$;
 

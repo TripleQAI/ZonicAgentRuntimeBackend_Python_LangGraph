@@ -148,7 +148,10 @@ async def _policy_follows(policy: str, next_node: str) -> None:
         and final["nodes"]["n"]["error"]["code"] == "TOOL_UNAVAILABLE"
     )
     assert [e["code"] for e in final["errors"]] == ["TOOL_UNAVAILABLE"]
-    assert any(e["event"] == "node.failed" for e in events)
+    assert any(
+        e["event"] == "node.finished" and e["status"] == "failed" and e["errorCode"] == "TOOL_UNAVAILABLE"
+        for e in events
+    )
 
 
 def fast_retry(resources: Any = DEV) -> Any:
@@ -175,7 +178,9 @@ async def test_C08_retry_only_for_retryable_codes(code: str, attempts: int, ok: 
 async def test_C09_node_started_then_node_finished(subject: Any, shape: str) -> None:
     _, events, *_ = await harness(subject).run(doc(llm(), shape), INPUT)
     mine = [e["event"] for e in events if e["nodeId"] == "n"]
-    assert mine == ["node.started", "node.finished"]
+    # Warnings and state.updated of the visit come between the two (P2-01).
+    assert [e for e in mine if e.startswith("node.")] == ["node.started", "node.finished"]
+    assert mine[0] == "node.started" and mine[-1] == "node.finished"
     finished = next(e for e in events if e["nodeId"] == "n" and e["event"] == "node.finished")
     assert finished["status"] == "succeeded" and finished["visit"] == 1
 

@@ -1,0 +1,214 @@
+{
+  "$defs": {
+    "DatasetRef": {
+      "additionalProperties": false,
+      "description": "Full data of a database, HTTP or tool result, kept outside state (design 9.3). The wire\nshape is the Node.js runtime's (content parts carry it); ``node_id``, ``visit`` and\n``preview`` are this runtime's provenance and inline rows.",
+      "properties": {
+        "columns": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Columns",
+          "type": "array"
+        },
+        "contentType": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Contenttype"
+        },
+        "datasetId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Datasetid"
+        },
+        "expiresAt": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expiresat"
+        },
+        "key": {
+          "title": "Key",
+          "type": "string"
+        },
+        "kind": {
+          "default": "rows",
+          "enum": [
+            "rows",
+            "http_response",
+            "tool_result"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "nodeId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Nodeid"
+        },
+        "preview": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Preview",
+          "type": "array"
+        },
+        "rowCount": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rowcount"
+        },
+        "sha256": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sha256"
+        },
+        "sizeBytes": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sizebytes"
+        },
+        "store": {
+          "enum": [
+            "cache",
+            "database"
+          ],
+          "title": "Store",
+          "type": "string"
+        },
+        "visit": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Visit"
+        }
+      },
+      "required": [
+        "store",
+        "key"
+      ],
+      "title": "DatasetRef",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "A server-mode grid paging through ``GET /v1/datasets/{datasetId}``.",
+  "properties": {
+    "columns": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Columns",
+      "type": "array"
+    },
+    "datasetRef": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/DatasetRef"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "features": {
+      "additionalProperties": true,
+      "title": "Features",
+      "type": "object"
+    },
+    "pageSize": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Pagesize"
+    },
+    "title": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Title"
+    },
+    "type": {
+      "const": "grid",
+      "default": "grid",
+      "title": "Type",
+      "type": "string"
+    }
+  },
+  "title": "GridPart",
+  "type": "object"
+}

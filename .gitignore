@@ -15,3 +15,6 @@ htmlcov/
 *.egg-info/
 dist/
 build/
+
+# load test signing key (tests/load/server.py)
+tests/load/.keys/

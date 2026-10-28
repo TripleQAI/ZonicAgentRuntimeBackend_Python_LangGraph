@@ -1,0 +1,216 @@
+[
+  [
+    {
+      "data": {
+        "agenticWorkflowId": "<uuid>",
+        "sessionId": "<uuid>",
+        "title": "I was charged twice for invoice 7"
+      },
+      "seq": 1,
+      "type": "run.started"
+    },
+    {
+      "data": {
+        "nodeName": "Start_1",
+        "nodeType": "start",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "start_1",
+      "seq": 2,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 160,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "start_1",
+      "seq": 3,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "support_team",
+        "nodeType": "swarm",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "swarm_1",
+      "seq": 4,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "member": "triage"
+      },
+      "nodeId": "swarm_1",
+      "seq": 5,
+      "type": "swarm.member.started"
+    },
+    {
+      "data": {
+        "inputSummary": {
+          "bytes": 43,
+          "fields": 1,
+          "type": "object"
+        },
+        "member": "triage",
+        "toolName": "transfer_to_billing",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "swarm_1",
+      "seq": 6,
+      "type": "tool.started"
+    },
+    {
+      "data": {
+        "member": "triage",
+        "status": "success",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "swarm_1",
+      "seq": 7,
+      "type": "tool.finished"
+    },
+    {
+      "data": {
+        "member": "triage",
+        "status": "completed",
+        "usage": {
+          "inputTokens": 31,
+          "modelCalls": 1,
+          "outputTokens": 6,
+          "totalTokens": 37
+        }
+      },
+      "nodeId": "swarm_1",
+      "seq": 8,
+      "type": "swarm.member.finished"
+    },
+    {
+      "data": {
+        "from": "triage",
+        "message": "Duplicate charge on invoice 7",
+        "to": [
+          "billing"
+        ]
+      },
+      "nodeId": "swarm_1",
+      "seq": 9,
+      "type": "swarm.handoff"
+    },
+    {
+      "data": {
+        "member": "billing"
+      },
+      "nodeId": "swarm_1",
+      "seq": 10,
+      "type": "swarm.member.started"
+    },
+    {
+      "data": {
+        "member": "billing",
+        "text": "We "
+      },
+      "nodeId": "swarm_1",
+      "seq": 11,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "member": "billing",
+        "text": "refunded the duplicate charge."
+      },
+      "nodeId": "swarm_1",
+      "seq": 12,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "member": "billing",
+        "status": "completed",
+        "usage": {
+          "inputTokens": 56,
+          "modelCalls": 1,
+          "outputTokens": 5,
+          "totalTokens": 61
+        }
+      },
+      "nodeId": "swarm_1",
+      "seq": 13,
+      "type": "swarm.member.finished"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 144,
+          "fields": 5,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 87,
+          "modelCalls": 2,
+          "outputTokens": 11,
+          "totalTokens": 98
+        }
+      },
+      "nodeId": "swarm_1",
+      "seq": 14,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "Output_1",
+        "nodeType": "output",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "output_1",
+      "seq": 15,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 46,
+          "fields": 1,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "output_1",
+      "seq": 16,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "result": {
+          "answer": "We refunded the duplicate charge."
+        },
+        "usage": {
+          "inputTokens": 87,
+          "modelCalls": 2,
+          "outputTokens": 11,
+          "totalTokens": 98
+        }
+      },
+      "seq": 17,
+      "type": "run.completed"
+    }
+  ]
+]

@@ -1,0 +1,599 @@
+[
+  [
+    {
+      "data": {
+        "agenticWorkflowId": "<uuid>",
+        "sessionId": "<uuid>",
+        "title": "Hello"
+      },
+      "seq": 1,
+      "type": "run.started"
+    },
+    {
+      "data": {
+        "nodeName": "Start_1",
+        "nodeType": "start",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "start_1781411766277_vgws6",
+      "seq": 2,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 76,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "start_1781411766277_vgws6",
+      "seq": 3,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "supervisor-agent",
+        "nodeType": "agent",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "agent_1781411771017_da0wq",
+      "seq": 4,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "text": "I "
+      },
+      "nodeId": "agent_1781411771017_da0wq",
+      "seq": 5,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "text": "can answer that myself."
+      },
+      "nodeId": "agent_1781411771017_da0wq",
+      "seq": 6,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 105,
+          "fields": 4,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 1,
+          "modelCalls": 1,
+          "outputTokens": 5,
+          "totalTokens": 6
+        }
+      },
+      "nodeId": "agent_1781411771017_da0wq",
+      "seq": 7,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "Output_1",
+        "nodeType": "output",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "output_1781411779582_rz4ae",
+      "seq": 8,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "result"
+        ]
+      },
+      "nodeId": "output_1781411779582_rz4ae",
+      "seq": 9,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "code": "OUTPUT_MAPPING_MISSING",
+        "details": {},
+        "message": "The output step has no mapping; the last answer was used."
+      },
+      "nodeId": "output_1781411779582_rz4ae",
+      "seq": 10,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 2,
+          "fields": 0,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "output_1781411779582_rz4ae",
+      "seq": 11,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "result": {
+          "text": "I can answer that myself."
+        },
+        "usage": {
+          "inputTokens": 1,
+          "modelCalls": 1,
+          "outputTokens": 5,
+          "totalTokens": 6
+        }
+      },
+      "seq": 12,
+      "type": "run.completed"
+    }
+  ],
+  [
+    {
+      "data": {
+        "agenticWorkflowId": "<uuid>",
+        "sessionId": "<uuid>"
+      },
+      "seq": 1,
+      "type": "run.started"
+    },
+    {
+      "data": {
+        "nodeName": "Start_1",
+        "nodeType": "start",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "start_1781411766277_vgws6",
+      "seq": 2,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 160,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "start_1781411766277_vgws6",
+      "seq": 3,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "supervisor-agent",
+        "nodeType": "agent",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "agent_1781411771017_da0wq",
+      "seq": 4,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "inputSummary": {
+          "bytes": 24,
+          "fields": 1,
+          "type": "object"
+        },
+        "toolName": "handoff_to",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "agent_1781411771017_da0wq",
+      "seq": 5,
+      "type": "tool.started"
+    },
+    {
+      "data": {
+        "status": "success",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "agent_1781411771017_da0wq",
+      "seq": 6,
+      "type": "tool.finished"
+    },
+    {
+      "data": {
+        "handles": [
+          "handoff-workflow_1781448535473_nkpqe"
+        ],
+        "outputSummary": {
+          "bytes": 215,
+          "fields": 5,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 11,
+          "modelCalls": 1,
+          "outputTokens": 2,
+          "totalTokens": 13
+        }
+      },
+      "nodeId": "agent_1781411771017_da0wq",
+      "seq": 7,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "risk-energy",
+        "nodeType": "workflow",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "workflow_1781448535473_nkpqe",
+      "seq": 8,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "nodeName": "Start_1",
+        "nodeType": "start",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "start_1781411608791_nnlo9",
+      "path": "workflow_1781448535473_nkpqe",
+      "seq": 9,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 71,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "start_1781411608791_nnlo9",
+      "path": "workflow_1781448535473_nkpqe",
+      "seq": 10,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "risk-agent",
+        "nodeType": "agent",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "agent_1781411611589_etqc7",
+      "path": "workflow_1781448535473_nkpqe",
+      "seq": 11,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "text": "Analysing."
+      },
+      "nodeId": "agent_1781411611589_etqc7",
+      "path": "workflow_1781448535473_nkpqe",
+      "seq": 12,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "inputSummary": {
+          "bytes": 52,
+          "fields": 2,
+          "type": "object"
+        },
+        "toolName": "handoff_to",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "agent_1781411611589_etqc7",
+      "path": "workflow_1781448535473_nkpqe",
+      "seq": 13,
+      "type": "tool.started"
+    },
+    {
+      "data": {
+        "status": "success",
+        "toolUseId": "call_0"
+      },
+      "nodeId": "agent_1781411611589_etqc7",
+      "path": "workflow_1781448535473_nkpqe",
+      "seq": 14,
+      "type": "tool.finished"
+    },
+    {
+      "data": {
+        "handles": [
+          "handoff-llm_1781461886104_la3lw"
+        ],
+        "outputSummary": {
+          "bytes": 267,
+          "fields": 5,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 11,
+          "modelCalls": 1,
+          "outputTokens": 6,
+          "totalTokens": 17
+        }
+      },
+      "nodeId": "agent_1781411611589_etqc7",
+      "path": "workflow_1781448535473_nkpqe",
+      "seq": 15,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "data-analysis",
+        "nodeType": "llm",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "llm_1781461886104_la3lw",
+      "path": "workflow_1781448535473_nkpqe",
+      "seq": 16,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "text": "Three "
+      },
+      "nodeId": "llm_1781461886104_la3lw",
+      "path": "workflow_1781448535473_nkpqe",
+      "seq": 17,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "text": "facilities exceed their budget."
+      },
+      "nodeId": "llm_1781461886104_la3lw",
+      "path": "workflow_1781448535473_nkpqe",
+      "seq": 18,
+      "type": "token.delta"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 48,
+          "fields": 1,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 11,
+          "modelCalls": 1,
+          "outputTokens": 5,
+          "totalTokens": 16
+        }
+      },
+      "nodeId": "llm_1781461886104_la3lw",
+      "path": "workflow_1781448535473_nkpqe",
+      "seq": 19,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "report",
+        "nodeType": "view",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "view_1781411626544_n6si3",
+      "path": "workflow_1781448535473_nkpqe",
+      "seq": 20,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "part": {
+          "datasetRefs": [],
+          "html": "<div>\n  \n</div>",
+          "type": "html"
+        },
+        "type": "html"
+      },
+      "nodeId": "view_1781411626544_n6si3",
+      "path": "workflow_1781448535473_nkpqe",
+      "seq": 21,
+      "type": "content.part"
+    },
+    {
+      "data": {
+        "keys": [
+          "view"
+        ]
+      },
+      "nodeId": "view_1781411626544_n6si3",
+      "path": "workflow_1781448535473_nkpqe",
+      "seq": 22,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "code": "TEMPLATE_MISSING",
+        "details": {
+          "paths": [
+            "variable.path"
+          ]
+        },
+        "message": ""
+      },
+      "nodeId": "view_1781411626544_n6si3",
+      "path": "workflow_1781448535473_nkpqe",
+      "seq": 23,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 28,
+          "fields": 1,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "view_1781411626544_n6si3",
+      "path": "workflow_1781448535473_nkpqe",
+      "seq": 24,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "Output_1",
+        "nodeType": "output",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "output_1781411614547_vkabf",
+      "path": "workflow_1781448535473_nkpqe",
+      "seq": 25,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "result"
+        ]
+      },
+      "nodeId": "output_1781411614547_vkabf",
+      "path": "workflow_1781448535473_nkpqe",
+      "seq": 26,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 750,
+          "fields": 1,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "output_1781411614547_vkabf",
+      "path": "workflow_1781448535473_nkpqe",
+      "seq": 27,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 770,
+          "fields": 2,
+          "type": "object"
+        },
+        "status": "succeeded",
+        "usage": {
+          "inputTokens": 22,
+          "modelCalls": 2,
+          "outputTokens": 11,
+          "totalTokens": 33
+        }
+      },
+      "nodeId": "workflow_1781448535473_nkpqe",
+      "seq": 28,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "nodeName": "Output_1",
+        "nodeType": "output",
+        "resumed": false,
+        "visit": 1
+      },
+      "nodeId": "output_1781411779582_rz4ae",
+      "seq": 29,
+      "type": "node.started"
+    },
+    {
+      "data": {
+        "keys": [
+          "result"
+        ]
+      },
+      "nodeId": "output_1781411779582_rz4ae",
+      "seq": 30,
+      "type": "state.updated"
+    },
+    {
+      "data": {
+        "code": "OUTPUT_MAPPING_MISSING",
+        "details": {},
+        "message": "The output step has no mapping; the last answer was used."
+      },
+      "nodeId": "output_1781411779582_rz4ae",
+      "seq": 31,
+      "type": "warning"
+    },
+    {
+      "data": {
+        "handles": [
+          "default"
+        ],
+        "outputSummary": {
+          "bytes": 2,
+          "fields": 0,
+          "type": "object"
+        },
+        "status": "succeeded"
+      },
+      "nodeId": "output_1781411779582_rz4ae",
+      "seq": 32,
+      "type": "node.finished"
+    },
+    {
+      "data": {
+        "result": {
+          "text": "Analysing."
+        },
+        "usage": {
+          "inputTokens": 33,
+          "modelCalls": 3,
+          "outputTokens": 13,
+          "totalTokens": 46
+        }
+      },
+      "seq": 33,
+      "type": "run.completed"
+    }
+  ]
+]

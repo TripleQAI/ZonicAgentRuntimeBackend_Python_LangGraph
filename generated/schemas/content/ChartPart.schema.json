@@ -1,0 +1,187 @@
+{
+  "$defs": {
+    "DatasetRef": {
+      "additionalProperties": false,
+      "description": "Full data of a database, HTTP or tool result, kept outside state (design 9.3). The wire\nshape is the Node.js runtime's (content parts carry it); ``node_id``, ``visit`` and\n``preview`` are this runtime's provenance and inline rows.",
+      "properties": {
+        "columns": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Columns",
+          "type": "array"
+        },
+        "contentType": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Contenttype"
+        },
+        "datasetId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Datasetid"
+        },
+        "expiresAt": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expiresat"
+        },
+        "key": {
+          "title": "Key",
+          "type": "string"
+        },
+        "kind": {
+          "default": "rows",
+          "enum": [
+            "rows",
+            "http_response",
+            "tool_result"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "nodeId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Nodeid"
+        },
+        "preview": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Preview",
+          "type": "array"
+        },
+        "rowCount": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rowcount"
+        },
+        "sha256": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sha256"
+        },
+        "sizeBytes": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sizebytes"
+        },
+        "store": {
+          "enum": [
+            "cache",
+            "database"
+          ],
+          "title": "Store",
+          "type": "string"
+        },
+        "visit": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Visit"
+        }
+      },
+      "required": [
+        "store",
+        "key"
+      ],
+      "title": "DatasetRef",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "An ECharts option: data only, top-level keys on ``content.chartOptionKeys``, no functions.",
+  "properties": {
+    "datasetRef": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/DatasetRef"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "library": {
+      "const": "echarts",
+      "default": "echarts",
+      "title": "Library",
+      "type": "string"
+    },
+    "option": {
+      "additionalProperties": true,
+      "title": "Option",
+      "type": "object"
+    },
+    "type": {
+      "const": "chart",
+      "default": "chart",
+      "title": "Type",
+      "type": "string"
+    }
+  },
+  "title": "ChartPart",
+  "type": "object"
+}

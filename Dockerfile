@@ -9,11 +9,14 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 COPY --from=ghcr.io/astral-sh/uv:0.11 /uv /usr/local/bin/uv
 
 WORKDIR /app
-COPY pyproject.toml uv.lock ./
+COPY pyproject.toml uv.lock README.md ./
 RUN uv sync --frozen --no-dev --no-group test --no-install-project
 
 COPY src ./src
 COPY resources ./resources
+# The AWS deployment's overlays (models.dev.json: OpenAI stand-ins for the Bedrock models until
+# Bedrock is available); local runs and the tests read resources/ alone.
+COPY deploy/aws/resources/ ./resources/
 COPY generated ./generated
 RUN uv sync --frozen --no-dev --no-group test
 
@@ -21,4 +24,5 @@ RUN useradd --system --uid 10001 runtime
 USER runtime
 
 EXPOSE 8000 9000
-CMD ["/app/.venv/bin/uvicorn", "zonic_runtime.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1", "--loop", "uvloop", "--timeout-graceful-shutdown", "60"]
+# The public port 8000 and the internal port 9000 (/metrics) in one process (zonic_runtime.server).
+CMD ["/app/.venv/bin/python", "-m", "zonic_runtime.server"]
