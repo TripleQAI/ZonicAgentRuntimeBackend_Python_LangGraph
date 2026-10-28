@@ -7,7 +7,7 @@ requires-python = ">=3.13,<3.14"
 # Minor versions are pinned (design AD-15); upgrades happen in their own pull
 # request with the compiler, conformance, scenario and checkpointer suites.
 dependencies = [
-    "langgraph~=1.2.17",
+    "langgraph~=1.2.18",
     "langchain[mcp]~=1.4.7",
     "langchain-core~=1.7.0",
     "langchain-aws~=1.9.0",

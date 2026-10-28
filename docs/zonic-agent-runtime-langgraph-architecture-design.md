@@ -314,7 +314,7 @@ This section is the Strands design's Section 5, which this design keeps; it is s
 
 ### 5.1 Loading and validating
 
-1. Resolve the workflow through `agent_runtime.v_agent_catalog` (visibility: enabled, root, published to the runtime channel, allowed for the caller's groups). Otherwise `WORKFLOW_NOT_FOUND`.
+1. Resolve the workflow through `agent_runtime.v_agent_catalog` (visibility: enabled, root, published to the runtime channel; access control is the Cognito token alone, decision 0004). Otherwise `WORKFLOW_NOT_FOUND`.
 2. Read `export_json` from `agent_builder.v_agent_export`; sub-flow documents are loaded on demand with an `in` filter.
 3. Check `schemaVersion` (missing means 1.0, as written by `ZonicAgentBuilderServer_FastAPI` and the Django builder; 2.0 by `Strands-visual-builder`); accepted major versions come from `settings.documentVersions`, else `DOCUMENT_VERSION_UNSUPPORTED`.
 4. Normalize the dialect with `DocumentNormalizer` (`resources/dialects.json`), convert to the `WorkflowDocument` model and validate it, including each node's configuration model. A CI contract test keeps the models aligned with `workflow-document-v2.schema.json`.
@@ -373,7 +373,7 @@ The blueprint is the immutable analysis of one document revision, cached by revi
 | Entry node | The type whose `node_semantics.entry` is true; exactly one | `START` edge |
 | Reachable set | Walk from the entry over the edge index | Only reachable nodes are compiled; others give `NODE_UNREACHABLE` warnings |
 | Edge index | Edges by `(source, sourceHandle)`; a missing handle defaults to the manifest's `defaultHandle`; handles of each node type from the builder registry and `node_semantics` | Routing (Section 6.4) |
-| Fan-in analysis | Nodes reachable from one fan-out node (a node that activates `*` with two or more distinct targets, or `Send`) along two or more paths that do not pass an exclusive branch point between the fan-out and the node | Barrier selection (Section 6.5) |
+| Fan-in analysis | Nodes with two or more predecessors reached along paths that diverge at one parallel fan-out (one `(node, handle)` with two or more targets, or `Send`). An exclusive branch further down one path keeps the barrier, because that branch may be taken (decision 0003) | Barrier selection (Section 6.5) |
 | Strongly connected components | Tarjan's algorithm over the reachable graph | Visit-limit scoping, `loop.iteration` events, `loopId` on observations, warnings for loops without a reachable exit |
 | Container membership | `node_semantics.swarms` | Members go into the swarm subgraph; rules SW-1 to SW-12 |
 | Child references | `node_semantics.childReference` | Sub-flow preloading, `SUBFLOW_CYCLE` detection |
@@ -417,7 +417,7 @@ Every node, whatever its type, ends the same way: its outcome names the handles 
 
 1. A node kind returns `NodeOutcome.activate`: a list of handle IDs, or `["*"]` for every outgoing edge.
 2. The template looks up `edge_index[(node, handle)]` for each activated handle and returns `Command(update=patch, goto=targets)`.
-3. A handle with no edge is valid when the manifest marks it optional; otherwise it is a blueprint error. An empty `goto` ends that path; the run ends when no task is pending.
+3. A handle with no edge is the blueprint warning `HANDLE_NO_EDGE`, not an error. Taking it ends the path when the manifest marks the handle optional or the node has no outgoing edges (a sink); otherwise the run fails with `ROUTE_UNRESOLVED` (decision 0003). An empty `goto` ends that path; the run ends when no task is pending.
 4. Visit limits: a node executes at most `settings.engine.maxVisitsPerNode` times per run (default 10) and a run at most `settings.engine.maxSteps` node executions (default 200), the builder mock run's values; exceeding either fails with `LOOP_LIMIT_EXCEEDED`. A document may raise its own limits up to `settings.engine.maxLimits`.
 
 | Branching node | Handles it activates | Source of the handle list |
@@ -446,7 +446,7 @@ Because the dead branch is never scheduled, there are no skipped nodes, no skip 
 | Situation | LangGraph behavior | Result |
 |---|---|---|
 | Exclusive branches meet (Rule, handoff, guardrail, approval, tool `pass` and `fail`) | Only the taken branch sends to the join | The join runs once, after the taken branch (16 of 21 builder workflows) |
-| Parallel branches of equal length meet | Both branches finish in the same superstep; the join is triggered once | Runs once and sees both outputs |
+| Parallel branches of equal length meet | Both branches finish in the same superstep; the join is triggered once | Runs once and sees both outputs; the blueprint marks it a barrier anyway, which changes nothing and needs no proof of equal arrival (decision 0003) |
 | Parallel branches of different lengths meet, join not deferred | The join runs once per superstep in which a branch arrives | Would run twice; the blueprint therefore marks such joins as barriers |
 | Join marked as a barrier (`defer=True`) | The join waits until no task is pending anywhere in the graph | Runs once, after every selected branch |
 | A loop body contains a barrier join | Deferral waits for the rest of the graph, including other branches outside the loop | Allowed, with a blueprint note; `joinPolicy: any` turns it off for that node |
@@ -522,8 +522,8 @@ flowchart TB
 # src/zonic_runtime/engine/state.py (illustrative)
 class RunState(TypedDict, total=False):
     system: Annotated[
-        dict[str, Any], merge_writable_system
-    ]  # read-only except settings.templates.writableSystemKeys
+        dict[str, Any], merge_keyed
+    ]  # keyed like flow (decision 0003); read-only except settings.templates.writableSystemKeys
     flow: Annotated[dict[str, Any], merge_flow]  # deep merge per key; same-key writes in one step -> warning
     input: dict[str, Any]  # sub-flow inputs, written once
     history: dict[str, list[ThreadMessageDict]]  # read at turn start, by thread; read-only
@@ -647,7 +647,7 @@ The Strands design's contract (its Section 7.3) is kept, expressed as Pydantic m
 | Input | Data entering at run time | `PortSpec` (name, `SchemaRef`, required, `PortBinding` with `configPath`, `template` or `statePath`, default) per node type in the manifest; `NodeInput` at run time |
 | Output | Data left for later nodes, the result and clients | `OutputSpec` (schema, `map`, `aliases`, `nodeSchemaExtends`); `NodeOutput` (`data`, `parts`, `refs`, `usage`) |
 
-- **Schema registry.** Payload models decorated with `@payload("zonic.text", 1)` (`zonic.text`, `zonic.chat-messages`, `zonic.rows`, `zonic.http-request`, `zonic.http-response`, `zonic.agent-result`, `zonic.swarm-result`, `zonic.decision`, `zonic.approval`, `zonic.value`, `zonic.mapping`, `zonic.run-result`), the builder's vendored `outputSchema` per type, manifest `schemaExtensions`, and each node's own `outputSchema`. The effective output schema is `allOf` of all four, compiled once per node by the blueprint and used three times: output validation (`OUTPUT_SCHEMA_INVALID`), the static check of every `{{nodes.X.output.path}}` (`TEMPLATE_PATH_UNKNOWN`), and `GET /v1/meta/node-types`.
+- **Schema registry.** Payload models decorated with `@payload("zonic.text", 1)` (`zonic.text`, `zonic.chat-messages`, `zonic.rows`, `zonic.http-request`, `zonic.http-response`, `zonic.agent-result`, `zonic.swarm-result`, `zonic.decision`, `zonic.approval`, `zonic.value`, `zonic.mapping`, `zonic.run-result`), the builder's vendored `outputSchema` per type, manifest `schemaExtensions`, and each node's own `outputSchema`. The effective output schema is `allOf` of the payload, the `schemaExtensions` and the node's own `outputSchema`; the builder's vendored `outputSchema` is held by contract test I-02 instead, because composing it would narrow fields the builder types loosely (decision 0003). It is compiled once per node by the blueprint and used three times: output validation (`OUTPUT_SCHEMA_INVALID`), the static check of every `{{nodes.X.output.path}}` (`TEMPLATE_PATH_UNKNOWN`), and `GET /v1/meta/node-types`.
 - **Ports per node type** are the defaults of the Strands design's table (start `query` and `interfaceInputs`; llm `messages` and `history`; agent `prompt` and `history`; swarm `task`; rule `facts`; guardrail `content`; human_input `prompt`; approval `message`; workflow `inputs`; variable `updates`; db_query `query` and `parameters`; http_request `url`, `headers`, `body`; tool `parameters`; external_agent `input`; script `inputs`; view `data`; output `mapping`).
 - **Extending.** A new output field is one `output.map` line plus a `schemaExtensions` entry; a new port is one `PortSpec`; a new payload is one model; none needs code in the compiler or the template.
 
@@ -1070,7 +1070,7 @@ The contract is the Strands design's Section 12, unchanged, so the deferred runt
 |---|---|
 | Authentication | OIDC access tokens verified with JWKS (`PyJWT` with a cached JWKS client); issuer, audience and claim names in settings |
 | Identity in data | `owner_sub` and `tenant_id` on sessions, runs, messages, datasets; every read filtered by owner; cross-owner writes rejected by procedures (`owner_mismatch`, 409, mapped to 404) |
-| Catalog visibility | `v_agent_catalog` filters by channel and group claims |
+| Catalog visibility | `v_agent_catalog` filters by channel; the Cognito token is the only access control, and the document's `security` is not enforced (decision 0004) |
 | Owner-bound ports | Tools and nodes reach data only through ports bound to the run's owner (`RunContext`) |
 | Egress | Allow list of schemes, hosts and ports; private and link-local ranges blocked; redirects off by default; templated URL values encoded |
 | Secrets | Secret port (environment locally, AWS Secrets Manager in AWS); documents hold only `secretRef`; checkpoints optionally encrypted |
@@ -1348,7 +1348,7 @@ UI tests are deferred with the UI (Section 3.6).
 
 | ID | Case | Expected |
 |---|---|---|
-| A-01 | `GET /v1/catalog/agents` with a valid token | Only visible, enabled, root workflows for the caller's groups |
+| A-01 | `GET /v1/catalog/agents` with a valid token | Only visible, enabled, root workflows; the same list for every authenticated caller |
 | A-02 | Any `/v1` route without a token; wrong audience or expired token | 401 `AUTH_REQUIRED`; 401 `AUTH_INVALID` |
 | A-03 | Session or run of another user by ID | 404, no data |
 | A-04 | Session list paging and title search | Stable order, no duplicates; matches only |

@@ -1,0 +1,325 @@
+{
+  "entry": "start",
+  "nodes": {
+    "4gnytj0": {
+      "defer": false,
+      "destinations": {
+        "zp960r1": "default"
+      },
+      "kind": "subflow",
+      "loopId": "loop:procurement_policy_assistant",
+      "nodeId": "4gnytj0",
+      "retryAttempts": null,
+      "timeoutSeconds": 600.0
+    },
+    "4n6tnna": {
+      "defer": false,
+      "destinations": {
+        "zp960r1": "default"
+      },
+      "kind": "subflow",
+      "loopId": "loop:procurement_policy_assistant",
+      "nodeId": "4n6tnna",
+      "retryAttempts": null,
+      "timeoutSeconds": 600.0
+    },
+    "5xdh98u": {
+      "defer": false,
+      "destinations": {
+        "output": "default"
+      },
+      "kind": "subflow",
+      "loopId": null,
+      "nodeId": "5xdh98u",
+      "retryAttempts": null,
+      "timeoutSeconds": 600.0
+    },
+    "6q69bjv": {
+      "defer": false,
+      "destinations": {
+        "output": "default"
+      },
+      "kind": "variable",
+      "loopId": null,
+      "nodeId": "6q69bjv",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "bootstrap_get_user_context": {
+      "defer": false,
+      "destinations": {
+        "cma0hwk": "default"
+      },
+      "kind": "agent",
+      "loopId": null,
+      "nodeId": "bootstrap_get_user_context",
+      "retryAttempts": null,
+      "timeoutSeconds": 300.0
+    },
+    "ciipeax": {
+      "defer": false,
+      "destinations": {
+        "4gnytj0": "default"
+      },
+      "kind": "variable",
+      "loopId": "loop:procurement_policy_assistant",
+      "nodeId": "ciipeax",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "cma0hwk": {
+      "defer": false,
+      "destinations": {
+        "kgrt72s": "default"
+      },
+      "kind": "llm",
+      "loopId": "loop:procurement_policy_assistant",
+      "nodeId": "cma0hwk",
+      "retryAttempts": 3,
+      "timeoutSeconds": 120.0
+    },
+    "czlfssx": {
+      "defer": false,
+      "destinations": {
+        "ruaur7s": "default"
+      },
+      "kind": "sandbox",
+      "loopId": null,
+      "nodeId": "czlfssx",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "fazefi1": {
+      "defer": false,
+      "destinations": {
+        "output": "default"
+      },
+      "kind": "subflow",
+      "loopId": null,
+      "nodeId": "fazefi1",
+      "retryAttempts": null,
+      "timeoutSeconds": 600.0
+    },
+    "fnturm0": {
+      "defer": false,
+      "destinations": {
+        "output": "default"
+      },
+      "kind": "subflow",
+      "loopId": null,
+      "nodeId": "fnturm0",
+      "retryAttempts": null,
+      "timeoutSeconds": 600.0
+    },
+    "kbndoui": {
+      "defer": false,
+      "destinations": {
+        "procurement_policy_assistant": "default"
+      },
+      "kind": "tool",
+      "loopId": "loop:procurement_policy_assistant",
+      "nodeId": "kbndoui",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "kgix5u5": {
+      "defer": false,
+      "destinations": {
+        "output": "default"
+      },
+      "kind": "subflow",
+      "loopId": null,
+      "nodeId": "kgix5u5",
+      "retryAttempts": null,
+      "timeoutSeconds": 600.0
+    },
+    "kgrt72s": {
+      "defer": false,
+      "destinations": {
+        "kgix5u5": "r-sonhl9gf",
+        "procurement_policy_assistant": "r-else"
+      },
+      "kind": "router",
+      "loopId": "loop:procurement_policy_assistant",
+      "nodeId": "kgrt72s",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "kqw6yki": {
+      "defer": false,
+      "destinations": {
+        "4gnytj0": "r-9sf0ulep",
+        "4n6tnna": "r-ravsvv6s",
+        "5xdh98u": "r-zp9xqprg",
+        "bootstrap_get_user_context": "r-t00a64bi",
+        "cma0hwk": "r-bmwh6r9c",
+        "czlfssx": "r-else",
+        "fazefi1": "r-2j7j9v5g",
+        "fnturm0": "r-m2prbvxn",
+        "l2mtx56": "r-7vtdgzyb",
+        "ugx7h5y": "r-uyfdjm5v",
+        "wow5wvb": "r-6l4nuytz"
+      },
+      "kind": "router",
+      "loopId": null,
+      "nodeId": "kqw6yki",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "l2mtx56": {
+      "defer": false,
+      "destinations": {
+        "zp960r1": "default"
+      },
+      "kind": "subflow",
+      "loopId": "loop:procurement_policy_assistant",
+      "nodeId": "l2mtx56",
+      "retryAttempts": null,
+      "timeoutSeconds": 600.0
+    },
+    "output": {
+      "defer": false,
+      "destinations": [],
+      "kind": "output",
+      "loopId": null,
+      "nodeId": "output",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "p5n5drq": {
+      "defer": false,
+      "destinations": {
+        "4n6tnna": "r-mqgv5xgy",
+        "5xdh98u": "r-jxdx5men",
+        "6q69bjv": "r-else",
+        "fazefi1": "r-qums01iz",
+        "fnturm0": "r-664eok4j",
+        "l2mtx56": "r-woh4lkb6",
+        "output": "r-lxf5gnto",
+        "ugx7h5y": "r-awxz5vsi",
+        "vruhmnf": "r-clacosx4",
+        "wow5wvb": "r-kobt0mpw",
+        "xycuonu": "r-mnyrqewg"
+      },
+      "kind": "router",
+      "loopId": "loop:procurement_policy_assistant",
+      "nodeId": "p5n5drq",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "pgxoslj": {
+      "defer": false,
+      "destinations": {
+        "cma0hwk": "default"
+      },
+      "kind": "variable",
+      "loopId": "loop:procurement_policy_assistant",
+      "nodeId": "pgxoslj",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "procurement_policy_assistant": {
+      "defer": false,
+      "destinations": {
+        "kbndoui": "handoff-kbndoui",
+        "p5n5drq": "default",
+        "pgxoslj": "handoff-pgxoslj",
+        "wvwsyr8": "handoff-wvwsyr8"
+      },
+      "kind": "agent",
+      "loopId": "loop:procurement_policy_assistant",
+      "nodeId": "procurement_policy_assistant",
+      "retryAttempts": null,
+      "timeoutSeconds": 300.0
+    },
+    "ruaur7s": {
+      "defer": false,
+      "destinations": {
+        "procurement_policy_assistant": "default"
+      },
+      "kind": "variable",
+      "loopId": null,
+      "nodeId": "ruaur7s",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "start": {
+      "defer": false,
+      "destinations": {
+        "kqw6yki": "default"
+      },
+      "kind": "entry",
+      "loopId": null,
+      "nodeId": "start",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "ugx7h5y": {
+      "defer": false,
+      "destinations": {
+        "zp960r1": "default"
+      },
+      "kind": "subflow",
+      "loopId": "loop:procurement_policy_assistant",
+      "nodeId": "ugx7h5y",
+      "retryAttempts": null,
+      "timeoutSeconds": 600.0
+    },
+    "vruhmnf": {
+      "defer": false,
+      "destinations": {
+        "output": "default"
+      },
+      "kind": "variable",
+      "loopId": null,
+      "nodeId": "vruhmnf",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "wow5wvb": {
+      "defer": false,
+      "destinations": {
+        "output": "default"
+      },
+      "kind": "subflow",
+      "loopId": null,
+      "nodeId": "wow5wvb",
+      "retryAttempts": null,
+      "timeoutSeconds": 600.0
+    },
+    "wvwsyr8": {
+      "defer": false,
+      "destinations": {
+        "procurement_policy_assistant": "default"
+      },
+      "kind": "variable",
+      "loopId": "loop:procurement_policy_assistant",
+      "nodeId": "wvwsyr8",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "xycuonu": {
+      "defer": false,
+      "destinations": {
+        "ciipeax": "default"
+      },
+      "kind": "variable",
+      "loopId": "loop:procurement_policy_assistant",
+      "nodeId": "xycuonu",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "zp960r1": {
+      "defer": false,
+      "destinations": {
+        "output": "r-x7yb6rfe, r-019h8m96, r-otiz3jzg, r-pmsqya58",
+        "procurement_policy_assistant": "r-else"
+      },
+      "kind": "router",
+      "loopId": "loop:procurement_policy_assistant",
+      "nodeId": "zp960r1",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    }
+  }
+}

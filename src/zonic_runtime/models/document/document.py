@@ -90,6 +90,16 @@ class WorkflowEdge(ZonicDocumentModel):
     style: dict[str, Any] | None = None
 
 
+class DocumentLimits(ZonicDocumentModel):
+    """A document's own loop limits, capped by ``settings.engine.maxLimits`` (design 6.4).
+
+    Runtime-only for now: the builder does not write it (the Node.js runtime read it too).
+    """
+
+    max_visits_per_node: int | None = Field(default=None, gt=0)
+    max_steps: int | None = Field(default=None, gt=0)
+
+
 class WorkflowDocument(ZonicDocumentModel):
     schema_version: str | None = Field(default=None, pattern=r"^[0-9]+\.[0-9]+$")
     agentic_workflow_id: str | None = Field(default=None, min_length=1)
@@ -118,6 +128,7 @@ class WorkflowDocument(ZonicDocumentModel):
     semantic_keywords: str | None = None
     semantic_use_cases: str | None = None
     system_params: list[SystemParam] | None = None
+    limits: DocumentLimits | None = None
     nodes: list[WorkflowNode]
     edges: list[WorkflowEdge]
 

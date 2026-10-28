@@ -211,6 +211,9 @@
       "qi-ui"
     ],
     "includeUnpublished": false,
+    "excludedIdPrefixes": [
+      "template-"
+    ],
     "cacheSeconds": 30
   },
   "caches": {

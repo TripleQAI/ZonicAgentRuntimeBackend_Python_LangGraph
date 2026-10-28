@@ -1,0 +1,119 @@
+{
+  "entry": "start",
+  "nodes": {
+    "59x9qii": {
+      "defer": false,
+      "destinations": {
+        "io8igp3": "default"
+      },
+      "kind": "tool",
+      "loopId": null,
+      "nodeId": "59x9qii",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "7glmeqm": {
+      "defer": false,
+      "destinations": {
+        "io8igp3": "default"
+      },
+      "kind": "tool",
+      "loopId": null,
+      "nodeId": "7glmeqm",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "8ykzyin": {
+      "defer": false,
+      "destinations": {
+        "io8igp3": "default"
+      },
+      "kind": "tool",
+      "loopId": null,
+      "nodeId": "8ykzyin",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "gksg1uc": {
+      "defer": false,
+      "destinations": {
+        "io8igp3": "default"
+      },
+      "kind": "tool",
+      "loopId": null,
+      "nodeId": "gksg1uc",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "io8igp3": {
+      "defer": false,
+      "destinations": {
+        "output": "default"
+      },
+      "kind": "variable",
+      "loopId": null,
+      "nodeId": "io8igp3",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "output": {
+      "defer": false,
+      "destinations": [],
+      "kind": "output",
+      "loopId": null,
+      "nodeId": "output",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "qwhsgzl": {
+      "defer": false,
+      "destinations": {
+        "io8igp3": "default"
+      },
+      "kind": "tool",
+      "loopId": null,
+      "nodeId": "qwhsgzl",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "start": {
+      "defer": false,
+      "destinations": {
+        "zo1ua4d": "default"
+      },
+      "kind": "entry",
+      "loopId": null,
+      "nodeId": "start",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "t125wn8": {
+      "defer": false,
+      "destinations": {
+        "zo1ua4d": "default"
+      },
+      "kind": "variable",
+      "loopId": "loop:zo1ua4d",
+      "nodeId": "t125wn8",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "zo1ua4d": {
+      "defer": false,
+      "destinations": {
+        "59x9qii": "handoff-59x9qii",
+        "7glmeqm": "handoff-7glmeqm",
+        "8ykzyin": "handoff-8ykzyin",
+        "gksg1uc": "handoff-gksg1uc",
+        "output": "default",
+        "qwhsgzl": "handoff-qwhsgzl",
+        "t125wn8": "handoff-t125wn8"
+      },
+      "kind": "agent",
+      "loopId": "loop:zo1ua4d",
+      "nodeId": "zo1ua4d",
+      "retryAttempts": null,
+      "timeoutSeconds": 300.0
+    }
+  }
+}

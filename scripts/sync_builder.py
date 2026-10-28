@@ -12,11 +12,16 @@ Sets, all from sibling repositories, never modified there:
 * ``django/``: the Django runtime workflows that add a case (``complex-agent``);
 * ``schema/``: ``workflow-document-v2.schema.json``, for the model contract test.
 
+It also writes ``resources/builder-registry.json`` from the builder's
+``backend/workflow/resources`` (plan P1-05): the node semantics, each node type's handles,
+output schema and default configuration, the option sets, and the validation rules with an
+ID (the Swarm rules SW-1 to SW-12, which the blueprint enforces), with a SHA-256 per source.
+
 ``open-data/`` is written by ``scripts/export_workflows.py`` from the product database;
 this script keeps its entries. ``SOURCE.json`` records each file's source and SHA-256 and
 each repository's commit. ``--check`` fails when a vendored file no longer matches its
 hash, when files and entries differ, or (when the repositories are next to this one)
-when a source changed since it was vendored.
+when a source changed since it was vendored, including a registry source.
 """
 
 from __future__ import annotations
@@ -35,6 +40,8 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 TARGET = ROOT / "tests" / "fixtures" / "workflows" / "builder"
 MANIFEST = TARGET / "SOURCE.json"
+REGISTRY = ROOT / "resources" / "builder-registry.json"
+REGISTRY_SOURCES = "backend/workflow/resources"
 BUILDER = "Strands-visual-builder"
 DJANGO = "ZonicAgentRuntimeBackend_DjangoApp"
 DJANGO_WORKFLOWS = "airuntimebackendmodule/code/aiplatform/tests_all/tests/test_data/workflows"
@@ -103,6 +110,55 @@ def _plan(parent: Path) -> Iterator[Vendored]:
     yield Vendored("django/complex-agent.json", DJANGO, src, _copy(django, src))
 
 
+def _without_comments(value: Any) -> Any:
+    if isinstance(value, list):
+        return [_without_comments(v) for v in value]
+    if isinstance(value, dict):
+        return {k: _without_comments(v) for k, v in value.items() if not k.startswith("_")}
+    return value
+
+
+def _registry(builder: Path, commit: str) -> dict[str, Any]:
+    resources = builder / REGISTRY_SOURCES
+
+    def read(name: str) -> Any:
+        return json.loads((resources / name).read_text(encoding="utf-8"))
+
+    node_types: dict[str, Any] = {}
+    for f in sorted((resources / "node_types").glob("*.json")):
+        entry = json.loads(f.read_text(encoding="utf-8"))
+        handles = entry.get("handles") or {}
+        node_types[entry["type"]] = {
+            "sourceHandles": [h["id"] for h in handles.get("sources") or []],
+            "targetHandles": [h["id"] for h in handles.get("targets") or []],
+            "outputSchema": entry.get("outputSchema") or {},
+            "defaultConfig": entry.get("defaultConfig") or {},
+        }
+    options = read("option_sets.json")
+    rules = {
+        node_type: with_id
+        for node_type, all_rules in read("validation_rules.json").items()
+        if not node_type.startswith("_") and (with_id := [r for r in all_rules if "id" in r])
+    }
+    names = ["node_semantics.json", "option_sets.json", "validation_rules.json"]
+    names += [f"node_types/{f.name}" for f in (resources / "node_types").glob("*.json")]
+    return {
+        "schemaVersion": "1.0",
+        "builderCommit": commit,
+        "semantics": _without_comments(read("node_semantics.json")),
+        "conditionOperators": [o["value"] for o in options["conditionOperators"]],
+        "conditionLogic": [o["value"] for o in options["conditionLogic"]],
+        "stateOps": [o["value"] for o in options["stateOps"]],
+        "mappingTypes": [o["value"] for o in options["mappingTypes"]],
+        "validationRules": rules,
+        "nodeTypes": node_types,
+        "sources": {
+            f"{REGISTRY_SOURCES}/{name}": _sha256((resources / name).read_bytes().replace(b"\r\n", b"\n"))
+            for name in sorted(names)
+        },
+    }
+
+
 def _commit(repo_dir: Path) -> str:
     done = subprocess.run(
         ["git", "-C", str(repo_dir), "rev-parse", "HEAD"], capture_output=True, text=True, check=True
@@ -137,9 +193,10 @@ def sync(parent: Path) -> int:
         BUILDER: _commit(parent / BUILDER),
         DJANGO: _commit(parent / DJANGO),
     }
-    MANIFEST.write_text(
-        json.dumps({"repos": repos, "files": dict(sorted(files.items()))}, indent=2) + "\n", encoding="utf-8"
-    )
+    registry = _dump(_registry(parent / BUILDER, repos[BUILDER]))
+    REGISTRY.write_bytes(registry)
+    record = {"repos": repos, "registry": _sha256(registry), "files": dict(sorted(files.items()))}
+    MANIFEST.write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
     print(f"vendored {len(files) - len(kept)} files ({len(kept)} kept from {', '.join(EXTERNAL_SETS)})")
     return 0
 
@@ -153,6 +210,15 @@ def check(parent: Path) -> int:
     for path in sorted(present & set(entries)):
         if _sha256((TARGET / path).read_bytes()) != entries[path]["sha256"]:
             problems.append(f"{path}: does not match SOURCE.json")
+    registry_name = REGISTRY.relative_to(ROOT).as_posix()
+    if not REGISTRY.is_file():
+        problems.append(f"{registry_name}: missing")
+    elif _sha256(REGISTRY.read_bytes()) != manifest.get("registry"):
+        problems.append(f"{registry_name}: does not match SOURCE.json")
+    elif (parent / BUILDER).is_dir():
+        vendored = json.loads(REGISTRY.read_text(encoding="utf-8"))
+        if _registry(parent / BUILDER, vendored.get("builderCommit", "")) != vendored:
+            problems.append(f"{registry_name}: {BUILDER}/{REGISTRY_SOURCES} changed")
     if (parent / BUILDER).is_dir() and (parent / DJANGO).is_dir():
         for item in _plan(parent):
             entry = entries.get(item.path)

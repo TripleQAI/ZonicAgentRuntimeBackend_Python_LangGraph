@@ -17,7 +17,7 @@ from types import MappingProxyType
 from typing import Any, Literal
 
 from zonic_runtime.models.resources.misc import DialectRules
-from zonic_runtime.workflow.loader.paths import JsonObject, delete_path, get_path, json_type, set_path
+from zonic_runtime.runtime.paths import JsonObject, delete_path, get_path, json_type, set_path
 
 Severity = Literal["error", "warning", "info"]
 RuleExpressionMode = Literal["unsupported", "parse_simple"]

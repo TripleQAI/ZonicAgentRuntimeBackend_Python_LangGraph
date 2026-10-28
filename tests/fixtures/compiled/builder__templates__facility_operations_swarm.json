@@ -1,0 +1,188 @@
+{
+  "entry": "start_1",
+  "nodes": {
+    "approval_1": {
+      "defer": false,
+      "destinations": {
+        "human_feedback": "rejected",
+        "variable_record": "approved"
+      },
+      "kind": "interrupt",
+      "loopId": null,
+      "nodeId": "approval_1",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "guardrail_1": {
+      "defer": false,
+      "destinations": {
+        "llm_parser": "pass",
+        "output_refused": "fail"
+      },
+      "kind": "guardrail",
+      "loopId": null,
+      "nodeId": "guardrail_1",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "http_weather": {
+      "defer": false,
+      "destinations": {
+        "swarm_ops": "default"
+      },
+      "kind": "http",
+      "loopId": null,
+      "nodeId": "http_weather",
+      "retryAttempts": 2,
+      "timeoutSeconds": 30.0
+    },
+    "human_feedback": {
+      "defer": false,
+      "destinations": {
+        "output_rejected": "default"
+      },
+      "kind": "interrupt",
+      "loopId": null,
+      "nodeId": "human_feedback",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "llm_parser": {
+      "defer": false,
+      "destinations": {
+        "rule_scope": "default"
+      },
+      "kind": "llm",
+      "loopId": null,
+      "nodeId": "llm_parser",
+      "retryAttempts": 3,
+      "timeoutSeconds": 120.0
+    },
+    "llm_quick": {
+      "defer": false,
+      "destinations": {
+        "output_quick": "default"
+      },
+      "kind": "llm",
+      "loopId": null,
+      "nodeId": "llm_quick",
+      "retryAttempts": 3,
+      "timeoutSeconds": 120.0
+    },
+    "output_quick": {
+      "defer": false,
+      "destinations": [],
+      "kind": "output",
+      "loopId": null,
+      "nodeId": "output_quick",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "output_refused": {
+      "defer": false,
+      "destinations": [],
+      "kind": "output",
+      "loopId": null,
+      "nodeId": "output_refused",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "output_rejected": {
+      "defer": false,
+      "destinations": [],
+      "kind": "output",
+      "loopId": null,
+      "nodeId": "output_rejected",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "output_report": {
+      "defer": false,
+      "destinations": [],
+      "kind": "output",
+      "loopId": null,
+      "nodeId": "output_report",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "rule_review": {
+      "defer": false,
+      "destinations": {
+        "approval_1": "r_review",
+        "variable_record": "r_else"
+      },
+      "kind": "router",
+      "loopId": null,
+      "nodeId": "rule_review",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "rule_scope": {
+      "defer": false,
+      "destinations": {
+        "http_weather": "r_investigate",
+        "llm_quick": "r_else"
+      },
+      "kind": "router",
+      "loopId": null,
+      "nodeId": "rule_scope",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "script_score": {
+      "defer": false,
+      "destinations": {
+        "rule_review": "default"
+      },
+      "kind": "sandbox",
+      "loopId": null,
+      "nodeId": "script_score",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "start_1": {
+      "defer": false,
+      "destinations": {
+        "guardrail_1": "default"
+      },
+      "kind": "entry",
+      "loopId": null,
+      "nodeId": "start_1",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "swarm_ops": {
+      "defer": false,
+      "destinations": {
+        "script_score": "default"
+      },
+      "kind": "multi_agent",
+      "loopId": null,
+      "nodeId": "swarm_ops",
+      "retryAttempts": null,
+      "timeoutSeconds": 900.0
+    },
+    "variable_record": {
+      "defer": false,
+      "destinations": {
+        "view_report": "default"
+      },
+      "kind": "variable",
+      "loopId": null,
+      "nodeId": "variable_record",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "view_report": {
+      "defer": false,
+      "destinations": {
+        "output_report": "default"
+      },
+      "kind": "view",
+      "loopId": null,
+      "nodeId": "view_report",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    }
+  }
+}

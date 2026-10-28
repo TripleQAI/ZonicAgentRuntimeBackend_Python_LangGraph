@@ -241,6 +241,7 @@ class ApiSettings(ZonicResourceModel):
 class CatalogSettings(ZonicResourceModel):
     runtime_channels: list[str]  # builder publishChannels codes that make a workflow runnable (design Q2)
     include_unpublished: bool  # development only: list root workflows without a runtime channel
+    excluded_id_prefixes: list[str]  # IDs never listed or run, e.g. builder templates (case F-02)
     cache_seconds: float = Field(ge=0)
 
 

@@ -13,7 +13,14 @@ from pydantic import ValidationError
 from tests.workflow_fixtures import BUILDER_SCHEMA, document_files, fixture_id, load_document, read_json
 from zonic_runtime.config.env import EnvironmentModel
 from zonic_runtime.config.settings import load_resources
-from zonic_runtime.models.blueprint import Blueprint, BlueprintWarning, EdgeIndex, JoinSpec, NodeSpec
+from zonic_runtime.models.blueprint import (
+    Blueprint,
+    BlueprintWarning,
+    EdgeIndex,
+    JoinSpec,
+    NodeSpec,
+    RunLimits,
+)
 from zonic_runtime.models.engine import (
     DatasetRef,
     FlowPatch,
@@ -186,6 +193,7 @@ def _blueprint() -> Blueprint:
         document_version="2.0",
         graph_id="wf@r1",
         entry="start_1",
+        limits=RunLimits(max_visits_per_node=10, max_steps=200),
         nodes={
             "start_1": NodeSpec(
                 node_id="start_1",

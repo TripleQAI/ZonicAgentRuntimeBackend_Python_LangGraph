@@ -88,11 +88,15 @@ class StateUpdate(ZonicModel):
 
 
 class FlowPatch(ZonicModel):
-    """Writes to ``flow`` with their provenance (DR-1): superstep and writer node ID."""
+    """Writes to ``flow`` (or ``system``) with their provenance (DR-1): superstep and writer node ID.
 
-    step: int = Field(ge=0)
+    ``set`` holds new top-level values; ``remove`` lists top-level keys an operation deleted.
+    """
+
+    step: int = Field(ge=-1)  # -1: the turn loader, before the first superstep
     writer: str
     set: dict[str, Any] = Field(default_factory=dict)
+    remove: list[str] = Field(default_factory=list)
 
 
 class TimelineEntry(ZonicModel):
@@ -131,6 +135,8 @@ class NodeOutcome(ZonicModel):
     messages: list[ThreadMessage] = Field(default_factory=list)
     datasets: list[DatasetRef] = Field(default_factory=list)
     warnings: list[dict[str, Any]] = Field(default_factory=list)
+    #: The run result, set by the Output kind (``first_result`` keeps the first).
+    result: dict[str, Any] | None = None
 
     @property
     def activates_all(self) -> bool:

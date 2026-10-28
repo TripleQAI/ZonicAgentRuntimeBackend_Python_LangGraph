@@ -1,0 +1,6 @@
+# Vendored files are pinned by SHA-256 of their bytes (scripts/sync_sql.py, scripts/sync_builder.py):
+# never convert their line endings on checkout or commit.
+db/runtime/*.sql -text
+db/observability/*.sql -text
+tests/fixtures/** -text
+resources/builder-registry.json -text

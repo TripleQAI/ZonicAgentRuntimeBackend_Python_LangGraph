@@ -1,8 +1,9 @@
 {
   "repos": {
-    "Strands-visual-builder": "90b5885920e7baef4cf804de1e3931a56f3af7f2",
+    "Strands-visual-builder": "0b9306f8393dc8c10b40c3244389a97677090ef3",
     "ZonicAgentRuntimeBackend_DjangoApp": "cf55ca2c263e803902f042866fc3baaa06f37718"
   },
+  "registry": "06b32053bad4b147c34a4177c4b5d6e0c1b0f4ea413544c78c11b00b126d285b",
   "files": {
     "django/complex-agent.json": {
       "source": "ZonicAgentRuntimeBackend_DjangoApp/airuntimebackendmodule/code/aiplatform/tests_all/tests/test_data/workflows/complex-agent.json",

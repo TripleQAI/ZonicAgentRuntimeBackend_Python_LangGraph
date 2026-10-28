@@ -32,6 +32,10 @@
           "title": "Defaulthandle",
           "type": "string"
         },
+        "errorHandle": {
+          "title": "Errorhandle",
+          "type": "string"
+        },
         "errorPolicy": {
           "enum": [
             "fail_run",
@@ -39,6 +43,10 @@
             "route"
           ],
           "title": "Errorpolicy",
+          "type": "string"
+        },
+        "handoffHandlePrefix": {
+          "title": "Handoffhandleprefix",
           "type": "string"
         },
         "idleTimeoutSeconds": {
@@ -80,6 +88,8 @@
         "errorPolicy",
         "joinPolicy",
         "defaultHandle",
+        "errorHandle",
+        "handoffHandlePrefix",
         "retry",
         "observation"
       ],
@@ -320,6 +330,13 @@
           },
           "title": "Aliases",
           "type": "object"
+        },
+        "extensions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Extensions",
+          "type": "array"
         },
         "map": {
           "additionalProperties": {
@@ -565,6 +582,14 @@
       ],
       "title": "Onunknowntype",
       "type": "string"
+    },
+    "schemaExtensions": {
+      "additionalProperties": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Schemaextensions",
+      "type": "object"
     },
     "schemaVersion": {
       "title": "Schemaversion",

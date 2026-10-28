@@ -1,0 +1,60 @@
+{
+  "entry": "start_1",
+  "nodes": {
+    "output_1": {
+      "defer": false,
+      "destinations": [],
+      "kind": "output",
+      "loopId": null,
+      "nodeId": "output_1",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "start_1": {
+      "defer": false,
+      "destinations": {
+        "supervisor_1": "default"
+      },
+      "kind": "entry",
+      "loopId": null,
+      "nodeId": "start_1",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "supervisor_1": {
+      "defer": false,
+      "destinations": {
+        "output_1": "default",
+        "worker_a": "handoff-worker_a",
+        "worker_b": "handoff-worker_b"
+      },
+      "kind": "agent",
+      "loopId": "loop:supervisor_1",
+      "nodeId": "supervisor_1",
+      "retryAttempts": null,
+      "timeoutSeconds": 300.0
+    },
+    "worker_a": {
+      "defer": false,
+      "destinations": {
+        "supervisor_1": "default"
+      },
+      "kind": "agent",
+      "loopId": "loop:supervisor_1",
+      "nodeId": "worker_a",
+      "retryAttempts": null,
+      "timeoutSeconds": 300.0
+    },
+    "worker_b": {
+      "defer": false,
+      "destinations": {
+        "supervisor_1": "default"
+      },
+      "kind": "agent",
+      "loopId": "loop:supervisor_1",
+      "nodeId": "worker_b",
+      "retryAttempts": null,
+      "timeoutSeconds": 300.0
+    }
+  }
+}

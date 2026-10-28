@@ -1179,7 +1179,7 @@
 <tr>
 <td>P1-07</td>
 <td>Node input and output contract</td>
-<td><code>models/io/</code> (<code>PortSpec</code>, <code>PortBinding</code>, <code>OutputSpec</code>, <code>NodeIoSpec</code>, <code>SchemaRef</code>, <code>NodeInput</code>, <code>NodeOutput</code>, <code>@payload</code> and the 12 built-in payload models); <code>io/schema_registry.py</code> (versions, <code>allOf</code> composition, compiled validators with the <code>jsonschema</code> package, cached by hash); <code>io/port_binder.py</code>; <code>io/output_mapper.py</code>; <code>io/template_checker.py</code>; <code>io</code> blocks for all 18 types in <code>node-runtime.json</code>; contract test against the vendored builder <code>outputSchema</code>s</td>
+<td><code>models/io/</code> (<code>PortSpec</code>, <code>PortBinding</code>, <code>OutputSpec</code>, <code>NodeIoSpec</code>, <code>SchemaRef</code>, <code>NodeInput</code>, <code>NodeOutput</code>, <code>@payload</code> and the 12 built-in payload models); <code>io/schema_registry.py</code> (versions, <code>allOf</code> composition, compiled validators with the <code>jsonschema</code> package, cached by hash); <code>io/port_binder.py</code>; <code>io/output_mapper.py</code>; <code>workflow/blueprint/template_checker.py</code> (it needs the template resolver, decision 0003); <code>io</code> blocks for all 18 types in <code>node-runtime.json</code>; contract test against the vendored builder <code>outputSchema</code>s</td>
 <td>P1-02, P1-05</td>
 <td>I-01 to I-11</td>
 </tr>

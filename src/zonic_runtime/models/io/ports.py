@@ -53,6 +53,7 @@ class OutputSpec(ZonicResourceModel):
     schema_ref: SchemaRef = Field(alias="schema")
     map: dict[str, str] = Field(default_factory=dict)  # payload field <- path into the raw result
     aliases: dict[str, str] = Field(default_factory=dict)  # extra names for template paths
+    extensions: list[str] = Field(default_factory=list)  # manifest schemaExtensions composed with the payload
     node_schema_extends: bool = True  # the node's own outputSchema refines the base
     write_to: str | None = None  # also write the output to this state path
 

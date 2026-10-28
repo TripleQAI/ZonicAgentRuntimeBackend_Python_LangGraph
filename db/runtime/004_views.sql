@@ -15,8 +15,9 @@
 
 -- Runnable workflows: root and not disabled. One row per (workflow, publish channel), so the
 -- channel rule (design Q2) is an equality filter on runtime_channel; runtime_channel is NULL
--- for a workflow without channels, which only development settings list. security holds the
--- builder's access rule ({activities: [{code}]}) the runtime checks against the caller's claims.
+-- for a workflow without channels, which only development settings list. security passes the
+-- builder's {activities: [{code}]} through for display; the runtime does not enforce it, as the
+-- Cognito token is its only access control (docs/decisions/0004).
 CREATE OR REPLACE VIEW agent_runtime.v_agent_catalog AS
 SELECT
     a.agentic_workflow_id,

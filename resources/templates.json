@@ -7,5 +7,7 @@
     "approval.response": "interrupt_answer",
     "human.response": "interrupt_answer"
   },
-  "bareNames": "flow"
+  "bareNames": "flow",
+  "writable": ["flow", "messages", "thread"],
+  "nodePathAliases": { "result": "output" }
 }

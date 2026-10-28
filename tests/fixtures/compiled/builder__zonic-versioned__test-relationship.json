@@ -1,0 +1,48 @@
+{
+  "entry": "start_1781450340413_ynl2z",
+  "nodes": {
+    "agent_1781450354685_1oj06": {
+      "defer": false,
+      "destinations": {
+        "output_1781450358137_vdepr": "default",
+        "workflow_1781450372188_ztcsq": "handoff-workflow_1781450372188_ztcsq"
+      },
+      "kind": "agent",
+      "loopId": null,
+      "nodeId": "agent_1781450354685_1oj06",
+      "retryAttempts": null,
+      "timeoutSeconds": 300.0
+    },
+    "output_1781450358137_vdepr": {
+      "defer": false,
+      "destinations": [],
+      "kind": "output",
+      "loopId": null,
+      "nodeId": "output_1781450358137_vdepr",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "start_1781450340413_ynl2z": {
+      "defer": false,
+      "destinations": {
+        "agent_1781450354685_1oj06": "default"
+      },
+      "kind": "entry",
+      "loopId": null,
+      "nodeId": "start_1781450340413_ynl2z",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "workflow_1781450372188_ztcsq": {
+      "defer": false,
+      "destinations": {
+        "output_1781450358137_vdepr": "default"
+      },
+      "kind": "subflow",
+      "loopId": null,
+      "nodeId": "workflow_1781450372188_ztcsq",
+      "retryAttempts": null,
+      "timeoutSeconds": 600.0
+    }
+  }
+}

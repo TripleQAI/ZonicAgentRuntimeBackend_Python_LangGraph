@@ -43,6 +43,8 @@ class NodeTypeDefaults(ZonicResourceModel):
     error_policy: ErrorPolicy
     join_policy: JoinPolicy
     default_handle: str
+    error_handle: str  # activated under error policy ``route``
+    handoff_handle_prefix: str  # handle of a handoff to node X is ``<prefix>X``
     retry: RetrySpec
     observation: ObservationSpec
 
@@ -71,6 +73,8 @@ class NodeRuntimeManifest(ZonicResourceModel):
     schema_version: str
     defaults: NodeTypeDefaults
     on_unknown_type: Literal["fail_plan", "ignore"]
+    #: Schemas by registry ID (``port.text@1``, ``ext.view.html@1``): port schemas and output extensions.
+    schema_extensions: dict[str, dict[str, Any]] = Field(default_factory=dict)
     node_types: dict[str, NodeTypeEntry]
 
     @model_validator(mode="after")

@@ -1,0 +1,82 @@
+{
+  "entry": "start_1",
+  "nodes": {
+    "count_1": {
+      "defer": false,
+      "destinations": {
+        "outer_check": "default"
+      },
+      "kind": "variable",
+      "loopId": "loop:outer_1",
+      "nodeId": "count_1",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "inner_1": {
+      "defer": false,
+      "destinations": {
+        "inner_check": "default"
+      },
+      "kind": "llm",
+      "loopId": "loop:outer_1",
+      "nodeId": "inner_1",
+      "retryAttempts": 3,
+      "timeoutSeconds": 120.0
+    },
+    "inner_check": {
+      "defer": false,
+      "destinations": {
+        "count_1": "r_else",
+        "inner_1": "r_again"
+      },
+      "kind": "router",
+      "loopId": "loop:outer_1",
+      "nodeId": "inner_check",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "outer_1": {
+      "defer": false,
+      "destinations": {
+        "inner_1": "default"
+      },
+      "kind": "llm",
+      "loopId": "loop:outer_1",
+      "nodeId": "outer_1",
+      "retryAttempts": 3,
+      "timeoutSeconds": 120.0
+    },
+    "outer_check": {
+      "defer": false,
+      "destinations": {
+        "outer_1": "r_more",
+        "output_1": "r_else"
+      },
+      "kind": "router",
+      "loopId": "loop:outer_1",
+      "nodeId": "outer_check",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "output_1": {
+      "defer": false,
+      "destinations": [],
+      "kind": "output",
+      "loopId": null,
+      "nodeId": "output_1",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "start_1": {
+      "defer": false,
+      "destinations": {
+        "outer_1": "default"
+      },
+      "kind": "entry",
+      "loopId": null,
+      "nodeId": "start_1",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    }
+  }
+}

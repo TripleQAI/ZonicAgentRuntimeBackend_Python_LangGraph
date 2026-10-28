@@ -1,0 +1,129 @@
+{
+  "entry": "start",
+  "nodes": {
+    "dd2pv3y": {
+      "defer": false,
+      "destinations": {
+        "em4ap5w": "default"
+      },
+      "kind": "tool",
+      "loopId": null,
+      "nodeId": "dd2pv3y",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "em4ap5w": {
+      "defer": false,
+      "destinations": {
+        "output": "default"
+      },
+      "kind": "variable",
+      "loopId": null,
+      "nodeId": "em4ap5w",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "fpwfsxd": {
+      "defer": false,
+      "destinations": {
+        "oo3ab53": "default"
+      },
+      "kind": "variable",
+      "loopId": "loop:q7wxylq",
+      "nodeId": "fpwfsxd",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "i6qn10t": {
+      "defer": false,
+      "destinations": {
+        "q7wxylq": "default"
+      },
+      "kind": "tool",
+      "loopId": null,
+      "nodeId": "i6qn10t",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "jurpqem": {
+      "defer": false,
+      "destinations": {
+        "em4ap5w": "default"
+      },
+      "kind": "tool",
+      "loopId": null,
+      "nodeId": "jurpqem",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "oo3ab53": {
+      "defer": false,
+      "destinations": {
+        "q7wxylq": "default"
+      },
+      "kind": "variable",
+      "loopId": "loop:q7wxylq",
+      "nodeId": "oo3ab53",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "output": {
+      "defer": false,
+      "destinations": [],
+      "kind": "output",
+      "loopId": null,
+      "nodeId": "output",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "q7wxylq": {
+      "defer": false,
+      "destinations": {
+        "dd2pv3y": "handoff-dd2pv3y",
+        "fpwfsxd": "handoff-fpwfsxd",
+        "jurpqem": "handoff-jurpqem",
+        "output": "default",
+        "rpml0mt": "handoff-rpml0mt"
+      },
+      "kind": "agent",
+      "loopId": "loop:q7wxylq",
+      "nodeId": "q7wxylq",
+      "retryAttempts": null,
+      "timeoutSeconds": 300.0
+    },
+    "roj93k7": {
+      "defer": false,
+      "destinations": {
+        "i6qn10t": "r-zfdxlfeu",
+        "q7wxylq": "r-else"
+      },
+      "kind": "router",
+      "loopId": null,
+      "nodeId": "roj93k7",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "rpml0mt": {
+      "defer": false,
+      "destinations": {
+        "em4ap5w": "default"
+      },
+      "kind": "tool",
+      "loopId": null,
+      "nodeId": "rpml0mt",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    },
+    "start": {
+      "defer": false,
+      "destinations": {
+        "roj93k7": "default"
+      },
+      "kind": "entry",
+      "loopId": null,
+      "nodeId": "start",
+      "retryAttempts": null,
+      "timeoutSeconds": 120.0
+    }
+  }
+}

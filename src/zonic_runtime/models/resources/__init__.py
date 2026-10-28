@@ -6,6 +6,7 @@ from pydantic import BaseModel
 
 from zonic_runtime.models.hooks.binding import HookBindings
 
+from .builder import BuilderRegistry
 from .catalogs import EgressPolicy, McpServerCatalog, ModelCatalog
 from .manifest import NodeRuntimeManifest
 from .misc import DialectRules, ErrorCatalog, ObservabilityConfig, RunStateMachine, TemplateNamespaces
@@ -23,10 +24,12 @@ RESOURCE_FILES: dict[str, type[BaseModel]] = {
     "templates.json": TemplateNamespaces,
     "run-states.json": RunStateMachine,
     "dialects.json": DialectRules,
+    "builder-registry.json": BuilderRegistry,
 }
 
 __all__ = [
     "RESOURCE_FILES",
+    "BuilderRegistry",
     "DialectRules",
     "EgressPolicy",
     "ErrorCatalog",
