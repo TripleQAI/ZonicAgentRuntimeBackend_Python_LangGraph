@@ -144,6 +144,29 @@ async def test_N02_llm_json_with_output_schema_gives_structured_output() -> None
     assert sent.tool_names == ["n"] and sent.tools[0]["function"]["description"]
 
 
+@pytest.mark.parametrize(
+    ("answer", "parsed"),
+    [
+        ('{"city": "Oslo"}', {"city": "Oslo"}),
+        ('```json\n{"city": "Oslo"}\n```', {"city": "Oslo"}),
+        ('```\n{"city": "Oslo"}```', {"city": "Oslo"}),
+        ("```json\nnot json\n```", None),
+        ('The answer: {"city": "Oslo"}', None),
+    ],
+)
+async def test_N02_llm_json_without_a_schema_parses_the_answer_bare_or_in_one_code_fence(
+    answer: str, parsed: dict[str, Any] | None
+) -> None:
+    h, _ = agent_harness([Turn.say(answer)], DEV)
+    final, *_ = await h.run(chain(llm(responseFormat="json")))
+    out = final["nodes"]["n"]["output"]
+    assert out["text"] == answer
+    if parsed is None:
+        assert "structuredOutput" not in out  # text, with the LLM_NOT_JSON warning
+    else:
+        assert out["structuredOutput"] == parsed and out["result"] == parsed
+
+
 @pytest.mark.parametrize("answer", [{"city": "Oslo"}, {"city": "Oslo", "days": 0}, None])
 async def test_N02_invalid_json_is_structured_output_invalid(answer: dict[str, Any] | None) -> None:
     node = llm(responseFormat="json", outputSchema=SCHEMA)

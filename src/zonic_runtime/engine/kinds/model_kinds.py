@@ -19,6 +19,7 @@ is a JSON object.
 from __future__ import annotations
 
 import json
+import re
 from collections.abc import Mapping, Sequence
 from typing import Any
 
@@ -55,11 +56,17 @@ _NATIVE_METHOD = "json_schema"
 _LIMIT_STOP = "limit"
 TURN_LIMIT = "AGENT_TURN_LIMIT"
 NOT_JSON = "LLM_NOT_JSON"
+#: An answer wrapped in one Markdown code fence (```json ... ```), as models often send JSON.
+_FENCED = re.compile(r"\A```[\w-]*[ \t]*\n(?P<body>.*?)\n?```\Z", re.DOTALL)
 
 
 def _answer(text: str) -> Any:
-    """The builder's ``result``: the parsed JSON when the text is JSON, else the text."""
+    """The builder's ``result``: the parsed JSON when the text is JSON (bare or in one code
+    fence), else the text."""
     stripped = text.strip()
+    fenced = _FENCED.match(stripped)
+    if fenced:
+        stripped = fenced.group("body").strip()
     if stripped[:1] in ("{", "["):
         try:
             return json.loads(stripped)

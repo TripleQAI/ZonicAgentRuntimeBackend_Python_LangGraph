@@ -29,7 +29,7 @@ from zonic_runtime.engine.child import invoke_child
 from zonic_runtime.engine.kinds.flow_kinds import _Kind
 from zonic_runtime.engine.kinds.io_kinds import mapping_record
 from zonic_runtime.engine.node_template import NodeContext
-from zonic_runtime.engine.result import run_result
+from zonic_runtime.engine.result import answer_text, run_result
 from zonic_runtime.engine.state import SEQ, keyed_values
 from zonic_runtime.engine.turn_input import turn_input
 from zonic_runtime.errors import ZonicError
@@ -112,9 +112,12 @@ class SubflowKind(_Kind):
             for m in final.get("turn_messages") or []
             if isinstance(m, Mapping) and "role" in m
         ]
-        answer = last_answer(messages)
+        # The child's answer, for the parent's result fallback: its last chat answer, else its
+        # result's only string field. A result with neither stays as it is; the fallback then
+        # takes it whole.
+        answer = last_answer(messages) or answer_text(result)
         if answer and not isinstance(result.get("text"), str):
-            result = {**result, "text": answer}  # the child's answer, for the parent's result fallback
+            result = {**result, "text": answer}
         usage = Usage.model_validate(final["usage"]) if final.get("usage") else None
         return NodeOutcome(
             output={"result": result},

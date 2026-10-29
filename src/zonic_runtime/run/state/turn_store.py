@@ -39,6 +39,7 @@ from typing import Any
 from uuid import UUID
 
 from zonic_runtime.engine.persistence.turn_saver import TurnSaver
+from zonic_runtime.engine.result import answer_text
 from zonic_runtime.engine.state import keyed_values, without_seq
 from zonic_runtime.errors import ZonicError
 from zonic_runtime.integrations.gateway.http_gateway import translate_status
@@ -120,13 +121,6 @@ def user_message(text: str) -> dict[str, Any]:
     }
 
 
-def _answer_text(result: Mapping[str, Any]) -> str | None:
-    if isinstance(result.get("text"), str):
-        return str(result["text"])
-    strings = [v for v in result.values() if isinstance(v, str)]
-    return strings[0] if len(strings) == 1 else None
-
-
 def view_parts(state: Mapping[str, Any]) -> list[dict[str, Any]]:
     """The content parts the turn's nodes produced (views), in the order they completed."""
     nodes = state.get("nodes") or {}
@@ -141,7 +135,7 @@ def view_parts(state: Mapping[str, Any]) -> list[dict[str, Any]]:
 def answer_message(result: Mapping[str, Any], parts: Sequence[Mapping[str, Any]] = ()) -> dict[str, Any]:
     """The run's answer as the chat's assistant message: its text, or the result as JSON, then
     the turn's view parts, so a reopened session shows them again."""
-    text = _answer_text(result)
+    text = answer_text(result)
     part = text_part(text) if text is not None else {"type": _JSON, "value": dict(result)}
     preview = text if text is not None else json.dumps(dict(result), ensure_ascii=False, default=str)
     return {
