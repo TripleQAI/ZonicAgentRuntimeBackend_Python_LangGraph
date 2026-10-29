@@ -21,6 +21,8 @@ from typing import Any
 
 from langchain.chat_models import init_chat_model
 from langchain_core.language_models import BaseChatModel
+from langchain_core.outputs import ChatGenerationChunk
+from langchain_openai import ChatOpenAI
 from langgraph.constants import TAG_NOSTREAM
 
 from zonic_runtime.engine.agents.governor import ModelGovernor, ModelGovernors
@@ -46,6 +48,20 @@ _HTTPX_PROVIDERS = frozenset({"openai", "azure_openai"})
 _API_KEYS = MappingProxyType(
     {"azure_openai": "azure_openai_api_key", "openai": "openai_api_key", "anthropic": "anthropic_api_key"}
 )
+
+
+class FinalUsageChatOpenAI(ChatOpenAI):
+    """``ChatOpenAI`` that counts a stream's usage once, from its closing chunk without choices,
+    as the OpenAI API sends it. Some OpenAI-compatible servers (Nebius Token Factory's Nemotron
+    Nano and Ultra) also put the running total on every content chunk, which LangChain would add
+    up into a usage many times the real one."""
+
+    def _convert_chunk_to_generation_chunk(
+        self, chunk: dict[str, Any], default_chunk_class: type, base_generation_info: dict[str, Any] | None
+    ) -> ChatGenerationChunk | None:
+        if chunk.get("usage") and chunk.get("choices"):
+            chunk = {**chunk, "usage": None}
+        return super()._convert_chunk_to_generation_chunk(chunk, default_chunk_class, base_generation_info)
 
 
 def _provider_arguments(entry: ModelEntry, environment: EnvironmentReader) -> dict[str, Any]:
@@ -89,12 +105,17 @@ def provider_builders(
             # With its own client the SDK no longer streams usage by default: the trace's usage
             # (and the run's cost) need it.
             arguments = {**arguments, "http_async_client": client, "stream_usage": True}
-        model = init_chat_model(
-            entry.model_id,
-            model_provider=entry.provider,
-            **_provider_arguments(entry, environment),
-            **arguments,
-        )
+        if entry.provider == "openai":
+            model: Any = FinalUsageChatOpenAI(
+                model=entry.model_id, **_provider_arguments(entry, environment), **arguments
+            )
+        else:
+            model = init_chat_model(
+                entry.model_id,
+                model_provider=entry.provider,
+                **_provider_arguments(entry, environment),
+                **arguments,
+            )
         if not isinstance(model, BaseChatModel):
             raise ZonicError("MODEL_NOT_ALLOWED", model=entry.model_id, reason="not a chat model")
         return model
