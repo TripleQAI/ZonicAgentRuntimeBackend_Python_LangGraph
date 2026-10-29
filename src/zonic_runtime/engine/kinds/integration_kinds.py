@@ -309,7 +309,7 @@ class GuardrailKind(ModelKind):
             governor = self.agents(ctx).models.governor(self._ref())
             async with governor.permit(count_tokens_approximately(messages)), provider_errors(node_id):
                 decision, raw = await decide(self.model(ctx), self.native(ctx), messages, ctx.config, node_id)
-            usage = usage_of([raw]) if isinstance(raw, AIMessage) else None
+            usage = usage_of([raw], ctx.services.resources.models) if isinstance(raw, AIMessage) else None
         findings = (
             [] if decision.allowed else [{"reason": decision.reason, "categories": decision.categories}]
         )

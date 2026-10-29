@@ -28,7 +28,18 @@ from typing import Any, get_args
 from opentelemetry.sdk.trace import ReadableSpan
 from opentelemetry.trace import StatusCode
 
-from zonic_runtime.integrations.langfuse.export import INPUT, LEVEL, META, OUTPUT, RUN_ROOT, STATUS, TYPE
+from zonic_runtime.integrations.langfuse.export import (
+    COST,
+    INPUT,
+    LEVEL,
+    META,
+    MODEL,
+    OUTPUT,
+    RUN_ROOT,
+    STATUS,
+    TYPE,
+    USAGE,
+)
 from zonic_runtime.integrations.langfuse.masker import summary
 from zonic_runtime.models.observability import ObservationType
 from zonic_runtime.models.resources.misc import ObservabilityConfig
@@ -37,9 +48,7 @@ TRACE_META = "langfuse.trace.metadata."
 TRACE_NAME, TRACE_TAGS = "langfuse.trace.name", "langfuse.trace.tags"
 USER, SESSION = "user.id", "session.id"
 ENVIRONMENT, RELEASE, VERSION = "langfuse.environment", "langfuse.release", "langfuse.version"
-MODEL = "langfuse.observation.model.name"
 MODEL_PARAMETERS = "langfuse.observation.model.parameters"
-USAGE, COST = "langfuse.observation.usage_details", "langfuse.observation.cost_details"
 COMPLETION_START = "langfuse.observation.completion_start_time"
 STATUS_META = "zonic_status"
 

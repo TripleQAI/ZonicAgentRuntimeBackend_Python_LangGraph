@@ -22,6 +22,7 @@ from tests.unit.test_core_kinds import agent, chain, llm, output, variable
 from zonic_runtime.config.env import EnvironmentModel
 from zonic_runtime.config.settings import load_resources
 from zonic_runtime.integrations.langfuse.provider import LangfuseTracer, trace_id
+from zonic_runtime.models.resources.catalogs import ModelCatalog
 from zonic_runtime.models.resources.manifest import NodeRuntimeManifest
 from zonic_runtime.observability import logging_policy
 
@@ -43,8 +44,10 @@ def observability(**updates: Any) -> Any:
     return DEV.settings.observability.model_copy(update=updates)
 
 
-def tracer(exporter: InMemorySpanExporter, **settings: Any) -> LangfuseTracer:
-    return LangfuseTracer(observability(**settings), DEV.observability, exporter, release="test-release")
+def tracer(exporter: InMemorySpanExporter, prices: Any = None, **settings: Any) -> LangfuseTracer:
+    return LangfuseTracer(
+        observability(**settings), DEV.observability, exporter, release="test-release", prices=prices
+    )
 
 
 def meta(span: Any, key: str) -> Any:
@@ -57,9 +60,11 @@ def nodes(spans: list[Any]) -> list[Any]:
     return sorted((s for s in spans if meta(s, "zonic_node_span")), key=lambda s: s.start_time)
 
 
-async def traced(h: Harness, document: dict[str, Any], **settings: Any) -> tuple[DriverRun, list[Any], str]:
+async def traced(
+    h: Harness, document: dict[str, Any], prices: Any = None, **settings: Any
+) -> tuple[DriverRun, list[Any], str]:
     exporter = InMemorySpanExporter()
-    lf = tracer(exporter, **settings)
+    lf = tracer(exporter, prices, **settings)
     run_id = str(uuid.uuid4())
     result = await DriverHarness(h, tracer=lf).run(document, run_id=run_id)
     lf.flush()
@@ -355,3 +360,79 @@ async def test_L16_with_tracing_off_runs_are_unaffected() -> None:
         for r in (without, with_trace)
     ]
     assert strip[0] == strip[1] and without.outcome.result == with_trace.outcome.result
+
+
+# --- Cost, workflow graph, bound node input ---------------------------------------------------------
+
+
+def priced_catalog() -> ModelCatalog:
+    """The dev catalog plus an entry priced for the scripted model ($1 in, $3 out per 1M tokens)."""
+    data = DEV.models.model_dump(by_alias=True, exclude_none=True)
+    data["models"]["scripted-model"] = {
+        **data["models"][DEV.models.default_model],
+        "provider": "openai",
+        "modelId": "scripted",
+        "pricing": {"inputPerMillion": 1.0, "outputPerMillion": 3.0},
+    }
+    return ModelCatalog.model_validate(data)
+
+
+async def test_a_generation_is_costed_from_the_model_catalog_price() -> None:
+    h, _ = agent_harness([Turn.say("Hi.", usage={"input_tokens": 5, "output_tokens": 2})], DEV)
+    _, spans, _ = await traced(h, chain(llm()), prices=priced_catalog())
+    generation = next(s for s in spans if (s.attributes or {}).get(TYPE) == "generation")
+    cost = json.loads((generation.attributes or {})["langfuse.observation.cost_details"])
+    assert cost == {"input": 5e-06, "output": 6e-06, "total": 1.1e-05}
+
+    h, _ = agent_harness([Turn.say("Hi.", usage={"input_tokens": 5, "output_tokens": 2})], DEV)
+    _, spans, _ = await traced(h, chain(llm()))  # no catalog, or a model without a price: no cost
+    generation = next(s for s in spans if (s.attributes or {}).get(TYPE) == "generation")
+    assert "langfuse.observation.cost_details" not in (generation.attributes or {})
+
+
+async def test_the_root_observation_carries_the_workflow_graph() -> None:
+    h, _ = agent_harness([Turn.say("Hello.")], DEV)
+    _, spans, _ = await traced(h, chain(llm(model="nemotron-3-super"), variable("v"), output()))
+    root = next(s for s in spans if meta(s, "zonic_run_root"))
+    graph = meta(root, "zonic_workflow_graph")
+    assert graph["entry"] == "start"
+    by_id = {n["id"]: n for n in graph["nodes"]}
+    assert set(by_id) == {"start", "n", "v", "out"}
+    assert by_id["n"]["type"] == "llm" and by_id["n"]["model"] == "nemotron-3-super"
+    assert {(e["from"], e["to"]) for e in graph["edges"]} == {("start", "n"), ("n", "v"), ("v", "out")}
+
+
+async def test_a_node_input_is_its_bound_ports_captured_as_its_type_says() -> None:
+    h, _ = agent_harness([Turn.say("Hello.")], DEV)
+    _, spans, _ = await traced(h, chain(llm(), variable("v"), output()))
+    by_node = {meta(s, "zonic_node_id"): s.attributes or {} for s in nodes(spans)}
+    assert DEV.observability.capture_by_node_type["llm"].input == "full"
+    bound = json.loads(by_node["n"][INPUT])
+    assert "prompt" in bound and bound.get("type") != "object"  # the ports, not the run state
+    assert DEV.observability.capture_by_node_type["variable"].input == "summary"
+    assert json.loads(by_node["v"][INPUT])["type"] == "object"
+
+
+def test_run_usage_is_costed_with_cached_tokens_and_dated_model_names() -> None:
+    from langchain_core.messages import AIMessage
+
+    from zonic_runtime.engine.agents.messages import usage_of
+
+    message = AIMessage(
+        content="ok",
+        response_metadata={"model_name": "nvidia/nemotron-3-super-120b-a12b"},
+        usage_metadata={
+            "input_tokens": 1000,
+            "output_tokens": 500,
+            "total_tokens": 1500,
+            "input_token_details": {"cache_read": 200},
+        },
+    )
+    usage = usage_of([message], DEV.models)
+    # 800 fresh input x $0.30 + 200 cached x $0.06 + 500 output x $0.90, per 1M tokens
+    assert usage is not None and usage.cost == pytest.approx(0.000702)
+    assert usage_of([message]) is not None and usage_of([message]).cost is None  # type: ignore[union-attr]
+    mini = DEV.models.price_for("gpt-4.1-mini-2025-04-14")
+    assert mini is not None and mini.output_per_million == 1.6
+    assert DEV.models.price_for("nemotron-3-ultra").input_per_million == 1.0  # type: ignore[union-attr]
+    assert DEV.models.price_for("unknown-model") is None

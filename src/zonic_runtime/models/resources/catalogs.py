@@ -24,6 +24,39 @@ class ModelParameterBounds(ZonicResourceModel):
     max_tokens: int = Field(gt=0)
 
 
+#: Langfuse's usage and cost keys: prompt tokens, completion tokens, prompt tokens from the cache.
+USAGE_INPUT, USAGE_OUTPUT = "input", "output"  # principle: allow rule-1-node-type langfuse-usage-keys
+USAGE_CACHE_READ = "input_cache_read"
+
+
+class ModelPrice(ZonicResourceModel):
+    """The provider's list price per million tokens; traces and run usage are costed with it."""
+
+    currency: Literal["USD"] = "USD"
+    input_per_million: float = Field(ge=0)
+    output_per_million: float = Field(ge=0)
+    #: Prompt tokens served from the provider's cache; the input price when not given.
+    cached_input_per_million: float | None = Field(default=None, ge=0)
+
+    def cost(self, input_tokens: int, output_tokens: int, cached_input_tokens: int = 0) -> dict[str, float]:
+        """``{input, output, total}`` (and ``input_cache_read`` when cached tokens are given), in the
+        currency, rounded to 8 decimals. ``input_tokens`` excludes cached tokens."""
+        cached_price = (
+            self.cached_input_per_million
+            if self.cached_input_per_million is not None
+            else self.input_per_million
+        )
+        parts = {
+            USAGE_INPUT: input_tokens * self.input_per_million / 1_000_000,
+            USAGE_OUTPUT: output_tokens * self.output_per_million / 1_000_000,
+        }
+        if cached_input_tokens:
+            parts[USAGE_CACHE_READ] = cached_input_tokens * cached_price / 1_000_000
+        cost = {k: round(v, 8) for k, v in parts.items()}
+        cost["total"] = round(sum(parts.values()), 8)
+        return cost
+
+
 class ModelEntry(ZonicResourceModel):
     provider: ModelProvider
     model_id: str
@@ -38,6 +71,7 @@ class ModelEntry(ZonicResourceModel):
     supports_native_structured_output: bool
     parameters: ModelParameterBounds
     quota: ModelQuota
+    pricing: ModelPrice | None = None
 
 
 @exported("resources")
@@ -60,6 +94,24 @@ class ModelCatalog(ZonicResourceModel):
         if unknown:
             raise ValueError(f"substitutes name unknown catalog codes: {unknown}")
         return self
+
+    def price_for(self, model: str | None) -> ModelPrice | None:
+        """The price of a model as a node or a provider's response names it: a catalog code, an
+        alias, or a provider model ID, case-insensitive. A response may name a dated snapshot of
+        the model (``gpt-4.1-2025-04-14``): the longest model ID it starts with wins. ``None`` when
+        the model has no price."""
+        if not model:
+            return None
+        entry = self.models.get(self.aliases.get(model, model))
+        if entry is not None and entry.pricing is not None:
+            return entry.pricing
+        wanted = model.lower()
+        priced = [e for e in self.models.values() if e.pricing is not None]
+        matches = [
+            e for e in priced if wanted == e.model_id.lower() or wanted.startswith(e.model_id.lower() + "-")
+        ]
+        best = max(matches, key=lambda e: len(e.model_id), default=None)
+        return best.pricing if best is not None else None
 
 
 class McpServer(ZonicResourceModel):

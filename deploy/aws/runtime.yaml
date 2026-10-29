@@ -41,6 +41,13 @@ Parameters:
     Type: String
   NebiusApiKeySecretArn:
     Type: String
+  LangfuseBaseUrl:
+    Type: String
+    Description: The Langfuse project's host (Cloud or self-hosted)
+  LangfusePublicKeySecretArn:
+    Type: String
+  LangfuseSecretKeySecretArn:
+    Type: String
   CloudFrontPrefixList:
     Type: String
     Default: pl-3b927c52  # com.amazonaws.global.cloudfront.origin-facing in us-east-1
@@ -201,6 +208,8 @@ Resources:
                   - !Ref CheckpointAesKeySecretArn
                   - !Ref OpenAiApiKeySecretArn
                   - !Ref NebiusApiKeySecretArn
+                  - !Ref LangfusePublicKeySecretArn
+                  - !Ref LangfuseSecretKeySecretArn
   TaskRole:
     Type: AWS::IAM::Role
     Properties:
@@ -250,12 +259,15 @@ Resources:
             - { Name: ZONIC_AWS_REGION, Value: !Ref AWS::Region }
             - { Name: AWS_REGION, Value: !Ref AWS::Region }
             - { Name: ZONIC_MCP_BASE_URL, Value: !Ref McpBaseUrl }
+            - { Name: ZONIC_LANGFUSE_BASE_URL, Value: !Ref LangfuseBaseUrl }
           Secrets:
             - { Name: ZONIC_GATEWAY_API_KEY, ValueFrom: !Ref GatewayApiKeySecretArn }
             - { Name: ZONIC_MCP_AUTH_TOKEN, ValueFrom: !Ref McpAuthTokenSecretArn }
             - { Name: ZONIC_CHECKPOINT_AES_KEY, ValueFrom: !Ref CheckpointAesKeySecretArn }
             - { Name: ZONIC_OPENAI_API_KEY, ValueFrom: !Ref OpenAiApiKeySecretArn }
             - { Name: ZONIC_NEBIUS_API_KEY, ValueFrom: !Ref NebiusApiKeySecretArn }
+            - { Name: ZONIC_LANGFUSE_PUBLIC_KEY, ValueFrom: !Ref LangfusePublicKeySecretArn }
+            - { Name: ZONIC_LANGFUSE_SECRET_KEY, ValueFrom: !Ref LangfuseSecretKeySecretArn }
           LogConfiguration:
             LogDriver: awslogs
             Options:

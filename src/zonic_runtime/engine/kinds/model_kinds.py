@@ -196,7 +196,7 @@ class LlmKind(ModelKind):
             final, new = await self.run_agent(
                 ctx, messages, tools, schema, ctx.services.settings.models.llm_max_turns
             )
-            visit = read_visit(new)
+            visit = read_visit(new, ctx.services.resources.models)
             text, stop, usage = visit.text, visit.stop_reason, visit.usage
             if schema is not None:
                 structured = check(final.get("structured_response"), schema, self.spec.node_id)
@@ -209,7 +209,7 @@ class LlmKind(ModelKind):
             text = raw.text if raw.text or structured is None else json.dumps(structured, ensure_ascii=False)
             meta = raw.response_metadata or {}
             stop = meta.get("stop_reason") or meta.get("finish_reason")
-            usage = usage_of([raw]) if isinstance(raw, AIMessage) else None
+            usage = usage_of([raw], ctx.services.resources.models) if isinstance(raw, AIMessage) else None
         warnings = []
         if schema is None and getattr(self.spec.config, "response_format", None) == JSON_FORMAT:
             parsed = _answer(text)
@@ -298,7 +298,7 @@ class AgentKind(ModelKind):
             getattr(config, "max_iterations", None),
             {"zonic_presets": presets},
         )
-        visit = read_visit(new)
+        visit = read_visit(new, ctx.services.resources.models)
         handoff = final.get("zonic_handoff") or None
         limited = bool(final.get("zonic_limited"))
         structured = final.get("structured_response")

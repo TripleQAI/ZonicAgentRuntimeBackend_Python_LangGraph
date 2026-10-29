@@ -30,6 +30,7 @@ from langchain_core.messages.utils import count_tokens_approximately
 
 from zonic_runtime.engine.patches import thread_message
 from zonic_runtime.models.engine import MessageRole, ThreadMessage, Usage
+from zonic_runtime.models.resources.catalogs import ModelCatalog
 from zonic_runtime.models.resources.settings import HistorySettings
 
 _SYSTEM, _USER, _ASSISTANT = "system", "user", "assistant"
@@ -115,18 +116,35 @@ def conversation(
     return found
 
 
-def usage_of(messages: Sequence[BaseMessage]) -> Usage | None:
+def response_model(message: AIMessage) -> str | None:
+    """The model a provider says answered (``model_name`` for OpenAI-compatible APIs)."""
+    meta = message.response_metadata or {}
+    found = meta.get("model_name") or meta.get("model") or meta.get("model_id")
+    return found if isinstance(found, str) else None
+
+
+def usage_of(messages: Sequence[BaseMessage], prices: ModelCatalog | None = None) -> Usage | None:
+    """Token usage of the model responses among ``messages``, costed from the catalog's prices
+    when ``prices`` is given and the answering model has one (cached prompt tokens at the cached
+    price). A response without a price adds no cost."""
     total = Usage()
     seen = False
     for message in messages:
         meta = getattr(message, "usage_metadata", None)
         if isinstance(message, AIMessage) and meta:
             seen = True
+            inputs, outputs = int(meta.get("input_tokens", 0)), int(meta.get("output_tokens", 0))
+            price = prices.price_for(response_model(message)) if prices is not None else None
+            cost = None
+            if price is not None:
+                cached = int((meta.get("input_token_details") or {}).get("cache_read") or 0)
+                cost = price.cost(max(inputs - cached, 0), outputs, cached)["total"]
             total = total + Usage(
-                input_tokens=int(meta.get("input_tokens", 0)),
-                output_tokens=int(meta.get("output_tokens", 0)),
+                input_tokens=inputs,
+                output_tokens=outputs,
                 total_tokens=int(meta.get("total_tokens", 0)),
                 model_calls=1,
+                cost=cost,
             )
     return total if seen else None
 
@@ -152,8 +170,8 @@ class AgentVisit:
     usage: Usage | None = None
 
 
-def read_visit(new: Sequence[BaseMessage]) -> AgentVisit:
-    visit = AgentVisit(usage=usage_of(new))
+def read_visit(new: Sequence[BaseMessage], prices: ModelCatalog | None = None) -> AgentVisit:
+    visit = AgentVisit(usage=usage_of(new, prices))
     calls: dict[str, dict[str, Any]] = {}
     for message in new:
         if isinstance(message, AIMessage):

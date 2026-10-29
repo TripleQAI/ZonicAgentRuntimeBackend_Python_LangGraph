@@ -142,8 +142,10 @@ def test_the_aws_overlays_keep_the_dev_overlays_and_validate() -> None:
     aws = root / "deploy" / "aws" / "resources"
     ours = json.loads((root / "resources" / "settings.dev.json").read_text(encoding="utf-8"))
     theirs = json.loads((aws / "settings.dev.json").read_text(encoding="utf-8"))
+    exporters = theirs["observability"].pop("exporters")
     assert {k: v for k, v in theirs.items() if k != "datasets"} == ours
     assert theirs["datasets"] == {"store": "database"}  # no cache service on AWS
+    assert exporters == ["gateway", "langfuse"]  # traces also go to Langfuse, whose keys deploy.sh requires
     with tempfile.TemporaryDirectory() as folder:
         image = Path(folder) / "resources"
         shutil.copytree(root / "resources", image)
