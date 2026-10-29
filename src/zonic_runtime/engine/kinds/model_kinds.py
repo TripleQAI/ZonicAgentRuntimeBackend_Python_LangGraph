@@ -280,8 +280,10 @@ class AgentKind(ModelKind):
 
     async def execute(self, ctx: NodeContext, node_input: NodeInput) -> NodeOutcome:
         config = self.spec.config
-        resolved = ctx.config_values()
-        system_prompt = resolved.get("system_prompt")
+        # Only the system prompt: the whole configuration would resolve variableUpdates too, before
+        # this visit has the output they may name.
+        raw_prompt = getattr(config, "system_prompt", None)
+        system_prompt = ctx.resolve(raw_prompt) if isinstance(raw_prompt, str) else None
         messages = self.messages(ctx, node_input, system_prompt if isinstance(system_prompt, str) else None)
         schema = node_schema(config, self.spec.name)
         tools: list[BaseTool] = []

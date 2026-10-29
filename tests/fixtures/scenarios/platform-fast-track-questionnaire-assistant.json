@@ -133,7 +133,6 @@
         "code": "TEMPLATE_MISSING",
         "details": {
           "paths": [
-            "nodeOutput.text",
             "nodeOutput.toolResults.fast_track_buying_new_questionnaire.text"
           ]
         },
@@ -206,8 +205,7 @@
           "paths": [
             "flow.partial_view_data",
             "flow.questionnaireList",
-            "flow.user_context.userDateFormat",
-            "nodeOutput.text"
+            "flow.user_context.userDateFormat"
           ]
         },
         "message": ""

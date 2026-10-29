@@ -140,7 +140,6 @@
         "code": "TEMPLATE_MISSING",
         "details": {
           "paths": [
-            "nodeOutput.text",
             "nodeOutput.toolResults.quick_pay_complete_questionnaire.text"
           ]
         },
@@ -217,8 +216,7 @@
             "flow.user_context",
             "flow.user_context.userDateFormat",
             "flow.user_decision_points.budgetAmount",
-            "flow.user_decision_points.msp_question_1",
-            "nodeOutput.text"
+            "flow.user_decision_points.msp_question_1"
           ]
         },
         "message": ""

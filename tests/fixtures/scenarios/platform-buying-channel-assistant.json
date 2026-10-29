@@ -142,8 +142,7 @@
             "flow.qa_master_data.headerOrg.entityName",
             "flow.supplier_data",
             "flow.user_context",
-            "identifiedChannel",
-            "nodeOutput.text"
+            "identifiedChannel"
           ]
         },
         "message": ""

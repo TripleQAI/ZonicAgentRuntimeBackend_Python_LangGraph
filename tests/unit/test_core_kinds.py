@@ -300,6 +300,24 @@ async def test_N05_agent_tool_results_and_internal_turn_messages() -> None:
     assert kinds == [("tool_call", "internal"), ("tool_result", "internal"), ("answer", "chat")]
 
 
+async def test_N06_an_agent_storing_its_own_answer_in_a_variable_warns_of_nothing_missing() -> None:
+    # The update names the visit's own output, which exists only once the agent has answered.
+    node = {
+        **agent(
+            "lane",
+            variableUpdates=[
+                {"path": "flow.answer", "value": "{{nodes.analyst.output.text}}", "operation": "set"}
+            ],
+        ),
+        "name": "analyst",
+    }
+    h, _ = agent_harness([Turn.say("42 kWh.")], DEV)
+    final, events, *_ = await h.run(chain(node))
+    assert final["flow"]["values"]["answer"] == "42 kWh."
+    assert not [w for w in final["warnings"] if w["code"] == "TEMPLATE_MISSING"]
+    assert not any(e["event"] == "warning" and e["code"] == "TEMPLATE_MISSING" for e in events)
+
+
 async def test_N06_max_iterations_ends_with_the_partial_answer_and_a_warning() -> None:
     script = [Turn.call("lookup", {"city": f"C{i}"}, text=f"partial {i}") for i in range(1, 6)]
     h, models = agent_harness(script, DEV, tools={"ag": [lookup]})

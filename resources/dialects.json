@@ -218,6 +218,24 @@
       "note": "update key operation read as op"
     },
     {
+      "id": "builder.mapping-list-keys",
+      "class": "alias",
+      "target": "node",
+      "nodeTypes": ["guardrail", "external_agent", "workflow", "tool", "script"],
+      "op": "renameKeysInList",
+      "args": {
+        "lists": [
+          "config.inputMapping",
+          "config.inputs"
+        ],
+        "rename": {
+          "target": "key",
+          "source": "value"
+        }
+      },
+      "note": "the builder's mapping rows {target, source} read as {key, value}"
+    },
+    {
       "id": "platform.update-field-name",
       "class": "platform",
       "target": "node",

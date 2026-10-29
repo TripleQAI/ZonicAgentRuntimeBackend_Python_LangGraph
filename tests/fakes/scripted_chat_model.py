@@ -132,7 +132,9 @@ class ScriptedChatModel(BaseChatModel):
     #: Repeat the last turn once the script is used up, instead of failing.
     repeat_last: bool = False
 
-    _cursor: int = PrivateAttr(default=0)
+    #: The next turn, in a list so that copies (a model tagged ``nostream``, see ScriptedModels)
+    #: share one position with the original, as the requests and the lock are shared.
+    _cursor: list[int] = PrivateAttr(default_factory=lambda: [0])
     _requests: list[Request] = PrivateAttr(default_factory=list)
     _lock: threading.Lock = PrivateAttr(default_factory=threading.Lock)
 
@@ -150,7 +152,7 @@ class ScriptedChatModel(BaseChatModel):
 
     @property
     def remaining(self) -> int:
-        return len(self.script) - self._cursor
+        return len(self.script) - self._cursor[0]
 
     def bind_tools(
         self,
@@ -178,9 +180,9 @@ class ScriptedChatModel(BaseChatModel):
         )
         with self._lock:
             self._requests.append(request)
-            if self._cursor < len(self.script):
-                step = self.script[self._cursor]
-                self._cursor += 1
+            if self._cursor[0] < len(self.script):
+                step = self.script[self._cursor[0]]
+                self._cursor[0] += 1
             elif self.repeat_last and self.script:
                 step = self.script[-1]
             else:

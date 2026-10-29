@@ -134,7 +134,8 @@ class MultiAgentKind(BaseKind):
             spec.node_id, spec.io, config, ctx.visit, member.resolve, member.read
         )
         system, rest = split_system(text_messages(bound.get(_MESSAGES)))
-        prompt = member.config_values().get("system_prompt")
+        raw = getattr(spec.config, "system_prompt", None)  # its prompt only, not its update templates
+        prompt = member.resolve(raw) if isinstance(raw, str) else None
         return brief([prompt, *system] if isinstance(prompt, str) else system, rest)
 
     async def execute(self, ctx: NodeContext, node_input: NodeInput) -> NodeOutcome:
