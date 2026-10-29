@@ -223,6 +223,18 @@ async def test_T05_an_allow_listed_built_in_runs_in_the_runtime() -> None:
     assert json.loads(tool_messages(models)[0].content) == {"result": 28}
 
 
+@pytest.mark.parametrize("zone", ["UTC", "America/New_York", "Europe/Oslo"])
+async def test_T05_current_time_answers_in_an_iana_time_zone_on_every_platform(zone: str) -> None:
+    # zoneinfo needs a time zone database; the tzdata dependency provides one where the OS has none.
+    current_time = {"type": "strands_builtin", "name": "current_time", "config": {}}
+    h, models = harness([Turn.call("current_time", {"timezone": zone}), Turn.say("done")])
+    await h.run(document(current_time))
+    reply = tool_messages(models)[0]
+    assert reply.status != "error", reply.content
+    answer = json.loads(reply.content)
+    assert answer["timezone"] == zone and answer["utc"].endswith("Z") and "T" in answer["local"]
+
+
 @pytest.mark.parametrize(
     ("expression", "value"), [("1 + 2 * 3", 7), ("-(2 - 5) / 2", 1.5), ("10 % 4", 2), ("2 ^ 3 ^ 2", 512)]
 )

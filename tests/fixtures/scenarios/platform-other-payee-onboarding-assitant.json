@@ -121,7 +121,6 @@
             "flow.user_context.userDateFormat",
             "flow.user_context.user_culture_code",
             "flow.user_decision_points",
-            "nodeOutput.text",
             "system.attachments"
           ]
         },

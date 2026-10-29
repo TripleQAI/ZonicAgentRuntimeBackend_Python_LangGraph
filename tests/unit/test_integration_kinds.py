@@ -227,6 +227,23 @@ async def test_N10_compliant_content_passes_and_flagged_content_fails() -> None:
     ]
 
 
+async def test_N10_the_policy_decision_is_not_streamed_to_the_chat() -> None:
+    # The decision is the guardrail's own business; its tokens would show in the chat as text.
+    h, models, _ = services([decision(True)])
+    await h.run(document(guardrail_node(), branches=True))
+    assert models.built[0][1]["tags"] == ["nostream"]
+
+
+async def test_N10_the_builders_mapping_rows_reach_the_policy_model() -> None:
+    # The builder's mapping editor writes {target, source, type}; the port reads {key, value}.
+    rows = [{"target": "answer", "source": "{{system.userQuery}}", "type": "string"}]
+    h, models, _ = services([decision(True)])
+    final, events, *_ = await h.run(document(guardrail_node(inputMapping=rows), branches=True))
+    assert started(events) == ["start", "g", "ok"] and final["nodes"]["g"]["output"]["passed"] is True
+    sent = "\n".join(m.text for m in models.model.requests[0].messages)
+    assert DEFAULT_INPUT["system"]["values"]["userQuery"] in sent.split("Policy:")[-1]  # the content
+
+
 async def test_N10_warn_passes_with_a_warning_and_no_fail_edge_blocks() -> None:
     h, *_ = services([decision(False, "an email address")])
     _, events, *_ = await h.run(document(guardrail_node(action="warn"), branches=True))

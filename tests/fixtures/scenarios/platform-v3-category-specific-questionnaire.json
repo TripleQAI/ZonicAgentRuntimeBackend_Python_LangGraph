@@ -189,8 +189,7 @@
             "flow.user_decision_points.budget",
             "flow.user_decision_points.category.id",
             "flow.user_decision_points.category_specific_budget",
-            "flow.user_decision_points.quick_pay_aggregated_response",
-            "nodeOutput.text"
+            "flow.user_decision_points.quick_pay_aggregated_response"
           ]
         },
         "message": ""

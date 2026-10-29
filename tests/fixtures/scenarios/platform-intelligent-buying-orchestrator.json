@@ -128,25 +128,6 @@
     },
     {
       "data": {
-        "code": "TEMPLATE_MISSING",
-        "details": {
-          "paths": [
-            "nodeOutput.structuredOutput.userContextFetched",
-            "nodeOutput.structuredOutput.userCultureCode",
-            "nodeOutput.structuredOutput.userCurrencyCode",
-            "nodeOutput.structuredOutput.userDateFormat",
-            "nodeOutput.structuredOutput.userTimeZone",
-            "nodeOutput.text"
-          ]
-        },
-        "message": ""
-      },
-      "nodeId": "bootstrap_get_user_context",
-      "seq": 12,
-      "type": "warning"
-    },
-    {
-      "data": {
         "handles": [
           "default"
         ],
@@ -164,7 +145,7 @@
         }
       },
       "nodeId": "bootstrap_get_user_context",
-      "seq": 13,
+      "seq": 12,
       "type": "node.finished"
     },
     {
@@ -175,7 +156,7 @@
         "visit": 1
       },
       "nodeId": "cma0hwk",
-      "seq": 14,
+      "seq": 13,
       "type": "node.started"
     },
     {
@@ -185,7 +166,7 @@
         ]
       },
       "nodeId": "cma0hwk",
-      "seq": 15,
+      "seq": 14,
       "type": "state.updated"
     },
     {
@@ -207,7 +188,7 @@
         }
       },
       "nodeId": "cma0hwk",
-      "seq": 16,
+      "seq": 15,
       "type": "node.finished"
     },
     {
@@ -218,7 +199,7 @@
         "visit": 1
       },
       "nodeId": "kgrt72s",
-      "seq": 17,
+      "seq": 16,
       "type": "node.started"
     },
     {
@@ -234,7 +215,7 @@
         "status": "succeeded"
       },
       "nodeId": "kgrt72s",
-      "seq": 18,
+      "seq": 17,
       "type": "node.finished"
     },
     {
@@ -245,7 +226,7 @@
         "visit": 1
       },
       "nodeId": "procurement_policy_assistant",
-      "seq": 19,
+      "seq": 18,
       "type": "node.started"
     },
     {
@@ -259,7 +240,7 @@
         "toolUseId": "next-1"
       },
       "nodeId": "procurement_policy_assistant",
-      "seq": 20,
+      "seq": 19,
       "type": "tool.started"
     },
     {
@@ -268,7 +249,7 @@
         "toolUseId": "next-1"
       },
       "nodeId": "procurement_policy_assistant",
-      "seq": 21,
+      "seq": 20,
       "type": "tool.finished"
     },
     {
@@ -276,7 +257,7 @@
         "text": "Let "
       },
       "nodeId": "procurement_policy_assistant",
-      "seq": 22,
+      "seq": 21,
       "type": "token.delta"
     },
     {
@@ -284,7 +265,7 @@
         "text": "us set up the quick payment."
       },
       "nodeId": "procurement_policy_assistant",
-      "seq": 23,
+      "seq": 22,
       "type": "token.delta"
     },
     {
@@ -296,7 +277,7 @@
         ]
       },
       "nodeId": "procurement_policy_assistant",
-      "seq": 24,
+      "seq": 23,
       "type": "state.updated"
     },
     {
@@ -306,7 +287,7 @@
         "message": "the path {{flow.current_question.decision_point}} resolved to nothing; the state operation is skipped"
       },
       "nodeId": "procurement_policy_assistant",
-      "seq": 25,
+      "seq": 24,
       "type": "warning"
     },
     {
@@ -317,22 +298,13 @@
             "flow.qa_master_data.category",
             "flow.qa_master_data.entities.budget",
             "flow.qa_master_data.headerOrg",
-            "nodeOutput.text",
-            "nodeOutput.toolResults.buying_agent_frontdoor_tool.frontdoor_qa_masterData",
-            "nodeOutput.toolResults.channel_identifier.channel_identified",
-            "nodeOutput.toolResults.get_decision_points",
-            "nodeOutput.toolResults.get_next_questions",
-            "nodeOutput.toolResults.get_next_questions.result.current_state",
-            "nodeOutput.toolResults.get_next_questions.result.external_url",
-            "nodeOutput.toolResults.get_next_questions.result.filtered_decision_points",
-            "nodeOutput.toolResults.get_next_questions.result.question.questionId",
-            "nodeOutput.toolResults.get_next_questions.result.user_decision_points"
+            "nodeOutput.toolResults.channel_identifier.channel_identified"
           ]
         },
         "message": ""
       },
       "nodeId": "procurement_policy_assistant",
-      "seq": 26,
+      "seq": 25,
       "type": "warning"
     },
     {
@@ -354,7 +326,7 @@
         }
       },
       "nodeId": "procurement_policy_assistant",
-      "seq": 27,
+      "seq": 26,
       "type": "node.finished"
     },
     {
@@ -365,7 +337,7 @@
         "visit": 1
       },
       "nodeId": "p5n5drq",
-      "seq": 28,
+      "seq": 27,
       "type": "node.started"
     },
     {
@@ -379,7 +351,7 @@
         "message": ""
       },
       "nodeId": "p5n5drq",
-      "seq": 29,
+      "seq": 28,
       "type": "warning"
     },
     {
@@ -395,7 +367,7 @@
         "status": "succeeded"
       },
       "nodeId": "p5n5drq",
-      "seq": 30,
+      "seq": 29,
       "type": "node.finished"
     },
     {
@@ -406,7 +378,7 @@
         "visit": 1
       },
       "nodeId": "4n6tnna",
-      "seq": 31,
+      "seq": 30,
       "type": "node.started"
     },
     {
@@ -418,7 +390,7 @@
       },
       "nodeId": "start",
       "path": "4n6tnna",
-      "seq": 32,
+      "seq": 31,
       "type": "node.started"
     },
     {
@@ -434,7 +406,7 @@
       },
       "nodeId": "start",
       "path": "4n6tnna",
-      "seq": 33,
+      "seq": 32,
       "type": "state.updated"
     },
     {
@@ -449,7 +421,7 @@
       },
       "nodeId": "start",
       "path": "4n6tnna",
-      "seq": 34,
+      "seq": 33,
       "type": "warning"
     },
     {
@@ -466,7 +438,7 @@
       },
       "nodeId": "start",
       "path": "4n6tnna",
-      "seq": 35,
+      "seq": 34,
       "type": "node.finished"
     },
     {
@@ -478,7 +450,7 @@
       },
       "nodeId": "ex0cnyj",
       "path": "4n6tnna",
-      "seq": 36,
+      "seq": 35,
       "type": "node.started"
     },
     {
@@ -493,7 +465,7 @@
       },
       "nodeId": "ex0cnyj",
       "path": "4n6tnna",
-      "seq": 37,
+      "seq": 36,
       "type": "warning"
     },
     {
@@ -510,7 +482,7 @@
       },
       "nodeId": "ex0cnyj",
       "path": "4n6tnna",
-      "seq": 38,
+      "seq": 37,
       "type": "node.finished"
     },
     {
@@ -522,7 +494,7 @@
       },
       "nodeId": "8mw9yfz",
       "path": "4n6tnna",
-      "seq": 39,
+      "seq": 38,
       "type": "node.started"
     },
     {
@@ -531,7 +503,7 @@
       },
       "nodeId": "8mw9yfz",
       "path": "4n6tnna",
-      "seq": 40,
+      "seq": 39,
       "type": "token.delta"
     },
     {
@@ -542,7 +514,7 @@
       },
       "nodeId": "8mw9yfz",
       "path": "4n6tnna",
-      "seq": 41,
+      "seq": 40,
       "type": "state.updated"
     },
     {
@@ -550,7 +522,6 @@
         "code": "TEMPLATE_MISSING",
         "details": {
           "paths": [
-            "nodeOutput.text",
             "nodeOutput.toolResults.quick_pay_complete_questionnaire.text"
           ]
         },
@@ -558,7 +529,7 @@
       },
       "nodeId": "8mw9yfz",
       "path": "4n6tnna",
-      "seq": 42,
+      "seq": 41,
       "type": "warning"
     },
     {
@@ -581,7 +552,7 @@
       },
       "nodeId": "8mw9yfz",
       "path": "4n6tnna",
-      "seq": 43,
+      "seq": 42,
       "type": "node.finished"
     },
     {
@@ -593,7 +564,7 @@
       },
       "nodeId": "qp_agent_001",
       "path": "4n6tnna",
-      "seq": 44,
+      "seq": 43,
       "type": "node.started"
     },
     {
@@ -602,7 +573,7 @@
       },
       "nodeId": "qp_agent_001",
       "path": "4n6tnna",
-      "seq": 45,
+      "seq": 44,
       "type": "token.delta"
     },
     {
@@ -617,15 +588,14 @@
             "flow.user_context.userDateFormat",
             "flow.user_decision_points.budgetAmount",
             "flow.user_decision_points.msp_question_1",
-            "flow.user_selected_currency",
-            "nodeOutput.text"
+            "flow.user_selected_currency"
           ]
         },
         "message": ""
       },
       "nodeId": "qp_agent_001",
       "path": "4n6tnna",
-      "seq": 46,
+      "seq": 45,
       "type": "warning"
     },
     {
@@ -648,7 +618,7 @@
       },
       "nodeId": "qp_agent_001",
       "path": "4n6tnna",
-      "seq": 47,
+      "seq": 46,
       "type": "node.finished"
     },
     {
@@ -660,7 +630,7 @@
       },
       "nodeId": "output",
       "path": "4n6tnna",
-      "seq": 48,
+      "seq": 47,
       "type": "node.started"
     },
     {
@@ -676,7 +646,7 @@
       },
       "nodeId": "output",
       "path": "4n6tnna",
-      "seq": 49,
+      "seq": 48,
       "type": "warning"
     },
     {
@@ -693,7 +663,7 @@
       },
       "nodeId": "output",
       "path": "4n6tnna",
-      "seq": 50,
+      "seq": 49,
       "type": "node.finished"
     },
     {
@@ -705,7 +675,7 @@
         ]
       },
       "nodeId": "4n6tnna",
-      "seq": 51,
+      "seq": 50,
       "type": "state.updated"
     },
     {
@@ -715,7 +685,7 @@
         "message": "the path {{flow.current_question.response}} resolved to nothing; the state operation is skipped"
       },
       "nodeId": "4n6tnna",
-      "seq": 52,
+      "seq": 51,
       "type": "warning"
     },
     {
@@ -725,7 +695,7 @@
         "message": "the path {{flow.current_question.decision_point}} resolved to nothing; the state operation is skipped"
       },
       "nodeId": "4n6tnna",
-      "seq": 53,
+      "seq": 52,
       "type": "warning"
     },
     {
@@ -744,7 +714,7 @@
         "message": ""
       },
       "nodeId": "4n6tnna",
-      "seq": 54,
+      "seq": 53,
       "type": "warning"
     },
     {
@@ -766,7 +736,7 @@
         }
       },
       "nodeId": "4n6tnna",
-      "seq": 55,
+      "seq": 54,
       "type": "node.finished"
     },
     {
@@ -777,7 +747,7 @@
         "visit": 1
       },
       "nodeId": "zp960r1",
-      "seq": 56,
+      "seq": 55,
       "type": "node.started"
     },
     {
@@ -793,7 +763,7 @@
         "status": "succeeded"
       },
       "nodeId": "zp960r1",
-      "seq": 57,
+      "seq": 56,
       "type": "node.finished"
     },
     {
@@ -804,7 +774,7 @@
         "visit": 1
       },
       "nodeId": "output",
-      "seq": 58,
+      "seq": 57,
       "type": "node.started"
     },
     {
@@ -818,7 +788,7 @@
         "message": ""
       },
       "nodeId": "output",
-      "seq": 59,
+      "seq": 58,
       "type": "warning"
     },
     {
@@ -834,7 +804,7 @@
         "status": "succeeded"
       },
       "nodeId": "output",
-      "seq": 60,
+      "seq": 59,
       "type": "node.finished"
     },
     {
@@ -851,7 +821,7 @@
           "totalTokens": 5644
         }
       },
-      "seq": 61,
+      "seq": 60,
       "type": "run.completed"
     }
   ],
@@ -1095,7 +1065,6 @@
         "code": "TEMPLATE_MISSING",
         "details": {
           "paths": [
-            "nodeOutput.text",
             "nodeOutput.toolResults.quick_pay_complete_questionnaire.text"
           ]
         },
@@ -1162,8 +1131,7 @@
             "flow.user_context.userDateFormat",
             "flow.user_decision_points.budgetAmount",
             "flow.user_decision_points.msp_question_1",
-            "flow.user_selected_currency",
-            "nodeOutput.text"
+            "flow.user_selected_currency"
           ]
         },
         "message": ""

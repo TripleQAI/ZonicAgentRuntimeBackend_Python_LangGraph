@@ -3,8 +3,9 @@
 The Output kind writes ``result``; the first Output wins (``first_result``) and every other
 one is reported. When no Output ran, ``settings.result.fallback`` applies in order (the
 last agent text, then the last LLM text, by timeline order), else ``NO_OUTPUT``. A sub-flow
-node's text result is an answer too (its child's answer), and a child's own visits in the
-timeline (those with a ``path``) are its child's, not this workflow's (P3-09).
+node's result is an answer too (its child's answer: its text, else the child's whole result, as
+the child's own chat would show it), and a child's own visits in the timeline (those with a
+``path``) are its child's, not this workflow's (P3-09).
 """
 
 from __future__ import annotations
@@ -32,6 +33,15 @@ class RunResult:
     warnings: list[dict[str, Any]] = field(default_factory=list)
 
 
+def answer_text(result: Mapping[str, Any]) -> str | None:
+    """A result's answer as text: its ``text``, else its only string field; ``None`` when the
+    result names no single answer (the chat then shows it as JSON)."""
+    if isinstance(result.get("text"), str):
+        return str(result["text"])
+    strings = [v for v in result.values() if isinstance(v, str)]
+    return strings[0] if len(strings) == 1 else None
+
+
 def run_result(state: Mapping[str, Any], blueprint: Blueprint, fallback: Sequence[str]) -> RunResult:
     found = state.get("result")
     if found is not None:
@@ -51,7 +61,10 @@ def run_result(state: Mapping[str, Any], blueprint: Blueprint, fallback: Sequenc
         kind = match.group("kind") if match else None
         for node_id in reversed(order):
             spec = blueprint.nodes.get(node_id)
-            text = (records.get(node_id) or {}).get(OUTPUT_FIELD, {}).get("text")
+            output = (records.get(node_id) or {}).get(OUTPUT_FIELD) or {}
+            text = output.get("text")
             if spec is not None and spec.kind in (kind, _SUBFLOW) and isinstance(text, str) and text:
                 return RunResult(value={"text": text}, source=name)
+            if spec is not None and spec.kind == _SUBFLOW and output:
+                return RunResult(value=dict(output), source=name)
     raise ZonicError("NO_OUTPUT")

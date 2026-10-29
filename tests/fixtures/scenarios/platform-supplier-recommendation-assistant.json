@@ -107,8 +107,7 @@
             "flow.qa_master_data.headerOrg.entityName",
             "flow.qa_master_data.region.code",
             "flow.qa_master_data.region.id",
-            "flow.qa_master_data.region.name",
-            "nodeOutput.text"
+            "flow.qa_master_data.region.name"
           ]
         },
         "message": ""

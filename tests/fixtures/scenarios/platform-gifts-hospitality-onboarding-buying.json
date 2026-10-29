@@ -113,8 +113,7 @@
             "flow.budget",
             "flow.user_context.user_currency_code",
             "flow.user_context.user_date_format",
-            "flow.user_decision_points.budgetAmount",
-            "nodeOutput.text"
+            "flow.user_decision_points.budgetAmount"
           ]
         },
         "message": ""

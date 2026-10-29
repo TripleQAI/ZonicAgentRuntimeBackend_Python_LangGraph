@@ -296,23 +296,6 @@
     },
     {
       "data": {
-        "code": "TEMPLATE_MISSING",
-        "details": {
-          "paths": [
-            "nodes.energy-agent.output.aggregationOption",
-            "nodes.energy-agent.output.analysisLevel",
-            "nodes.energy-agent.output.analysisType"
-          ]
-        },
-        "message": ""
-      },
-      "nodeId": "agent_1781397954641_geg1e",
-      "path": "workflow_1781450372188_ztcsq",
-      "seq": 23,
-      "type": "warning"
-    },
-    {
-      "data": {
         "handles": [
           "handoff-llm_1783647948890_oroz3"
         ],
@@ -331,7 +314,7 @@
       },
       "nodeId": "agent_1781397954641_geg1e",
       "path": "workflow_1781450372188_ztcsq",
-      "seq": 24,
+      "seq": 23,
       "type": "node.finished"
     },
     {
@@ -343,7 +326,7 @@
       },
       "nodeId": "llm_1783647948890_oroz3",
       "path": "workflow_1781450372188_ztcsq",
-      "seq": 25,
+      "seq": 24,
       "type": "node.started"
     },
     {
@@ -358,7 +341,7 @@
       },
       "nodeId": "llm_1783647948890_oroz3",
       "path": "workflow_1781450372188_ztcsq",
-      "seq": 26,
+      "seq": 25,
       "type": "tool.started"
     },
     {
@@ -368,7 +351,7 @@
       },
       "nodeId": "llm_1783647948890_oroz3",
       "path": "workflow_1781450372188_ztcsq",
-      "seq": 27,
+      "seq": 26,
       "type": "tool.finished"
     },
     {
@@ -377,7 +360,7 @@
       },
       "nodeId": "llm_1783647948890_oroz3",
       "path": "workflow_1781450372188_ztcsq",
-      "seq": 28,
+      "seq": 27,
       "type": "token.delta"
     },
     {
@@ -386,7 +369,7 @@
       },
       "nodeId": "llm_1783647948890_oroz3",
       "path": "workflow_1781450372188_ztcsq",
-      "seq": 29,
+      "seq": 28,
       "type": "token.delta"
     },
     {
@@ -397,7 +380,7 @@
       },
       "nodeId": "llm_1783647948890_oroz3",
       "path": "workflow_1781450372188_ztcsq",
-      "seq": 30,
+      "seq": 29,
       "type": "state.updated"
     },
     {
@@ -412,7 +395,7 @@
       },
       "nodeId": "llm_1783647948890_oroz3",
       "path": "workflow_1781450372188_ztcsq",
-      "seq": 31,
+      "seq": 30,
       "type": "warning"
     },
     {
@@ -435,7 +418,7 @@
       },
       "nodeId": "llm_1783647948890_oroz3",
       "path": "workflow_1781450372188_ztcsq",
-      "seq": 32,
+      "seq": 31,
       "type": "node.finished"
     },
     {
@@ -447,7 +430,7 @@
       },
       "nodeId": "rule_1783746264100_ljsfg",
       "path": "workflow_1781450372188_ztcsq",
-      "seq": 33,
+      "seq": 32,
       "type": "node.started"
     },
     {
@@ -464,7 +447,7 @@
       },
       "nodeId": "rule_1783746264100_ljsfg",
       "path": "workflow_1781450372188_ztcsq",
-      "seq": 34,
+      "seq": 33,
       "type": "node.finished"
     },
     {
@@ -476,7 +459,7 @@
       },
       "nodeId": "llm_1783746322334_uqllv",
       "path": "workflow_1781450372188_ztcsq",
-      "seq": 35,
+      "seq": 34,
       "type": "node.started"
     },
     {
@@ -485,7 +468,7 @@
       },
       "nodeId": "llm_1783746322334_uqllv",
       "path": "workflow_1781450372188_ztcsq",
-      "seq": 36,
+      "seq": 35,
       "type": "token.delta"
     },
     {
@@ -494,7 +477,7 @@
       },
       "nodeId": "llm_1783746322334_uqllv",
       "path": "workflow_1781450372188_ztcsq",
-      "seq": 37,
+      "seq": 36,
       "type": "token.delta"
     },
     {
@@ -505,7 +488,7 @@
       },
       "nodeId": "llm_1783746322334_uqllv",
       "path": "workflow_1781450372188_ztcsq",
-      "seq": 38,
+      "seq": 37,
       "type": "state.updated"
     },
     {
@@ -528,7 +511,7 @@
       },
       "nodeId": "llm_1783746322334_uqllv",
       "path": "workflow_1781450372188_ztcsq",
-      "seq": 39,
+      "seq": 38,
       "type": "node.finished"
     },
     {
@@ -540,7 +523,7 @@
       },
       "nodeId": "view_1783023686612_2lr8k",
       "path": "workflow_1781450372188_ztcsq",
-      "seq": 40,
+      "seq": 39,
       "type": "node.started"
     },
     {
@@ -579,7 +562,7 @@
       },
       "nodeId": "view_1783023686612_2lr8k",
       "path": "workflow_1781450372188_ztcsq",
-      "seq": 41,
+      "seq": 40,
       "type": "content.part"
     },
     {
@@ -593,7 +576,7 @@
       },
       "nodeId": "view_1783023686612_2lr8k",
       "path": "workflow_1781450372188_ztcsq",
-      "seq": 42,
+      "seq": 41,
       "type": "content.part"
     },
     {
@@ -610,7 +593,7 @@
       },
       "nodeId": "view_1783023686612_2lr8k",
       "path": "workflow_1781450372188_ztcsq",
-      "seq": 43,
+      "seq": 42,
       "type": "node.finished"
     },
     {
@@ -622,7 +605,7 @@
       },
       "nodeId": "variable_1783387115349_esyg3",
       "path": "workflow_1781450372188_ztcsq",
-      "seq": 44,
+      "seq": 43,
       "type": "node.started"
     },
     {
@@ -637,7 +620,7 @@
       },
       "nodeId": "variable_1783387115349_esyg3",
       "path": "workflow_1781450372188_ztcsq",
-      "seq": 45,
+      "seq": 44,
       "type": "state.updated"
     },
     {
@@ -654,7 +637,7 @@
       },
       "nodeId": "variable_1783387115349_esyg3",
       "path": "workflow_1781450372188_ztcsq",
-      "seq": 46,
+      "seq": 45,
       "type": "node.finished"
     },
     {
@@ -666,7 +649,7 @@
       },
       "nodeId": "output_1781397965377_sz6ig",
       "path": "workflow_1781450372188_ztcsq",
-      "seq": 47,
+      "seq": 46,
       "type": "node.started"
     },
     {
@@ -677,7 +660,7 @@
       },
       "nodeId": "output_1781397965377_sz6ig",
       "path": "workflow_1781450372188_ztcsq",
-      "seq": 48,
+      "seq": 47,
       "type": "state.updated"
     },
     {
@@ -694,7 +677,7 @@
       },
       "nodeId": "output_1781397965377_sz6ig",
       "path": "workflow_1781450372188_ztcsq",
-      "seq": 49,
+      "seq": 48,
       "type": "node.finished"
     },
     {
@@ -716,7 +699,7 @@
         }
       },
       "nodeId": "workflow_1781450372188_ztcsq",
-      "seq": 50,
+      "seq": 49,
       "type": "node.finished"
     },
     {
@@ -727,7 +710,7 @@
         "visit": 1
       },
       "nodeId": "output_1781450358137_vdepr",
-      "seq": 51,
+      "seq": 50,
       "type": "node.started"
     },
     {
@@ -737,7 +720,7 @@
         ]
       },
       "nodeId": "output_1781450358137_vdepr",
-      "seq": 52,
+      "seq": 51,
       "type": "state.updated"
     },
     {
@@ -747,7 +730,7 @@
         "message": "The output step has no mapping; the last answer was used."
       },
       "nodeId": "output_1781450358137_vdepr",
-      "seq": 53,
+      "seq": 52,
       "type": "warning"
     },
     {
@@ -763,7 +746,7 @@
         "status": "succeeded"
       },
       "nodeId": "output_1781450358137_vdepr",
-      "seq": 54,
+      "seq": 53,
       "type": "node.finished"
     },
     {
@@ -778,7 +761,7 @@
           "totalTokens": 14564
         }
       },
-      "seq": 55,
+      "seq": 54,
       "type": "run.completed"
     }
   ],

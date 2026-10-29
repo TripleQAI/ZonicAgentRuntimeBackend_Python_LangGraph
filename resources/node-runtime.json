@@ -53,6 +53,7 @@
       "kind": "guardrail",
       "io": {"inputs": [{"name": "content", "schema": {"ref": "port.mapping-list@1"}, "required": false, "binding": {"configPath": "config.inputMapping"}}], "output": {"schema": {"ref": "zonic.decision@1"}, "map": {"handle": "$.handle", "passed": "$.passed", "findings": "$.findings"}}},
       "handles": { "pass": "pass", "fail": "fail" },
+      "streamTokens": false,
       "observation": { "type": "guardrail", "captureInput": "summary", "captureOutput": "full" }
     },
     "approval": {

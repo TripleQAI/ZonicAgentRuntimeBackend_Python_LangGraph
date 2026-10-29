@@ -46,6 +46,57 @@ async def test_N11_inputs_reach_the_child_and_its_result_is_the_nodes_output() -
     assert body["usage"]["modelCalls"] == 1  # the child's usage is the node's
 
 
+@pytest.mark.parametrize(
+    ("mapping", "answer"),
+    [
+        ({"answer": "{{nodes.llm.output.text}}"}, "Boilers are fine."),
+        (
+            {"answer": "{{nodes.llm.output.text}}", "level": "low"},
+            {"answer": "Boilers are fine.", "level": "low"},
+        ),
+    ],
+)
+async def test_N11_a_parent_without_an_output_mapping_answers_with_the_childs_mapped_result(
+    mapping: dict[str, str], answer: str | dict[str, str]
+) -> None:
+    # The child's answer is what its own chat would show: its only string field as text, else its
+    # whole result. Its LLM's messages are not chat answers, so they cannot stand in for it.
+    llm = {
+        "id": "llm",
+        "type": "llm",
+        "name": "llm",
+        "config": {"messages": [{"role": "user", "content": "{{system.userQuery}}"}]},
+    }
+    out = {
+        "id": "out",
+        "type": "output",
+        "name": "Out",
+        "config": {"outputMapping": [{"target": k, "value": v} for k, v in mapping.items()]},
+    }
+    workflows = {
+        PARENT: {
+            "schemaVersion": "2.0",
+            "agenticWorkflowId": PARENT,
+            "nodes": [
+                {"id": "start", "type": "start", "name": "Start", "config": {}},
+                subflow("child", CHILD),
+                {"id": "out", "type": "output", "name": "Out", "config": {"outputMapping": []}},
+            ],
+            "edges": [{"source": "start", "target": "child"}, {"source": "child", "target": "out"}],
+        },
+        CHILD: {
+            "schemaVersion": "2.0",
+            "agenticWorkflowId": CHILD,
+            "nodes": [{"id": "start", "type": "start", "name": "Start", "config": {}}, llm, out],
+            "edges": [{"source": "start", "target": "llm"}, {"source": "llm", "target": "out"}],
+        },
+    }
+    _, response = await run(workflows, [Turn.say("Boilers are fine.")])
+    body = response.json()
+    assert body["status"] == "succeeded", body
+    assert body["result"] == (answer if isinstance(answer, dict) else {"text": answer})
+
+
 @pytest.mark.parametrize(("policy", "seen"), [("declared", ""), ("all", "s3cret"), ("none", "")])
 async def test_N11_the_child_sees_flow_per_inherit_flow(policy: str, seen: str) -> None:
     workflows = {

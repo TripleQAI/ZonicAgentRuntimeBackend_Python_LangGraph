@@ -188,22 +188,6 @@
     },
     {
       "data": {
-        "code": "TEMPLATE_MISSING",
-        "details": {
-          "paths": [
-            "nodes.energy-agent.output.aggregationOption",
-            "nodes.energy-agent.output.analysisLevel",
-            "nodes.energy-agent.output.analysisType"
-          ]
-        },
-        "message": ""
-      },
-      "nodeId": "agent_1781397954641_geg1e",
-      "seq": 16,
-      "type": "warning"
-    },
-    {
-      "data": {
         "handles": [
           "handoff-llm_1783647948890_oroz3"
         ],
@@ -221,7 +205,7 @@
         }
       },
       "nodeId": "agent_1781397954641_geg1e",
-      "seq": 17,
+      "seq": 16,
       "type": "node.finished"
     },
     {
@@ -232,7 +216,7 @@
         "visit": 1
       },
       "nodeId": "llm_1783647948890_oroz3",
-      "seq": 18,
+      "seq": 17,
       "type": "node.started"
     },
     {
@@ -246,7 +230,7 @@
         "toolUseId": "call_0"
       },
       "nodeId": "llm_1783647948890_oroz3",
-      "seq": 19,
+      "seq": 18,
       "type": "tool.started"
     },
     {
@@ -255,7 +239,7 @@
         "toolUseId": "call_0"
       },
       "nodeId": "llm_1783647948890_oroz3",
-      "seq": 20,
+      "seq": 19,
       "type": "tool.finished"
     },
     {
@@ -263,7 +247,7 @@
         "text": "The "
       },
       "nodeId": "llm_1783647948890_oroz3",
-      "seq": 21,
+      "seq": 20,
       "type": "token.delta"
     },
     {
@@ -271,7 +255,7 @@
         "text": "analysis is ready."
       },
       "nodeId": "llm_1783647948890_oroz3",
-      "seq": 22,
+      "seq": 21,
       "type": "token.delta"
     },
     {
@@ -281,7 +265,7 @@
         ]
       },
       "nodeId": "llm_1783647948890_oroz3",
-      "seq": 23,
+      "seq": 22,
       "type": "state.updated"
     },
     {
@@ -303,7 +287,7 @@
         }
       },
       "nodeId": "llm_1783647948890_oroz3",
-      "seq": 24,
+      "seq": 23,
       "type": "node.finished"
     },
     {
@@ -314,7 +298,7 @@
         "visit": 1
       },
       "nodeId": "rule_1783746264100_ljsfg",
-      "seq": 25,
+      "seq": 24,
       "type": "node.started"
     },
     {
@@ -330,7 +314,7 @@
         "status": "succeeded"
       },
       "nodeId": "rule_1783746264100_ljsfg",
-      "seq": 26,
+      "seq": 25,
       "type": "node.finished"
     },
     {
@@ -341,7 +325,7 @@
         "visit": 1
       },
       "nodeId": "llm_1783746322334_uqllv",
-      "seq": 27,
+      "seq": 26,
       "type": "node.started"
     },
     {
@@ -349,7 +333,7 @@
         "text": "{\"dataAnalysisResult\": "
       },
       "nodeId": "llm_1783746322334_uqllv",
-      "seq": 28,
+      "seq": 27,
       "type": "token.delta"
     },
     {
@@ -357,7 +341,7 @@
         "text": "\"<p>Use was <b>12.4%</b> higher than in Q1 2025.</p>\"}"
       },
       "nodeId": "llm_1783746322334_uqllv",
-      "seq": 29,
+      "seq": 28,
       "type": "token.delta"
     },
     {
@@ -367,7 +351,7 @@
         ]
       },
       "nodeId": "llm_1783746322334_uqllv",
-      "seq": 30,
+      "seq": 29,
       "type": "state.updated"
     },
     {
@@ -389,7 +373,7 @@
         }
       },
       "nodeId": "llm_1783746322334_uqllv",
-      "seq": 31,
+      "seq": 30,
       "type": "node.finished"
     },
     {
@@ -400,7 +384,7 @@
         "visit": 1
       },
       "nodeId": "view_1783023686612_2lr8k",
-      "seq": 32,
+      "seq": 31,
       "type": "node.started"
     },
     {
@@ -438,7 +422,7 @@
         "type": "chart"
       },
       "nodeId": "view_1783023686612_2lr8k",
-      "seq": 33,
+      "seq": 32,
       "type": "content.part"
     },
     {
@@ -451,7 +435,7 @@
         "type": "html"
       },
       "nodeId": "view_1783023686612_2lr8k",
-      "seq": 34,
+      "seq": 33,
       "type": "content.part"
     },
     {
@@ -467,7 +451,7 @@
         "status": "succeeded"
       },
       "nodeId": "view_1783023686612_2lr8k",
-      "seq": 35,
+      "seq": 34,
       "type": "node.finished"
     },
     {
@@ -478,7 +462,7 @@
         "visit": 1
       },
       "nodeId": "variable_1783387115349_esyg3",
-      "seq": 36,
+      "seq": 35,
       "type": "node.started"
     },
     {
@@ -492,7 +476,7 @@
         ]
       },
       "nodeId": "variable_1783387115349_esyg3",
-      "seq": 37,
+      "seq": 36,
       "type": "state.updated"
     },
     {
@@ -508,7 +492,7 @@
         "status": "succeeded"
       },
       "nodeId": "variable_1783387115349_esyg3",
-      "seq": 38,
+      "seq": 37,
       "type": "node.finished"
     },
     {
@@ -519,7 +503,7 @@
         "visit": 1
       },
       "nodeId": "output_1781397965377_sz6ig",
-      "seq": 39,
+      "seq": 38,
       "type": "node.started"
     },
     {
@@ -529,7 +513,7 @@
         ]
       },
       "nodeId": "output_1781397965377_sz6ig",
-      "seq": 40,
+      "seq": 39,
       "type": "state.updated"
     },
     {
@@ -545,7 +529,7 @@
         "status": "succeeded"
       },
       "nodeId": "output_1781397965377_sz6ig",
-      "seq": 41,
+      "seq": 40,
       "type": "node.finished"
     },
     {
@@ -560,7 +544,7 @@
           "totalTokens": 14555
         }
       },
-      "seq": 42,
+      "seq": 41,
       "type": "run.completed"
     }
   ]

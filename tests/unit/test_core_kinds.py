@@ -144,6 +144,29 @@ async def test_N02_llm_json_with_output_schema_gives_structured_output() -> None
     assert sent.tool_names == ["n"] and sent.tools[0]["function"]["description"]
 
 
+@pytest.mark.parametrize(
+    ("answer", "parsed"),
+    [
+        ('{"city": "Oslo"}', {"city": "Oslo"}),
+        ('```json\n{"city": "Oslo"}\n```', {"city": "Oslo"}),
+        ('```\n{"city": "Oslo"}```', {"city": "Oslo"}),
+        ("```json\nnot json\n```", None),
+        ('The answer: {"city": "Oslo"}', None),
+    ],
+)
+async def test_N02_llm_json_without_a_schema_parses_the_answer_bare_or_in_one_code_fence(
+    answer: str, parsed: dict[str, Any] | None
+) -> None:
+    h, _ = agent_harness([Turn.say(answer)], DEV)
+    final, *_ = await h.run(chain(llm(responseFormat="json")))
+    out = final["nodes"]["n"]["output"]
+    assert out["text"] == answer
+    if parsed is None:
+        assert "structuredOutput" not in out  # text, with the LLM_NOT_JSON warning
+    else:
+        assert out["structuredOutput"] == parsed and out["result"] == parsed
+
+
 @pytest.mark.parametrize("answer", [{"city": "Oslo"}, {"city": "Oslo", "days": 0}, None])
 async def test_N02_invalid_json_is_structured_output_invalid(answer: dict[str, Any] | None) -> None:
     node = llm(responseFormat="json", outputSchema=SCHEMA)
@@ -275,6 +298,24 @@ async def test_N05_agent_tool_results_and_internal_turn_messages() -> None:
     assert [c["name"] for c in out["toolCalls"]] == ["lookup"] and out["toolCalls"][0]["status"] == "success"
     kinds = [(m["kind"], m["visibility"]) for m in final["turn_messages"]]
     assert kinds == [("tool_call", "internal"), ("tool_result", "internal"), ("answer", "chat")]
+
+
+async def test_N06_an_agent_storing_its_own_answer_in_a_variable_warns_of_nothing_missing() -> None:
+    # The update names the visit's own output, which exists only once the agent has answered.
+    node = {
+        **agent(
+            "lane",
+            variableUpdates=[
+                {"path": "flow.answer", "value": "{{nodes.analyst.output.text}}", "operation": "set"}
+            ],
+        ),
+        "name": "analyst",
+    }
+    h, _ = agent_harness([Turn.say("42 kWh.")], DEV)
+    final, events, *_ = await h.run(chain(node))
+    assert final["flow"]["values"]["answer"] == "42 kWh."
+    assert not [w for w in final["warnings"] if w["code"] == "TEMPLATE_MISSING"]
+    assert not any(e["event"] == "warning" and e["code"] == "TEMPLATE_MISSING" for e in events)
 
 
 async def test_N06_max_iterations_ends_with_the_partial_answer_and_a_warning() -> None:

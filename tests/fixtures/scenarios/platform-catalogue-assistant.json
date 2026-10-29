@@ -168,12 +168,7 @@
         "details": {
           "paths": [
             "flow.buttonMessage",
-            "flow.cart",
-            "nodeOutput.structuredOutput.assistantMeta",
-            "nodeOutput.structuredOutput.assistantMeta.currentSearchKey",
-            "nodeOutput.structuredOutput.assistantMeta.filterLabel",
-            "nodeOutput.structuredOutput.assistantMeta.queryContext",
-            "nodeOutput.structuredOutput.nextStep"
+            "flow.cart"
           ]
         },
         "message": ""

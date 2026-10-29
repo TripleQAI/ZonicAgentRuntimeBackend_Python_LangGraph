@@ -28,6 +28,7 @@ dependencies = [
     "prometheus-client~=0.26.0",
     "jsonschema~=4.26.0",
     "nh3~=0.3.7",
+    "tzdata~=2026.5",
 ]
 
 [dependency-groups]
