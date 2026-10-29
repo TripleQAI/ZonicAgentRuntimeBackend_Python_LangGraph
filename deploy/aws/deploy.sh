@@ -87,7 +87,8 @@ nebius_arn="$(put_secret nebius-api-key "$nebius_key")"
 langfuse_url="$(env_value ZONIC_LANGFUSE_BASE_URL)"
 langfuse_public="$(env_value ZONIC_LANGFUSE_PUBLIC_KEY)"
 langfuse_secret="$(env_value ZONIC_LANGFUSE_SECRET_KEY)"
-[ -n "$langfuse_url" ] && [ -n "$langfuse_public" ] && [ -n "$langfuse_secret" ] \n  || fail "ZONIC_LANGFUSE_BASE_URL, ZONIC_LANGFUSE_PUBLIC_KEY and ZONIC_LANGFUSE_SECRET_KEY must be set in .env"
+[ -n "$langfuse_url" ] && [ -n "$langfuse_public" ] && [ -n "$langfuse_secret" ] \
+  || fail "ZONIC_LANGFUSE_BASE_URL, ZONIC_LANGFUSE_PUBLIC_KEY and ZONIC_LANGFUSE_SECRET_KEY must be set in .env"
 langfuse_public_arn="$(put_secret langfuse-public-key "$langfuse_public")"
 langfuse_secret_arn="$(put_secret langfuse-secret-key "$langfuse_secret")"
 unset langfuse_secret
@@ -116,7 +117,8 @@ aws cloudformation deploy --stack-name "$STACK" --template-file "$(native "$ROOT
     GatewayBaseUrl="$gateway_url" McpBaseUrl="$mcp_url" \
     OidcIssuer="https://cognito-idp.$AWS_REGION.amazonaws.com/$OIDC_POOL_ID" OidcAudience="$OIDC_AUDIENCE" \
     GatewayApiKeySecretArn="$gateway_arn" McpAuthTokenSecretArn="$mcp_arn" CheckpointAesKeySecretArn="$aes_arn" OpenAiApiKeySecretArn="$openai_arn" \
-    NebiusApiKeySecretArn="$nebius_arn" \n    LangfuseBaseUrl="$langfuse_url" LangfusePublicKeySecretArn="$langfuse_public_arn" LangfuseSecretKeySecretArn="$langfuse_secret_arn"
+    NebiusApiKeySecretArn="$nebius_arn" \
+    LangfuseBaseUrl="$langfuse_url" LangfusePublicKeySecretArn="$langfuse_public_arn" LangfuseSecretKeySecretArn="$langfuse_secret_arn"
 output() { aws cloudformation describe-stacks --stack-name "$STACK" --query "Stacks[0].Outputs[?OutputKey=='$1'].OutputValue" --output text; }
 aws ecs wait services-stable --cluster "$(output Cluster)" --services runtime
 url="$(output Url)"

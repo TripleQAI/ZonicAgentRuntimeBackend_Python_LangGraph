@@ -24,9 +24,10 @@ class ModelParameterBounds(ZonicResourceModel):
     max_tokens: int = Field(gt=0)
 
 
-#: Langfuse's usage and cost keys: prompt tokens, completion tokens, prompt tokens from the cache.
+#: Langfuse's usage and cost keys: prompt tokens, completion tokens, prompt tokens from the cache,
+#: and a reasoning model's reasoning tokens (billed as output, but kept outside ``output``).
 USAGE_INPUT, USAGE_OUTPUT = "input", "output"  # principle: allow rule-1-node-type langfuse-usage-keys
-USAGE_CACHE_READ = "input_cache_read"
+USAGE_CACHE_READ, USAGE_REASONING = "input_cache_read", "output_reasoning"
 
 
 class ModelPrice(ZonicResourceModel):
@@ -38,9 +39,12 @@ class ModelPrice(ZonicResourceModel):
     #: Prompt tokens served from the provider's cache; the input price when not given.
     cached_input_per_million: float | None = Field(default=None, ge=0)
 
-    def cost(self, input_tokens: int, output_tokens: int, cached_input_tokens: int = 0) -> dict[str, float]:
-        """``{input, output, total}`` (and ``input_cache_read`` when cached tokens are given), in the
-        currency, rounded to 8 decimals. ``input_tokens`` excludes cached tokens."""
+    def cost(
+        self, input_tokens: int, output_tokens: int, cached_input_tokens: int = 0, reasoning_tokens: int = 0
+    ) -> dict[str, float]:
+        """``{input, output, total}`` (and ``input_cache_read`` and ``output_reasoning`` when given),
+        in the currency, rounded to 8 decimals. ``input_tokens`` excludes cached tokens;
+        ``reasoning_tokens`` are billed at the output price and excluded from ``output_tokens``."""
         cached_price = (
             self.cached_input_per_million
             if self.cached_input_per_million is not None
@@ -52,6 +56,8 @@ class ModelPrice(ZonicResourceModel):
         }
         if cached_input_tokens:
             parts[USAGE_CACHE_READ] = cached_input_tokens * cached_price / 1_000_000
+        if reasoning_tokens:
+            parts[USAGE_REASONING] = reasoning_tokens * self.output_per_million / 1_000_000
         cost = {k: round(v, 8) for k, v in parts.items()}
         cost["total"] = round(sum(parts.values()), 8)
         return cost

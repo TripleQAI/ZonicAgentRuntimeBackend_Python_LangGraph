@@ -436,3 +436,19 @@ def test_run_usage_is_costed_with_cached_tokens_and_dated_model_names() -> None:
     assert mini is not None and mini.output_per_million == 1.6
     assert DEV.models.price_for("nemotron-3-ultra").input_per_million == 1.0  # type: ignore[union-attr]
     assert DEV.models.price_for("unknown-model") is None
+
+
+def test_reasoning_tokens_are_costed_at_the_output_price() -> None:
+    from zonic_runtime.integrations.langfuse.export import Enricher
+    from zonic_runtime.integrations.langfuse.masker import Masker
+
+    # A Nemotron 3 Ultra call as Langfuse records it: reasoning tokens outside ``output``.
+    usage = {"input": 815, "output": 128, "output_reasoning": 77, "input_cache_read": 0, "total": 1020}
+    attrs = {
+        TYPE: "generation",
+        "langfuse.observation.model.name": "nvidia/Nemotron-3-Ultra-550b-a55b",
+        "langfuse.observation.usage_details": json.dumps(usage),
+    }
+    cost = Enricher(Masker(DEV.observability), DEV.models).cost(attrs)
+    # 815 x $1 + (128 + 77) x $3, per 1M tokens
+    assert cost == {"input": 0.000815, "output": 0.000384, "output_reasoning": 0.000231, "total": 0.00143}
