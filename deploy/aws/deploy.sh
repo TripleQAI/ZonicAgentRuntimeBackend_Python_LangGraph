@@ -6,7 +6,7 @@
 # Steps: check the account; build the image and push it to ECR; create or update the Secrets
 # Manager entries; deploy the CloudFormation stack (deploy/aws/runtime.yaml); print its URL.
 # Secret values come from the git-ignored .env (ZONIC_GATEWAY_API_KEY, ZONIC_MCP_AUTH_TOKEN,
-# ZONIC_OPENAI_API_KEY) and
+# ZONIC_OPENAI_API_KEY, ZONIC_NEBIUS_API_KEY) and
 # go to Secrets Manager through temporary files: they are never printed or put on a command line.
 # The checkpoint AES key is generated once in Secrets Manager and never replaced here (see
 # docs/runbooks/rotate-keys.md).
@@ -76,10 +76,13 @@ mcp_token="$(env_value ZONIC_MCP_AUTH_TOKEN)"
 openai_key="$(env_value ZONIC_OPENAI_API_KEY)"
 [ -n "$gateway_key" ] || fail "ZONIC_GATEWAY_API_KEY is not set in .env"
 [ -n "$mcp_token" ] || fail "ZONIC_MCP_AUTH_TOKEN is not set in .env"
+nebius_key="$(env_value ZONIC_NEBIUS_API_KEY)"
 [ -n "$openai_key" ] || fail "ZONIC_OPENAI_API_KEY is not set in .env"
+[ -n "$nebius_key" ] || fail "ZONIC_NEBIUS_API_KEY is not set in .env"
 gateway_arn="$(put_secret gateway-api-key "$gateway_key")"
 mcp_arn="$(put_secret mcp-auth-token "$mcp_token")"
 openai_arn="$(put_secret openai-api-key "$openai_key")"
+nebius_arn="$(put_secret nebius-api-key "$nebius_key")"
 aes_name="$SECRET_PREFIX/checkpoint-aes-key"
 if ! aws secretsmanager describe-secret --secret-id "$aes_name" >/dev/null 2>&1; then
   log "generating the checkpoint AES key"
@@ -104,7 +107,8 @@ aws cloudformation deploy --stack-name "$STACK" --template-file "$(native "$ROOT
     Stage="$STAGE" ImageUri="$image" DesiredCount="$DESIRED_COUNT" ResourcesDir="$RESOURCES_DIR" \
     GatewayBaseUrl="$gateway_url" McpBaseUrl="$mcp_url" \
     OidcIssuer="https://cognito-idp.$AWS_REGION.amazonaws.com/$OIDC_POOL_ID" OidcAudience="$OIDC_AUDIENCE" \
-    GatewayApiKeySecretArn="$gateway_arn" McpAuthTokenSecretArn="$mcp_arn" CheckpointAesKeySecretArn="$aes_arn" OpenAiApiKeySecretArn="$openai_arn"
+    GatewayApiKeySecretArn="$gateway_arn" McpAuthTokenSecretArn="$mcp_arn" CheckpointAesKeySecretArn="$aes_arn" OpenAiApiKeySecretArn="$openai_arn" \
+    NebiusApiKeySecretArn="$nebius_arn"
 output() { aws cloudformation describe-stacks --stack-name "$STACK" --query "Stacks[0].Outputs[?OutputKey=='$1'].OutputValue" --output text; }
 aws ecs wait services-stable --cluster "$(output Cluster)" --services runtime
 url="$(output Url)"

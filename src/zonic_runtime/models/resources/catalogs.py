@@ -32,6 +32,9 @@ class ModelEntry(ZonicResourceModel):
     deployment: str | None = None  # azure deployment name
     api_version: str | None = None  # azure
     endpoint_env: str | None = None  # environment field holding the endpoint (azure, openai-compatible)
+    #: Environment field holding the API key, when not the provider's own (an OpenAI-compatible
+    #: service such as Nebius Token Factory has its own key).
+    api_key_env: str | None = None
     supports_native_structured_output: bool
     parameters: ModelParameterBounds
     quota: ModelQuota

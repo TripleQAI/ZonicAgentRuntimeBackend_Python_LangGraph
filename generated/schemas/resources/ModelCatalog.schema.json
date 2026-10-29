@@ -3,6 +3,18 @@
     "ModelEntry": {
       "additionalProperties": false,
       "properties": {
+        "apiKeyEnv": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Apikeyenv"
+        },
         "apiVersion": {
           "anyOf": [
             {

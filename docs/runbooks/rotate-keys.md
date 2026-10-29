@@ -8,7 +8,7 @@ Do the rolling restart as in [deploy.md](deploy.md), section 5. Instances drain,
 |---|---|---|
 | Gateway API key | `ZONIC_GATEWAY_API_KEY`; caller `zonic-agent-runtime` in the gateway's key store | [Gateway key](#gateway-api-key) |
 | Checkpoint encryption key | `ZONIC_CHECKPOINT_AES_KEY` | [Checkpoint key](#checkpoint-encryption-key): needs care |
-| Model provider keys | `ZONIC_AZURE_OPENAI_API_KEY`, `ZONIC_OPENAI_API_KEY`, `ZONIC_ANTHROPIC_API_KEY`. Bedrock uses the task role, with no key | [Provider keys](#provider-and-referenced-secrets) |
+| Model provider keys | `ZONIC_AZURE_OPENAI_API_KEY`, `ZONIC_OPENAI_API_KEY`, `ZONIC_ANTHROPIC_API_KEY`, `ZONIC_NEBIUS_API_KEY` (Nebius Token Factory). Bedrock uses the task role, with no key | [Provider keys](#provider-and-referenced-secrets) |
 | Referenced secrets | `ZONIC_SECRET_<NAME>` (tool credentials, HTTP node credentials, callback HMAC keys) | [Referenced secrets](#provider-and-referenced-secrets) |
 | MCP server token | `ZONIC_MCP_AUTH_TOKEN`; the MCP server's `MCP_AUTH_TOKEN` in SSM `/zonic-mcp-server/runtime`; on AWS, Secrets Manager `zonic-agent-runtime/<stage>/mcp-auth-token` | Change it on the MCP server first (its `deploy.sh`), then in the runtime's secret, and roll: calls fail with `TOOL_UNAVAILABLE` in between |
 | Langfuse keys | `ZONIC_LANGFUSE_PUBLIC_KEY`, `ZONIC_LANGFUSE_SECRET_KEY` (optional exporter only) | Like provider keys |

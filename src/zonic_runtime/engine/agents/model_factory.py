@@ -41,8 +41,8 @@ HttpClient = Callable[[str], Any]
 _HTTPX_PROVIDERS = frozenset({"openai", "azure_openai"})
 
 
-#: The environment field holding each key-based provider's API key (``ZONIC_<FIELD>``); Bedrock
-#: uses the process's AWS credentials instead.
+#: The environment field holding each key-based provider's API key (``ZONIC_<FIELD>``), unless the
+#: entry names its own (``apiKeyEnv``); Bedrock uses the process's AWS credentials instead.
 _API_KEYS = MappingProxyType(
     {"azure_openai": "azure_openai_api_key", "openai": "openai_api_key", "anthropic": "anthropic_api_key"}
 )
@@ -50,7 +50,8 @@ _API_KEYS = MappingProxyType(
 
 def _provider_arguments(entry: ModelEntry, environment: EnvironmentReader) -> dict[str, Any]:
     endpoint = environment(entry.endpoint_env) if entry.endpoint_env else None
-    key = environment(_API_KEYS[entry.provider]) if entry.provider in _API_KEYS else None
+    key_env = entry.api_key_env or _API_KEYS.get(entry.provider)
+    key = environment(key_env) if key_env else None
     match entry.provider:
         case "bedrock_converse":
             return {"region_name": entry.region} if entry.region else {}

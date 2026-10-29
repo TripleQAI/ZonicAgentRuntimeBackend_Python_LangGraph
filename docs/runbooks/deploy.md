@@ -51,6 +51,7 @@ Tunable values live in `resources/settings.json`, with the overlay for `ZONIC_EN
 | `ZONIC_OIDC_ISSUER`, `ZONIC_OIDC_AUDIENCE`, `ZONIC_OIDC_JWKS_URL` | The Cognito pool. Without a JWKS URL every token is refused |
 | `ZONIC_AWS_REGION` and the task role | Bedrock. The model regions are in `resources/models.json` |
 | `ZONIC_AZURE_OPENAI_ENDPOINT`, `ZONIC_AZURE_OPENAI_API_KEY`, `ZONIC_OPENAI_API_KEY`, `ZONIC_ANTHROPIC_API_KEY` | Only for providers whose models are enabled. The stack injects `ZONIC_OPENAI_API_KEY` from Secrets Manager (`zonic-agent-runtime/<stage>/openai-api-key`) |
+| `ZONIC_NEBIUS_API_KEY`, `ZONIC_NEBIUS_BASE_URL` | Nebius Token Factory, which serves the NVIDIA Nemotron models. The URL defaults to `https://api.tokenfactory.nebius.com/v1/`. The stack injects the key from Secrets Manager (`zonic-agent-runtime/<stage>/nebius-api-key`) |
 | `ZONIC_MCP_BASE_URL` | The MCP server, for MCP tools and database nodes |
 | `ZONIC_CACHE_API_URL` | The cache service, for datasets with `store: cache` |
 | `ZONIC_SANDBOX_URL` | A Piston API. Without it, Script nodes are `FEATURE_DISABLED` |

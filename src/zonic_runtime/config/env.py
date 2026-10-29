@@ -63,6 +63,10 @@ class EnvironmentModel(BaseSettings):
     azure_openai_api_key: SecretStr | None = None
     openai_api_key: SecretStr | None = None
     anthropic_api_key: SecretStr | None = None
+    #: Nebius Token Factory (OpenAI-compatible): its NVIDIA Nemotron models name these fields
+    #: (``endpointEnv``, ``apiKeyEnv`` in ``models.json``).
+    nebius_base_url: str = "https://api.tokenfactory.nebius.com/v1/"
+    nebius_api_key: SecretStr | None = None
 
     # MCP server and cache service
     mcp_base_url: str | None = None
