@@ -21,6 +21,8 @@ from typing import Any
 
 from langchain.chat_models import init_chat_model
 from langchain_core.language_models import BaseChatModel
+from langchain_core.outputs import ChatGenerationChunk
+from langchain_openai import ChatOpenAI
 from langgraph.constants import TAG_NOSTREAM
 
 from zonic_runtime.engine.agents.governor import ModelGovernor, ModelGovernors
@@ -41,16 +43,31 @@ HttpClient = Callable[[str], Any]
 _HTTPX_PROVIDERS = frozenset({"openai", "azure_openai"})
 
 
-#: The environment field holding each key-based provider's API key (``ZONIC_<FIELD>``); Bedrock
-#: uses the process's AWS credentials instead.
+#: The environment field holding each key-based provider's API key (``ZONIC_<FIELD>``), unless the
+#: entry names its own (``apiKeyEnv``); Bedrock uses the process's AWS credentials instead.
 _API_KEYS = MappingProxyType(
     {"azure_openai": "azure_openai_api_key", "openai": "openai_api_key", "anthropic": "anthropic_api_key"}
 )
 
 
+class FinalUsageChatOpenAI(ChatOpenAI):
+    """``ChatOpenAI`` that counts a stream's usage once, from its closing chunk without choices,
+    as the OpenAI API sends it. Some OpenAI-compatible servers (Nebius Token Factory's Nemotron
+    Nano and Ultra) also put the running total on every content chunk, which LangChain would add
+    up into a usage many times the real one."""
+
+    def _convert_chunk_to_generation_chunk(
+        self, chunk: dict[str, Any], default_chunk_class: type, base_generation_info: dict[str, Any] | None
+    ) -> ChatGenerationChunk | None:
+        if chunk.get("usage") and chunk.get("choices"):
+            chunk = {**chunk, "usage": None}
+        return super()._convert_chunk_to_generation_chunk(chunk, default_chunk_class, base_generation_info)
+
+
 def _provider_arguments(entry: ModelEntry, environment: EnvironmentReader) -> dict[str, Any]:
     endpoint = environment(entry.endpoint_env) if entry.endpoint_env else None
-    key = environment(_API_KEYS[entry.provider]) if entry.provider in _API_KEYS else None
+    key_env = entry.api_key_env or _API_KEYS.get(entry.provider)
+    key = environment(key_env) if key_env else None
     match entry.provider:
         case "bedrock_converse":
             return {"region_name": entry.region} if entry.region else {}
@@ -88,12 +105,17 @@ def provider_builders(
             # With its own client the SDK no longer streams usage by default: the trace's usage
             # (and the run's cost) need it.
             arguments = {**arguments, "http_async_client": client, "stream_usage": True}
-        model = init_chat_model(
-            entry.model_id,
-            model_provider=entry.provider,
-            **_provider_arguments(entry, environment),
-            **arguments,
-        )
+        if entry.provider == "openai":
+            model: Any = FinalUsageChatOpenAI(
+                model=entry.model_id, **_provider_arguments(entry, environment), **arguments
+            )
+        else:
+            model = init_chat_model(
+                entry.model_id,
+                model_provider=entry.provider,
+                **_provider_arguments(entry, environment),
+                **arguments,
+            )
         if not isinstance(model, BaseChatModel):
             raise ZonicError("MODEL_NOT_ALLOWED", model=entry.model_id, reason="not a chat model")
         return model

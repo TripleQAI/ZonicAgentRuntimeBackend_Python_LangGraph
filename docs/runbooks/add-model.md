@@ -26,6 +26,8 @@ Models are configuration: one entry in `resources/models.json`. A model a docume
    | `openai` | `endpointEnv` for an OpenAI-compatible endpoint | `ZONIC_OPENAI_API_KEY` |
    | `anthropic` | none | `ZONIC_ANTHROPIC_API_KEY` |
 
+   **`apiKeyEnv`** names the environment field with the key when a model does not use its provider's own, as an OpenAI-compatible service has its own key. The NVIDIA Nemotron models (`nemotron-3-nano`, `-super`, `-ultra`, `nemotron-3.5-super-vl`) are `openai` entries with `endpointEnv: nebius_base_url` and `apiKeyEnv: nebius_api_key`, served by Nebius Token Factory (`ZONIC_NEBIUS_API_KEY`). `nemotron-3.5-lightning` is disabled: it sometimes writes its reasoning into the answer. Nemotron models reason before they answer, and the reasoning counts toward `maxTokens`, so a node with a small token limit can get an empty answer.
+
    - **`parameters`** bounds what a document may ask for: temperature and output tokens are clamped to these.
    - **`quota`** is enforced per instance by the model governor. Calls over `maxInFlight` wait up to `maxQueueWaitMilliseconds`, then fail with `MODEL_BUSY`. Size it to the account's provider quota divided by the instance count.
    - **`supportsNativeStructuredOutput`**: when true, `responseFormat: json` nodes with a schema use the provider's structured output instead of the prompt-and-parse path.

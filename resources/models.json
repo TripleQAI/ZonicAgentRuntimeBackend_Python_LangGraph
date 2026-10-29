@@ -92,6 +92,56 @@
       "supportsNativeStructuredOutput": true,
       "parameters": { "maxTemperature": 2.0, "maxTokens": 16000 },
       "quota": { "maxInFlight": 20, "requestsPerMinute": 200, "tokensPerMinute": 400000, "maxQueueWaitMilliseconds": 20000 }
+    },
+    "nemotron-3-nano": {
+      "provider": "openai",
+      "modelId": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+      "enabled": true,
+      "endpointEnv": "nebius_base_url",
+      "apiKeyEnv": "nebius_api_key",
+      "supportsNativeStructuredOutput": true,
+      "parameters": { "maxTemperature": 1.0, "maxTokens": 16000 },
+      "quota": { "maxInFlight": 30, "requestsPerMinute": 400, "tokensPerMinute": 800000, "maxQueueWaitMilliseconds": 15000 }
+    },
+    "nemotron-3-super": {
+      "provider": "openai",
+      "modelId": "nvidia/nemotron-3-super-120b-a12b",
+      "enabled": true,
+      "endpointEnv": "nebius_base_url",
+      "apiKeyEnv": "nebius_api_key",
+      "supportsNativeStructuredOutput": true,
+      "parameters": { "maxTemperature": 1.0, "maxTokens": 16000 },
+      "quota": { "maxInFlight": 20, "requestsPerMinute": 200, "tokensPerMinute": 400000, "maxQueueWaitMilliseconds": 20000 }
+    },
+    "nemotron-3-ultra": {
+      "provider": "openai",
+      "modelId": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "enabled": true,
+      "endpointEnv": "nebius_base_url",
+      "apiKeyEnv": "nebius_api_key",
+      "supportsNativeStructuredOutput": true,
+      "parameters": { "maxTemperature": 1.0, "maxTokens": 16000 },
+      "quota": { "maxInFlight": 10, "requestsPerMinute": 100, "tokensPerMinute": 200000, "maxQueueWaitMilliseconds": 30000 }
+    },
+    "nemotron-3.5-super-vl": {
+      "provider": "openai",
+      "modelId": "nvidia/Nemotron-3.5-Super-VL",
+      "enabled": true,
+      "endpointEnv": "nebius_base_url",
+      "apiKeyEnv": "nebius_api_key",
+      "supportsNativeStructuredOutput": true,
+      "parameters": { "maxTemperature": 1.0, "maxTokens": 16000 },
+      "quota": { "maxInFlight": 10, "requestsPerMinute": 100, "tokensPerMinute": 200000, "maxQueueWaitMilliseconds": 20000 }
+    },
+    "nemotron-3.5-lightning": {
+      "provider": "openai",
+      "modelId": "nvidia/Nemotron-3_5-Lightning",
+      "enabled": false,
+      "endpointEnv": "nebius_base_url",
+      "apiKeyEnv": "nebius_api_key",
+      "supportsNativeStructuredOutput": false,
+      "parameters": { "maxTemperature": 1.0, "maxTokens": 16000 },
+      "quota": { "maxInFlight": 20, "requestsPerMinute": 200, "tokensPerMinute": 400000, "maxQueueWaitMilliseconds": 15000 }
     }
   }
 }

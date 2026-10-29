@@ -39,6 +39,8 @@ Parameters:
     Type: String
   OpenAiApiKeySecretArn:
     Type: String
+  NebiusApiKeySecretArn:
+    Type: String
   CloudFrontPrefixList:
     Type: String
     Default: pl-3b927c52  # com.amazonaws.global.cloudfront.origin-facing in us-east-1
@@ -198,6 +200,7 @@ Resources:
                   - !Ref McpAuthTokenSecretArn
                   - !Ref CheckpointAesKeySecretArn
                   - !Ref OpenAiApiKeySecretArn
+                  - !Ref NebiusApiKeySecretArn
   TaskRole:
     Type: AWS::IAM::Role
     Properties:
@@ -252,6 +255,7 @@ Resources:
             - { Name: ZONIC_MCP_AUTH_TOKEN, ValueFrom: !Ref McpAuthTokenSecretArn }
             - { Name: ZONIC_CHECKPOINT_AES_KEY, ValueFrom: !Ref CheckpointAesKeySecretArn }
             - { Name: ZONIC_OPENAI_API_KEY, ValueFrom: !Ref OpenAiApiKeySecretArn }
+            - { Name: ZONIC_NEBIUS_API_KEY, ValueFrom: !Ref NebiusApiKeySecretArn }
           LogConfiguration:
             LogDriver: awslogs
             Options:

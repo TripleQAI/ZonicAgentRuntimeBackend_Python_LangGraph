@@ -500,6 +500,53 @@ def test_B02_key_based_providers_get_their_key_and_endpoint_from_the_environment
     assert "api_key" not in _provider_arguments(DEV.models.models["claude-sonnet-4-6"], read)
 
 
+def test_B02_an_openai_compatible_entry_uses_its_own_endpoint_and_key() -> None:
+    from pydantic import SecretStr
+
+    from zonic_runtime.config.env import EnvironmentModel
+
+    env = EnvironmentModel(openai_api_key=SecretStr("openai-key"), nebius_api_key=SecretStr("nebius-key"))
+    read = lambda field: (  # noqa: E731
+        v.get_secret_value() if isinstance(v := getattr(env, field, None), SecretStr) else v
+    )
+    nemotron = DEV.models.models["nemotron-3-super"]
+    assert _provider_arguments(nemotron, read) == {
+        "base_url": "https://api.tokenfactory.nebius.com/v1/",
+        "api_key": "nebius-key",
+    }
+    assert _provider_arguments(DEV.models.models["openai-gpt-4.1"], read) == {"api_key": "openai-key"}
+
+
+def test_B02_a_stream_counts_its_usage_once_when_every_chunk_carries_the_running_total() -> None:
+    from langchain_core.messages import AIMessageChunk
+    from pydantic import SecretStr
+
+    from zonic_runtime.engine.agents.model_factory import FinalUsageChatOpenAI
+
+    # Token Factory's Nemotron Nano and Ultra: the running total on each content chunk, then the
+    # closing chunk without choices that OpenAI sends.
+    def usage(completion: int) -> dict[str, int]:
+        return {"prompt_tokens": 20, "completion_tokens": completion, "total_tokens": 20 + completion}
+
+    chunks = [
+        {"choices": [{"index": 0, "delta": {"content": "red"}, "finish_reason": None}], "usage": usage(1)},
+        {
+            "choices": [{"index": 0, "delta": {"content": ", blue"}, "finish_reason": "stop"}],
+            "usage": usage(3),
+        },
+        {"choices": [], "usage": usage(3)},
+    ]
+    model = FinalUsageChatOpenAI(model="nvidia/nemotron", api_key=SecretStr("key"))
+    total: Any = None
+    for chunk in chunks:
+        generation = model._convert_chunk_to_generation_chunk(chunk, AIMessageChunk, None)
+        assert generation is not None
+        total = generation.message if total is None else total + generation.message
+    assert total.content == "red, blue"
+    counts = {k: total.usage_metadata[k] for k in ("input_tokens", "output_tokens", "total_tokens")}
+    assert counts == {"input_tokens": 20, "output_tokens": 3, "total_tokens": 23}
+
+
 def test_B02_openai_models_share_the_pooled_client_and_stream_their_usage() -> None:
     import httpx
     from pydantic import SecretStr
