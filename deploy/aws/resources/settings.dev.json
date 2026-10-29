@@ -1,6 +1,7 @@
 {
   "observability": {
-    "environment": "dev"
+    "environment": "dev",
+    "exporters": ["gateway", "langfuse"]
   },
   "api": {
     "docsEnabled": true,

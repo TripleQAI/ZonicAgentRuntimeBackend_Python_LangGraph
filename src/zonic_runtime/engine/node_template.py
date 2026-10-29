@@ -272,6 +272,12 @@ class NodeContext:
                 self.config, name, level, {"nodeId": self.spec.node_id, "visit": self.visit, **metadata}
             )
 
+    def trace_input(self, node_input: NodeInput) -> None:
+        """The visit's bound port values on this node's observation (design 12)."""
+        tracer = self.runtime.context.tracer if self.runtime.context is not None else None
+        if tracer is not None:
+            tracer.node_input(self.config, node_input.all())
+
     def emit(self, event: str, **data: Any) -> None:
         payload = {
             "event": event,
@@ -351,6 +357,7 @@ class WorkflowNodeRunner:
             outcome = decision.skip
         else:
             node_input = decision.node_input if decision is not None and decision.node_input else node_input
+            ctx.trace_input(node_input)
             if self.kind.holds_permit and runtime.context is not None:  # 6
                 async with runtime.context.permits.node():
                     outcome = await self.kind.execute(ctx, node_input)

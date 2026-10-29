@@ -62,6 +62,17 @@
         "parameters": {
           "$ref": "#/$defs/ModelParameterBounds"
         },
+        "pricing": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ModelPrice"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
         "provider": {
           "enum": [
             "bedrock_converse",
@@ -122,6 +133,47 @@
         "maxTokens"
       ],
       "title": "ModelParameterBounds",
+      "type": "object"
+    },
+    "ModelPrice": {
+      "additionalProperties": false,
+      "description": "The provider's list price per million tokens; traces and run usage are costed with it.",
+      "properties": {
+        "cachedInputPerMillion": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cachedinputpermillion"
+        },
+        "currency": {
+          "const": "USD",
+          "default": "USD",
+          "title": "Currency",
+          "type": "string"
+        },
+        "inputPerMillion": {
+          "minimum": 0,
+          "title": "Inputpermillion",
+          "type": "number"
+        },
+        "outputPerMillion": {
+          "minimum": 0,
+          "title": "Outputpermillion",
+          "type": "number"
+        }
+      },
+      "required": [
+        "inputPerMillion",
+        "outputPerMillion"
+      ],
+      "title": "ModelPrice",
       "type": "object"
     },
     "ModelQuota": {

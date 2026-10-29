@@ -75,7 +75,9 @@ class GatewayTracing:
             ingest, LangfuseRecordMapper(resources.observability), observability.export
         )
         both: SpanExporter = FanOutExporter(exporter, langfuse) if langfuse is not None else exporter
-        tracer = LangfuseTracer(observability, resources.observability, both, release=release)
+        tracer = LangfuseTracer(
+            observability, resources.observability, both, release=release, prices=resources.models
+        )
         return cls(tracer=tracer, exporter=exporter, ingest=ingest)
 
     def start(self) -> None:

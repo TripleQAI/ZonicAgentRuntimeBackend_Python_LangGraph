@@ -11,6 +11,11 @@
   Holding the whole trace until then also lets it drop the agent graph's internal ``model`` and
   ``tools`` wrapper spans (``wrapper``), which only duplicate their children, and give those
   children the wrapper's parent (SP-4, ``tidy``): a model call hangs under its agent node.
+* Cost: a generation with usage and a model the catalog prices gets ``cost_details`` from
+  ``models.json`` (``ModelCatalog.price_for``), so the gateway and a Langfuse server record the
+  same cost; a generation that already has a cost keeps it.
+* A node's input is its bound port values when the node recorded them (``node_input``,
+  ``zonic_input_bound``), captured as its type's rule says; otherwise the run state, as a summary.
 """
 
 from __future__ import annotations
@@ -28,13 +33,19 @@ from opentelemetry.trace import SpanContext
 
 from zonic_runtime.integrations.langfuse.callback_handler import NODE_SPAN
 from zonic_runtime.integrations.langfuse.masker import Masker
+from zonic_runtime.models.resources.catalogs import USAGE_CACHE_READ, USAGE_INPUT, USAGE_OUTPUT, ModelCatalog
 
 TYPE = "langfuse.observation.type"
 LEVEL = "langfuse.observation.level"
 STATUS = "langfuse.observation.status_message"
 INPUT, OUTPUT = "langfuse.observation.input", "langfuse.observation.output"
 META = "langfuse.observation.metadata."
+MODEL = "langfuse.observation.model.name"
+USAGE, COST = "langfuse.observation.usage_details", "langfuse.observation.cost_details"
 RUN_ROOT = "zonic_run_root"
+#: Set on a node observation whose input is its bound port values (``node_input``).
+INPUT_BOUND = "zonic_input_bound"
+_GENERATION = "generation"
 _WRAPPERS = frozenset({"model", "tools"})
 _CHAIN_TYPES = frozenset({"chain", "agent", "span"})  # principle: allow rule-1-node-type langfuse-types
 _FAILED = "failed"
@@ -99,8 +110,24 @@ def tidy(spans: Sequence[ReadableSpan]) -> list[ReadableSpan]:
 
 
 class Enricher:
-    def __init__(self, masker: Masker) -> None:
+    def __init__(self, masker: Masker, prices: ModelCatalog | None = None) -> None:
         self._masker = masker
+        self._prices = prices
+
+    def cost(self, attrs: Mapping[str, Any]) -> dict[str, float] | None:
+        """A generation's ``cost_details`` from its model's catalog price and its usage."""
+        if self._prices is None or attrs.get(TYPE) != _GENERATION or COST in attrs:
+            return None
+        usage = _json(attrs.get(USAGE))
+        model = attrs.get(MODEL)
+        price = self._prices.price_for(model if isinstance(model, str) else None)
+        if price is None or not isinstance(usage, Mapping):
+            return None
+        tokens = {k: int(v) for k, v in usage.items() if isinstance(v, (int, float))}
+        # Langfuse's usage puts cached prompt tokens in ``input_cache_read``, outside ``input``.
+        return price.cost(
+            tokens.get(USAGE_INPUT, 0), tokens.get(USAGE_OUTPUT, 0), tokens.get(USAGE_CACHE_READ, 0)
+        )
 
     def _captured(
         self, attrs: Mapping[str, Any], key: str, mode: str, value: Any = None
@@ -119,6 +146,9 @@ class Enricher:
         status = attrs.get(STATUS)
         if isinstance(status, str) and self._masker.text(status) != status:  # an error's text (X-05)
             set_attributes[STATUS] = self._masker.text(status)
+        cost = self.cost(attrs)
+        if cost is not None:
+            set_attributes[COST] = json.dumps(cost)
         node_type = meta(span, "zonic_node_type")
         if node_type is None:
             return OtelSpanPatch(set_attributes=set_attributes) if set_attributes else None
@@ -140,9 +170,11 @@ class Enricher:
                 if record.get("status") == _FAILED and attrs.get(LEVEL) != "ERROR":
                     set_attributes[LEVEL] = "WARNING"
                     set_attributes[STATUS] = str((record.get("error") or {}).get("code") or _FAILED)
-            # The node's input is the run state: a summary at most.
+            # The node's bound port values, as its type's rule says; else the run state, a summary at most.
             mode = self._masker.capture(node_type, _INPUT_PART)
-            found, gone = self._captured(attrs, INPUT, _NONE if mode == _NONE else "summary")
+            if not meta(span, INPUT_BOUND):
+                mode = _NONE if mode == _NONE else "summary"
+            found, gone = self._captured(attrs, INPUT, mode)
             set_attributes.update(found)
             delete += gone
         elif attrs.get(TYPE) not in _CHAIN_TYPES:  # a model or tool call inside the node

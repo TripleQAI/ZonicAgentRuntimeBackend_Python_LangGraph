@@ -46,6 +46,7 @@ from zonic_runtime.engine.context import RunContext
 from zonic_runtime.errors import ZonicError
 from zonic_runtime.models.blueprint import NodeSpec
 from zonic_runtime.models.engine import Usage
+from zonic_runtime.models.resources.catalogs import ModelCatalog
 from zonic_runtime.models.resources.settings import SwarmSettings
 
 MEMBER_STARTED, MEMBER_FINISHED, HANDOFF = "swarm.member.started", "swarm.member.finished", "swarm.handoff"
@@ -110,6 +111,8 @@ class SwarmSpec:
     settings: SwarmSettings
     #: Member steps per visit; tool idempotency keys number the steps of every visit apart.
     steps: int
+    #: The model catalog that costs each member step's usage.
+    prices: ModelCatalog | None = None
 
 
 class MemberNode:
@@ -199,7 +202,7 @@ class MemberNode:
             if ended == _FAILED:
                 self.emit(runtime, visit, MEMBER_FINISHED, status=_FAILED, durationMs=_ms(started))
         new = list(final["messages"][len(messages) :])
-        answer = read_visit(new).text
+        answer = read_visit(new, self.swarm.prices).text
         done = self.step(record, new, answer, visit, final.get("zonic_flow_updates") or {})
         self.emit(
             runtime, visit, MEMBER_FINISHED, status=_COMPLETED, durationMs=_ms(started), usage=_wire(done)
@@ -215,7 +218,7 @@ class MemberNode:
         changes: Mapping[str, Any],
     ) -> dict[str, Any]:
         """What a finished step adds to the Swarm state."""
-        found = read_visit(new)
+        found = read_visit(new, self.swarm.prices)
         turn = visit_messages(new, answer, self.swarm.node.node_id, visit)
         return {
             **record,

@@ -120,7 +120,13 @@ class MultiAgentKind(BaseKind):
                 or settings.engine.node_timeout_seconds
             )
             members.append(SwarmMember(ref=ref, spec=spec, agent=agent, timeout_seconds=seconds))
-        swarm = SwarmSpec(node=self.spec, members=tuple(refs), settings=settings.swarm, steps=limits.steps)
+        swarm = SwarmSpec(
+            node=self.spec,
+            members=tuple(refs),
+            settings=settings.swarm,
+            steps=limits.steps,
+            prices=ctx.services.resources.models,
+        )
         entry = next(m for m in members if self.entry is not None and m.spec.node_id == self.entry.node_id)
         self._limits, self._detection_off = limits, off
         self._graph = build_swarm(self.members.graph_id, swarm, members, entry)

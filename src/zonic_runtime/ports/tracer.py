@@ -53,6 +53,10 @@ class RunTrace(Protocol):
         """A finished child ``span`` under the node observation of ``config`` (a hook execution)."""
         ...
 
+    def node_input(self, config: Any, value: Mapping[str, Any]) -> None:
+        """The bound port values of the node visit of ``config``, as its observation's input."""
+        ...
+
     def annotate(
         self,
         config: Any,
@@ -88,6 +92,9 @@ class NoopTrace:
     def span(
         self, config: Any, name: str, level: Level = "DEFAULT", metadata: Mapping[str, Any] | None = None
     ) -> None:
+        return None
+
+    def node_input(self, config: Any, value: Mapping[str, Any]) -> None:
         return None
 
     def annotate(

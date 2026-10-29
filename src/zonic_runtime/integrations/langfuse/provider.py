@@ -7,8 +7,10 @@ tests) behind the ``SamplingExporter``, with ``mask`` (the ``Masker``) and ``mas
 
 A run's ``LangfuseRunTrace`` wraps the run in its root observation, whose trace ID is the run ID
 (case L-01), under ``propagate_attributes`` (trace name, session, user, tags, metadata), and gives
-the run its callback handler and event bridge. While a run is active, library warnings go to its
-trace (``observability/logging_policy.py``).
+the run its callback handler and event bridge. The root observation's metadata also carries the
+workflow's graph (``workflow_graph``: its nodes with type, kind and model, and its edges with their
+handles), and each node visit can record its bound input (``node_input``). While a run is active,
+library warnings go to its trace (``observability/logging_policy.py``).
 """
 
 from __future__ import annotations
@@ -28,9 +30,11 @@ from zonic_runtime.integrations.langfuse.callback_handler import (
     ObservationBridge,
     ZonicLangfuseCallbackHandler,
 )
-from zonic_runtime.integrations.langfuse.export import RUN_ROOT, Enricher, SamplingExporter
+from zonic_runtime.integrations.langfuse.export import INPUT_BOUND, RUN_ROOT, Enricher, SamplingExporter
 from zonic_runtime.integrations.langfuse.masker import Masker
 from zonic_runtime.integrations.langfuse.record_mapper import STATUS_META
+from zonic_runtime.models.blueprint import IGNORED_KIND
+from zonic_runtime.models.resources.catalogs import ModelCatalog
 from zonic_runtime.models.resources.misc import ObservabilityConfig
 from zonic_runtime.models.resources.settings import ObservabilitySettings
 from zonic_runtime.observability.logging_policy import CURRENT_RUN_EVENTS
@@ -40,6 +44,7 @@ _FAILED = frozenset({"failed", "timed_out"})
 _SPAN = "span"
 _ANNOTATION = "zonic_annotation"
 _TRACE_ID_DIGITS = 32
+GRAPH = "zonic_workflow_graph"
 
 
 def trace_id(run_id: str) -> str:
@@ -48,6 +53,43 @@ def trace_id(run_id: str) -> str:
     if len(digits) == _TRACE_ID_DIGITS and all(c in "0123456789abcdef" for c in digits):
         return digits
     return hashlib.sha256(run_id.encode()).hexdigest()[:_TRACE_ID_DIGITS]
+
+
+def workflow_graph(blueprint: Any) -> dict[str, Any] | None:
+    """The workflow as compiled: its nodes (swarm members with their ``container``) and its
+    edges by source handle, for the trace's root observation."""
+    if blueprint is None:
+        return None
+    nodes = []
+    for spec in blueprint.nodes.values():
+        if not spec.reachable or spec.kind == IGNORED_KIND:
+            continue
+        node: dict[str, Any] = {
+            "id": spec.node_id,
+            "type": spec.node_type,
+            "kind": spec.kind,
+            "name": spec.name,
+        }
+        model = getattr(spec.config, "model", None)  # a code, or the normalized ``{modelId: ...}``
+        model = model.get("modelId") if isinstance(model, dict) else model
+        if isinstance(model, str) and model:
+            node["model"] = model
+        if spec.container:
+            node["container"] = spec.container
+        nodes.append(node)
+    edges = [
+        {"from": source, "handle": handle, "to": target}
+        for source, handles in blueprint.edge_index.edges.items()
+        for handle, targets in handles.items()
+        for target in targets
+    ]
+    return {
+        "workflowId": blueprint.workflow_id,
+        "revision": blueprint.revision,
+        "entry": blueprint.entry,
+        "nodes": nodes,
+        "edges": edges,
+    }
 
 
 class LangfuseRunTrace:
@@ -68,6 +110,7 @@ class LangfuseRunTrace:
     def active(self) -> Iterator[None]:
         info = self.info
         metadata = dict(info.metadata)
+        graph = workflow_graph(info.blueprint)
         trace_context: Any = {"trace_id": trace_id(info.run_id)}
         with (
             self._tracer.client.start_as_current_observation(
@@ -75,7 +118,7 @@ class LangfuseRunTrace:
                 name=info.name,
                 trace_context=trace_context,
                 input=self._tracer.masker.mask(info.input),
-                metadata={**metadata, RUN_ROOT: True},
+                metadata={**metadata, RUN_ROOT: True, **({GRAPH: graph} if graph else {})},
             ) as root,
             propagate_attributes(
                 trace_name=info.name,
@@ -103,6 +146,13 @@ class LangfuseRunTrace:
     ) -> None:
         masked = self._tracer.masker.mask(dict(metadata or {}))
         self._bridge.event(config, name, level, masked, self._root, as_type=_SPAN)
+
+    def node_input(self, config: Any, value: Mapping[str, Any]) -> None:
+        """The node visit's bound port values as its observation's input; the export captures them
+        as the node type's rule says (``full``, ``summary`` or ``none``)."""
+        target = self._bridge.parent(config, None)
+        if target is not None:
+            target.update(input=self._tracer.masker.mask(dict(value)), metadata={INPUT_BOUND: True})
 
     def annotate(
         self,
@@ -149,7 +199,9 @@ class LangfuseTracer:
         exporter: SpanExporter,
         *,
         release: str = "dev",
+        prices: ModelCatalog | None = None,
     ) -> None:
+        """``prices``: the model catalog that costs generations (``Enricher``)."""
         self.masker = Masker(config)
         self.public_key = f"pk-lf-zonic-{uuid.uuid4().hex[:16]}"
         self.provider = TracerProvider()
@@ -162,7 +214,7 @@ class LangfuseTracer:
             release=release,
             sample_rate=1.0,  # sampling is the SamplingExporter's, after the run's outcome is known
             mask=self.masker,
-            mask_otel_spans=Enricher(self.masker),
+            mask_otel_spans=Enricher(self.masker, prices),
             tracer_provider=self.provider,
             span_exporter=self.exporter,
             flush_interval=settings.export.interval_milliseconds / 1000,

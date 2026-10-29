@@ -67,7 +67,8 @@
       "endpointEnv": "azure_openai_endpoint",
       "supportsNativeStructuredOutput": true,
       "parameters": { "maxTemperature": 2.0, "maxTokens": 16000 },
-      "quota": { "maxInFlight": 20, "requestsPerMinute": 200, "tokensPerMinute": 400000, "maxQueueWaitMilliseconds": 20000 }
+      "quota": { "maxInFlight": 20, "requestsPerMinute": 200, "tokensPerMinute": 400000, "maxQueueWaitMilliseconds": 20000 },
+      "pricing": { "currency": "USD", "inputPerMillion": 2.0, "cachedInputPerMillion": 0.5, "outputPerMillion": 8.0 }
     },
     "openai-gpt-4.1": {
       "provider": "openai",
@@ -75,7 +76,8 @@
       "enabled": true,
       "supportsNativeStructuredOutput": true,
       "parameters": { "maxTemperature": 2.0, "maxTokens": 16000 },
-      "quota": { "maxInFlight": 20, "requestsPerMinute": 200, "tokensPerMinute": 400000, "maxQueueWaitMilliseconds": 20000 }
+      "quota": { "maxInFlight": 20, "requestsPerMinute": 200, "tokensPerMinute": 400000, "maxQueueWaitMilliseconds": 20000 },
+      "pricing": { "currency": "USD", "inputPerMillion": 2.0, "cachedInputPerMillion": 0.5, "outputPerMillion": 8.0 }
     },
     "openai-gpt-4.1-mini": {
       "provider": "openai",
@@ -83,7 +85,8 @@
       "enabled": true,
       "supportsNativeStructuredOutput": true,
       "parameters": { "maxTemperature": 2.0, "maxTokens": 16000 },
-      "quota": { "maxInFlight": 30, "requestsPerMinute": 400, "tokensPerMinute": 800000, "maxQueueWaitMilliseconds": 15000 }
+      "quota": { "maxInFlight": 30, "requestsPerMinute": 400, "tokensPerMinute": 800000, "maxQueueWaitMilliseconds": 15000 },
+      "pricing": { "currency": "USD", "inputPerMillion": 0.4, "cachedInputPerMillion": 0.1, "outputPerMillion": 1.6 }
     },
     "gpt-5-mini": {
       "provider": "openai",
@@ -101,7 +104,8 @@
       "apiKeyEnv": "nebius_api_key",
       "supportsNativeStructuredOutput": true,
       "parameters": { "maxTemperature": 1.0, "maxTokens": 16000 },
-      "quota": { "maxInFlight": 30, "requestsPerMinute": 400, "tokensPerMinute": 800000, "maxQueueWaitMilliseconds": 15000 }
+      "quota": { "maxInFlight": 30, "requestsPerMinute": 400, "tokensPerMinute": 800000, "maxQueueWaitMilliseconds": 15000 },
+      "pricing": { "currency": "USD", "inputPerMillion": 0.06, "cachedInputPerMillion": 0.012, "outputPerMillion": 0.24 }
     },
     "nemotron-3-super": {
       "provider": "openai",
@@ -111,7 +115,8 @@
       "apiKeyEnv": "nebius_api_key",
       "supportsNativeStructuredOutput": true,
       "parameters": { "maxTemperature": 1.0, "maxTokens": 16000 },
-      "quota": { "maxInFlight": 20, "requestsPerMinute": 200, "tokensPerMinute": 400000, "maxQueueWaitMilliseconds": 20000 }
+      "quota": { "maxInFlight": 20, "requestsPerMinute": 200, "tokensPerMinute": 400000, "maxQueueWaitMilliseconds": 20000 },
+      "pricing": { "currency": "USD", "inputPerMillion": 0.3, "cachedInputPerMillion": 0.06, "outputPerMillion": 0.9 }
     },
     "nemotron-3-ultra": {
       "provider": "openai",
@@ -121,7 +126,8 @@
       "apiKeyEnv": "nebius_api_key",
       "supportsNativeStructuredOutput": true,
       "parameters": { "maxTemperature": 1.0, "maxTokens": 16000 },
-      "quota": { "maxInFlight": 10, "requestsPerMinute": 100, "tokensPerMinute": 200000, "maxQueueWaitMilliseconds": 30000 }
+      "quota": { "maxInFlight": 10, "requestsPerMinute": 100, "tokensPerMinute": 200000, "maxQueueWaitMilliseconds": 30000 },
+      "pricing": { "currency": "USD", "inputPerMillion": 1.0, "cachedInputPerMillion": 0.12, "outputPerMillion": 3.0 }
     },
     "nemotron-3.5-super-vl": {
       "provider": "openai",
@@ -131,7 +137,8 @@
       "apiKeyEnv": "nebius_api_key",
       "supportsNativeStructuredOutput": true,
       "parameters": { "maxTemperature": 1.0, "maxTokens": 16000 },
-      "quota": { "maxInFlight": 10, "requestsPerMinute": 100, "tokensPerMinute": 200000, "maxQueueWaitMilliseconds": 20000 }
+      "quota": { "maxInFlight": 10, "requestsPerMinute": 100, "tokensPerMinute": 200000, "maxQueueWaitMilliseconds": 20000 },
+      "pricing": { "currency": "USD", "inputPerMillion": 0.3, "cachedInputPerMillion": 0.06, "outputPerMillion": 0.9 }
     },
     "nemotron-3.5-lightning": {
       "provider": "openai",
@@ -141,7 +148,8 @@
       "apiKeyEnv": "nebius_api_key",
       "supportsNativeStructuredOutput": false,
       "parameters": { "maxTemperature": 1.0, "maxTokens": 16000 },
-      "quota": { "maxInFlight": 20, "requestsPerMinute": 200, "tokensPerMinute": 400000, "maxQueueWaitMilliseconds": 15000 }
+      "quota": { "maxInFlight": 20, "requestsPerMinute": 200, "tokensPerMinute": 400000, "maxQueueWaitMilliseconds": 15000 },
+      "pricing": { "currency": "USD", "inputPerMillion": 0.06, "cachedInputPerMillion": 0.03, "outputPerMillion": 0.24 }
     }
   }
 }
