@@ -26,15 +26,18 @@ from zonic_runtime.ports.gateway import GatewayPort
 
 GATEWAY_EXPORTER, LANGFUSE_EXPORTER = "gateway", "langfuse"
 _OTLP_PATH = "/api/public/otel/v1/traces"
+_INGESTION_VERSION = "x-langfuse-ingestion-version"
 
 
 def langfuse_exporter(base_url: str, public_key: str, secret_key: str) -> SpanExporter:
-    """The Langfuse server's OTLP endpoint, authenticated with the project's key pair."""
+    """The Langfuse server's OTLP endpoint, authenticated with the project's key pair. The
+    ingestion-version header makes Langfuse 4 show the spans at once instead of minutes later."""
     from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
 
     token = base64.b64encode(f"{public_key}:{secret_key}".encode()).decode()
     return OTLPSpanExporter(
-        endpoint=base_url.rstrip("/") + _OTLP_PATH, headers={"Authorization": f"Basic {token}"}
+        endpoint=base_url.rstrip("/") + _OTLP_PATH,
+        headers={"Authorization": f"Basic {token}", _INGESTION_VERSION: "4"},
     )
 
 

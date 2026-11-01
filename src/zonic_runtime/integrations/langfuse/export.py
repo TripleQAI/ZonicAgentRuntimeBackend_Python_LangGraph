@@ -33,7 +33,13 @@ from opentelemetry.trace import SpanContext
 
 from zonic_runtime.integrations.langfuse.callback_handler import NODE_SPAN
 from zonic_runtime.integrations.langfuse.masker import Masker
-from zonic_runtime.models.resources.catalogs import USAGE_CACHE_READ, USAGE_INPUT, USAGE_OUTPUT, ModelCatalog
+from zonic_runtime.models.resources.catalogs import (
+    USAGE_CACHE_READ,
+    USAGE_INPUT,
+    USAGE_OUTPUT,
+    USAGE_REASONING,
+    ModelCatalog,
+)
 
 TYPE = "langfuse.observation.type"
 LEVEL = "langfuse.observation.level"
@@ -124,9 +130,13 @@ class Enricher:
         if price is None or not isinstance(usage, Mapping):
             return None
         tokens = {k: int(v) for k, v in usage.items() if isinstance(v, (int, float))}
-        # Langfuse's usage puts cached prompt tokens in ``input_cache_read``, outside ``input``.
+        # Langfuse's usage keeps cached prompt tokens (``input_cache_read``) outside ``input`` and
+        # reasoning tokens (``output_reasoning``) outside ``output``; both are billed.
         return price.cost(
-            tokens.get(USAGE_INPUT, 0), tokens.get(USAGE_OUTPUT, 0), tokens.get(USAGE_CACHE_READ, 0)
+            tokens.get(USAGE_INPUT, 0),
+            tokens.get(USAGE_OUTPUT, 0),
+            tokens.get(USAGE_CACHE_READ, 0),
+            tokens.get(USAGE_REASONING, 0),
         )
 
     def _captured(
