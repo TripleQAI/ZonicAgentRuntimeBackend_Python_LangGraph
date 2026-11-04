@@ -1,7 +1,7 @@
 # Runbook: Deploy
 
 How to put a build of the runtime on an environment. The AWS target (P5-04, D-3) is built:
-- `deploy/aws/runtime.yaml` is a CloudFormation stack: its own VPC, an ALB reachable only from CloudFront (which serves HTTPS), and an ECS Fargate service with one 1 vCPU / 2 GB task;
+- `deploy/aws/runtime.yaml` is a CloudFormation stack: its own VPC, an ECS Fargate service (`runtime`) with one 1 vCPU / 2 GB task on a public IP reachable only from CloudFront (which serves HTTPS), and no load balancer. CloudFront's origin is the record `zonic-agent-runtime-<stage>-origin.dev.tripleq.ai`, which the `OriginDnsUpdater` Lambda points at the running task. The Node.js runtime uses the same design. The ALB was dropped on 2026-11-03, when the stack was rebuilt after its network and load balancer were deleted outside it on 2026-10-30. Deleting the stack leaves the origin record behind: delete it by hand;
 - the secrets are in Secrets Manager, and the task role calls Bedrock;
 - `deploy/aws/deploy.sh` checks the account, builds and pushes the image, writes the secrets and deploys the stack:
   ```sh
@@ -64,9 +64,9 @@ Keep every credential in the secret store or the task definition's secrets. Neve
 
 ## 4. Network
 
-- **Public port 8000**, behind the load balancer:
-  - TLS ends at the load balancer;
-  - set the idle timeout above `sse.heartbeatSeconds` (15 s), for example 60 s, so streams stay open;
+- **Public port 8000**, reached from CloudFront only:
+  - TLS ends at CloudFront. On AWS there is no load balancer: the task has a public IP, and an A record that the stack's `OriginDnsUpdater` Lambda points at the newest healthy task is CloudFront's origin. A restart moves the origin when the new task reports healthy, and that change takes up to a minute to reach CloudFront (the record's TTL);
+  - keep any idle timeout on the way above `sse.heartbeatSeconds` (15 s), for example 60 s, so streams stay open;
   - liveness: `GET /healthz`;
   - readiness: `GET /readyz`. It answers `503` with the failing dependency, and `200 degraded` while the instance sheds new runs.
   - Set `api.corsOrigins` for the browser client's origin.

@@ -120,7 +120,13 @@ aws cloudformation deploy --stack-name "$STACK" --template-file "$(native "$ROOT
     NebiusApiKeySecretArn="$nebius_arn" \
     LangfuseBaseUrl="$langfuse_url" LangfusePublicKeySecretArn="$langfuse_public_arn" LangfuseSecretKeySecretArn="$langfuse_secret_arn"
 output() { aws cloudformation describe-stacks --stack-name "$STACK" --query "Stacks[0].Outputs[?OutputKey=='$1'].OutputValue" --output text; }
-aws ecs wait services-stable --cluster "$(output Cluster)" --services runtime
+aws ecs wait services-stable --cluster "$(output Cluster)" --services "$(output Service)"
 url="$(output Url)"
-log "ready: $url"
-curl -fsS "$url/readyz" && echo
+# CloudFront reaches the task through the origin record, which the updater sets once the task
+# reports healthy: give it a few minutes before calling the deploy failed.
+log "waiting for $url/readyz"
+for _ in $(seq 1 30); do
+  curl -fsS "$url/readyz" 2>/dev/null && { echo; log "ready: $url"; exit 0; }
+  sleep 10
+done
+fail "$url/readyz did not answer; see the origin updater's log /zonic/agent-runtime/$STAGE/origin-dns"

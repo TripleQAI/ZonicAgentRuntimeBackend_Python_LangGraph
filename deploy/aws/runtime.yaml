@@ -1,7 +1,8 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: >-
   Zonic Agent Runtime (Python, LangGraph) on ECS Fargate (plan P5-04, decision D-3): one uvicorn
-  worker per 1 vCPU / 2 GB task behind an ALB, HTTPS through CloudFront, credentials from Secrets
+  worker per 1 vCPU / 2 GB task with a public IP and no load balancer, HTTPS through CloudFront
+  (its origin an A record a small Lambda keeps on the running task's IP), credentials from Secrets
   Manager, models through the task role on Bedrock. Deployed by deploy/aws/deploy.sh.
 
 Parameters:
@@ -51,6 +52,13 @@ Parameters:
   CloudFrontPrefixList:
     Type: String
     Default: pl-3b927c52  # com.amazonaws.global.cloudfront.origin-facing in us-east-1
+  HostedZoneId:
+    Type: String
+    Default: Z08614611QL8HCC5Q6WWE
+    Description: The zone that holds the origin record
+  HostedZoneName:
+    Type: String
+    Default: dev.tripleq.ai
   ResourcesDir:
     Type: String
     Default: /app/resources
@@ -98,20 +106,13 @@ Resources:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties: { SubnetId: !Ref SubnetB, RouteTableId: !Ref RouteTable }
 
-  AlbSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: Runtime ALB, reachable from CloudFront only
-      VpcId: !Ref Vpc
-      SecurityGroupIngress:
-        - { IpProtocol: tcp, FromPort: 80, ToPort: 80, SourcePrefixListId: !Ref CloudFrontPrefixList }
   TaskSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: Runtime tasks; the public port from the ALB, the internal port between tasks
+      GroupDescription: Runtime tasks; the public port from CloudFront only, the internal port between tasks
       VpcId: !Ref Vpc
       SecurityGroupIngress:
-        - { IpProtocol: tcp, FromPort: 8000, ToPort: 8000, SourceSecurityGroupId: !Ref AlbSecurityGroup }
+        - { IpProtocol: tcp, FromPort: 8000, ToPort: 8000, SourcePrefixListId: !Ref CloudFrontPrefixList }
   TaskInternalIngress:
     Type: AWS::EC2::SecurityGroupIngress
     Properties:
@@ -121,37 +122,95 @@ Resources:
       FromPort: 8000
       ToPort: 9000  # the public port for the load generator, the internal port for the proxy and /metrics
 
-  # --- load balancer and CloudFront ------------------------------------------------------------
-  LoadBalancer:
-    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+  # --- origin record and CloudFront ------------------------------------------------------------
+  # No load balancer (about $16 a month): CloudFront's origin is an A record that OriginDnsUpdater
+  # points at the newest healthy task's public IP whenever a task in the cluster changes state.
+  # The same design as the Node.js runtime (ZonicAgentRuntimeServer_Nodejs/deploy/aws-fargate).
+  # The record is the updater's, not the stack's: delete it by hand after deleting the stack.
+  OriginDnsUpdaterRole:
+    Type: AWS::IAM::Role
     Properties:
-      Scheme: internet-facing
-      Subnets: [!Ref SubnetA, !Ref SubnetB]
-      SecurityGroups: [!Ref AlbSecurityGroup]
-      LoadBalancerAttributes:
-        # Above the SSE heartbeat gap (sse.heartbeatSeconds, 15 s)
-        - { Key: idle_timeout.timeout_seconds, Value: "120" }
-  TargetGroup:
-    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement: [{ Effect: Allow, Principal: { Service: lambda.amazonaws.com }, Action: sts:AssumeRole }]
+      ManagedPolicyArns: [arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole]
+      Policies:
+        - PolicyName: origin-record
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: [ecs:ListTasks, ecs:DescribeTasks, ec2:DescribeNetworkInterfaces]
+                Resource: "*"
+              - Effect: Allow
+                Action: route53:ChangeResourceRecordSets
+                Resource: !Sub "arn:aws:route53:::hostedzone/${HostedZoneId}"
+  OriginDnsUpdaterLogs:
+    Type: AWS::Logs::LogGroup
     Properties:
-      VpcId: !Ref Vpc
-      TargetType: ip
-      Protocol: HTTP
-      Port: 8000
-      HealthCheckPath: /healthz
-      HealthCheckIntervalSeconds: 15
-      HealthyThresholdCount: 2
-      Matcher: { HttpCode: "200" }
-      TargetGroupAttributes:
-        # Above shutdown.drainSeconds (30 s), so a draining task finishes its streams
-        - { Key: deregistration_delay.timeout_seconds, Value: "45" }
-  Listener:
-    Type: AWS::ElasticLoadBalancingV2::Listener
+      LogGroupName: !Sub "/zonic/agent-runtime/${Stage}/origin-dns"
+      RetentionInDays: 14
+  OriginDnsUpdater:
+    Type: AWS::Lambda::Function
     Properties:
-      LoadBalancerArn: !Ref LoadBalancer
-      Port: 80
-      Protocol: HTTP
-      DefaultActions: [{ Type: forward, TargetGroupArn: !Ref TargetGroup }]
+      Description: Points the runtime's origin record at the running task
+      Runtime: python3.12
+      Architectures: [arm64]
+      Handler: index.handler
+      Timeout: 30
+      Role: !GetAtt OriginDnsUpdaterRole.Arn
+      LoggingConfig: { LogGroup: !Ref OriginDnsUpdaterLogs }
+      Environment:
+        Variables:
+          CLUSTER: !Ref Cluster
+          SERVICE: runtime
+          ZONE_ID: !Ref HostedZoneId
+          RECORD: !Sub "zonic-agent-runtime-${Stage}-origin.${HostedZoneName}"
+      Code:
+        ZipFile: |
+          import os, boto3
+          ecs = boto3.client('ecs'); ec2 = boto3.client('ec2'); r53 = boto3.client('route53')
+
+          def handler(event, context):
+              cluster, service = os.environ['CLUSTER'], os.environ['SERVICE']
+              arns = ecs.list_tasks(cluster=cluster, serviceName=service, desiredStatus='RUNNING')['taskArns']
+              tasks = ecs.describe_tasks(cluster=cluster, tasks=arns)['tasks'] if arns else []
+              tasks = [t for t in tasks if t.get('lastStatus') == 'RUNNING']
+              # A task that failed its health check must not take over from one that passes.
+              healthy = [t for t in tasks if t.get('healthStatus') == 'HEALTHY']
+              tasks = sorted(healthy or tasks, key=lambda t: t.get('startedAt') or t['createdAt'], reverse=True)
+              for task in tasks:
+                  details = {d['name']: d['value'] for a in task.get('attachments', []) for d in a.get('details', [])}
+                  eni = details.get('networkInterfaceId')
+                  if not eni:
+                      continue
+                  nic = ec2.describe_network_interfaces(NetworkInterfaceIds=[eni])['NetworkInterfaces'][0]
+                  ip = nic.get('Association', {}).get('PublicIp')
+                  if not ip:
+                      continue
+                  r53.change_resource_record_sets(HostedZoneId=os.environ['ZONE_ID'], ChangeBatch={'Changes': [{
+                      'Action': 'UPSERT',
+                      'ResourceRecordSet': {'Name': os.environ['RECORD'], 'Type': 'A', 'TTL': 60,
+                                            'ResourceRecords': [{'Value': ip}]}}]})
+                  print(f"{os.environ['RECORD']} -> {ip} ({task['taskArn'].split('/')[-1]})")
+                  return ip
+              print('no running task with a public IP')
+  TaskChanges:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: Every task change in the cluster (started, health changed, stopped) re-points the origin record
+      EventPattern:
+        source: [aws.ecs]
+        detail-type: [ECS Task State Change]
+        detail: { clusterArn: [!GetAtt Cluster.Arn] }
+      Targets: [{ Id: origin-dns, Arn: !GetAtt OriginDnsUpdater.Arn }]
+  TaskChangesPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref OriginDnsUpdater
+      Action: lambda:InvokeFunction
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt TaskChanges.Arn
 
   Distribution:
     Type: AWS::CloudFront::Distribution
@@ -162,14 +221,15 @@ Resources:
         PriceClass: PriceClass_100
         HttpVersion: http2
         Origins:
-          - Id: alb
-            DomainName: !GetAtt LoadBalancer.DNSName
+          - Id: task
+            DomainName: !Sub "zonic-agent-runtime-${Stage}-origin.${HostedZoneName}"
             CustomOriginConfig:
               OriginProtocolPolicy: http-only
+              HTTPPort: 8000
               OriginReadTimeout: 60  # bytes arrive at least every sse.heartbeatSeconds
               OriginKeepaliveTimeout: 60
         DefaultCacheBehavior:
-          TargetOriginId: alb
+          TargetOriginId: task
           ViewerProtocolPolicy: https-only
           AllowedMethods: [GET, HEAD, OPTIONS, PUT, PATCH, POST, DELETE]
           CachedMethods: [GET, HEAD]
@@ -249,6 +309,18 @@ Resources:
           PortMappings:
             - { ContainerPort: 8000, Protocol: tcp }
             - { ContainerPort: 9000, Protocol: tcp }
+          # Liveness, not readiness: a gateway outage must not make ECS replace the task. The
+          # origin updater prefers a HEALTHY task, so a new task takes over only once it answers.
+          HealthCheck:
+            Command:
+              - CMD
+              - /app/.venv/bin/python
+              - -c
+              - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz', timeout=4)"
+            Interval: 15
+            Timeout: 5
+            StartPeriod: 60
+            Retries: 3
           Environment:
             - { Name: ZONIC_ENV, Value: !Ref ZonicEnv }
             - { Name: ZONIC_RESOURCES_DIR, Value: !Ref ResourcesDir }
@@ -277,14 +349,13 @@ Resources:
 
   Service:
     Type: AWS::ECS::Service
-    DependsOn: Listener
+    DependsOn: TaskChangesPermission  # the first task's start must reach the origin updater
     Properties:
       ServiceName: runtime
       Cluster: !Ref Cluster
       LaunchType: FARGATE
       DesiredCount: !Ref DesiredCount
       TaskDefinition: !Ref TaskDefinition
-      HealthCheckGracePeriodSeconds: 60
       DeploymentConfiguration:
         MinimumHealthyPercent: 100
         MaximumPercent: 200
@@ -294,16 +365,18 @@ Resources:
           AssignPublicIp: ENABLED  # egress to the gateway, Bedrock and the MCP server without a NAT gateway
           Subnets: [!Ref SubnetA, !Ref SubnetB]
           SecurityGroups: [!Ref TaskSecurityGroup]
-      LoadBalancers:
-        - { ContainerName: runtime, ContainerPort: 8000, TargetGroupArn: !Ref TargetGroup }
 
 Outputs:
   Url:
     Value: !Sub "https://${Distribution.DomainName}"
-  LoadBalancerDns:
-    Value: !GetAtt LoadBalancer.DNSName
+  OriginRecord:
+    Value: !Sub "zonic-agent-runtime-${Stage}-origin.${HostedZoneName}"
+  OriginDnsUpdater:
+    Value: !Ref OriginDnsUpdater
   Cluster:
     Value: !Ref Cluster
+  Service:
+    Value: !GetAtt Service.Name
   Subnets:
     Value: !Join [",", [!Ref SubnetA, !Ref SubnetB]]
   TaskSecurityGroup:

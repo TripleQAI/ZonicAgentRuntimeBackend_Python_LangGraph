@@ -1131,6 +1131,16 @@ The user approved the AWS deploy, gave an OpenAI API key ("leave the bedrock for
   - the AES key comes from `openssl rand`, since `python` is not on Git Bash's path;
   - `inherit_errexit`, so a failure inside `$(...)` stops the script.
 
+### Dev rebuilt without a load balancer (2026-11-03)
+
+- **Outage:** the runtime UI (dev.tripleq.ai/agent-runtime-lg) showed no agents because the runtime answered every request with CloudFront 502. CloudTrail shows the stack's ECS service, ALB and target group deleted on 2026-10-30 at 22:28 (UTC-4), and its VPC, subnets and internet gateway at 22:30 to 22:32, outside CloudFormation and in the same sweep as other services' VPCs. The stack still listed them, so an update failed (`The vpc ID ... does not exist`) and rolled back.
+- **Fix, with the user's choice ("Match Node: no ALB"):**
+  - `deploy/aws/runtime.yaml` now uses the Node.js runtime's design. The task has a public IP, port 8000 is reachable only from CloudFront's origin-facing prefix list, and CloudFront's origin is the A record `zonic-agent-runtime-dev-origin.dev.tripleq.ai`. The `OriginDnsUpdater` Lambda points that record at the newest healthy task on every ECS task change. The ALB is gone, about $16 a month less.
+  - New: a container health check on `/healthz`. It is liveness, so a gateway outage does not cycle the task.
+  - `deploy.sh` waits up to five minutes for `/readyz` through CloudFront, because the record follows the task's health.
+  - The stack was deleted (the account checked first) and created again. Secrets and images live outside it and were kept, but the old log group went with the stack. Deleting the stack leaves the origin record behind.
+- **New runtime URL:** https://d1mcbsx00xuisv.cloudfront.net (it was `d2mqmloek8azsa`). `/readyz` is `ok`, and the test user's `/v1/catalog/agents` lists 14 agents. The LangGraph UI (`ZonicAgentRuntimeUI_NextJS_For_Langgraph`: `cdk.json` `runtimeApiUrl`, `.env.example`, `.env.local`, README) was repointed and redeployed, and its smoke checks pass. This repository's `.env` `ZONIC_DEPLOYED_URL` was updated too.
+
 ### P5-02 notes
 
 - **Where it ran:** a container of 1 vCPU and 2 GB (Docker Desktop), the real deployed gateway and the trace export, and the simulated model of design 11.1 (`tests/load/model.py`, stamped chunks). The Fargate task waits for P5-04. All numbers and how to repeat them are in `docs/load/p5-02-report.md`.
